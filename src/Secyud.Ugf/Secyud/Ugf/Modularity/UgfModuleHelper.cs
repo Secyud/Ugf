@@ -32,7 +32,7 @@ internal static class UgfModuleHelper
     {
         UgfModule.CheckUgfModuleType(moduleType);
 
-        var depends = moduleType.GetCustomAttribute<DependsOnAttribute>();
+        var depends = moduleType.GetCustomAttribute<DependsOnAttribute>()??new DependsOnAttribute();
 
         var dependencies = depends.DependedTypes.Distinct().ToList();
 

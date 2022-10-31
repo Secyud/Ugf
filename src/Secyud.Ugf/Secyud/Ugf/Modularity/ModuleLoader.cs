@@ -13,7 +13,6 @@ public class ModuleLoader : IModuleLoader
     {
         Thrower.IfNull(registrar);
         Thrower.IfNull(startupModuleType);
-        Thrower.IfNull(plugInSources);
 
         var modules =
             GetDescriptors(registrar, startupModuleType, plugInSources);

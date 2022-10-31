@@ -2,6 +2,8 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Secyud.Ugf", "src\Secyud.Ugf\Secyud.Ugf.csproj", "{633ECE92-35BE-475A-A312-F0B3CA18A55C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UgfTest", "test\UgfTest\UgfTest.csproj", "{ED05D3D9-9B8F-4479-BE40-3F80F42E1BCC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +14,9 @@ Global
 		{633ECE92-35BE-475A-A312-F0B3CA18A55C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{633ECE92-35BE-475A-A312-F0B3CA18A55C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{633ECE92-35BE-475A-A312-F0B3CA18A55C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ED05D3D9-9B8F-4479-BE40-3F80F42E1BCC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ED05D3D9-9B8F-4479-BE40-3F80F42E1BCC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ED05D3D9-9B8F-4479-BE40-3F80F42E1BCC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ED05D3D9-9B8F-4479-BE40-3F80F42E1BCC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

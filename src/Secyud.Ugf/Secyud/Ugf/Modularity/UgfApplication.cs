@@ -98,20 +98,21 @@ public class UgfApplication : IUgfApplication
 
             var context = new ShutdownContext(scope.DependencyProvider);
 
-            foreach (var module in Modules.Where(m => m.Instance is IOnShutdown))
-                await ((IOnShutdown)module.Instance).OnShutdownAsync(context);
+            for (var i = Modules.Count - 1; i >= 0; --i)
+                if (Modules[i].Instance is IOnShutdown)
+                    await ((IOnShutdown)Modules[i].Instance).OnShutdownAsync(context);
+            Dispose();
         }
         catch (Exception ex)
         {
             throw new UgfInitializationException($"An error occurred during {nameof(InitializeAsync)}. See the inner exception for details.", ex);
         }
     }
-
-
+    
     public void Dispose()
     {
     }
-
+    
     private IReadOnlyList<IUgfModuleDescriptor> LoadModules(
         IDependencyManager manager,
         PlugInSourceList plugInSources)
