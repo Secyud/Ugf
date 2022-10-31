@@ -47,6 +47,8 @@ public class ModuleLoader : IModuleLoader
             .Select(moduleType => CreateModuleDescriptor(registrar, moduleType)));
 
         //Plugin modules
+        if (plugInSources.IsNullOrEmpty()) return;
+        
         foreach (var moduleType in plugInSources
                      .GetAllModules()
                      .Where(moduleType => modules.All(m => m.Type != moduleType)))

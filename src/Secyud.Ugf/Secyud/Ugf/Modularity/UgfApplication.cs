@@ -14,7 +14,8 @@ public class UgfApplication : IUgfApplication
 
     internal UgfApplication(
         IDependencyManager dependencyManager,
-        Type startupModuleType)
+        Type startupModuleType,
+        PlugInSourceList plugInSources = null)
     {
         Thrower.IfNull(dependencyManager);
         Thrower.IfNull(startupModuleType);
@@ -26,7 +27,7 @@ public class UgfApplication : IUgfApplication
         _dependencyManager.AddSingleton<IModuleContainer>(this);
         _dependencyManager.AddSingleton<IModuleLoader>(new ModuleLoader());
 
-        Modules = LoadModules(_dependencyManager);
+        Modules = LoadModules(_dependencyManager,plugInSources);
     }
 
     public Type StartupModuleType { get; }
@@ -111,11 +112,10 @@ public class UgfApplication : IUgfApplication
     {
     }
 
-    private IReadOnlyList<IUgfModuleDescriptor> LoadModules(IDependencyManager manager)
+    private IReadOnlyList<IUgfModuleDescriptor> LoadModules(
+        IDependencyManager manager,
+        PlugInSourceList plugInSources)
     {
-        if (!manager.TryGetDependency<PlugInSourceList>(out var plugInSources))
-            plugInSources = new PlugInSourceList();
-
         return manager
             .GetDependency<IModuleLoader>()
             .LoadModules(

@@ -6,27 +6,34 @@ namespace Secyud.Ugf.Modularity;
 
 public static class UgfApplicationFactory
 {
-    public static async Task<IUgfApplication> CreateAsync<TStartupModule>() where TStartupModule : IUgfModule
+    public static async Task<IUgfApplication> CreateAsync<TStartupModule>(
+        PlugInSourceList plugInSources = null) 
+        where TStartupModule : IUgfModule
     {
-        return await CreateAsync(typeof(TStartupModule));
+        return await CreateAsync(typeof(TStartupModule),plugInSources);
     }
 
-    public static async Task<IUgfApplication> CreateAsync(Type startupModuleType)
+    public static async Task<IUgfApplication> CreateAsync(
+        Type startupModuleType,
+        PlugInSourceList plugInSources = null)
     {
-        var app = Create(startupModuleType);
+        var app = Create(startupModuleType,plugInSources);
         await app.ConfigureAsync();
         return app;
     }
 
 
-    public static IUgfApplication Create<TStartupModule>()
+    public static IUgfApplication Create<TStartupModule>(
+    PlugInSourceList plugInSources = null)
         where TStartupModule : IUgfModule
     {
-        return Create(typeof(TStartupModule));
+        return Create(typeof(TStartupModule),plugInSources);
     }
 
-    public static IUgfApplication Create(Type startupModuleType)
+    public static IUgfApplication Create(
+        Type startupModuleType,
+        PlugInSourceList plugInSources = null)
     {
-        return new UgfApplication(new DependencyManager(), startupModuleType);
+        return new UgfApplication(new DependencyManager(), startupModuleType,plugInSources);
     }
 }
