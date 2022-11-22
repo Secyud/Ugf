@@ -47,7 +47,7 @@ namespace Secyud.Ugf.Modularity
 
             //Plugin modules
             if (plugInSources.IsNullOrEmpty()) return;
-        
+
             foreach (var moduleType in plugInSources
                          .GetAllModules()
                          .Where(moduleType => modules.All(m => m.Type != moduleType)))
@@ -60,16 +60,19 @@ namespace Secyud.Ugf.Modularity
                 SetDependencies(modules, module);
         }
 
-        protected virtual List<IUgfModuleDescriptor> SortByDependency(List<IUgfModuleDescriptor> modules, Type startupModuleType)
+        protected virtual List<IUgfModuleDescriptor> SortByDependency(List<IUgfModuleDescriptor> modules,
+            Type startupModuleType)
         {
             var sortedModules = modules.SortByDependencies(m => m.Dependencies);
             sortedModules.MoveItem(m => m.Type == startupModuleType, modules.Count - 1);
             return sortedModules;
         }
 
-        protected virtual UgfModuleDescriptor CreateModuleDescriptor(IDependencyRegistrar registrar, Type moduleType, bool isLoadedAsPlugIn = false)
+        protected virtual UgfModuleDescriptor CreateModuleDescriptor(IDependencyRegistrar registrar, Type moduleType,
+            bool isLoadedAsPlugIn = false)
         {
-            return new UgfModuleDescriptor(moduleType, CreateAndRegisterModule(registrar, moduleType), isLoadedAsPlugIn);
+            return new UgfModuleDescriptor(moduleType, CreateAndRegisterModule(registrar, moduleType),
+                isLoadedAsPlugIn);
         }
 
         protected virtual IUgfModule CreateAndRegisterModule(IDependencyRegistrar registrar, Type moduleType)
@@ -85,7 +88,9 @@ namespace Secyud.Ugf.Modularity
             {
                 var dependedModule = modules.FirstOrDefault(m => m.Type == dependedModuleType);
                 if (dependedModule == null)
-                    throw new UgfException("Could not find a depended module " + dependedModuleType.AssemblyQualifiedName + " for " + module.Type.AssemblyQualifiedName);
+                    throw new UgfException("Could not find a depended module " +
+                                           dependedModuleType.AssemblyQualifiedName + " for " +
+                                           module.Type.AssemblyQualifiedName);
 
                 module.AddDependency(dependedModule);
             }

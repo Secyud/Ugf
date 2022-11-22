@@ -7,21 +7,29 @@ namespace Secyud.Ugf.UserInterface
 {
     public abstract class PrefabControllerBase : ISingleton
     {
+        protected PrefabControllerBase()
+        {
+            var className = GetType().Name;
+            Name = className.EndsWith("Controller") ? className[..^"Controller".Length] : className;
+        }
+
         internal PrefabDescriptor PrefabDescriptor { get; set; }
-        
+
         public string Name { get; protected set; }
 
         public virtual Type ParentType => null;
 
-        internal Func<PrefabControllerBase,PrefabControllerBase> ParentFactory { get; set; }
+        internal Func<PrefabControllerBase, PrefabControllerBase> ParentFactory { get; set; }
 
         public PrefabControllerBase Parent => ParentFactory(this);
-        
+
         protected GameObject PanelObject => PrefabDescriptor.Instance;
 
         protected TComponent GetComponent<TComponent>()
             where TComponent : Component
-            => PrefabDescriptor.Instance.GetComponent<TComponent>();
+        {
+            return PrefabDescriptor.Instance.GetComponent<TComponent>();
+        }
 
 
         public virtual void OnInitialize()
@@ -30,12 +38,6 @@ namespace Secyud.Ugf.UserInterface
 
         public virtual void OnShutDown()
         {
-        }
-        
-        protected PrefabControllerBase()
-        {
-            var className = GetType().Name;
-            Name = className.EndsWith("Controller") ? className[..^"Controller".Length] : className;
         }
     }
 }

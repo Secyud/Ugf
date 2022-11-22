@@ -14,10 +14,6 @@ namespace Secyud.Ugf.DependencyInjection
 
         private readonly ConcurrentDictionary<Type, object> _singletonInstances;
 
-        private void AddSelf<TExposed>()
-        {
-            CreateDependencyDescriptor(GetType(), typeof(TExposed), DependencyLifeTime.Singleton);
-        }
         internal DependencyManager(IDependencyCollection dependencyCollection = null)
         {
             _dependencyCollection = dependencyCollection ?? new DependencyCollection();
@@ -158,6 +154,11 @@ namespace Secyud.Ugf.DependencyInjection
                 DependencyLifeTime.Transient);
         }
 
+        private void AddSelf<TExposed>()
+        {
+            CreateDependencyDescriptor(GetType(), typeof(TExposed), DependencyLifeTime.Singleton);
+        }
+
         internal override DependencyDescriptor GetDescriptor(Type type)
         {
             return !_dependencyCollection.ContainsKey(type) ? null : _dependencyCollection[type];
@@ -175,7 +176,7 @@ namespace Secyud.Ugf.DependencyInjection
 
             if (typeof(IScoped).GetTypeInfo().IsAssignableFrom(type))
                 return DependencyLifeTime.Scoped;
-            
+
             if (typeof(ISingleton).GetTypeInfo().IsAssignableFrom(type))
                 return DependencyLifeTime.Singleton;
 

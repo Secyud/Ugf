@@ -1,25 +1,22 @@
 using System.Collections.Generic;
 using Secyud.Ugf.DependencyInjection;
-using Secyud.Ugf.UserInterface;
 using UnityEngine;
-using Object = UnityEngine.Object;
 
 namespace Secyud.Ugf.Prefab
 {
     public class PrefabManager : IPrefabManager, ISingleton
     {
+        private readonly GameObject _canvas = GameObject.Find("Canvas");
 
         private readonly Dictionary<string, PrefabDescriptor> _uis = new();
-        
-        private readonly GameObject _canvas = GameObject.Find("Canvas");
-        
-        public void RegisterPrefabs(IEnumerable<string> prefabs,bool isUi = false)
+
+        public void RegisterPrefabs(IEnumerable<string> prefabs, bool isUi = false)
         {
             foreach (var ui in prefabs)
-                RegisterPrefab(ui,isUi);
+                RegisterPrefab(ui, isUi);
         }
 
-        public void RegisterPrefab(string path,bool isUi = false)
+        public void RegisterPrefab(string path, bool isUi = false)
         {
             var descriptor = new PrefabDescriptor(path, CreateGameObject, isUi);
             _uis[descriptor.Name] = descriptor;

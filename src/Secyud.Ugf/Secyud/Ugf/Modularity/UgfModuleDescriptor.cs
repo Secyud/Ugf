@@ -17,7 +17,8 @@ namespace Secyud.Ugf.Modularity
             Thrower.IfNull(instance);
 
             if (!type.GetTypeInfo().IsInstanceOfType(instance))
-                throw new ArgumentException($"Given module instance ({instance.GetType().AssemblyQualifiedName}) is not an instance of given module type: {type.AssemblyQualifiedName}");
+                throw new ArgumentException(
+                    $"Given module instance ({instance.GetType().AssemblyQualifiedName}) is not an instance of given module type: {type.AssemblyQualifiedName}");
 
             Type = type;
             Assembly = type.Assembly;

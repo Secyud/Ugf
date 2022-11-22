@@ -21,7 +21,8 @@ namespace System.Collections.Generic
                 : source;
         }
 
-        public static IEnumerable<T> WhereIf<T>(this IEnumerable<T> source, bool condition, Func<T, int, bool> predicate)
+        public static IEnumerable<T> WhereIf<T>(this IEnumerable<T> source, bool condition,
+            Func<T, int, bool> predicate)
         {
             return condition
                 ? source.Where(predicate)

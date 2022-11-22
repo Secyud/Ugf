@@ -106,7 +106,9 @@ namespace Secyud.Ugf.Collections
         private static void CheckType(Type item)
         {
             if (!typeof(TBaseType).GetTypeInfo().IsAssignableFrom(item))
-                throw new ArgumentException($"Given type ({item.AssemblyQualifiedName}) should be instance of {typeof(TBaseType).AssemblyQualifiedName} ", nameof(item));
+                throw new ArgumentException(
+                    $"Given type ({item.AssemblyQualifiedName}) should be instance of {typeof(TBaseType).AssemblyQualifiedName} ",
+                    nameof(item));
         }
     }
 }

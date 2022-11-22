@@ -11,7 +11,7 @@ namespace Secyud.Ugf.DependencyInjection
         void AddTypes(IEnumerable<Type> types);
 
         void AddType(Type type);
-        
+
         void AddType<T>();
 
         void AddSingleton(Type type, object instance);

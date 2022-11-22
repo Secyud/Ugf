@@ -27,7 +27,7 @@ namespace Secyud.Ugf.Modularity
             _dependencyManager.AddSingleton<IModuleContainer>(this);
             _dependencyManager.AddSingleton<IModuleLoader>(new ModuleLoader());
 
-            Modules = LoadModules(_dependencyManager,plugInSources);
+            Modules = LoadModules(_dependencyManager, plugInSources);
         }
 
         public Type StartupModuleType { get; }
@@ -59,7 +59,8 @@ namespace Secyud.Ugf.Modularity
             }
             catch (Exception ex)
             {
-                throw new UgfInitializationException($"An error occurred during {nameof(ConfigureAsync)}. See the inner exception for details.", ex);
+                throw new UgfInitializationException(
+                    $"An error occurred during {nameof(ConfigureAsync)}. See the inner exception for details.", ex);
             }
 
             _configuredServices = true;
@@ -86,7 +87,8 @@ namespace Secyud.Ugf.Modularity
             }
             catch (Exception ex)
             {
-                throw new UgfInitializationException($"An error occurred during {nameof(InitializeAsync)}. See the inner exception for details.", ex);
+                throw new UgfInitializationException(
+                    $"An error occurred during {nameof(InitializeAsync)}. See the inner exception for details.", ex);
             }
         }
 
@@ -105,14 +107,15 @@ namespace Secyud.Ugf.Modularity
             }
             catch (Exception ex)
             {
-                throw new UgfInitializationException($"An error occurred during {nameof(InitializeAsync)}. See the inner exception for details.", ex);
+                throw new UgfInitializationException(
+                    $"An error occurred during {nameof(InitializeAsync)}. See the inner exception for details.", ex);
             }
         }
-    
+
         public void Dispose()
         {
         }
-    
+
         private IReadOnlyList<IUgfModuleDescriptor> LoadModules(
             IDependencyManager manager,
             PlugInSourceList plugInSources)

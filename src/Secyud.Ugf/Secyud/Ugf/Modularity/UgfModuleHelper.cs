@@ -32,7 +32,7 @@ namespace Secyud.Ugf.Modularity
         {
             UgfModule.CheckUgfModuleType(moduleType);
 
-            var depends = moduleType.GetCustomAttribute<DependsOnAttribute>()??new DependsOnAttribute();
+            var depends = moduleType.GetCustomAttribute<DependsOnAttribute>() ?? new DependsOnAttribute();
 
             var dependencies = depends.DependedTypes.Distinct().ToList();
 

@@ -31,7 +31,8 @@ namespace System.Collections.Generic
             return dictionary.TryGetValue(key, out var obj) ? obj : default;
         }
 
-        public static TValue GetOrAdd<TKey, TValue>(this IDictionary<TKey, TValue> dictionary, TKey key, Func<TKey, TValue> factory)
+        public static TValue GetOrAdd<TKey, TValue>(this IDictionary<TKey, TValue> dictionary, TKey key,
+            Func<TKey, TValue> factory)
         {
             if (dictionary.TryGetValue(key, out var obj))
                 return obj;
@@ -39,7 +40,8 @@ namespace System.Collections.Generic
             return dictionary[key] = factory(key);
         }
 
-        public static TValue GetOrAdd<TKey, TValue>(this IDictionary<TKey, TValue> dictionary, TKey key, Func<TValue> factory)
+        public static TValue GetOrAdd<TKey, TValue>(this IDictionary<TKey, TValue> dictionary, TKey key,
+            Func<TValue> factory)
         {
             return dictionary.GetOrAdd(key, k => factory());
         }
