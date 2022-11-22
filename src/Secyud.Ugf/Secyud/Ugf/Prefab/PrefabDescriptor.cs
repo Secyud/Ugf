@@ -2,9 +2,9 @@ using System;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace Secyud.Ugf.UserInterface
+namespace Secyud.Ugf.Prefab
 {
-    internal class UiDescriptor
+    internal class PrefabDescriptor
     {
         public string Name { get; }
         
@@ -12,19 +12,22 @@ namespace Secyud.Ugf.UserInterface
         
         public GameObject Instance { get; private set; }
 
-        private readonly Func<UiDescriptor,GameObject> _instanceFactory; 
+        private readonly Func<PrefabDescriptor,GameObject,GameObject> _instanceFactory;
 
-        public UiDescriptor(string path,Func<UiDescriptor,GameObject> instanceFactory)
+        public readonly bool IsUi;
+
+        public PrefabDescriptor(string path,Func<PrefabDescriptor,GameObject,GameObject> instanceFactory,bool isUi)
         {
             Path = path;
             Name = path[(path.LastIndexOf('/')+1)..];
             Instance = null;
             _instanceFactory = instanceFactory;
+            IsUi = isUi;
         }
 
-        public void CreateSingleton()
+        public void CreateSingleton(GameObject parent)
         {
-            Instance ??= _instanceFactory(this);
+            Instance ??= _instanceFactory(this,parent);
         }
 
         public void Destroy()

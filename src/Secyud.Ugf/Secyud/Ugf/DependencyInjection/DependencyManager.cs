@@ -14,14 +14,21 @@ namespace Secyud.Ugf.DependencyInjection
 
         private readonly ConcurrentDictionary<Type, object> _singletonInstances;
 
+        private void AddSelf<TExposed>()
+        {
+            CreateDependencyDescriptor(GetType(), typeof(TExposed), DependencyLifeTime.Singleton);
+        }
         internal DependencyManager(IDependencyCollection dependencyCollection = null)
         {
             _dependencyCollection = dependencyCollection ?? new DependencyCollection();
-            _singletonInstances = new ConcurrentDictionary<Type, object>();
-            AddSingleton<IDependencyManager>(this);
-            AddSingleton<IDependencyProvider>(this);
-            AddSingleton<IDependencyRegistrar>(this);
-            AddSingleton<IDependencyScopeFactory>(this);
+            _singletonInstances = new ConcurrentDictionary<Type, object>
+            {
+                [GetType()] = this
+            };
+            AddSelf<IDependencyManager>();
+            AddSelf<IDependencyProvider>();
+            AddSelf<IDependencyRegistrar>();
+            AddSelf<IDependencyScopeFactory>();
         }
 
         public override object GetDependency(Type type)

@@ -1,4 +1,5 @@
 using Secyud.Ugf.Modularity;
+using Secyud.Ugf.Prefab;
 using Secyud.Ugf.UserInterface;
 
 namespace Secyud.Ugf
@@ -7,8 +8,8 @@ namespace Secyud.Ugf
     {
         public override void PreConfigure(ConfigurationContext context)
         {
-            context.Manager.AddType<UiManager>();
-            context.Manager.AddType<UiControllerManager>();
+            context.Manager.AddType<PrefabManager>();
+            context.Manager.AddType<PrefabControllerManager>();
         }
     }
 }
