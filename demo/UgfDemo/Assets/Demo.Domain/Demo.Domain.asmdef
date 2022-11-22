@@ -1,0 +1,16 @@
+{
+    "name": "Demo.Domain",
+    "rootNamespace": "Demo",
+    "references": [
+        "GUID:ec132c055c9e8b540adc059a5e638e38"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
