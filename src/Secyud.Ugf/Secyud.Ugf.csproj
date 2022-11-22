@@ -10,6 +10,6 @@
         <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
     </PropertyGroup>
     <ItemGroup>
-      <PackageReference Include="Unity3D.UnityEngine" Version="2020.3.21" />
+      <PackageReference Include="Unity3D.SDK" Version="2021.1.14.1" />
     </ItemGroup>
 </Project>
