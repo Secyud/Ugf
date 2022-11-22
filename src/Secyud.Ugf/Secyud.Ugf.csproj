@@ -10,6 +10,6 @@
         <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
     </PropertyGroup>
     <ItemGroup>
-      <PackageReference Include="System.Runtime.Loader" Version="4.3.0" />
+      <PackageReference Include="Unity3D.UnityEngine" Version="2020.3.21" />
     </ItemGroup>
 </Project>
