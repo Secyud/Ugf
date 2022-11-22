@@ -1,5 +1,6 @@
-namespace Secyud.Ugf.DependencyInjection;
-
-public interface IScoped
+namespace Secyud.Ugf.DependencyInjection
 {
+    public interface IScoped
+    {
+    }
 }

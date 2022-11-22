@@ -2,25 +2,26 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Secyud.Ugf.DependencyInjection;
-
-public static class ExposedServiceExplorer
+namespace Secyud.Ugf.DependencyInjection
 {
-    private static readonly ExposeTypeAttribute DefaultExposeTypeAttribute =
-        new()
-        {
-            IncludeDefaults = true,
-            IncludeSelf = true
-        };
-
-    public static List<Type> GetExposedServices(Type type)
+    public static class ExposedServiceExplorer
     {
-        return type
-            .GetCustomAttributes(true)
-            .OfType<IExposedTypesProvider>()
-            .DefaultIfEmpty(DefaultExposeTypeAttribute)
-            .SelectMany(p => p.GetExposedServiceTypes(type))
-            .Distinct()
-            .ToList();
+        private static readonly ExposeTypeAttribute DefaultExposeTypeAttribute =
+            new()
+            {
+                IncludeDefaults = true,
+                IncludeSelf = true
+            };
+
+        public static List<Type> GetExposedServices(Type type)
+        {
+            return type
+                .GetCustomAttributes(true)
+                .OfType<IExposedTypesProvider>()
+                .DefaultIfEmpty(DefaultExposeTypeAttribute)
+                .SelectMany(p => p.GetExposedServiceTypes(type))
+                .Distinct()
+                .ToList();
+        }
     }
 }

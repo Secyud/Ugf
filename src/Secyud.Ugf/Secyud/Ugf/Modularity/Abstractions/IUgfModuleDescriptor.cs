@@ -2,17 +2,18 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 
-namespace Secyud.Ugf.Modularity;
-
-public interface IUgfModuleDescriptor
+namespace Secyud.Ugf.Modularity
 {
-    Type Type { get; }
+    public interface IUgfModuleDescriptor
+    {
+        Type Type { get; }
 
-    Assembly Assembly { get; }
+        Assembly Assembly { get; }
 
-    IUgfModule Instance { get; }
+        IUgfModule Instance { get; }
 
-    bool IsLoadedAsPlugIn { get; }
+        bool IsLoadedAsPlugIn { get; }
 
-    IReadOnlyList<IUgfModuleDescriptor> Dependencies { get; }
+        IReadOnlyList<IUgfModuleDescriptor> Dependencies { get; }
+    }
 }

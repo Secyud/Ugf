@@ -1,10 +1,11 @@
 using System.Threading.Tasks;
 
-namespace Secyud.Ugf.Modularity;
-
-public interface IUgfModule
+namespace Secyud.Ugf.Modularity
 {
-    Task ConfigureAsync(ConfigurationContext context);
+    public interface IUgfModule
+    {
+        Task ConfigureAsync(ConfigurationContext context);
 
-    void Configure(ConfigurationContext context);
+        void Configure(ConfigurationContext context);
+    }
 }

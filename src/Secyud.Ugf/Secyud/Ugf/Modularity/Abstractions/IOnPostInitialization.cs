@@ -1,8 +1,9 @@
 using System.Threading.Tasks;
 
-namespace Secyud.Ugf.Modularity;
-
-public interface IOnPostInitialization
+namespace Secyud.Ugf.Modularity
 {
-    Task OnPostInitializationAsync(InitializationContext context);
+    public interface IOnPostInitialization
+    {
+        Task OnPostInitializationAsync(InitializationContext context);
+    }
 }

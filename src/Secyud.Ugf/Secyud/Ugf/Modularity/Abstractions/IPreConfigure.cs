@@ -1,8 +1,9 @@
 using System.Threading.Tasks;
 
-namespace Secyud.Ugf.Modularity;
-
-public interface IPreConfigure
+namespace Secyud.Ugf.Modularity
 {
-    Task PreConfigureAsync(ConfigurationContext context);
+    public interface IPreConfigure
+    {
+        Task PreConfigureAsync(ConfigurationContext context);
+    }
 }

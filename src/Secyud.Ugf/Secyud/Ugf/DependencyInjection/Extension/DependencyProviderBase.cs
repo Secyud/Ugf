@@ -1,28 +1,29 @@
 using System;
 
-namespace Secyud.Ugf.DependencyInjection;
-
-public abstract class DependencyProviderBase : IDependencyProvider
+namespace Secyud.Ugf.DependencyInjection
 {
-    public bool TryGetDependency<T>(out T dependency)
+    public abstract class DependencyProviderBase : IDependencyProvider
     {
-        if (TryGetDependency(typeof(T), out var dependencyObj))
+        public bool TryGetDependency<T>(out T dependency)
         {
-            dependency = (T)dependencyObj;
-            return true;
+            if (TryGetDependency(typeof(T), out var dependencyObj))
+            {
+                dependency = (T)dependencyObj;
+                return true;
+            }
+
+            dependency = default;
+            return false;
         }
 
-        dependency = default;
-        return false;
+        public abstract bool TryGetDependency(Type type, out object dependency);
+
+        public virtual T GetDependency<T>()
+        {
+            return (T)GetDependency(typeof(T));
+        }
+
+        public abstract object GetDependency(Type type);
+        internal abstract DependencyDescriptor GetDescriptor(Type type);
     }
-
-    public abstract bool TryGetDependency(Type type, out object dependency);
-
-    public virtual T GetDependency<T>()
-    {
-        return (T)GetDependency(typeof(T));
-    }
-
-    public abstract object GetDependency(Type type);
-    internal abstract DependencyDescriptor GetDescriptor(Type type);
 }

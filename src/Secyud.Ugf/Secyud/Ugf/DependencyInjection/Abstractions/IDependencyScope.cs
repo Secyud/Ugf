@@ -1,8 +1,9 @@
 using System;
 
-namespace Secyud.Ugf.DependencyInjection;
-
-public interface IDependencyScope : IDisposable
+namespace Secyud.Ugf.DependencyInjection
 {
-    public IDependencyProvider DependencyProvider { get; }
+    public interface IDependencyScope : IDisposable
+    {
+        public IDependencyProvider DependencyProvider { get; }
+    }
 }

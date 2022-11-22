@@ -1,6 +1,7 @@
-namespace Secyud.Ugf.DependencyInjection;
-
-public interface IDependencyScopeFactory
+namespace Secyud.Ugf.DependencyInjection
 {
-    IDependencyScope CreateScope();
+    public interface IDependencyScopeFactory
+    {
+        IDependencyScope CreateScope();
+    }
 }
