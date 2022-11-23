@@ -34,8 +34,6 @@ namespace Secyud.Ugf.Prefab
         {
             var descriptor = new PrefabDescriptor(path, CreateGameObject, isUi);
             _uis[descriptor.Name] = descriptor;
-            
-            // Debug.Log($"{descriptor.Name} is registered. the path is '{path}'");
         }
 
         internal PrefabDescriptor GetDescriptor(string name)

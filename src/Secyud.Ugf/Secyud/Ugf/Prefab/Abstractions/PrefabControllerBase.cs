@@ -20,9 +20,11 @@ namespace Secyud.Ugf.Prefab
 
         internal Func<PrefabControllerBase, PrefabControllerBase> ParentFactory { get; set; }
 
-        public PrefabControllerBase Parent => ParentFactory(this);
+        public PrefabControllerBase LogicParent => ParentFactory(this);
+        
+        public GameObject Parent => PrefabDescriptor.Instance.GetComponentInParent<Transform>().parent.gameObject;
 
-        protected GameObject PanelObject => PrefabDescriptor.Instance;
+        public GameObject GameObject => PrefabDescriptor.Instance;
 
         protected TComponent GetComponent<TComponent>()
             where TComponent : Component

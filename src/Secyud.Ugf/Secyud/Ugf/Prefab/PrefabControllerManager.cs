@@ -51,26 +51,32 @@ namespace Secyud.Ugf.Prefab
             prefabController.OnShutDown();
             prefabController.PrefabDescriptor.Destroy();
             prefabController.PrefabDescriptor = null;
+            
             return prefabController;
         }
 
         private void Add(PrefabControllerBase uiController)
         {
-            _panels.Add(uiController.GetType(), uiController);
-
-            uiController.ParentFactory ??= GetParentController;
+            if (!_panels.ContainsKey(uiController.GetType()))
+            {
+                _panels.Add(uiController.GetType(), uiController);
+                uiController.ParentFactory = GetParentController;
+            }
 
             var descriptor = _prefabManager.GetDescriptor(uiController.Name);
 
-            descriptor.CreateSingleton(uiController.Parent?.PrefabDescriptor?.Instance);
+            descriptor.CreateSingleton(uiController.LogicParent?.PrefabDescriptor?.Instance);
 
             uiController.PrefabDescriptor = descriptor;
+            
             uiController.OnInitialize();
         }
 
         private PrefabControllerBase GetParentController(PrefabControllerBase child)
         {
-            return child.ParentType is null ? null : _panels[child.ParentType];
+            if (child.ParentType is null)
+                return null;
+            return _panels.TryGetValue(child.ParentType, out var parent) ? parent : null;
         }
     }
 }
