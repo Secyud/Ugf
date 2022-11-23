@@ -2,19 +2,20 @@ using System;
 using System.Threading.Tasks;
 using Secyud.Ugf.DependencyInjection;
 
-namespace Secyud.Ugf.Modularity;
-
-public interface IUgfApplication : IModuleContainer, IDisposable
+namespace Secyud.Ugf.Modularity
 {
-    Type StartupModuleType { get; }
+    public interface IUgfApplication : IModuleContainer, IDisposable
+    {
+        Type StartupModuleType { get; }
 
-    IDependencyProvider DependencyProvider { get; }
+        IDependencyProvider DependencyProvider { get; }
 
-    IDependencyScope CreateDependencyScope();
+        IDependencyScope CreateDependencyScope();
 
-    Task ConfigureAsync();
+        Task ConfigureAsync();
 
-    Task InitializeAsync();
+        Task InitializeAsync();
 
-    Task ShutdownAsync();
+        Task ShutdownAsync();
+    }
 }

@@ -1,13 +1,14 @@
 using Secyud.Ugf.Modularity;
 using Secyud.Ugf.Prefab;
 
-namespace Secyud.Ugf;
-
-public class UgfCoreModule : UgfModule
+namespace Secyud.Ugf
 {
-    public override void PreConfigure(ConfigurationContext context)
+    public class UgfCoreModule : UgfModule
     {
-        context.Manager.AddType<PrefabManager>();
-        context.Manager.AddType<PrefabControllerManager>();
+        public override void PreConfigure(ConfigurationContext context)
+        {
+            context.Manager.AddType<PrefabManager>();
+            context.Manager.AddType<PrefabControllerManager>();
+        }
     }
 }

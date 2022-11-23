@@ -1,21 +1,22 @@
 using System.Linq;
 
-namespace UnityEngine;
-
-public static class GameObjectExtension
+namespace UnityEngine
 {
-    public static T GetOrAddComponent<T>(this GameObject gameObject)
-        where T : Component
+    public static class GameObjectExtension
     {
-        return gameObject.GetComponent<T>() ?? gameObject.AddComponent<T>();
-    }
+        public static T GetOrAddComponent<T>(this GameObject gameObject)
+            where T : Component
+        {
+            return gameObject.GetComponent<T>() ?? gameObject.AddComponent<T>();
+        }
 
 
-    public static GameObject GetSubObject(this GameObject gameObject, string name)
-    {
-        return gameObject
-            .GetComponentsInChildren<Transform>()
-            .FirstOrDefault(u => u.name == name)?
-            .gameObject;
+        public static GameObject GetSubObject(this GameObject gameObject, string name)
+        {
+            return gameObject
+                .GetComponentsInChildren<Transform>()
+                .FirstOrDefault(u => u.name == name)?
+                .gameObject;
+        }
     }
 }

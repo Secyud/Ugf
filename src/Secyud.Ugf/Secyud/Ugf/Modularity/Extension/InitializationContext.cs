@@ -1,14 +1,15 @@
 using Secyud.Ugf.DependencyInjection;
 
-namespace Secyud.Ugf.Modularity;
-
-public class InitializationContext : IDependencyProviderAccessor
+namespace Secyud.Ugf.Modularity
 {
-    public InitializationContext(IDependencyProvider dependencyProvider)
+    public class InitializationContext : IDependencyProviderAccessor
     {
-        Thrower.IfNull(dependencyProvider);
-        DependencyProvider = dependencyProvider;
-    }
+        public InitializationContext(IDependencyProvider dependencyProvider)
+        {
+            Thrower.IfNull(dependencyProvider);
+            DependencyProvider = dependencyProvider;
+        }
 
-    public IDependencyProvider DependencyProvider { get; }
+        public IDependencyProvider DependencyProvider { get; }
+    }
 }

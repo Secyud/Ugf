@@ -1,24 +1,25 @@
 using System.Threading.Tasks;
 
-namespace Secyud.Ugf.Modularity;
-
-public abstract class ModuleLifecycleContributorBase : IModuleLifecycleContributor
+namespace Secyud.Ugf.Modularity
 {
-    public Task InitializeAsync(InitializationContext context, IUgfModule module)
+    public abstract class ModuleLifecycleContributorBase : IModuleLifecycleContributor
     {
-        return Task.CompletedTask;
-    }
+        public Task InitializeAsync(InitializationContext context, IUgfModule module)
+        {
+            return Task.CompletedTask;
+        }
 
-    public void Initialize(InitializationContext context, IUgfModule module)
-    {
-    }
+        public void Initialize(InitializationContext context, IUgfModule module)
+        {
+        }
 
-    public Task ShutdownAsync(ShutdownContext context, IUgfModule module)
-    {
-        return Task.CompletedTask;
-    }
+        public Task ShutdownAsync(ShutdownContext context, IUgfModule module)
+        {
+            return Task.CompletedTask;
+        }
 
-    public void Shutdown(ShutdownContext context, IUgfModule module)
-    {
+        public void Shutdown(ShutdownContext context, IUgfModule module)
+        {
+        }
     }
 }

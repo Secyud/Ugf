@@ -1,15 +1,16 @@
-namespace Secyud.Ugf.DependencyInjection;
-
-public class ObjectAccessor<T> : IObjectAccessor<T>
+namespace Secyud.Ugf.DependencyInjection
 {
-    public ObjectAccessor()
+    public class ObjectAccessor<T> : IObjectAccessor<T>
     {
-    }
+        public ObjectAccessor()
+        {
+        }
 
-    public ObjectAccessor(T obj)
-    {
-        Value = obj;
-    }
+        public ObjectAccessor(T obj)
+        {
+            Value = obj;
+        }
 
-    public T Value { get; set; }
+        public T Value { get; set; }
+    }
 }

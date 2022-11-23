@@ -1,14 +1,15 @@
 using System;
 
-namespace Secyud.Ugf.Modularity;
-
-[AttributeUsage(AttributeTargets.Class)]
-public class DependsOnAttribute : Attribute, IDependedTypesProvider
+namespace Secyud.Ugf.Modularity
 {
-    public DependsOnAttribute(params Type[] dependedTypes)
+    [AttributeUsage(AttributeTargets.Class)]
+    public class DependsOnAttribute : Attribute, IDependedTypesProvider
     {
-        DependedTypes = dependedTypes ?? Type.EmptyTypes;
-    }
+        public DependsOnAttribute(params Type[] dependedTypes)
+        {
+            DependedTypes = dependedTypes ?? Type.EmptyTypes;
+        }
 
-    public Type[] DependedTypes { get; }
+        public Type[] DependedTypes { get; }
+    }
 }

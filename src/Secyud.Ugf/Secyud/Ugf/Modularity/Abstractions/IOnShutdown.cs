@@ -1,8 +1,9 @@
 using System.Threading.Tasks;
 
-namespace Secyud.Ugf.Modularity;
-
-public interface IOnShutdown
+namespace Secyud.Ugf.Modularity
 {
-    Task OnShutdownAsync(ShutdownContext context);
+    public interface IOnShutdown
+    {
+        Task OnShutdownAsync(ShutdownContext context);
+    }
 }

@@ -1,19 +1,20 @@
 using System;
 using System.Collections.Generic;
 
-namespace Secyud.Ugf.Modularity.Plugins;
-
-public class TypePlugInSource : IPlugInSource
+namespace Secyud.Ugf.Modularity.Plugins
 {
-    private readonly Type[] _moduleTypes;
-
-    public TypePlugInSource(params Type[] moduleTypes)
+    public class TypePlugInSource : IPlugInSource
     {
-        _moduleTypes = moduleTypes ?? Type.EmptyTypes;
-    }
+        private readonly Type[] _moduleTypes;
 
-    public IEnumerable<Type> GetModules()
-    {
-        return _moduleTypes;
+        public TypePlugInSource(params Type[] moduleTypes)
+        {
+            _moduleTypes = moduleTypes ?? Type.EmptyTypes;
+        }
+
+        public IEnumerable<Type> GetModules()
+        {
+            return _moduleTypes;
+        }
     }
 }

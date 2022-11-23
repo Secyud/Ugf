@@ -13,11 +13,7 @@ namespace Demo
         {
             var prefabManager = context.Manager.GetDependency<IPrefabManager>();
             
-            // TODO: Add folder instead of array in future.
-            prefabManager.RegisterPrefabs(new[]
-            {
-                "Demo.Ui/DemoPanel"
-            },true);
+            prefabManager.RegisterPrefabsInFolder("Demo.Ui",true);
         }
     }
 }

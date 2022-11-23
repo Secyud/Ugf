@@ -1,15 +1,16 @@
 using Secyud.Ugf.DependencyInjection;
 
-namespace Secyud.Ugf.Modularity;
-
-public class ShutdownContext : IDependencyProviderAccessor
+namespace Secyud.Ugf.Modularity
 {
-    public ShutdownContext(IDependencyProvider dependencyProvider)
+    public class ShutdownContext : IDependencyProviderAccessor
     {
-        Thrower.IfNull(dependencyProvider);
+        public ShutdownContext(IDependencyProvider dependencyProvider)
+        {
+            Thrower.IfNull(dependencyProvider);
 
-        DependencyProvider = dependencyProvider;
+            DependencyProvider = dependencyProvider;
+        }
+
+        public IDependencyProvider DependencyProvider { get; }
     }
-
-    public IDependencyProvider DependencyProvider { get; }
 }

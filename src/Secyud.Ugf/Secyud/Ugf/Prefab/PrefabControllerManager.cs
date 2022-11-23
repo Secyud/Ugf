@@ -2,74 +2,75 @@ using System;
 using System.Collections.Generic;
 using Secyud.Ugf.DependencyInjection;
 
-namespace Secyud.Ugf.Prefab;
-
-public class PrefabControllerManager : IPrefabControllerManager, ISingleton
+namespace Secyud.Ugf.Prefab
 {
-    private readonly IDependencyProvider _dependencyProvider;
-    private readonly Dictionary<Type, PrefabControllerBase> _panels = new();
-    private readonly PrefabManager _prefabManager;
-
-    public PrefabControllerManager(PrefabManager prefabManager, IDependencyProvider dependencyProvider)
+    public class PrefabControllerManager : IPrefabControllerManager, ISingleton
     {
-        _prefabManager = prefabManager;
-        _dependencyProvider = dependencyProvider;
-    }
+        private readonly IDependencyProvider _dependencyProvider;
+        private readonly Dictionary<Type, PrefabControllerBase> _panels = new();
+        private readonly PrefabManager _prefabManager;
 
-    public TController Add<TController>()
-        where TController : PrefabControllerBase
-    {
-        var uiController = _dependencyProvider.GetDependency<TController>();
+        public PrefabControllerManager(PrefabManager prefabManager, IDependencyProvider dependencyProvider)
+        {
+            _prefabManager = prefabManager;
+            _dependencyProvider = dependencyProvider;
+        }
 
-        Add(uiController);
+        public TController Add<TController>()
+            where TController : PrefabControllerBase
+        {
+            var uiController = _dependencyProvider.GetDependency<TController>();
 
-        return uiController;
-    }
+            Add(uiController);
 
-    public PrefabControllerBase Add(Type controllerType)
-    {
-        var uiController = _dependencyProvider.GetDependency(controllerType)
-            as PrefabControllerBase;
+            return uiController;
+        }
 
-        Add(uiController);
+        public PrefabControllerBase Add(Type controllerType)
+        {
+            var uiController = _dependencyProvider.GetDependency(controllerType)
+                as PrefabControllerBase;
 
-        return uiController;
-    }
+            Add(uiController);
 
-    public TController Remove<TController>()
-        where TController : PrefabControllerBase
-    {
-        return Remove(typeof(TController)) as TController;
-    }
+            return uiController;
+        }
 
-    public PrefabControllerBase Remove(Type controllerType)
-    {
-        if (!_panels.ContainsKey(controllerType))
-            return null;
+        public TController Remove<TController>()
+            where TController : PrefabControllerBase
+        {
+            return Remove(typeof(TController)) as TController;
+        }
 
-        var prefabController = _panels[controllerType];
-        prefabController.OnShutDown();
-        prefabController.PrefabDescriptor.Destroy();
-        prefabController.PrefabDescriptor = null;
-        return prefabController;
-    }
+        public PrefabControllerBase Remove(Type controllerType)
+        {
+            if (!_panels.ContainsKey(controllerType))
+                return null;
 
-    private void Add(PrefabControllerBase uiController)
-    {
-        _panels.Add(uiController.GetType(), uiController);
+            var prefabController = _panels[controllerType];
+            prefabController.OnShutDown();
+            prefabController.PrefabDescriptor.Destroy();
+            prefabController.PrefabDescriptor = null;
+            return prefabController;
+        }
 
-        uiController.ParentFactory ??= GetParentController;
+        private void Add(PrefabControllerBase uiController)
+        {
+            _panels.Add(uiController.GetType(), uiController);
 
-        var descriptor = _prefabManager.GetDescriptor(uiController.Name);
+            uiController.ParentFactory ??= GetParentController;
 
-        descriptor.CreateSingleton(uiController.Parent?.PrefabDescriptor?.Instance);
+            var descriptor = _prefabManager.GetDescriptor(uiController.Name);
 
-        uiController.PrefabDescriptor = descriptor;
-        uiController.OnInitialize();
-    }
+            descriptor.CreateSingleton(uiController.Parent?.PrefabDescriptor?.Instance);
 
-    private PrefabControllerBase GetParentController(PrefabControllerBase child)
-    {
-        return child.ParentType is null ? null : _panels[child.ParentType];
+            uiController.PrefabDescriptor = descriptor;
+            uiController.OnInitialize();
+        }
+
+        private PrefabControllerBase GetParentController(PrefabControllerBase child)
+        {
+            return child.ParentType is null ? null : _panels[child.ParentType];
+        }
     }
 }

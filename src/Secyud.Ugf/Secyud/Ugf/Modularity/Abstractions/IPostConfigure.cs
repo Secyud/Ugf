@@ -1,8 +1,9 @@
 using System.Threading.Tasks;
 
-namespace Secyud.Ugf.Modularity;
-
-public interface IPostConfigure
+namespace Secyud.Ugf.Modularity
 {
-    Task PostConfigureAsync(ConfigurationContext context);
+    public interface IPostConfigure
+    {
+        Task PostConfigureAsync(ConfigurationContext context);
+    }
 }

@@ -1,11 +1,12 @@
 using System;
 using System.Collections.Generic;
 
-namespace Secyud.Ugf.DependencyInjection;
-
-public interface IExposedTypesContext
+namespace Secyud.Ugf.DependencyInjection
 {
-    Type ImplementationType { get; }
+    public interface IExposedTypesContext
+    {
+        Type ImplementationType { get; }
 
-    List<Type> ExposedTypes { get; }
+        List<Type> ExposedTypes { get; }
+    }
 }

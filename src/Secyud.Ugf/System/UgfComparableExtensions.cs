@@ -1,9 +1,10 @@
-namespace System;
-
-public static class UgfComparableExtensions
+namespace System
 {
-    public static bool IsInRange<T>(this T value, T lowerBound, T upperBound) where T : IComparable<T>
+    public static class UgfComparableExtensions
     {
-        return value.CompareTo(lowerBound) >= 0 && value.CompareTo(upperBound) < 0;
+        public static bool IsInRange<T>(this T value, T lowerBound, T upperBound) where T : IComparable<T>
+        {
+            return value.CompareTo(lowerBound) >= 0 && value.CompareTo(upperBound) < 0;
+        }
     }
 }

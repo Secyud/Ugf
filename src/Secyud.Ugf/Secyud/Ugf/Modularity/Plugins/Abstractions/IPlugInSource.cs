@@ -1,9 +1,10 @@
 using System;
 using System.Collections.Generic;
 
-namespace Secyud.Ugf.Modularity.Plugins;
-
-public interface IPlugInSource
+namespace Secyud.Ugf.Modularity.Plugins
 {
-    IEnumerable<Type> GetModules();
+    public interface IPlugInSource
+    {
+        IEnumerable<Type> GetModules();
+    }
 }

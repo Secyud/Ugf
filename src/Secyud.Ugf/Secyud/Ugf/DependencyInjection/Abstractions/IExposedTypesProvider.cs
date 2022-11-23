@@ -1,9 +1,10 @@
 using System;
 using System.Collections.Generic;
 
-namespace Secyud.Ugf.DependencyInjection;
-
-public interface IExposedTypesProvider
+namespace Secyud.Ugf.DependencyInjection
 {
-    IEnumerable<Type> GetExposedServiceTypes(Type targetType);
+    public interface IExposedTypesProvider
+    {
+        IEnumerable<Type> GetExposedServiceTypes(Type targetType);
+    }
 }

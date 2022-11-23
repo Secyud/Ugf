@@ -1,18 +1,19 @@
 using System;
 using System.Linq;
 
-namespace Secyud.Ugf.Modularity.Plugins;
-
-public static class PlugInSourceExtensions
+namespace Secyud.Ugf.Modularity.Plugins
 {
-    public static Type[] GetModulesWithAllDependencies(this IPlugInSource plugInSource)
+    public static class PlugInSourceExtensions
     {
-        Thrower.IfNull(plugInSource);
+        public static Type[] GetModulesWithAllDependencies(this IPlugInSource plugInSource)
+        {
+            Thrower.IfNull(plugInSource);
 
-        return plugInSource
-            .GetModules()
-            .SelectMany(UgfModuleHelper.FindAllModuleTypes)
-            .Distinct()
-            .ToArray();
+            return plugInSource
+                .GetModules()
+                .SelectMany(UgfModuleHelper.FindAllModuleTypes)
+                .Distinct()
+                .ToArray();
+        }
     }
 }

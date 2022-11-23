@@ -1,5 +1,6 @@
-namespace Secyud.Ugf.DependencyInjection;
-
-public interface ITransient
+namespace Secyud.Ugf.DependencyInjection
 {
+    public interface ITransient
+    {
+    }
 }
