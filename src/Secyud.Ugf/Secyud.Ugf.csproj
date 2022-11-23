@@ -2,7 +2,7 @@
     <PropertyGroup>
         <LangVersion>latest</LangVersion>
         <TargetFramework>netstandard2.1</TargetFramework>
-        <RootNamespace/>
+        <RootNamespace />
         <AssemblyName>Secyud.Ugf</AssemblyName>
         <PackageId>Secyud.Ugf</PackageId>
         <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
@@ -10,7 +10,7 @@
         <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
     </PropertyGroup>
     <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
-        <OutputPath>..\..\demo\UgfDemo\Assets\Secyud.Ugf</OutputPath>
+        <OutputPath>..\..\demo\UgfDemo\Assets\</OutputPath>
     </PropertyGroup>
     <ItemGroup>
         <Reference Include="UnityEngine">
