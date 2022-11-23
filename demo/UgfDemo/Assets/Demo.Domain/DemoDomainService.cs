@@ -9,7 +9,7 @@ namespace Demo
         
         public void PrintMessage(string message)
         {
-            Debug.Log($"ptint {message} {++count} times.");
+            Debug.Log($"print {message} {++count} times.");
         }
     }
 }

@@ -1,13 +1,12 @@
 using System;
 
-namespace Secyud.Ugf
+namespace Secyud.Ugf;
+
+public static class Thrower
 {
-    public static class Thrower
+    public static void IfNull<T>(T value)
     {
-        public static void IfNull<T>(T value)
-        {
-            if (value == null)
-                throw new ArgumentNullException(typeof(T).FullName);
-        }
+        if (value == null)
+            throw new ArgumentNullException(typeof(T).FullName);
     }
 }

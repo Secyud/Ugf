@@ -1,7 +1,6 @@
-namespace Secyud.Ugf.DependencyInjection
+namespace Secyud.Ugf.DependencyInjection;
+
+public interface IDependencyProviderAccessor
 {
-    public interface IDependencyProviderAccessor
-    {
-        IDependencyProvider DependencyProvider { get; }
-    }
+    IDependencyProvider DependencyProvider { get; }
 }

@@ -4,135 +4,134 @@ using System.Linq;
 using System.Threading.Tasks;
 using Secyud.Ugf.DependencyInjection;
 
-namespace Secyud.Ugf.Modularity
+namespace Secyud.Ugf.Modularity;
+
+public class UgfApplication : IUgfApplication
 {
-    public class UgfApplication : IUgfApplication
+    private readonly IDependencyManager _dependencyManager;
+
+    private bool _configuredServices;
+
+    internal UgfApplication(
+        IDependencyManager dependencyManager,
+        Type startupModuleType,
+        PlugInSourceList plugInSources = null)
     {
-        private readonly IDependencyManager _dependencyManager;
+        Thrower.IfNull(dependencyManager);
+        Thrower.IfNull(startupModuleType);
 
-        private bool _configuredServices;
+        StartupModuleType = startupModuleType;
 
-        internal UgfApplication(
-            IDependencyManager dependencyManager,
-            Type startupModuleType,
-            PlugInSourceList plugInSources = null)
+        _dependencyManager = dependencyManager;
+        _dependencyManager.AddSingleton<IUgfApplication>(this);
+        _dependencyManager.AddSingleton<IModuleContainer>(this);
+        _dependencyManager.AddSingleton<IModuleLoader>(new ModuleLoader());
+
+        Modules = LoadModules(_dependencyManager, plugInSources);
+    }
+
+    public Type StartupModuleType { get; }
+    public IDependencyProvider DependencyProvider => _dependencyManager;
+
+    public IReadOnlyList<IUgfModuleDescriptor> Modules { get; }
+
+    public IDependencyScope CreateDependencyScope()
+    {
+        return _dependencyManager.CreateScope();
+    }
+
+    public async Task ConfigureAsync()
+    {
+        CheckMultipleConfigureServices();
+
+        var context = new ConfigurationContext(_dependencyManager);
+
+        try
         {
-            Thrower.IfNull(dependencyManager);
-            Thrower.IfNull(startupModuleType);
+            foreach (var module in Modules.Where(m => m.Instance is IPreConfigure))
+                await ((IPreConfigure)module.Instance).PreConfigureAsync(context);
 
-            StartupModuleType = startupModuleType;
+            foreach (var module in Modules)
+                await module.Instance.ConfigureAsync(context);
 
-            _dependencyManager = dependencyManager;
-            _dependencyManager.AddSingleton<IUgfApplication>(this);
-            _dependencyManager.AddSingleton<IModuleContainer>(this);
-            _dependencyManager.AddSingleton<IModuleLoader>(new ModuleLoader());
-
-            Modules = LoadModules(_dependencyManager, plugInSources);
+            foreach (var module in Modules.Where(m => m.Instance is IPostConfigure))
+                await ((IPostConfigure)module.Instance).PostConfigureAsync(context);
+        }
+        catch (Exception ex)
+        {
+            throw new UgfInitializationException(
+                $"An error occurred during {nameof(ConfigureAsync)}. See the inner exception for details.", ex);
         }
 
-        public Type StartupModuleType { get; }
-        public IDependencyProvider DependencyProvider => _dependencyManager;
+        _configuredServices = true;
+    }
 
-        public IReadOnlyList<IUgfModuleDescriptor> Modules { get; }
-
-        public IDependencyScope CreateDependencyScope()
+    public async Task InitializeAsync()
+    {
+        try
         {
-            return _dependencyManager.CreateScope();
-        }
+            using var scope = CreateDependencyScope();
 
-        public async Task ConfigureAsync()
+            var context = new InitializationContext(scope.DependencyProvider);
+
+            foreach (var module in Modules.Where(m => m.Instance is IOnPreInitialization))
+                await ((IOnPreInitialization)module.Instance).OnPreInitializationAsync(context);
+
+
+            foreach (var module in Modules.Where(m => m.Instance is IOnInitialization))
+                await ((IOnInitialization)module.Instance).OnInitializationAsync(context);
+
+
+            foreach (var module in Modules.Where(m => m.Instance is IOnPostInitialization))
+                await ((IOnPostInitialization)module.Instance).OnPostInitializationAsync(context);
+        }
+        catch (Exception ex)
         {
-            CheckMultipleConfigureServices();
-
-            var context = new ConfigurationContext(_dependencyManager);
-
-            try
-            {
-                foreach (var module in Modules.Where(m => m.Instance is IPreConfigure))
-                    await ((IPreConfigure)module.Instance).PreConfigureAsync(context);
-
-                foreach (var module in Modules)
-                    await module.Instance.ConfigureAsync(context);
-
-                foreach (var module in Modules.Where(m => m.Instance is IPostConfigure))
-                    await ((IPostConfigure)module.Instance).PostConfigureAsync(context);
-            }
-            catch (Exception ex)
-            {
-                throw new UgfInitializationException(
-                    $"An error occurred during {nameof(ConfigureAsync)}. See the inner exception for details.", ex);
-            }
-
-            _configuredServices = true;
+            throw new UgfInitializationException(
+                $"An error occurred during {nameof(InitializeAsync)}. See the inner exception for details.", ex);
         }
+    }
 
-        public async Task InitializeAsync()
+    public async Task ShutdownAsync()
+    {
+        try
         {
-            try
-            {
-                using var scope = CreateDependencyScope();
+            using var scope = CreateDependencyScope();
 
-                var context = new InitializationContext(scope.DependencyProvider);
+            var context = new ShutdownContext(scope.DependencyProvider);
 
-                foreach (var module in Modules.Where(m => m.Instance is IOnPreInitialization))
-                    await ((IOnPreInitialization)module.Instance).OnPreInitializationAsync(context);
-
-
-                foreach (var module in Modules.Where(m => m.Instance is IOnInitialization))
-                    await ((IOnInitialization)module.Instance).OnInitializationAsync(context);
-
-
-                foreach (var module in Modules.Where(m => m.Instance is IOnPostInitialization))
-                    await ((IOnPostInitialization)module.Instance).OnPostInitializationAsync(context);
-            }
-            catch (Exception ex)
-            {
-                throw new UgfInitializationException(
-                    $"An error occurred during {nameof(InitializeAsync)}. See the inner exception for details.", ex);
-            }
+            for (var i = Modules.Count - 1; i >= 0; --i)
+                if (Modules[i].Instance is IOnShutdown)
+                    await ((IOnShutdown)Modules[i].Instance).OnShutdownAsync(context);
+            Dispose();
         }
-
-        public async Task ShutdownAsync()
+        catch (Exception ex)
         {
-            try
-            {
-                using var scope = CreateDependencyScope();
-
-                var context = new ShutdownContext(scope.DependencyProvider);
-
-                for (var i = Modules.Count - 1; i >= 0; --i)
-                    if (Modules[i].Instance is IOnShutdown)
-                        await ((IOnShutdown)Modules[i].Instance).OnShutdownAsync(context);
-                Dispose();
-            }
-            catch (Exception ex)
-            {
-                throw new UgfInitializationException(
-                    $"An error occurred during {nameof(InitializeAsync)}. See the inner exception for details.", ex);
-            }
+            throw new UgfInitializationException(
+                $"An error occurred during {nameof(InitializeAsync)}. See the inner exception for details.", ex);
         }
+    }
 
-        public void Dispose()
-        {
-        }
+    public void Dispose()
+    {
+    }
 
-        private IReadOnlyList<IUgfModuleDescriptor> LoadModules(
-            IDependencyManager manager,
-            PlugInSourceList plugInSources)
-        {
-            return manager
-                .GetDependency<IModuleLoader>()
-                .LoadModules(
-                    manager,
-                    StartupModuleType,
-                    plugInSources
-                );
-        }
+    private IReadOnlyList<IUgfModuleDescriptor> LoadModules(
+        IDependencyManager manager,
+        PlugInSourceList plugInSources)
+    {
+        return manager
+            .GetDependency<IModuleLoader>()
+            .LoadModules(
+                manager,
+                StartupModuleType,
+                plugInSources
+            );
+    }
 
-        private void CheckMultipleConfigureServices()
-        {
-            if (_configuredServices)
-                throw new UgfInitializationException("Services have already been configured!");
-        }
+    private void CheckMultipleConfigureServices()
+    {
+        if (_configuredServices)
+            throw new UgfInitializationException("Services have already been configured!");
     }
 }

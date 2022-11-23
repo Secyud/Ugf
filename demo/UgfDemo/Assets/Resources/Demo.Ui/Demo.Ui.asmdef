@@ -1,9 +1,7 @@
 {
     "name": "Demo.Ui",
     "rootNamespace": "Demo",
-    "references": [
-        "GUID:ec132c055c9e8b540adc059a5e638e38"
-    ],
+    "references": [],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,

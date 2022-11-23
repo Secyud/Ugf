@@ -1,9 +1,8 @@
 using System.Threading.Tasks;
 
-namespace Secyud.Ugf.Modularity
+namespace Secyud.Ugf.Modularity;
+
+public interface IOnPreInitialization
 {
-    public interface IOnPreInitialization
-    {
-        Task OnPreInitializationAsync(InitializationContext context);
-    }
+    Task OnPreInitializationAsync(InitializationContext context);
 }

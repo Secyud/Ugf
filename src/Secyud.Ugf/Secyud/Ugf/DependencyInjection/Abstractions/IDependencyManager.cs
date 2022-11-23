@@ -1,6 +1,5 @@
-namespace Secyud.Ugf.DependencyInjection
+namespace Secyud.Ugf.DependencyInjection;
+
+public interface IDependencyManager : IDependencyProvider, IDependencyRegistrar, IDependencyScopeFactory
 {
-    public interface IDependencyManager : IDependencyProvider, IDependencyRegistrar, IDependencyScopeFactory
-    {
-    }
 }

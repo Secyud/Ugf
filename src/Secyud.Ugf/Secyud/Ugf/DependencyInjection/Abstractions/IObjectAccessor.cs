@@ -1,7 +1,6 @@
-namespace Secyud.Ugf.DependencyInjection
+namespace Secyud.Ugf.DependencyInjection;
+
+public interface IObjectAccessor<out T>
 {
-    public interface IObjectAccessor<out T>
-    {
-        T Value { get; }
-    }
+    T Value { get; }
 }

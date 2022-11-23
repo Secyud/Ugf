@@ -5,9 +5,6 @@ using UnityEngine;
 
 public class GameStartUp : MonoBehaviour
 {
-    // you can also add dll instead of Secyud.Ugf folder,
-    // so that assembly doesn't need to add dependency each.
-    
     private IUgfApplication _application;
     
     private void Awake()

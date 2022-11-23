@@ -2,26 +2,25 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 
-namespace Secyud.Ugf.DependencyInjection
+namespace Secyud.Ugf.DependencyInjection;
+
+public interface IDependencyRegistrar
 {
-    public interface IDependencyRegistrar
-    {
-        void AddAssembly(Assembly assembly);
+    void AddAssembly(Assembly assembly);
 
-        void AddTypes(IEnumerable<Type> types);
+    void AddTypes(IEnumerable<Type> types);
 
-        void AddType(Type type);
+    void AddType(Type type);
 
-        void AddType<T>();
+    void AddType<T>();
 
-        void AddSingleton(Type type, object instance);
+    void AddSingleton(Type type, object instance);
 
-        void AddSingleton<T>(T instance);
+    void AddSingleton<T>(T instance);
 
-        void AddSingleton<T, TExposed>();
+    void AddSingleton<T, TExposed>();
 
-        void AddScoped<T, TExposed>();
+    void AddScoped<T, TExposed>();
 
-        void AddTransient<T, TExposed>();
-    }
+    void AddTransient<T, TExposed>();
 }

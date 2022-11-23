@@ -1,9 +1,8 @@
 using System.Collections.Generic;
 
-namespace Secyud.Ugf.Modularity
+namespace Secyud.Ugf.Modularity;
+
+public interface IModuleContainer
 {
-    public interface IModuleContainer
-    {
-        IReadOnlyList<IUgfModuleDescriptor> Modules { get; }
-    }
+    IReadOnlyList<IUgfModuleDescriptor> Modules { get; }
 }

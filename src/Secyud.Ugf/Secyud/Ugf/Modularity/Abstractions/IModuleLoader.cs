@@ -1,12 +1,11 @@
 using System;
 using Secyud.Ugf.DependencyInjection;
 
-namespace Secyud.Ugf.Modularity
+namespace Secyud.Ugf.Modularity;
+
+public interface IModuleLoader
 {
-    public interface IModuleLoader
-    {
-        IUgfModuleDescriptor[] LoadModules(IDependencyRegistrar registrar,
-            Type startupModuleType,
-            PlugInSourceList plugInSources);
-    }
+    IUgfModuleDescriptor[] LoadModules(IDependencyRegistrar registrar,
+        Type startupModuleType,
+        PlugInSourceList plugInSources);
 }

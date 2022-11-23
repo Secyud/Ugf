@@ -2,46 +2,45 @@ using System.Collections.Generic;
 using Secyud.Ugf.DependencyInjection;
 using UnityEngine;
 
-namespace Secyud.Ugf.Prefab
+namespace Secyud.Ugf.Prefab;
+
+public class PrefabManager : IPrefabManager, ISingleton
 {
-    public class PrefabManager : IPrefabManager, ISingleton
+    private readonly GameObject _canvas = GameObject.Find("Canvas");
+
+    private readonly Dictionary<string, PrefabDescriptor> _uis = new();
+
+    public void RegisterPrefabs(IEnumerable<string> prefabs, bool isUi = false)
     {
-        private readonly GameObject _canvas = GameObject.Find("Canvas");
+        foreach (var ui in prefabs)
+            RegisterPrefab(ui, isUi);
+    }
 
-        private readonly Dictionary<string, PrefabDescriptor> _uis = new();
+    public void RegisterPrefab(string path, bool isUi = false)
+    {
+        var descriptor = new PrefabDescriptor(path, CreateGameObject, isUi);
+        _uis[descriptor.Name] = descriptor;
+    }
 
-        public void RegisterPrefabs(IEnumerable<string> prefabs, bool isUi = false)
-        {
-            foreach (var ui in prefabs)
-                RegisterPrefab(ui, isUi);
-        }
+    internal PrefabDescriptor GetDescriptor(string name)
+    {
+        return _uis[name];
+    }
 
-        public void RegisterPrefab(string path, bool isUi = false)
-        {
-            var descriptor = new PrefabDescriptor(path, CreateGameObject, isUi);
-            _uis[descriptor.Name] = descriptor;
-        }
+    private GameObject CreateGameObject(PrefabDescriptor descriptor, GameObject parent)
+    {
+        if (descriptor.IsUi && parent is null)
+            parent = _canvas;
 
-        internal PrefabDescriptor GetDescriptor(string name)
-        {
-            return _uis[name];
-        }
+        var prefab = parent is null
+            ? Object.Instantiate(
+                Resources.Load<GameObject>(descriptor.Path))
+            : Object.Instantiate(
+                Resources.Load<GameObject>(descriptor.Path),
+                parent.transform);
 
-        private GameObject CreateGameObject(PrefabDescriptor descriptor, GameObject parent)
-        {
-            if (descriptor.IsUi && parent is null)
-                parent = _canvas;
+        prefab.name = descriptor.Name;
 
-            var prefab = parent is null
-                ? Object.Instantiate(
-                    Resources.Load<GameObject>(descriptor.Path))
-                : Object.Instantiate(
-                    Resources.Load<GameObject>(descriptor.Path),
-                    parent.transform);
-
-            prefab.name = descriptor.Name;
-
-            return prefab;
-        }
+        return prefab;
     }
 }

@@ -1,9 +1,8 @@
 using System;
 
-namespace Secyud.Ugf.Modularity
+namespace Secyud.Ugf.Modularity;
+
+public interface IDependedTypesProvider
 {
-    public interface IDependedTypesProvider
-    {
-        Type[] DependedTypes { get; }
-    }
+    Type[] DependedTypes { get; }
 }

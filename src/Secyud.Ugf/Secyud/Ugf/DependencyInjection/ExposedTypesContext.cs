@@ -1,21 +1,20 @@
 using System;
 using System.Collections.Generic;
 
-namespace Secyud.Ugf.DependencyInjection
+namespace Secyud.Ugf.DependencyInjection;
+
+public class ExposedTypesContext : IExposedTypesContext
 {
-    public class ExposedTypesContext : IExposedTypesContext
+    public ExposedTypesContext(Type implementationType, List<Type> exposedTypes)
     {
-        public ExposedTypesContext(Type implementationType, List<Type> exposedTypes)
-        {
-            Thrower.IfNull(implementationType);
-            Thrower.IfNull(exposedTypes);
+        Thrower.IfNull(implementationType);
+        Thrower.IfNull(exposedTypes);
 
-            ImplementationType = implementationType;
-            ExposedTypes = exposedTypes;
-        }
-
-        public Type ImplementationType { get; }
-
-        public List<Type> ExposedTypes { get; }
+        ImplementationType = implementationType;
+        ExposedTypes = exposedTypes;
     }
+
+    public Type ImplementationType { get; }
+
+    public List<Type> ExposedTypes { get; }
 }

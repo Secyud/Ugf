@@ -1,16 +1,15 @@
-namespace Secyud.Ugf.DependencyInjection
+namespace Secyud.Ugf.DependencyInjection;
+
+public class DependencyScope : IDependencyScope
 {
-    public class DependencyScope : IDependencyScope
+    public DependencyScope(IDependencyProvider dependencyProvider)
     {
-        public DependencyScope(IDependencyProvider dependencyProvider)
-        {
-            DependencyProvider = dependencyProvider;
-        }
+        DependencyProvider = dependencyProvider;
+    }
 
-        public IDependencyProvider DependencyProvider { get; }
+    public IDependencyProvider DependencyProvider { get; }
 
-        public virtual void Dispose()
-        {
-        }
+    public virtual void Dispose()
+    {
     }
 }

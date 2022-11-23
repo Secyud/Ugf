@@ -4,195 +4,194 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-namespace Secyud.Ugf.DependencyInjection
+namespace Secyud.Ugf.DependencyInjection;
+
+public class DependencyManager :
+    DependencyProviderBase,
+    IDependencyManager
 {
-    public class DependencyManager :
-        DependencyProviderBase,
-        IDependencyManager
+    private readonly IDependencyCollection _dependencyCollection;
+
+    private readonly ConcurrentDictionary<Type, object> _singletonInstances;
+
+    internal DependencyManager(IDependencyCollection dependencyCollection = null)
     {
-        private readonly IDependencyCollection _dependencyCollection;
-
-        private readonly ConcurrentDictionary<Type, object> _singletonInstances;
-
-        internal DependencyManager(IDependencyCollection dependencyCollection = null)
+        _dependencyCollection = dependencyCollection ?? new DependencyCollection();
+        _singletonInstances = new ConcurrentDictionary<Type, object>
         {
-            _dependencyCollection = dependencyCollection ?? new DependencyCollection();
-            _singletonInstances = new ConcurrentDictionary<Type, object>
-            {
-                [GetType()] = this
-            };
-            AddSelf<IDependencyManager>();
-            AddSelf<IDependencyProvider>();
-            AddSelf<IDependencyRegistrar>();
-            AddSelf<IDependencyScopeFactory>();
+            [GetType()] = this
+        };
+        AddSelf<IDependencyManager>();
+        AddSelf<IDependencyProvider>();
+        AddSelf<IDependencyRegistrar>();
+        AddSelf<IDependencyScopeFactory>();
+    }
+
+    public override object GetDependency(Type type)
+    {
+        var descriptor = GetDescriptor(type);
+
+        if (descriptor is null)
+            throw new UgfException($"Could not find dependency: {type.FullName}!");
+
+        if (descriptor.DependencyLifeTime == DependencyLifeTime.Transient)
+            return descriptor.CreateInstance(this);
+
+        if (!_singletonInstances.ContainsKey(descriptor.ImplementationType))
+            _singletonInstances[descriptor.ImplementationType] = descriptor.CreateInstance(this);
+        return _singletonInstances[descriptor.ImplementationType];
+    }
+
+    public override bool TryGetDependency(Type type, out object dependency)
+    {
+        var descriptor = GetDescriptor(type);
+
+        if (descriptor is null)
+        {
+            dependency = default;
+            return false;
         }
 
-        public override object GetDependency(Type type)
+        if (descriptor.DependencyLifeTime == DependencyLifeTime.Transient)
         {
-            var descriptor = GetDescriptor(type);
-
-            if (descriptor is null)
-                throw new UgfException($"Could not find dependency: {type.FullName}!");
-
-            if (descriptor.DependencyLifeTime == DependencyLifeTime.Transient)
-                return descriptor.CreateInstance(this);
-
+            dependency = descriptor.CreateInstance(this);
+        }
+        else
+        {
             if (!_singletonInstances.ContainsKey(descriptor.ImplementationType))
                 _singletonInstances[descriptor.ImplementationType] = descriptor.CreateInstance(this);
-            return _singletonInstances[descriptor.ImplementationType];
+            dependency = _singletonInstances[descriptor.ImplementationType];
         }
 
-        public override bool TryGetDependency(Type type, out object dependency)
-        {
-            var descriptor = GetDescriptor(type);
+        return true;
+    }
 
-            if (descriptor is null)
-            {
-                dependency = default;
-                return false;
-            }
+    public IDependencyScope CreateScope()
+    {
+        return new DependencyScope(new DependencyProvider(this));
+    }
 
-            if (descriptor.DependencyLifeTime == DependencyLifeTime.Transient)
-            {
-                dependency = descriptor.CreateInstance(this);
-            }
-            else
-            {
-                if (!_singletonInstances.ContainsKey(descriptor.ImplementationType))
-                    _singletonInstances[descriptor.ImplementationType] = descriptor.CreateInstance(this);
-                dependency = _singletonInstances[descriptor.ImplementationType];
-            }
+    public void AddAssembly(Assembly assembly)
+    {
+        AddTypes(
+            assembly.GetTypes()
+                .Where(type =>
+                    type is
+                    {
+                        IsClass: true,
+                        IsAbstract: false,
+                        IsGenericType: false
+                    })
+        );
+    }
 
-            return true;
-        }
+    public void AddTypes(IEnumerable<Type> types)
+    {
+        foreach (var type in types)
+            AddType(type);
+    }
 
-        public IDependencyScope CreateScope()
-        {
-            return new DependencyScope(new DependencyProvider(this));
-        }
+    public void AddType(Type type)
+    {
+        if (IsConventionalRegistrationDisabled(type))
+            return;
 
-        public void AddAssembly(Assembly assembly)
-        {
-            AddTypes(
-                assembly.GetTypes()
-                    .Where(type =>
-                        type is
-                        {
-                            IsClass: true,
-                            IsAbstract: false,
-                            IsGenericType: false
-                        })
-            );
-        }
+        var lifeTime = GetLifeTimeOrNull(type);
 
-        public void AddTypes(IEnumerable<Type> types)
-        {
-            foreach (var type in types)
-                AddType(type);
-        }
+        if (lifeTime == null)
+            return;
 
-        public void AddType(Type type)
-        {
-            if (IsConventionalRegistrationDisabled(type))
-                return;
+        var exposedServiceTypes = ExposedServiceExplorer.GetExposedServices(type);
 
-            var lifeTime = GetLifeTimeOrNull(type);
-
-            if (lifeTime == null)
-                return;
-
-            var exposedServiceTypes = ExposedServiceExplorer.GetExposedServices(type);
-
-            foreach (var exposedServiceType in exposedServiceTypes)
-                CreateDependencyDescriptor(
-                    type,
-                    exposedServiceType,
-                    lifeTime.Value
-                );
-        }
-
-        public void AddType<T>()
-        {
-            AddType(typeof(T));
-        }
-
-        public void AddSingleton<TExposed>(TExposed instance)
-        {
-            AddSingleton(typeof(TExposed), instance);
-        }
-
-        public void AddSingleton(Type type, object instance)
-        {
+        foreach (var exposedServiceType in exposedServiceTypes)
             CreateDependencyDescriptor(
-                instance.GetType(),
                 type,
-                DependencyLifeTime.Singleton);
-            _singletonInstances[instance.GetType()] = instance;
-        }
+                exposedServiceType,
+                lifeTime.Value
+            );
+    }
 
-        public void AddSingleton<T, TExposed>()
-        {
-            CreateDependencyDescriptor(
-                typeof(T),
-                typeof(TExposed),
-                DependencyLifeTime.Singleton);
-        }
+    public void AddType<T>()
+    {
+        AddType(typeof(T));
+    }
 
-        public void AddScoped<T, TExposed>()
-        {
-            CreateDependencyDescriptor(
-                typeof(T),
-                typeof(TExposed),
-                DependencyLifeTime.Scoped);
-        }
+    public void AddSingleton<TExposed>(TExposed instance)
+    {
+        AddSingleton(typeof(TExposed), instance);
+    }
 
-        public void AddTransient<T, TExposed>()
-        {
-            CreateDependencyDescriptor(
-                typeof(T),
-                typeof(TExposed),
-                DependencyLifeTime.Transient);
-        }
+    public void AddSingleton(Type type, object instance)
+    {
+        CreateDependencyDescriptor(
+            instance.GetType(),
+            type,
+            DependencyLifeTime.Singleton);
+        _singletonInstances[instance.GetType()] = instance;
+    }
 
-        private void AddSelf<TExposed>()
-        {
-            CreateDependencyDescriptor(GetType(), typeof(TExposed), DependencyLifeTime.Singleton);
-        }
+    public void AddSingleton<T, TExposed>()
+    {
+        CreateDependencyDescriptor(
+            typeof(T),
+            typeof(TExposed),
+            DependencyLifeTime.Singleton);
+    }
 
-        internal override DependencyDescriptor GetDescriptor(Type type)
-        {
-            return !_dependencyCollection.ContainsKey(type) ? null : _dependencyCollection[type];
-        }
+    public void AddScoped<T, TExposed>()
+    {
+        CreateDependencyDescriptor(
+            typeof(T),
+            typeof(TExposed),
+            DependencyLifeTime.Scoped);
+    }
 
-        private bool IsConventionalRegistrationDisabled(Type type)
-        {
-            return type.IsDefined(typeof(DisableRegistrationAttribute), true);
-        }
+    public void AddTransient<T, TExposed>()
+    {
+        CreateDependencyDescriptor(
+            typeof(T),
+            typeof(TExposed),
+            DependencyLifeTime.Transient);
+    }
 
-        private static DependencyLifeTime? GetLifeTimeOrNull(Type type)
-        {
-            if (typeof(ITransient).GetTypeInfo().IsAssignableFrom(type))
-                return DependencyLifeTime.Transient;
+    private void AddSelf<TExposed>()
+    {
+        CreateDependencyDescriptor(GetType(), typeof(TExposed), DependencyLifeTime.Singleton);
+    }
 
-            if (typeof(IScoped).GetTypeInfo().IsAssignableFrom(type))
-                return DependencyLifeTime.Scoped;
+    internal override DependencyDescriptor GetDescriptor(Type type)
+    {
+        return !_dependencyCollection.ContainsKey(type) ? null : _dependencyCollection[type];
+    }
 
-            if (typeof(ISingleton).GetTypeInfo().IsAssignableFrom(type))
-                return DependencyLifeTime.Singleton;
+    private bool IsConventionalRegistrationDisabled(Type type)
+    {
+        return type.IsDefined(typeof(DisableRegistrationAttribute), true);
+    }
 
-            return null;
-        }
+    private static DependencyLifeTime? GetLifeTimeOrNull(Type type)
+    {
+        if (typeof(ITransient).GetTypeInfo().IsAssignableFrom(type))
+            return DependencyLifeTime.Transient;
 
-        private void CreateDependencyDescriptor(
-            Type implementationType,
-            Type exposedType,
-            DependencyLifeTime lifeTime)
-        {
-            _dependencyCollection[exposedType]
-                = DependencyDescriptor.Describe(
-                    implementationType,
-                    lifeTime
-                );
-        }
+        if (typeof(IScoped).GetTypeInfo().IsAssignableFrom(type))
+            return DependencyLifeTime.Scoped;
+
+        if (typeof(ISingleton).GetTypeInfo().IsAssignableFrom(type))
+            return DependencyLifeTime.Singleton;
+
+        return null;
+    }
+
+    private void CreateDependencyDescriptor(
+        Type implementationType,
+        Type exposedType,
+        DependencyLifeTime lifeTime)
+    {
+        _dependencyCollection[exposedType]
+            = DependencyDescriptor.Describe(
+                implementationType,
+                lifeTime
+            );
     }
 }
