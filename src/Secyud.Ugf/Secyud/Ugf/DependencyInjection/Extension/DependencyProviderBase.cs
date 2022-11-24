@@ -4,11 +4,11 @@ namespace Secyud.Ugf.DependencyInjection
 {
     public abstract class DependencyProviderBase : IDependencyProvider
     {
-        public bool TryGetDependency<T>(out T dependency)
+        public bool TryGetDependency<T>(out T dependency) where T : class
         {
             if (TryGetDependency(typeof(T), out var dependencyObj))
             {
-                dependency = (T)dependencyObj;
+                dependency = dependencyObj as T;
                 return true;
             }
 
@@ -18,9 +18,9 @@ namespace Secyud.Ugf.DependencyInjection
 
         public abstract bool TryGetDependency(Type type, out object dependency);
 
-        public virtual T GetDependency<T>()
+        public virtual T GetDependency<T>() where T : class
         {
-            return (T)GetDependency(typeof(T));
+            return GetDependency(typeof(T)) as T;
         }
 
         public abstract object GetDependency(Type type);

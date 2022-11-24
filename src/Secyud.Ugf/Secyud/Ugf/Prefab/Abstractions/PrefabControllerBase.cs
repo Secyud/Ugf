@@ -1,10 +1,9 @@
-using System;
 using Secyud.Ugf.DependencyInjection;
 using UnityEngine;
 
 namespace Secyud.Ugf.Prefab
 {
-    public abstract class PrefabControllerBase : ISingleton
+    public abstract class PrefabControllerBase : ITransient
     {
         protected PrefabControllerBase()
         {
@@ -15,14 +14,8 @@ namespace Secyud.Ugf.Prefab
         internal PrefabDescriptor PrefabDescriptor { get; set; }
 
         public string Name { get; protected set; }
-
-        public virtual Type ParentType => null;
-
-        internal Func<PrefabControllerBase, PrefabControllerBase> ParentFactory { get; set; }
-
-        public PrefabControllerBase LogicParent => ParentFactory(this);
         
-        public GameObject Parent => PrefabDescriptor.Instance.GetComponentInParent<Transform>().parent.gameObject;
+        public GameObject ParentObject => PrefabDescriptor.Instance.transform.parent.gameObject;
 
         public GameObject GameObject => PrefabDescriptor.Instance;
 
@@ -30,6 +23,12 @@ namespace Secyud.Ugf.Prefab
             where TComponent : Component
         {
             return PrefabDescriptor.Instance.GetComponent<TComponent>();
+        }
+        
+        protected TComponent AddComponent<TComponent>()
+            where TComponent : Component
+        {
+            return PrefabDescriptor.Instance.AddComponent<TComponent>();
         }
 
 

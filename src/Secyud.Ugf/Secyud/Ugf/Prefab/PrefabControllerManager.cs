@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Secyud.Ugf.DependencyInjection;
+using UnityEngine;
 
 namespace Secyud.Ugf.Prefab
 {
@@ -16,23 +17,30 @@ namespace Secyud.Ugf.Prefab
             _dependencyProvider = dependencyProvider;
         }
 
-        public TController Add<TController>()
+        public TController GetOrAdd<TController>(GameObject parent = null)
             where TController : PrefabControllerBase
         {
-            var uiController = _dependencyProvider.GetDependency<TController>();
-
-            Add(uiController);
-
-            return uiController;
+            return GetOrAdd(typeof(TController),parent) as TController;
         }
 
-        public PrefabControllerBase Add(Type controllerType)
+        public PrefabControllerBase GetOrAdd(Type controllerType,GameObject parent = null)
         {
+            if (_panels.ContainsKey(controllerType))
+                return _panels[controllerType];
+
             var uiController = _dependencyProvider.GetDependency(controllerType)
                 as PrefabControllerBase;
+            
+            var descriptor = _prefabManager.GetDescriptor(uiController!.Name);
 
-            Add(uiController);
+            descriptor.CreateSingleton(parent);
+            
+            uiController.PrefabDescriptor = descriptor;
+            
+            uiController.OnInitialize();
 
+            _panels.Add(controllerType, uiController);
+            
             return uiController;
         }
 
@@ -51,32 +59,10 @@ namespace Secyud.Ugf.Prefab
             prefabController.OnShutDown();
             prefabController.PrefabDescriptor.Destroy();
             prefabController.PrefabDescriptor = null;
+
+            _panels.Remove(controllerType);
             
             return prefabController;
-        }
-
-        private void Add(PrefabControllerBase uiController)
-        {
-            if (!_panels.ContainsKey(uiController.GetType()))
-            {
-                _panels.Add(uiController.GetType(), uiController);
-                uiController.ParentFactory = GetParentController;
-            }
-
-            var descriptor = _prefabManager.GetDescriptor(uiController.Name);
-
-            descriptor.CreateSingleton(uiController.LogicParent?.PrefabDescriptor?.Instance);
-
-            uiController.PrefabDescriptor = descriptor;
-            
-            uiController.OnInitialize();
-        }
-
-        private PrefabControllerBase GetParentController(PrefabControllerBase child)
-        {
-            if (child.ParentType is null)
-                return null;
-            return _panels.TryGetValue(child.ParentType, out var parent) ? parent : null;
         }
     }
 }

@@ -8,8 +8,8 @@ namespace Secyud.Ugf.DependencyInjection
 
         bool TryGetDependency(Type type, out object dependency);
 
-        T GetDependency<T>();
+        T GetDependency<T>()where T : class;
 
-        bool TryGetDependency<T>(out T dependency);
+        bool TryGetDependency<T>(out T dependency) where T : class;
     }
 }
