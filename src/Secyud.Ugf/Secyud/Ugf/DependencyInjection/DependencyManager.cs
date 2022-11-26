@@ -96,7 +96,7 @@ namespace Secyud.Ugf.DependencyInjection
             if (IsConventionalRegistrationDisabled(type))
                 return;
 
-            var lifeTime = GetLifeTimeOrNull(type);
+            var lifeTime = type.GetLifeTimeOrNull();
 
             if (lifeTime == null)
                 return;
@@ -167,20 +167,6 @@ namespace Secyud.Ugf.DependencyInjection
         private bool IsConventionalRegistrationDisabled(Type type)
         {
             return type.IsDefined(typeof(DisableRegistrationAttribute), true);
-        }
-
-        private static DependencyLifeTime? GetLifeTimeOrNull(Type type)
-        {
-            if (typeof(ITransient).GetTypeInfo().IsAssignableFrom(type))
-                return DependencyLifeTime.Transient;
-
-            if (typeof(IScoped).GetTypeInfo().IsAssignableFrom(type))
-                return DependencyLifeTime.Scoped;
-
-            if (typeof(ISingleton).GetTypeInfo().IsAssignableFrom(type))
-                return DependencyLifeTime.Singleton;
-
-            return null;
         }
 
         private void CreateDependencyDescriptor(
