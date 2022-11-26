@@ -1,5 +1,4 @@
 ﻿using Secyud.Ugf.Prefab;
-using Secyud.Ugf.Prefab.Extension;
 using UnityEngine.UI;
 
 namespace Demo
@@ -16,7 +15,7 @@ namespace Demo
             DemoButton.onClick.AddListener(DomoMethod);
         }
 
-        public void DomoMethod()
+        private void DomoMethod()
         {
             DemoDomainService.PrintMessage("domain service");
         }

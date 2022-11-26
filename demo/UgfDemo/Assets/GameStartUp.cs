@@ -12,7 +12,7 @@ public class GameStartUp : MonoBehaviour
         _application = UgfApplicationFactory.CreateAsync<DemoGameModule>().Result;
         //_application.InitializeAsync().Wait();
         var manager = GetDependency<IPrefabManager>();
-        manager.GetOrAdd<DemoPanel>();
+        manager.CreatePrefab<DemoPanel>();
     }
 
     private T GetDependency<T>() where T : class
