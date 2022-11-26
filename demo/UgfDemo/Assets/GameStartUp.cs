@@ -10,12 +10,12 @@ public class GameStartUp : MonoBehaviour
     private void Awake()
     {
         _application = UgfApplicationFactory.CreateAsync<DemoGameModule>().Result;
-        _application.InitializeAsync().Wait();
-        var manager = GetDependency<IPrefabControllerManager>();
-        manager.Add<DemoPanelController>();
+        //_application.InitializeAsync().Wait();
+        var manager = GetDependency<IPrefabManager>();
+        manager.GetOrAdd<DemoPanel>();
     }
 
-    private T GetDependency<T>()
+    private T GetDependency<T>() where T : class
     {
         return _application.DependencyProvider.GetDependency<T>();
     }

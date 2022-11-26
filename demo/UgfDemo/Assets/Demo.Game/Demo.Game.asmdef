@@ -2,8 +2,7 @@
     "name": "Demo.Game",
     "rootNamespace": "Demo",
     "references": [
-        "GUID:08c3e3a0548f9b44587dbbc08e05124d",
-        "GUID:2c06e9448402a1146b9261dc74416997"
+        "GUID:08c3e3a0548f9b44587dbbc08e05124d"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
