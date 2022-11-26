@@ -7,8 +7,8 @@ namespace Secyud.Ugf
     {
         public override void PreConfigure(ConfigurationContext context)
         {
+            context.Manager.AddType<PrefabRegister>();
             context.Manager.AddType<PrefabManager>();
-            context.Manager.AddType<PrefabControllerManager>();
         }
     }
 }

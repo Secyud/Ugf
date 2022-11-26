@@ -1,11 +1,15 @@
-using System.Collections.Generic;
+using System;
+using Secyud.Ugf.Prefab.Extension;
+using UnityEngine;
 
 namespace Secyud.Ugf.Prefab
 {
     public interface IPrefabManager
     {
-        public void RegisterPrefabsInFolder(string path, bool isUi = false);
-        void RegisterPrefabs(IEnumerable<string> prefabs, bool isUi = false);
-        void RegisterPrefab(string path, bool isUi = false);
+        TController GetOrAdd<TController>(GameObject parent = null) where TController : PrefabBase;
+        PrefabBase GetOrAdd(Type prefabType,GameObject parent = null);
+
+        void Remove<TController>() where TController : PrefabBase;
+        void Remove(Type prefabType);
     }
 }

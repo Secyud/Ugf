@@ -1,61 +1,86 @@
+using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using Secyud.Ugf.DependencyInjection;
+using Secyud.Ugf.Prefab.Extension;
 using UnityEngine;
 
 namespace Secyud.Ugf.Prefab
 {
     public class PrefabManager : IPrefabManager, ISingleton
     {
-        private readonly GameObject _canvas = GameObject.Find("Canvas");
+        private readonly IDependencyProvider _dependencyProvider;
+        private readonly Dictionary<Type, PrefabBase> _prefabs = new();
+        private readonly PrefabRegister _prefabRegister;
 
-        private readonly Dictionary<string, PrefabDescriptor> _uis = new();
-
-        public void RegisterPrefabsInFolder(string path, bool isUi = false)
+        public PrefabManager(PrefabRegister prefabRegister, IDependencyProvider dependencyProvider)
         {
-            var absolutePath = Path.Combine(Application.dataPath, "Resources", path);
+            _prefabRegister = prefabRegister;
+            _dependencyProvider = dependencyProvider;
+        }
+
+        public TPrefab GetOrAdd<TPrefab>(GameObject parent = null)
+            where TPrefab : PrefabBase
+        {
+            if (_prefabs.ContainsKey(typeof(TPrefab)))
+                return _prefabs[typeof(TPrefab)] as TPrefab;
             
-            var files = Directory
-                .EnumerateFiles(absolutePath, "*.*",SearchOption.AllDirectories)
-                .Where(s => s.EndsWith(".prefab"))
-                .Select(u=> Path.Combine(path, u[(absolutePath.Length+1)..u.LastIndexOf('.')]));
+            var descriptor = _prefabRegister.GetDescriptor(typeof(TPrefab));
 
-            RegisterPrefabs(files, isUi);
-        }
-    
-        public void RegisterPrefabs(IEnumerable<string> prefabs, bool isUi = false)
-        {
-            foreach (var ui in prefabs)
-                RegisterPrefab(ui, isUi);
-        }
+            descriptor.CreateSingleton(parent);
 
-        public void RegisterPrefab(string path, bool isUi = false)
-        {
-            var descriptor = new PrefabDescriptor(path, CreateGameObject, isUi);
-            _uis[descriptor.Name] = descriptor;
-        }
+            var prefab = descriptor.Instance.GetComponent<TPrefab>();
 
-        internal PrefabDescriptor GetDescriptor(string name)
-        {
-            return _uis[name];
-        }
+            InitPrefab(descriptor, prefab);
 
-        private GameObject CreateGameObject(PrefabDescriptor descriptor, GameObject parent)
-        {
-            if (descriptor.IsUi && parent is null)
-                parent = _canvas;
-
-            var prefab = parent is null
-                ? Object.Instantiate(
-                    Resources.Load<GameObject>(descriptor.Path))
-                : Object.Instantiate(
-                    Resources.Load<GameObject>(descriptor.Path),
-                    parent.transform);
-
-            prefab.name = descriptor.Name;
-
+            _prefabs.Add(typeof(TPrefab), prefab);
+            
             return prefab;
+        }
+
+        public PrefabBase GetOrAdd(Type prefabType,GameObject parent = null)
+        {
+            if (_prefabs.ContainsKey(prefabType))
+                return _prefabs[prefabType];
+            
+            var descriptor = _prefabRegister.GetDescriptor(prefabType);
+
+            descriptor.CreateSingleton(parent);
+
+            var prefab = descriptor.Instance.GetComponent(prefabType) as PrefabBase;
+
+            InitPrefab(descriptor, prefab);
+
+            _prefabs.Add(prefabType, prefab);
+            
+            return prefab;
+        }
+
+        private void InitPrefab(PrefabDescriptor descriptor, PrefabBase prefab)
+        {
+            foreach (var dependency in descriptor.Dependencies)
+                dependency.SetValue(prefab,_dependencyProvider.GetDependency(dependency.PropertyType));
+
+            prefab!.PrefabManager = this;
+            prefab!.PrefabDescriptor = descriptor;
+            
+            prefab.OnInitialize();
+        }
+
+        public void Remove<TController>()
+            where TController : PrefabBase
+        {
+            Remove(typeof(TController));
+        }
+
+        public void Remove(Type prefabType)
+        {
+            if (!_prefabs.ContainsKey(prefabType))
+                return;
+
+            var prefab = _prefabs[prefabType];
+            _prefabs.Remove(prefabType);
+            prefab.PrefabDescriptor.Destroy();
+            prefab.PrefabDescriptor = null;
         }
     }
 }
