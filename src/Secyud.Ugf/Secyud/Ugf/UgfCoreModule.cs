@@ -1,3 +1,4 @@
+using Secyud.Ugf.DependencyInjection;
 using Secyud.Ugf.Modularity;
 using Secyud.Ugf.Prefab;
 
@@ -7,8 +8,10 @@ namespace Secyud.Ugf
     {
         public override void PreConfigure(ConfigurationContext context)
         {
-            context.Manager.AddType<PrefabRegister>();
-            context.Manager.AddType<PrefabManager>();
+            context.Manager.AddTypes(new []
+            {
+                typeof(PrefabManager),
+                typeof(DependencyManager) });
         }
     }
 }

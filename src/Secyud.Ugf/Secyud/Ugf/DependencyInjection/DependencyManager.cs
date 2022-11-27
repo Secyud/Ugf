@@ -6,9 +6,15 @@ using System.Reflection;
 
 namespace Secyud.Ugf.DependencyInjection
 {
+    [ExposeType(
+        typeof(IDependencyProvider),
+        typeof(IDependencyRegistrar),
+        typeof(IDependencyScopeFactory)
+        )]
     public class DependencyManager :
         DependencyProviderBase,
-        IDependencyManager
+        IDependencyManager,
+        ISingleton
     {
         private readonly IDependencyCollection _dependencyCollection;
 
@@ -21,10 +27,6 @@ namespace Secyud.Ugf.DependencyInjection
             {
                 [GetType()] = this
             };
-            AddSelf<IDependencyManager>();
-            AddSelf<IDependencyProvider>();
-            AddSelf<IDependencyRegistrar>();
-            AddSelf<IDependencyScopeFactory>();
         }
 
         public override object GetDependency(Type type)
@@ -152,11 +154,6 @@ namespace Secyud.Ugf.DependencyInjection
                 typeof(T),
                 typeof(TExposed),
                 DependencyLifeTime.Transient);
-        }
-
-        private void AddSelf<TExposed>()
-        {
-            CreateDependencyDescriptor(GetType(), typeof(TExposed), DependencyLifeTime.Singleton);
         }
 
         internal override DependencyDescriptor GetDescriptor(Type type)

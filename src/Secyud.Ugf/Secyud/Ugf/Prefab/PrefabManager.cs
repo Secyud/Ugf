@@ -1,19 +1,20 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 using Secyud.Ugf.DependencyInjection;
 using UnityEngine;
-using Object = UnityEngine.Object;
 
 namespace Secyud.Ugf.Prefab
 {
-    public class PrefabManager : IPrefabManager, ISingleton
+    [ExposeType(typeof(IPrefabRegister), typeof(IPrefabProvider))]
+    public class PrefabManager : IPrefabProvider, IPrefabRegister, ISingleton
     {
         private readonly IDependencyProvider _dependencyProvider;
-        private readonly PrefabRegister _prefabRegister;
+        private readonly Dictionary<string, PrefabDescriptor> _uis = new();
 
-        public PrefabManager(PrefabRegister prefabRegister, IDependencyProvider dependencyProvider)
+        public PrefabManager(IDependencyProvider dependencyProvider)
         {
-            _prefabRegister = prefabRegister;
             _dependencyProvider = dependencyProvider;
         }
 
@@ -35,7 +36,7 @@ namespace Secyud.Ugf.Prefab
         private GameObject CreatePrefab(Type prefabType, Func<GameObject, PrefabBase> prefabGetter,
             GameObject parent = null)
         {
-            var descriptor = _prefabRegister.GetDescriptor(prefabType);
+            var descriptor = _uis[prefabType.Name];
 
             var gameObj = descriptor.Create(parent);
 
@@ -49,5 +50,34 @@ namespace Secyud.Ugf.Prefab
             return gameObj;
         }
 
+        public void RegisterPrefabsInAssembly(Assembly prefabAssembly, bool isUi = false)
+        {
+            var types = prefabAssembly.GetTypes()
+                .Where(type =>
+                    type is
+                    {
+                        IsClass: true,
+                        IsAbstract: false,
+                        IsGenericType: false
+                    } &&
+                    typeof(PrefabBase).IsAssignableFrom(type));
+
+            RegisterPrefabs(
+                types,
+                isUi
+            );
+        }
+
+        public void RegisterPrefabs(IEnumerable<Type> prefabTypes, bool isUi = false)
+        {
+            foreach (var ui in prefabTypes)
+                RegisterPrefab(ui, isUi);
+        }
+
+        public void RegisterPrefab(Type prefabType, bool isUi = false)
+        {
+            var descriptor = new PrefabDescriptor(prefabType, isUi);
+            _uis[descriptor.Name] = descriptor;
+        }
     }
 }
