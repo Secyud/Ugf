@@ -10,11 +10,9 @@ namespace Secyud.Ugf.Prefab
 {
     internal class PrefabDescriptor
     {
-        private static readonly GameObject Canvas = GameObject.Find("Canvas");
-
         public readonly List<PropertyInfo> Dependencies;
 
-        private readonly bool _isUi;
+        public readonly bool IsUi;
 
         public string Name { get; }
 
@@ -24,7 +22,7 @@ namespace Secyud.Ugf.Prefab
         {
             Path = prefabType.FullName!.Replace('.', '/');
             Name = prefabType.Name;
-            _isUi = isUi;
+            IsUi = isUi;
             Dependencies = prefabType.GetProperties(
                     BindingFlags.Public|BindingFlags.NonPublic|BindingFlags.Instance)
                 .Where(u => Attribute.IsDefined(u, typeof(DependencyAttribute)))
@@ -33,9 +31,6 @@ namespace Secyud.Ugf.Prefab
 
         public GameObject Create(GameObject parent)
         {
-            if (_isUi && parent is null)
-                parent = Canvas;
-
             var prefab = parent is null
                 ? Object.Instantiate(
                     Resources.Load<GameObject>(Path))

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using Secyud.Ugf.DependencyInjection;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace Secyud.Ugf.Prefab
 {
@@ -12,31 +13,36 @@ namespace Secyud.Ugf.Prefab
     {
         private readonly IDependencyProvider _dependencyProvider;
         private readonly Dictionary<string, PrefabDescriptor> _uis = new();
+        private readonly GameObject _canvas = GameObject.Find("Canvas");
 
         public PrefabManager(IDependencyProvider dependencyProvider)
         {
             _dependencyProvider = dependencyProvider;
+            Object.DontDestroyOnLoad(_canvas);
         }
 
-        public GameObject CreatePrefab<TPrefab>(GameObject parent = null)
+        public TPrefab CreatePrefab<TPrefab>(GameObject parent = null)
             where TPrefab : PrefabBase
         {
             return CreatePrefab(typeof(TPrefab),
                 o => o.GetComponent<TPrefab>(),
-                parent);
+                parent) as TPrefab;
         }
 
-        public GameObject CreatePrefab(Type prefabType, GameObject parent = null)
+        public PrefabBase CreatePrefab(Type prefabType, GameObject parent = null)
         {
             return CreatePrefab(prefabType,
                 o => o.GetComponent(prefabType) as PrefabBase,
                 parent);
         }
 
-        private GameObject CreatePrefab(Type prefabType, Func<GameObject, PrefabBase> prefabGetter,
+        private PrefabBase CreatePrefab(Type prefabType, Func<GameObject, PrefabBase> prefabGetter,
             GameObject parent = null)
         {
             var descriptor = _uis[prefabType.Name];
+
+            if (parent is null && descriptor.IsUi)
+                parent = _canvas;
 
             var gameObj = descriptor.Create(parent);
 
@@ -47,7 +53,7 @@ namespace Secyud.Ugf.Prefab
 
             prefab.OnInitialize();
 
-            return gameObj;
+            return prefab;
         }
 
         public void RegisterPrefabsInAssembly(Assembly prefabAssembly, bool isUi = false)
