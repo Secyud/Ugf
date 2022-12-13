@@ -4,8 +4,8 @@ namespace Secyud.Ugf.Modularity
 {
     public interface IUgfModule
     {
-        Task ConfigureAsync(ConfigurationContext context);
+        Task ConfigureGameAsync(ConfigurationContext context);
 
-        void Configure(ConfigurationContext context);
+        void ConfigureGame(ConfigurationContext context);
     }
 }

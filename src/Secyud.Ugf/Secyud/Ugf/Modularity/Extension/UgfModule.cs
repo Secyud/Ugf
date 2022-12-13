@@ -1,6 +1,9 @@
 using System;
 using System.Reflection;
 using System.Threading.Tasks;
+using Secyud.Ugf.Localization;
+using Secyud.Ugf.Option;
+using Secyud.Ugf.Option.Abstraction;
 
 namespace Secyud.Ugf.Modularity
 {
@@ -13,73 +16,93 @@ namespace Secyud.Ugf.Modularity
         IPreConfigure,
         IPostConfigure
     {
-        public virtual Task OnInitializationAsync(InitializationContext context)
+        internal ConfigurationContext ConfigurationContext;
+
+        protected void AddResource<TResource>()
         {
-            OnInitialization(context);
+            ConfigurationContext.Manager
+                .AddTransient<DefaultStringLocalizer<TResource>,IStringLocalizer<TResource>>();
+        }
+        
+        protected void Configure<TOption>(Action<TOption> option) 
+            where TOption : new()
+        {
+            ConfigurationContext.Manager.AddCustom<Option<TOption>,IOption<TOption>>(
+                () =>
+                {
+                    var config = new Option<TOption>(new());
+                    option(config.Value);
+                    return config;
+                });
+        }
+        
+        public virtual Task OnGameInitializationAsync(InitializationContext context)
+        {
+            OnGameInitialization(context);
             return Task.CompletedTask;
         }
 
-        public virtual Task OnPostInitializationAsync(InitializationContext context)
+        public virtual Task OnGamePostInitializationAsync(InitializationContext context)
         {
-            OnPostInitialization(context);
+            OnGamePostInitialization(context);
             return Task.CompletedTask;
         }
 
-        public virtual Task OnPreInitializationAsync(InitializationContext context)
+        public virtual Task OnGamePreInitializationAsync(InitializationContext context)
         {
-            OnPreInitialization(context);
+            OnGamePreInitialization(context);
             return Task.CompletedTask;
         }
 
-        public virtual Task OnShutdownAsync(ShutdownContext context)
+        public virtual Task OnGameShutdownAsync(ShutdownContext context)
         {
-            OnShutdown(context);
+            OnGameShutdown(context);
             return Task.CompletedTask;
         }
 
-        public virtual Task PostConfigureAsync(ConfigurationContext context)
+        public virtual Task PostConfigureGameAsync(ConfigurationContext context)
         {
-            PostConfigure(context);
+            PostConfigureGame(context);
             return Task.CompletedTask;
         }
 
-        public virtual Task PreConfigureAsync(ConfigurationContext context)
+        public virtual Task PreConfigureGameAsync(ConfigurationContext context)
         {
-            PreConfigure(context);
+            PreConfigureGame(context);
             return Task.CompletedTask;
         }
 
-        public virtual Task ConfigureAsync(ConfigurationContext context)
+        public virtual Task ConfigureGameAsync(ConfigurationContext context)
         {
-            Configure(context);
+            ConfigureGame(context);
             return Task.CompletedTask;
         }
 
-        public virtual void Configure(ConfigurationContext context)
+        public virtual void ConfigureGame(ConfigurationContext context)
         {
         }
 
-        public virtual void PreConfigure(ConfigurationContext context)
+        protected virtual void PreConfigureGame(ConfigurationContext context)
         {
         }
 
-        public virtual void PostConfigure(ConfigurationContext context)
+        protected virtual void PostConfigureGame(ConfigurationContext context)
         {
         }
 
-        public virtual void OnPreInitialization(InitializationContext context)
+        protected virtual void OnGamePreInitialization(InitializationContext context)
         {
         }
 
-        public virtual void OnInitialization(InitializationContext context)
+        protected virtual void OnGameInitialization(InitializationContext context)
         {
         }
 
-        public virtual void OnPostInitialization(InitializationContext context)
+        protected virtual void OnGamePostInitialization(InitializationContext context)
         {
         }
 
-        public virtual void OnShutdown(ShutdownContext context)
+        protected virtual void OnGameShutdown(ShutdownContext context)
         {
         }
 

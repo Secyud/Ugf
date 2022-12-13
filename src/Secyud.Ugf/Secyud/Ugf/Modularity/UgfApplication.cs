@@ -48,14 +48,26 @@ namespace Secyud.Ugf.Modularity
 
             try
             {
+                var ugfModules =
+                    Modules
+                        .Where(m => m.Instance is UgfModule)
+                        .Select(m => m.Instance as UgfModule)
+                        .ToArray();
+                
+                foreach (var module in ugfModules)
+                    module!.ConfigurationContext = context;
+
                 foreach (var module in Modules.Where(m => m.Instance is IPreConfigure))
-                    await ((IPreConfigure)module.Instance).PreConfigureAsync(context);
+                    await ((IPreConfigure)module.Instance).PreConfigureGameAsync(context);
 
                 foreach (var module in Modules)
-                    await module.Instance.ConfigureAsync(context);
+                    await module.Instance.ConfigureGameAsync(context);
 
                 foreach (var module in Modules.Where(m => m.Instance is IPostConfigure))
-                    await ((IPostConfigure)module.Instance).PostConfigureAsync(context);
+                    await ((IPostConfigure)module.Instance).PostConfigureGameAsync(context);
+
+                foreach (var module in ugfModules)
+                    module!.ConfigurationContext = null;
             }
             catch (Exception ex)
             {
@@ -75,15 +87,15 @@ namespace Secyud.Ugf.Modularity
                 var context = new InitializationContext(scope.DependencyProvider);
 
                 foreach (var module in Modules.Where(m => m.Instance is IOnPreInitialization))
-                    await ((IOnPreInitialization)module.Instance).OnPreInitializationAsync(context);
+                    await ((IOnPreInitialization)module.Instance).OnGamePreInitializationAsync(context);
 
 
                 foreach (var module in Modules.Where(m => m.Instance is IOnInitialization))
-                    await ((IOnInitialization)module.Instance).OnInitializationAsync(context);
+                    await ((IOnInitialization)module.Instance).OnGameInitializationAsync(context);
 
 
                 foreach (var module in Modules.Where(m => m.Instance is IOnPostInitialization))
-                    await ((IOnPostInitialization)module.Instance).OnPostInitializationAsync(context);
+                    await ((IOnPostInitialization)module.Instance).OnGamePostInitializationAsync(context);
             }
             catch (Exception ex)
             {
@@ -102,7 +114,7 @@ namespace Secyud.Ugf.Modularity
 
                 for (var i = Modules.Count - 1; i >= 0; --i)
                     if (Modules[i].Instance is IOnShutdown)
-                        await ((IOnShutdown)Modules[i].Instance).OnShutdownAsync(context);
+                        await ((IOnShutdown)Modules[i].Instance).OnGameShutdownAsync(context);
                 Dispose();
             }
             catch (Exception ex)

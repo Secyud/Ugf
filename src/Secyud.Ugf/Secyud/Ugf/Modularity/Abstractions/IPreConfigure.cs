@@ -4,6 +4,6 @@ namespace Secyud.Ugf.Modularity
 {
     public interface IPreConfigure
     {
-        Task PreConfigureAsync(ConfigurationContext context);
+        Task PreConfigureGameAsync(ConfigurationContext context);
     }
 }

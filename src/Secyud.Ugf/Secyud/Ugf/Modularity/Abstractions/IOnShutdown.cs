@@ -4,6 +4,6 @@ namespace Secyud.Ugf.Modularity
 {
     public interface IOnShutdown
     {
-        Task OnShutdownAsync(ShutdownContext context);
+        Task OnGameShutdownAsync(ShutdownContext context);
     }
 }

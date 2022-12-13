@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -16,17 +15,12 @@ namespace Secyud.Ugf.DependencyInjection
         IDependencyManager,
         ISingleton
     {
-        private readonly IDependencyCollection _dependencyCollection;
-
-        private readonly ConcurrentDictionary<Type, object> _singletonInstances;
 
         internal DependencyManager(IDependencyCollection dependencyCollection = null)
+            :base(dependencyCollection ?? new DependencyCollection(),
+                new())
         {
-            _dependencyCollection = dependencyCollection ?? new DependencyCollection();
-            _singletonInstances = new ConcurrentDictionary<Type, object>
-            {
-                [GetType()] = this
-            };
+            Instances[GetType()] = this;
         }
 
         public override object GetDependency(Type type)
@@ -36,36 +30,7 @@ namespace Secyud.Ugf.DependencyInjection
             if (descriptor is null)
                 throw new UgfException($"Could not find dependency: {type.FullName}!");
 
-            if (descriptor.DependencyLifeTime == DependencyLifeTime.Transient)
-                return descriptor.CreateInstance(this);
-
-            if (!_singletonInstances.ContainsKey(descriptor.ImplementationType))
-                _singletonInstances[descriptor.ImplementationType] = descriptor.CreateInstance(this);
-            return _singletonInstances[descriptor.ImplementationType];
-        }
-
-        public override bool TryGetDependency(Type type, out object dependency)
-        {
-            var descriptor = GetDescriptor(type);
-
-            if (descriptor is null)
-            {
-                dependency = default;
-                return false;
-            }
-
-            if (descriptor.DependencyLifeTime == DependencyLifeTime.Transient)
-            {
-                dependency = descriptor.CreateInstance(this);
-            }
-            else
-            {
-                if (!_singletonInstances.ContainsKey(descriptor.ImplementationType))
-                    _singletonInstances[descriptor.ImplementationType] = descriptor.CreateInstance(this);
-                dependency = _singletonInstances[descriptor.ImplementationType];
-            }
-
-            return true;
+            return descriptor.InstanceAccessor();
         }
 
         public IDependencyScope CreateScope()
@@ -109,8 +74,7 @@ namespace Secyud.Ugf.DependencyInjection
                 CreateDependencyDescriptor(
                     type,
                     exposedServiceType,
-                    lifeTime.Value
-                );
+                    lifeTime.Value);
         }
 
         public void AddType<T>()
@@ -129,7 +93,7 @@ namespace Secyud.Ugf.DependencyInjection
                 instance.GetType(),
                 type,
                 DependencyLifeTime.Singleton);
-            _singletonInstances[instance.GetType()] = instance;
+            Instances[instance.GetType()] = instance;
         }
 
         public void AddSingleton<T, TExposed>()
@@ -156,9 +120,14 @@ namespace Secyud.Ugf.DependencyInjection
                 DependencyLifeTime.Transient);
         }
 
-        internal override DependencyDescriptor GetDescriptor(Type type)
+        public void AddCustom<T, TExposed>(Func<object> instanceAccessor)
         {
-            return !_dependencyCollection.ContainsKey(type) ? null : _dependencyCollection[type];
+            DependencyCollection[typeof(TExposed)]
+                = DependencyDescriptor.Describe(
+                    typeof(T),
+                    DependencyLifeTime.Singleton,
+                    instanceAccessor
+                );
         }
 
         private bool IsConventionalRegistrationDisabled(Type type)
@@ -171,11 +140,20 @@ namespace Secyud.Ugf.DependencyInjection
             Type exposedType,
             DependencyLifeTime lifeTime)
         {
-            _dependencyCollection[exposedType]
-                = DependencyDescriptor.Describe(
-                    implementationType,
-                    lifeTime
-                );
+            if (lifeTime == DependencyLifeTime.Transient)
+                DependencyCollection[exposedType]
+                    = DependencyDescriptor.Describe(
+                        implementationType,
+                        lifeTime,
+                        ()=>CreateInstance(implementationType)
+                    );
+            else
+                DependencyCollection[exposedType]
+                    = DependencyDescriptor.Describe(
+                        implementationType,
+                        lifeTime,
+                        ()=>GetInstance(implementationType)
+                    );
         }
     }
 }

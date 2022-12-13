@@ -23,5 +23,7 @@ namespace Secyud.Ugf.DependencyInjection
         void AddScoped<T, TExposed>();
 
         void AddTransient<T, TExposed>();
+
+        void AddCustom<T,TExposed>(Func<object> instanceAccessor);
     }
 }

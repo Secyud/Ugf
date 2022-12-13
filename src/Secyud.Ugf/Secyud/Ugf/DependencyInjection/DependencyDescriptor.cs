@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Reflection;
+using UnityEditor;
 
 namespace Secyud.Ugf.DependencyInjection
 {
@@ -12,26 +13,17 @@ namespace Secyud.Ugf.DependencyInjection
 
         public Type ImplementationType { get; private set; }
         public DependencyLifeTime DependencyLifeTime { get; private set; }
+        
+        public Func<object> InstanceAccessor { get; set; }
 
-        internal static DependencyDescriptor Describe(Type implementationType, DependencyLifeTime lifeTime)
+        internal static DependencyDescriptor Describe(Type implementationType, DependencyLifeTime lifeTime,Func<object> instanceAccessor)
         {
             return new DependencyDescriptor
             {
                 ImplementationType = implementationType,
-                DependencyLifeTime = lifeTime
+                DependencyLifeTime = lifeTime,
+                InstanceAccessor = instanceAccessor
             };
-        }
-
-        internal object CreateInstance(IDependencyProvider serviceProvider)
-        {
-            var constructors = ImplementationType.GetConstructors(
-                BindingFlags.Public | BindingFlags.Instance);
-
-            var parameters = constructors[0]
-                .GetParameters()
-                .Select(u => serviceProvider.GetDependency(u.ParameterType)).ToArray();
-
-            return Activator.CreateInstance(ImplementationType, parameters);
         }
     }
 }

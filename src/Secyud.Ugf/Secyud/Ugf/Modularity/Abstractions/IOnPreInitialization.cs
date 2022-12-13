@@ -4,6 +4,6 @@ namespace Secyud.Ugf.Modularity
 {
     public interface IOnPreInitialization
     {
-        Task OnPreInitializationAsync(InitializationContext context);
+        Task OnGamePreInitializationAsync(InitializationContext context);
     }
 }

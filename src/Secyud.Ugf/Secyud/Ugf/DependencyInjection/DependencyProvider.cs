@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Concurrent;
+using System.Linq;
+using System.Reflection;
 
 namespace Secyud.Ugf.DependencyInjection
 {
@@ -7,83 +9,66 @@ namespace Secyud.Ugf.DependencyInjection
     {
         private readonly DependencyProviderBase _dependencyProvider;
 
-        private readonly ConcurrentDictionary<Type, object> _instances;
-
-        public DependencyProvider(DependencyProviderBase dependencyProvider)
+        public DependencyProvider(DependencyProviderBase dependencyProvider) 
+            : base(new DependencyCollection(),
+                new())
         {
             _dependencyProvider = dependencyProvider;
-            _instances = new ConcurrentDictionary<Type, object>();
         }
 
         public override object GetDependency(Type type)
         {
-            var descriptor = _dependencyProvider.GetDescriptor(type);
+            var descriptor = GetDescriptor(type);
 
             if (descriptor is null)
-                throw new UgfException($"Could not find dependency: {type.FullName}!");
-
-            switch (descriptor.DependencyLifeTime)
             {
-                case DependencyLifeTime.Singleton:
-                    return _dependencyProvider.GetDependency(type);
-                case DependencyLifeTime.Scoped:
-                    if (!_instances.ContainsKey(descriptor.ImplementationType))
-                        _instances[descriptor.ImplementationType]
-                            = descriptor.CreateInstance(this);
-                    return _instances[descriptor.ImplementationType];
-                case DependencyLifeTime.Transient:
-                    return descriptor.CreateInstance(this);
-                default:
-                    throw new ArgumentOutOfRangeException(
-                        nameof(DependencyLifeTime),
-                        descriptor.DependencyLifeTime,
-                        "DependencyLifeTime is invalid.");
+                var originDescriptor = _dependencyProvider.GetDescriptor(type);
+                
+                descriptor = CreateDependencyDescriptor(
+                    originDescriptor.ImplementationType,
+                    type,
+                    originDescriptor.DependencyLifeTime);
             }
-        }
 
-        public override bool TryGetDependency(Type type, out object dependency)
+            return descriptor.InstanceAccessor();
+        }
+        
+        private DependencyDescriptor CreateDependencyDescriptor(
+            Type implementationType,
+            Type exposedType,
+            DependencyLifeTime lifeTime)
         {
-            var descriptor = _dependencyProvider.GetDescriptor(type);
+            var descriptor =
+                lifeTime switch
+                {
+                    DependencyLifeTime.Singleton =>
+                        DependencyDescriptor.Describe(
+                            implementationType,
+                            lifeTime,
+                            () => _dependencyProvider.GetDependency(implementationType)
+                        ),
+                    DependencyLifeTime.Scoped =>
+                        DependencyDescriptor.Describe(
+                            implementationType,
+                            lifeTime,
+                            () => GetInstance(implementationType)
+                        ),
+                    DependencyLifeTime.Transient =>
+                        DependencyDescriptor.Describe(
+                            implementationType,
+                            lifeTime,
+                            () => CreateInstance(implementationType)
+                        ),
+                    _ => throw new ArgumentOutOfRangeException(nameof(lifeTime), lifeTime, null)
+                };
 
-            if (descriptor is null)
-            {
-                dependency = default;
-                return false;
-            }
-
-            switch (descriptor.DependencyLifeTime)
-            {
-                case DependencyLifeTime.Singleton:
-                    dependency = _dependencyProvider.GetDependency(type);
-                    break;
-                case DependencyLifeTime.Scoped:
-                    if (!_instances.ContainsKey(descriptor.ImplementationType))
-                        _instances[descriptor.ImplementationType]
-                            = descriptor.CreateInstance(this);
-                    dependency = _instances[descriptor.ImplementationType];
-                    break;
-                case DependencyLifeTime.Transient:
-                    dependency = descriptor.CreateInstance(this);
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(
-                        nameof(DependencyLifeTime),
-                        descriptor.DependencyLifeTime,
-                        "DependencyLifeTime is invalid.");
-            }
-
-            return true;
+            DependencyCollection[exposedType] = descriptor;
+            return descriptor;
         }
-
+        
         public IDependencyScope CreateScope()
         {
             return new DependencyScope(new DependencyProvider(this));
-        }
-
-
-        internal override DependencyDescriptor GetDescriptor(Type type)
-        {
-            return _dependencyProvider.GetDescriptor(type);
         }
     }
 }
