@@ -5,5 +5,8 @@
 	<s:Boolean x:Key="/Default/CodeInspection/NamespaceProvider/NamespaceFoldersToSkip/=secyud_005Cugf_005Cmodularity_005Cabstractions/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/CodeInspection/NamespaceProvider/NamespaceFoldersToSkip/=secyud_005Cugf_005Cmodularity_005Cextension/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/CodeInspection/NamespaceProvider/NamespaceFoldersToSkip/=secyud_005Cugf_005Cmodularity_005Cplugins_005Cabstractions/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/CodeInspection/NamespaceProvider/NamespaceFoldersToSkip/=secyud_005Cugf_005Cprefabs_005Cabstractions/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/CodeInspection/NamespaceProvider/NamespaceFoldersToSkip/=secyud_005Cugf_005Cprefabs_005Cextension/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/CodeInspection/NamespaceProvider/NamespaceFoldersToSkip/=secyud_005Cugf_005Cprefabs_005Cuserinterface/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/CodeInspection/NamespaceProvider/NamespaceFoldersToSkip/=secyud_005Cugf_005Cprefab_005Cabstractions/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/CodeInspection/NamespaceProvider/NamespaceFoldersToSkip/=secyud_005Cugf_005Cprefab_005Cextension/@EntryIndexedValue">True</s:Boolean></wpf:ResourceDictionary>
