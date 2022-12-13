@@ -1,6 +1,6 @@
 using Demo;
 using Secyud.Ugf.Modularity;
-using Secyud.Ugf.Prefab;
+using Secyud.Ugf.Prefabs;
 using UnityEngine;
 
 public class GameStartUp : MonoBehaviour
@@ -11,7 +11,7 @@ public class GameStartUp : MonoBehaviour
     {
         _application = UgfApplicationFactory.CreateAsync<DemoGameModule>().Result;
         //_application.InitializeAsync().Wait();
-        var manager = GetDependency<IPrefabManager>();
+        var manager = GetDependency<IPrefabProvider>();
         manager.CreatePrefab<DemoPanel>();
     }
 

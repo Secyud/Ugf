@@ -1,4 +1,4 @@
-﻿using Secyud.Ugf.Prefab;
+﻿using Secyud.Ugf.Prefabs;
 using UnityEngine.UI;
 
 namespace Demo

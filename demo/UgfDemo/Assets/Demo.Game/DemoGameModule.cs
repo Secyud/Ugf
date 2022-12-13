@@ -1,6 +1,6 @@
 ﻿using Secyud.Ugf;
 using Secyud.Ugf.Modularity;
-using Secyud.Ugf.Prefab;
+using Secyud.Ugf.Prefabs;
 
 namespace Demo
 {
@@ -10,14 +10,11 @@ namespace Demo
         )]
     public class DemoGameModule:UgfModule
     {
-        public override void PreConfigure(ConfigurationContext context)
+        protected override void PreConfigureGame(ConfigurationContext context)
         {
             var prefabRegister = context.Manager.GetDependency<IPrefabRegister>();
             
             prefabRegister.RegisterPrefabsInAssembly(typeof(DemoGameModule).Assembly,true);
-
         }
-
-        
     }
 }

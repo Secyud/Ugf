@@ -8,7 +8,7 @@ namespace Demo
     )]
     public class DemoDomainModule:UgfModule
     {
-        public override void PreConfigure(ConfigurationContext context)
+        protected override void PreConfigureGame(ConfigurationContext context)
         {
             context.Manager.AddAssembly(typeof(DemoDomainModule).Assembly);
         }
