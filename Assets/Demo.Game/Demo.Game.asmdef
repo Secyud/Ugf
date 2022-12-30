@@ -1,0 +1,18 @@
+{
+    "name": "Demo.Game",
+    "rootNamespace": "Demo",
+    "references": [
+        "GUID:08c3e3a0548f9b44587dbbc08e05124d",
+        "GUID:9ed50fb0cb8c653488708b82a1de9145",
+        "GUID:207e39f13bcf32940a8aed2cf19fe960"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

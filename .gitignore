@@ -1,8 +1,11 @@
 bin
 obj
 .idea
-Logs
-test
 *.meta
-/demo/UgfDemo/*
-!/demo/UgfDemo/Assets
+
+Logs
+Library
+Packages
+ProjectSettings
+Temp
+UserSettings
