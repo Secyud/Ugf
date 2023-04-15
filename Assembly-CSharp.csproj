@@ -754,13 +754,13 @@
       <Project>{575c4176-7f99-38b0-808f-711cd6dfbb7f}</Project>
       <Name>Demo.Domain</Name>
     </ProjectReference>
-    <ProjectReference Include="Secyud.Ugf.csproj">
-      <Project>{23811f58-103b-f826-0297-ff709171f9f8}</Project>
-      <Name>Secyud.Ugf</Name>
-    </ProjectReference>
     <ProjectReference Include="Secyud.Ugf.Unity.csproj">
       <Project>{986b5311-4533-d953-2acd-898b81a6ca46}</Project>
       <Name>Secyud.Ugf.Unity</Name>
+    </ProjectReference>
+    <ProjectReference Include="Secyud.Ugf.csproj">
+      <Project>{23811f58-103b-f826-0297-ff709171f9f8}</Project>
+      <Name>Secyud.Ugf</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

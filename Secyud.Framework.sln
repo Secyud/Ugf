@@ -5,9 +5,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Secyud.Ugf", "Secyud.Ugf.cs
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Secyud.Ugf.Unity", "Secyud.Ugf.Unity.csproj", "{986b5311-4533-d953-2acd-898b81a6ca46}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Demo.Domain", "Demo.Domain.csproj", "{575c4176-7f99-38b0-808f-711cd6dfbb7f}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Demo.Game", "Demo.Game.csproj", "{eecc8f2c-0d01-51b3-2b13-565bcb0a8ce9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Demo.Domain", "Demo.Domain.csproj", "{575c4176-7f99-38b0-808f-711cd6dfbb7f}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Assembly-CSharp", "Assembly-CSharp.csproj", "{a4558e8b-9447-4599-09de-45d3812933f7}"
 EndProject
@@ -20,10 +20,10 @@ Global
 		{23811f58-103b-f826-0297-ff709171f9f8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{986b5311-4533-d953-2acd-898b81a6ca46}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{986b5311-4533-d953-2acd-898b81a6ca46}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{575c4176-7f99-38b0-808f-711cd6dfbb7f}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{575c4176-7f99-38b0-808f-711cd6dfbb7f}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{eecc8f2c-0d01-51b3-2b13-565bcb0a8ce9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{eecc8f2c-0d01-51b3-2b13-565bcb0a8ce9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{575c4176-7f99-38b0-808f-711cd6dfbb7f}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{575c4176-7f99-38b0-808f-711cd6dfbb7f}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{a4558e8b-9447-4599-09de-45d3812933f7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{a4558e8b-9447-4599-09de-45d3812933f7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
