@@ -7,8 +7,8 @@ namespace Secyud.Ugf.AssetBundles
     {
         protected AssetBundleBase()
         {
-            AssetBundle = new ObjectContainer<AssetBundle>(
-                () => Og.Get<AssetBundleManager>().GetByPath(AssetBundleName));
+            AssetBundle = new ObjectContainer<AssetBundle>(() => 
+                Og.Get<AssetBundleManager>().GetByPath(AssetBundleName));
         }
 
         public ObjectContainer<AssetBundle> AssetBundle { get; }

@@ -6,7 +6,6 @@ namespace UnityEngine
 {
     public static class UgfComponentExtensions
     {
-        
         public static void Translate(this SText[] texts, params string[] origins)
         {
             for (var i = 0; i < origins.Length; i++)
