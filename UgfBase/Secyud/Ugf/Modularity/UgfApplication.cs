@@ -31,10 +31,12 @@ namespace Secyud.Ugf.Modularity
             _dependencyManager.AddSingleton<IUgfApplication>(this);
             _dependencyManager.AddSingleton<IModuleContainer>(this);
             _dependencyManager.AddSingleton<IModuleLoader>(new ModuleLoader());
-            _dependencyManager.AddSingleton(dependencyManager);
-            _dependencyManager.AddType<DefaultStringLocalizerFactory>();
-            _dependencyManager.AddType<LoadingService>();
-            _dependencyManager.AddType<ArchivingContext>();
+            _dependencyManager.AddTypes(
+                typeof(DependencyManager),
+                typeof(LoadingService),
+                typeof(ArchivingContext),
+                typeof(DefaultStringLocalizerFactory)
+                );
 
             Modules = LoadModules(_dependencyManager, plugInSources);
         }
