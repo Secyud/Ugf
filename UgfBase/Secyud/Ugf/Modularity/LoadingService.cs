@@ -4,7 +4,7 @@ using Secyud.Ugf.DependencyInjection;
 
 #endregion
 
-namespace Secyud.Ugf
+namespace Secyud.Ugf.Modularity
 {
     public class LoadingService : ISingleton
     {

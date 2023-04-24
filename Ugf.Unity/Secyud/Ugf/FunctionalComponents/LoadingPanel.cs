@@ -2,6 +2,7 @@
 
 using System;
 using Secyud.Ugf.BasicComponents;
+using Secyud.Ugf.Modularity;
 using UnityEngine;
 
 #endregion
@@ -14,11 +15,16 @@ namespace Secyud.Ugf.FunctionalComponents
         [SerializeField] private SSlider Slider;
         [SerializeField] private SText Text;
         [SerializeField] private float Speed;
+        public static LoadingPanel Instance { get; private set; }
 
         private LoadingService _service;
 
+
         private void Awake()
         {
+            if (Instance)
+                Destroy( Instance.gameObject);
+            Instance = this;
             Slider.minValue = 0;
             Slider.maxValue = 100;
             Slider.value = 0;
