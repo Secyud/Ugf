@@ -36,7 +36,7 @@ namespace Secyud.Ugf.BasicComponents
 
         public SFloating CreateOnMouse()
         {
-            var floating = Create(UnityExtension.GetMousePosition() + new Vector2(-16, 8));
+            var floating = Create(UgfUnityExtensions.GetMousePosition() + new Vector2(-16, 8));
             return floating;
         }
 

@@ -1,6 +1,6 @@
 namespace System
 {
-    public static class UgfStringExtension
+    public static class UgfStringExtensions
     {
         public static bool IsNullOrEmpty(this string s)
         {

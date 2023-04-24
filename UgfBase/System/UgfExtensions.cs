@@ -7,7 +7,7 @@ using Secyud.Ugf.Modularity;
 
 namespace System
 {
-    public static class UgfExtension
+    public static class UgfExtensions
     {
         public static bool IsUgfModule(Type type)
         {

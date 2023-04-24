@@ -11,7 +11,6 @@ namespace Secyud.Ugf.Localization
     {
         void AddResource<TResource>();
         IDictionary<string, string> GetLocalizerStringDictionary<TResource>();
-
         void ChangeCulture(CultureInfo cultureInfo);
     }
 }

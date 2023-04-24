@@ -5,6 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Secyud.Ugf.Archiving;
 using Secyud.Ugf.DependencyInjection;
+using Secyud.Ugf.Localization;
 
 #endregion
 
@@ -30,6 +31,10 @@ namespace Secyud.Ugf.Modularity
             _dependencyManager.AddSingleton<IUgfApplication>(this);
             _dependencyManager.AddSingleton<IModuleContainer>(this);
             _dependencyManager.AddSingleton<IModuleLoader>(new ModuleLoader());
+            _dependencyManager.AddSingleton(dependencyManager);
+            _dependencyManager.AddType<DefaultStringLocalizerFactory>();
+            _dependencyManager.AddType<LoadingService>();
+            _dependencyManager.AddType<ArchivingContext>();
 
             Modules = LoadModules(_dependencyManager, plugInSources);
         }

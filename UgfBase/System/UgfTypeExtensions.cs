@@ -8,7 +8,7 @@ using Secyud.Ugf.DependencyInjection;
 
 namespace System
 {
-    public static class UgfTypeExtension
+    public static class UgfTypeExtensions
     {
         internal static DependencyLifeTime? GetLifeTimeOrNull(this Type type)
         {

@@ -19,12 +19,6 @@ namespace Secyud.Ugf
 
         public void ConfigureGame(ConfigurationContext context)
         {
-            context.Manager.AddTypes(
-                typeof(DependencyManager),
-                typeof(DefaultStringLocalizerFactory),
-                typeof(LoadingService),
-                typeof(ArchivingContext)
-            );
             context.AddResource<DefaultResource>();
         }
     }

@@ -22,7 +22,7 @@ namespace Secyud.Ugf.Modularity
             ICollection<Type> moduleTypes,
             Type moduleType)
         {
-            UgfExtension.CheckUgfModuleType(moduleType);
+            UgfExtensions.CheckUgfModuleType(moduleType);
 
             if (moduleTypes.Contains(moduleType)) return;
 
@@ -34,7 +34,7 @@ namespace Secyud.Ugf.Modularity
 
         public static List<Type> FindDependedModuleTypes(Type moduleType)
         {
-            UgfExtension.CheckUgfModuleType(moduleType);
+            UgfExtensions.CheckUgfModuleType(moduleType);
 
             var depends =
                 moduleType.GetCustomAttribute<DependsOnAttribute>() ?? new DependsOnAttribute();
