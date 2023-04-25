@@ -1,5 +1,7 @@
-﻿using Secyud.Ugf.DependencyInjection;
+﻿using System;
+using Secyud.Ugf.DependencyInjection;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace Secyud.Ugf.AssetBundles
 {
@@ -7,7 +9,7 @@ namespace Secyud.Ugf.AssetBundles
     {
         protected AssetBundleBase()
         {
-            AssetBundle = new ObjectContainer<AssetBundle>(() => 
+            AssetBundle = new ObjectContainer<AssetBundle>(() =>
                 Og.Get<AssetBundleManager>().GetByPath(AssetBundleName));
         }
 
@@ -17,7 +19,12 @@ namespace Secyud.Ugf.AssetBundles
 
         public TAsset Load<TAsset>(string name) where TAsset : Component
         {
-            return AssetBundle.Value.LoadAsset<GameObject>(name).GetComponent<TAsset>();
+            GameObject obj = AssetBundle.Value.LoadAsset<GameObject>(name);
+
+            if (obj is null)
+                throw new NullReferenceException($"Cannot find asset named {name} in {AssetBundleName}");
+
+            return obj.GetComponent<TAsset>();
         }
 
         // public TAsset Load<TAsset>(string name) where TAsset : Component 
