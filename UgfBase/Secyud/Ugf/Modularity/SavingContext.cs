@@ -63,11 +63,15 @@ namespace Secyud.Ugf.Modularity
             return DependencyProvider.Get<T>();
         }
 
-        public BinaryWriter AddWriter(string name)
+        public BinaryWriter GetWriter(string name)
         {
-            string path = Path.Combine(Og.AppPath, $"/Archiving/{_context.CurrentSlot.Name}",name);
-            BinaryWriter writer = new(File.Open(path, FileMode.Create));
-            _writers[name] = writer;
+            if (!_writers.TryGetValue(name, out var writer))
+            {
+                string path = Path.Combine(Og.AppPath, $"/Archiving/{_context.CurrentSlot.Name}",name);
+                writer = new BinaryWriter(File.Open(path, FileMode.Create));
+                _writers[name] = writer;
+            }
+            
             return writer;
         }
     }

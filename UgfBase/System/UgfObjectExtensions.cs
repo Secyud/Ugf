@@ -5,6 +5,8 @@ using System.ComponentModel;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using Secyud.Ugf;
+using Secyud.Ugf.Archiving;
 
 #endregion
 
@@ -108,6 +110,28 @@ namespace System
         public static Guid ReadGuid(this BinaryReader reader)
         {
             return new Guid(reader.ReadBytes(16));
+        }
+
+
+        private static TypeManager _typeManager;
+        
+        public static void WriteArchiving(this BinaryWriter writer, object obj)
+        {
+            Guid typeId = obj.GetTypeId();
+            if (typeId == Guid.Empty)
+                throw new UgfInitializationException($"Type {obj.GetType()} need id but not!");
+            writer.Write(typeId);
+            if (obj is IArchivable archivable)
+                archivable.Save(writer);
+        }
+
+        public static object ReadArchiving(this BinaryReader reader)
+        {
+            _typeManager ??= Og.Get<TypeManager>();
+            object obj = _typeManager.Construct(reader);
+            if (obj is IArchivable archivable)
+                archivable.Load(reader);
+            return obj;
         }
     }
 }

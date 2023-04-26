@@ -2,7 +2,6 @@
 
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.RegularExpressions;
 using Localization;
 
 #endregion
@@ -37,7 +36,9 @@ namespace Secyud.Ugf.Localization
 
         public string Translate(string str)
         {
-            return Regex.Replace(str, "\\[[^\\[\\]]*\\]", s => FormatTranslate(s.Value[1..^1]));
+            return this[str];
+
+            //return Regex.Replace(str, "\\[[^\\[\\]]*\\]", s => FormatTranslate(s.Value[1..^1]));
         }
     }
 }
