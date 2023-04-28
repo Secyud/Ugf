@@ -10,6 +10,6 @@ namespace Secyud.Ugf.Archiving
         public object Construct(Guid id) => this[id].Construct();
         public object Construct(BinaryReader reader)=> this[reader.ReadGuid()].Construct();
         public object Construct(Type type) => this[type.GetId()].Construct();
-        public object CloneInit(object obj) => this[obj.GetTypeId()].Construct();
+        public T CloneInit<T>(T obj) where T : class => this[obj.GetTypeId()].Construct() as T;
     }
 }

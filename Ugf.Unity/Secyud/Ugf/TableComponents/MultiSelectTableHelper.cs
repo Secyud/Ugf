@@ -27,7 +27,7 @@ namespace Secyud.Ugf.TableComponents
 
         protected virtual void PrepareSelectedCell(TCell cell, int index)
         {
-            var button = cell.gameObject.GetOrAddButton(() => OnAllItemsCellClick(index));
+            var button = cell.gameObject.GetOrAddButton(() => OnSelectedCellClick(index));
         }
 
         protected virtual void OnAllItemsCellClick(int index)

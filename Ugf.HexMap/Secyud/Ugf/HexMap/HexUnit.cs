@@ -13,7 +13,7 @@ namespace Secyud.Ugf.HexMap
     /// <summary>
     ///     Component representing a unit that occupies a cell of the hex map.
     /// </summary>
-    public class HexUnit : MonoBehaviour, IHasId
+    public class HexUnit : MonoBehaviour
     {
         private const float RotationSpeed = 180f;
         private const float TravelSpeed = 4f;

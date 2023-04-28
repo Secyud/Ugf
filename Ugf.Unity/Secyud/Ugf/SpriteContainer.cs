@@ -5,7 +5,6 @@ namespace Secyud.Ugf
 {
     public class SpriteContainer:IObjectAccessor<Sprite>
     {
-
         public SpriteContainer(string abName, string spriteName)
         {
             AbName = abName;
@@ -24,11 +23,16 @@ namespace Secyud.Ugf
                 {
                     var abPath = Og.GetAbFullPath(AbName);
                     var ab = Og.Get<AssetBundleManager>().GetByPath(abPath);
-                    _sprite = ab.LoadAsset<Sprite>($"Assets/AssetBundles/{AbName}/Images/{SpriteName}");
+                    _sprite = ab.LoadAsset<Sprite>(SpriteName);
                 }
 
                 return _sprite;
             }
+        }
+
+        public static SpriteContainer Icon(string abName, string spriteName)
+        {
+            return new SpriteContainer(abName,spriteName+"_64_64");
         }
     }
 }
