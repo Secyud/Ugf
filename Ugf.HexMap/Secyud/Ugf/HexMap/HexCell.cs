@@ -24,7 +24,7 @@ namespace Secyud.Ugf.HexMap
 
         private Image _highlight;
 
-        private int _terrainTypeIndex;
+        private byte _terrainTypeIndex;
 
         private bool _walled;
         private int _waterLevel;
@@ -307,7 +307,7 @@ namespace Secyud.Ugf.HexMap
         /// <summary>
         ///     Terrain type index.
         /// </summary>
-        public int TerrainTypeIndex
+        public byte TerrainTypeIndex
         {
             get => _terrainTypeIndex;
             set
@@ -456,7 +456,6 @@ namespace Secyud.Ugf.HexMap
         public void AddRoad(HexDirection direction)
         {
             if (!Roads[(int)direction] && !HasRiverThroughEdge(direction) &&
-                !IsSpecial && !GetNeighbor(direction).IsSpecial &&
                 GetElevationDifference(direction) <= 1)
                 SetRoad((int)direction, true);
         }
@@ -524,7 +523,7 @@ namespace Secyud.Ugf.HexMap
             UIRect.localPosition = uiPosition;
         }
 
-        private void Refresh()
+        public void Refresh()
         {
             if (Chunk)
             {
@@ -537,7 +536,7 @@ namespace Secyud.Ugf.HexMap
             }
         }
 
-        private void RefreshSelfOnly()
+        public void RefreshSelfOnly()
         {
             Chunk.Refresh();
             if (Unit) Unit.ValidateLocation();
@@ -573,15 +572,6 @@ namespace Secyud.Ugf.HexMap
                 _highlight = UIRect.GetChild(0).GetComponent<Image>();
             _highlight.color = color;
             _highlight.enabled = true;
-        }
-
-        /// <summary>
-        ///     Set arbitrary map data for this cell's <see cref="ShaderData" />.
-        /// </summary>
-        /// <param name="data">Data value, 0-1 inclusive.</param>
-        public void SetMapData(float data)
-        {
-            ShaderData.SetMapData(this, data);
         }
     }
 }

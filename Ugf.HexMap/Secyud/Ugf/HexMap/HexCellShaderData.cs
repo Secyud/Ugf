@@ -15,11 +15,8 @@ namespace Secyud.Ugf.HexMap
         private static readonly int HexCellDataTexelSize = Shader.PropertyToID("_HexCellData_TexelSize");
 
         private Texture2D _cellTexture;
-
         private Color32[] _cellTextureData;
-
         public HexGrid Grid { get; set; }
-
         public bool ImmediateMode { get; set; }
 
         private void LateUpdate()
@@ -29,6 +26,8 @@ namespace Secyud.Ugf.HexMap
                 _cellTexture.SetPixels32(_cellTextureData);
                 _cellTexture.Apply();
             }
+
+            enabled = false;
         }
 
         /// <summary>
@@ -39,9 +38,7 @@ namespace Secyud.Ugf.HexMap
         public void Initialize(int x, int z)
         {
             if (_cellTexture)
-            {
                 _cellTexture.Reinitialize(x, z);
-            }
             else
             {
                 _cellTexture = new Texture2D(
@@ -55,15 +52,12 @@ namespace Secyud.Ugf.HexMap
                 };
                 Shader.SetGlobalTexture(HexCellData, _cellTexture);
             }
-
-            Shader.SetGlobalVector(
-                HexCellDataTexelSize,
-                new Vector4(1f / x, 1f / z, x, z));
+            Shader.SetGlobalVector(HexCellDataTexelSize, new Vector4(1f / x, 1f / z, x, z));
 
             if (_cellTextureData == null || _cellTextureData.Length != x * z)
                 _cellTextureData = new Color32[x * z];
             else
-                for (var i = 0; i < _cellTextureData.Length; i++)
+                for (int i = 0; i < _cellTextureData.Length; i++)
                     _cellTextureData[i] = new Color32(0, 0, 0, 0);
 
             enabled = true;
@@ -75,22 +69,12 @@ namespace Secyud.Ugf.HexMap
         /// <param name="cell">Cell with changed terrain type.</param>
         public void RefreshTerrain(HexCell cell)
         {
-            var data = _cellTextureData[cell.Index];
-            data.b = cell.IsUnderwater ? (byte)(cell.WaterSurfaceY * (255f / 30f)) : (byte)0;
+            Color32 data = _cellTextureData[cell.Index];
+            data.r = 1;
+            data.g = 1;
+            data.b = GetCellVisibility(cell);
             data.a = (byte)cell.TerrainTypeIndex;
             _cellTextureData[cell.Index] = data;
-            enabled = true;
-        }
-
-        /// <summary>
-        ///     Set arbitrary map data of a cell, overriding water data.
-        /// </summary>
-        /// <param name="cell">Cell to apply data for.</param>
-        /// <param name="data">Cell data value, 0-1 inclusive.</param>
-        public void SetMapData(HexCell cell, float data)
-        {
-            _cellTextureData[cell.Index].b =
-                data < 0f ? (byte)0 : data < 1f ? (byte)(data * 255f) : (byte)255;
             enabled = true;
         }
 
@@ -101,8 +85,13 @@ namespace Secyud.Ugf.HexMap
         /// <param name="cell">Changed cell.</param>
         public void ViewElevationChanged(HexCell cell)
         {
-            _cellTextureData[cell.Index].b = cell.IsUnderwater ? (byte)(cell.WaterSurfaceY * (255f / 30f)) : (byte)0;
+            _cellTextureData[cell.Index].b = GetCellVisibility(cell);
             enabled = true;
+        }
+
+        private static byte GetCellVisibility(HexCell cell)
+        {
+            return cell.IsUnderwater ? (byte)(cell.WaterSurfaceY * (255f / 30f)) : (byte)0;
         }
     }
 }

@@ -223,6 +223,11 @@ namespace Secyud.Ugf.HexMap.Utilities
             };
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="coordinates">origin</param>
+        /// <returns></returns>
         public HexDirection DirectionTo(HexCoordinates coordinates)
         {
             var c = this - coordinates;

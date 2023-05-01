@@ -60,5 +60,16 @@ namespace Secyud.Ugf.HexMap.Utilities
             result.V5 = HexMetrics.TerraceLerp(a.V5, b.V5, step);
             return result;
         }
+        
+        
+        public static EdgeVertices operator + (EdgeVertices lft,Vector3 rht)
+        {
+            lft.V1 += rht;
+            lft.V2 += rht;
+            lft.V3 += rht;
+            lft.V4 += rht;
+            lft.V5 += rht;
+            return lft;
+        }
     }
 }

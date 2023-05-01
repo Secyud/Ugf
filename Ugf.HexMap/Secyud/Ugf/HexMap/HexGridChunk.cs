@@ -12,6 +12,7 @@ namespace Secyud.Ugf.HexMap
     /// </summary>
     public class HexGridChunk : MonoBehaviour
     {
+        private static readonly Vector3 Fh = new(0f, 0.1f, 0f);
         private static readonly Color Weights1 = new(1f, 0f, 0f);
         private static readonly Color Weights2 = new(0f, 1f, 0f);
         private static readonly Color Weights3 = new(0f, 0f, 1f);
@@ -1065,16 +1066,7 @@ namespace Secyud.Ugf.HexMap
                     mL, mC, mR, e.V2, e.V3, e.V4,
                     Weights1, Weights1, indices
                 );
-                Roads.AddTriangle(center, mL, mC);
-                Roads.AddTriangle(center, mC, mR);
-                Roads.AddTriangleUV(
-                    new Vector2(1f, 0f), new Vector2(0f, 0f), new Vector2(1f, 0f)
-                );
-                Roads.AddTriangleUV(
-                    new Vector2(1f, 0f), new Vector2(1f, 0f), new Vector2(0f, 0f)
-                );
-                Roads.AddTriangleCellData(indices, Weights1);
-                Roads.AddTriangleCellData(indices, Weights1);
+                TriangulateRoadWideEdge(center, mL, mC, mR, indices);
             }
             else
             {
@@ -1086,12 +1078,34 @@ namespace Secyud.Ugf.HexMap
             Vector3 center, Vector3 mL, Vector3 mR, float index
         )
         {
+            center += Fh;
+            mL += Fh;
+            mR += Fh;
             Roads.AddTriangle(center, mL, mR);
             Roads.AddTriangleUV(
-                new Vector2(1f, 0f), new Vector2(0f, 0f), new Vector2(0f, 0f)
+                new Vector2(0.5f, 0f), new Vector2(0f, 1f), new Vector2(1f, 1f)
             );
             Vector3 indices;
             indices.x = indices.y = indices.z = index;
+            Roads.AddTriangleCellData(indices, Weights1);
+        }
+        private void TriangulateRoadWideEdge(
+            Vector3 center, Vector3 mL,Vector3 mC, Vector3 mR, Vector3 indices
+        )
+        {
+            center += Fh;
+            mL += Fh;
+            mC += Fh;
+            mR += Fh;
+            Roads.AddTriangle(center, mL, mC);
+            Roads.AddTriangle(center, mC, mR);
+            Roads.AddTriangleUV(
+                new Vector2(1f, 0f), new Vector2(0f, 1f), new Vector2(1f, 1f)
+            );
+            Roads.AddTriangleUV(
+                new Vector2(1f, 0f), new Vector2(1f, 1f), new Vector2(0f, 1f)
+            );
+            Roads.AddTriangleCellData(indices, Weights1);
             Roads.AddTriangleCellData(indices, Weights1);
         }
 
@@ -1101,10 +1115,16 @@ namespace Secyud.Ugf.HexMap
             Color w1, Color w2, Vector3 indices
         )
         {
+            v1 += Fh;
+            v2 += Fh;
+            v3 += Fh;
+            v4 += Fh;
+            v5 += Fh;
+            v6 += Fh;
             Roads.AddQuad(v1, v2, v4, v5);
             Roads.AddQuad(v2, v3, v5, v6);
-            Roads.AddQuadUV(0f, 1f, 0f, 0f);
-            Roads.AddQuadUV(1f, 0f, 0f, 0f);
+            Roads.AddQuadUV(0f, 1f, 0f, 1f);
+            Roads.AddQuadUV(1f, 0f, 0f, 1f);
             Roads.AddQuadCellData(indices, w1, w2);
             Roads.AddQuadCellData(indices, w1, w2);
         }

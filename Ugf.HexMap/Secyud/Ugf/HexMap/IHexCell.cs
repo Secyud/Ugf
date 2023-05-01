@@ -7,6 +7,6 @@ namespace Secyud.Ugf.HexMap
         public int WaterLevel { get; }
         public bool IsUnderwater { get; }
         public bool HasRiver { get; }
-        public int TerrainTypeIndex { get; }
+        public byte TerrainTypeIndex { get; }
     }
 }

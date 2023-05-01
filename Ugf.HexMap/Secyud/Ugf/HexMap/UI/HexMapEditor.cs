@@ -21,7 +21,7 @@ namespace Secyud.Ugf.HexMap.UI
 
         private int _activeElevation;
 
-        private int _activeTerrainTypeIndex;
+        private byte _activeTerrainTypeIndex;
 
         private int _activeUrbanLevel, _activeFarmLevel, _activePlantLevel, _activeSpecialIndex;
         private int _activeWaterLevel;
@@ -45,7 +45,6 @@ namespace Secyud.Ugf.HexMap.UI
 
         private void Awake()
         {
-            TerrainMaterial.DisableKeyword("_SHOW_GRID");
             Shader.EnableKeyword("_HEX_MAP_EDIT_MODE");
             SetEditMode(true);
         }
@@ -87,7 +86,7 @@ namespace Secyud.Ugf.HexMap.UI
             _brushSize = (int)size;
         }
 
-        public void SetTerrainTypeIndex(int index)
+        public void SetTerrainTypeIndex(byte index)
         {
             _activeTerrainTypeIndex = index;
         }
@@ -157,13 +156,6 @@ namespace Secyud.Ugf.HexMap.UI
             enabled = toggle;
         }
 
-        public void ShowGrid(bool visible)
-        {
-            if (visible)
-                TerrainMaterial.EnableKeyword("_SHOW_GRID");
-            else
-                TerrainMaterial.DisableKeyword("_SHOW_GRID");
-        }
 
         private HexCell GetCellUnderCursor()
         {

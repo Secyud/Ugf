@@ -5,6 +5,7 @@ using System.Collections.Concurrent;
 using System.Linq;
 using System.Reflection;
 using Secyud.Ugf.Archiving;
+using UnityEngine;
 
 #endregion
 
@@ -71,6 +72,9 @@ namespace Secyud.Ugf.DependencyInjection
             Guid id = type.GetId();
             if (id != Guid.Empty)
             {
+                if(_typeManager.TryGetValue(id, out var origin))
+                    Debug.LogWarning($"Type manager: {type} replaced {origin.Type}");
+                
                 _typeManager[id] = new ConstructorContainer(type);
                 return;
             }

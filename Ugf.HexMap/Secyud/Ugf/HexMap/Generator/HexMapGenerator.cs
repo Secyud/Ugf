@@ -18,14 +18,6 @@ namespace Secyud.Ugf.HexMap.Generator
 
         private static readonly float[] MoistureBands = { 0.12f, 0.28f, 0.85f };
 
-        private static readonly int[] Biomes =
-        {
-            0, 4, 4, 4,
-            0, 2, 2, 2,
-            0, 1, 1, 1,
-            0, 1, 1, 1
-        };
-
         private readonly List<HexDirection> _flowDirections = new();
 
         private int _cellCount, _landCells;
@@ -72,7 +64,8 @@ namespace Secyud.Ugf.HexMap.Generator
             CreateClimate();
             CreateRivers();
             SetTerrainType();
-            for (var i = 0; i < _cellCount; i++) _grid.GetCell(i).SearchPhase = 0;
+            for (var i = 0; i < _cellCount; i++)
+                _grid.GetCell(i).SearchPhase = 0;
 
             Random.state = originalRandomState;
         }
@@ -589,32 +582,22 @@ namespace Secyud.Ugf.HexMap.Generator
                 var moisture = _climate[i].Moisture;
                 if (!cell.IsUnderwater)
                 {
-                    var t = 0;
+                    byte t = 0;
                     for (; t < TemperatureBands.Length; t++)
                         if (temperature < TemperatureBands[t])
                             break;
 
-                    var m = 0;
+                    byte m = 0;
                     for (; m < MoistureBands.Length; m++)
                         if (moisture < MoistureBands[m])
                             break;
 
-                    var cellBiome = Biomes[t * 4 + m];
 
-                    if (cellBiome == 0)
-                    {
-                        if (cell.Elevation >= rockDesertElevation) cellBiome = 3;
-                    }
-                    else if (cell.Elevation == Parameter.ElevationMaximum)
-                    {
-                        cellBiome = 4;
-                    }
-
-                    cell.TerrainTypeIndex = cellBiome;
+                    cell.TerrainTypeIndex = (byte)(12 - t * 4 + m);
                 }
                 else
                 {
-                    int terrain;
+                    byte terrain;
                     if (cell.Elevation == Parameter.WaterLevel - 1)
                     {
                         int cliffs = 0, slopes = 0;
@@ -634,28 +617,28 @@ namespace Secyud.Ugf.HexMap.Generator
                         }
 
                         if (cliffs + slopes > 3)
-                            terrain = 1;
-                        else if (cliffs > 0)
-                            terrain = 3;
-                        else if (slopes > 0)
                             terrain = 0;
+                        else if (cliffs > 0)
+                            terrain = 4;
+                        else if (slopes > 0)
+                            terrain = 8;
                         else
-                            terrain = 1;
+                            terrain = 12;
                     }
                     else if (cell.Elevation >= Parameter.WaterLevel)
                     {
-                        terrain = 1;
+                        terrain = 0;
                     }
                     else if (cell.Elevation < 0)
                     {
-                        terrain = 3;
+                        terrain = 4;
                     }
                     else
                     {
-                        terrain = 2;
+                        terrain = 8;
                     }
 
-                    if (terrain == 1 && temperature < TemperatureBands[0]) terrain = 2;
+                    if (terrain == 0 && temperature < TemperatureBands[0]) terrain = 12;
 
                     cell.TerrainTypeIndex = terrain;
                 }
