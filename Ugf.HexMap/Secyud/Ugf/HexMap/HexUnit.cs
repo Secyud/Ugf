@@ -62,11 +62,6 @@ namespace Secyud.Ugf.HexMap
         }
 
         /// <summary>
-        ///     Speed of the unit, in cells per turn.
-        /// </summary>
-        public int Speed => 24;
-
-        /// <summary>
         ///     Vision range of the unit, in cells.
         /// </summary>
         public int VisionRange => 3;

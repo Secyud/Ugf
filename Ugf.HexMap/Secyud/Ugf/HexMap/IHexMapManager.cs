@@ -12,6 +12,7 @@ namespace Secyud.Ugf.HexMap
         public Transform GetFeature(HexCell cell);
         public Transform GetSpecialFeature(HexCell cell);
 
-        public int GetMoveCost(HexUnit unit, HexCell from, HexCell to, HexDirection direction);
+        public int GetMoveCost(HexUnit unit,HexCell from, HexCell to, HexDirection direction);
+        public int GetSpeed(HexUnit unit);
     }
 }
