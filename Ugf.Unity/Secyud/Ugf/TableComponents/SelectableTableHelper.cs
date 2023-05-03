@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 #endregion
 
@@ -13,8 +14,21 @@ namespace Secyud.Ugf.TableComponents
         where TListService : TableFunctionBase<TItem>
         where TCell : MonoBehaviour
     {
-        private TItem _selectedItem;
+        private SelectableTable SelectableTable => (SelectableTable)Table;
+        protected TItem SelectedItem
+        {
+            get => _selectedItem;
+            set
+            {
+                _selectedItem = value;
+                for (int i = 0; i <SelectableTable.ShowCellContent.childCount ; i++)
+                    Object.Destroy(SelectableTable.ShowCellContent.GetChild(i).gameObject);
+                TCell cell = Object.Instantiate(CellTemplate, SelectableTable.ShowCellContent);
+                SetCell(cell,_selectedItem);
+            }
+        }
         public Action<TItem> CallBackAction;
+        private TItem _selectedItem;
 
         public void OnInitialize(SelectableTable table, TCell cellTemplate, IList<TItem> totalItems)
         {
@@ -24,7 +38,7 @@ namespace Secyud.Ugf.TableComponents
 
         private void OnEnsure()
         {
-            CallBackAction?.Invoke(_selectedItem);
+            CallBackAction?.Invoke(SelectedItem);
             CallBackAction = null;
         }
 
@@ -36,14 +50,14 @@ namespace Secyud.Ugf.TableComponents
         public override Transform CreateCell(Transform content, int index)
         {
             var transform = base.CreateCell(content, index);
-            if (transform) transform.gameObject.GetOrAddButton(() => _selectedItem = Items[index]);
+            if (transform) transform.gameObject.GetOrAddButton(() => SelectedItem = Items[index]);
             return transform;
         }
 
         public override void ResetCell(Transform cell, int index)
         {
             base.ResetCell(cell, index);
-            if (cell) cell.gameObject.GetOrAddButton(() => _selectedItem = Items[index]);
+            if (cell) cell.gameObject.GetOrAddButton(() => SelectedItem = Items[index]);
         }
     }
 }

@@ -46,7 +46,10 @@ namespace Secyud.Ugf.FunctionalComponents
 
         public void OnPointerExit(PointerEventData eventData)
         {
-            _isIn = false;
+            if (!GetComponent<RectTransform>().MouseIn())
+            {
+                _isIn = false;
+            }
         }
 
         private void Move(float value)
