@@ -133,5 +133,13 @@ namespace System
                 archivable.Load(reader);
             return obj;
         }
+        public static TResult ReadArchiving<TResult>(this BinaryReader reader) where TResult : class
+        {
+            _typeManager ??= Og.Get<TypeManager>();
+            object obj = _typeManager.Construct(reader);
+            if (obj is IArchivable archivable)
+                archivable.Load(reader);
+            return obj as TResult;
+        }
     }
 }
