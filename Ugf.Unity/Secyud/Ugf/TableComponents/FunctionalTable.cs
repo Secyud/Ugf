@@ -1,5 +1,6 @@
 #region
 
+using Secyud.Ugf.Layout;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -9,8 +10,8 @@ namespace Secyud.Ugf.TableComponents
 {
     public class FunctionalTable : Table
     {
-        public Transform FixedContent;
-        public Transform SortableContent;
+        public GridLayoutTrigger FixedContent;
+        public GridLayoutTrigger SortableContent;
         public FilterGroup FilterGroupTemplate;
         public Sorter SorterTemplate;
 

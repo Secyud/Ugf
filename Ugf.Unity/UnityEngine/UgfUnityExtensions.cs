@@ -33,8 +33,8 @@ namespace UnityEngine
         {
             var x = Input.mousePosition.x / Screen.width * Screen.currentResolution.width;
             var y = (Input.mousePosition.y - Screen.height) / Screen.height * Screen.currentResolution.height;
-
-            return new Vector2(x, y);
+            
+            return new Vector2(x-8, y+8);
         }
 
         public static string RelativePathTo(this Transform target, Transform root)

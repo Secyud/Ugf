@@ -2,6 +2,7 @@
 
 using System;
 using Secyud.Ugf.BasicComponents;
+using Secyud.Ugf.Layout;
 using UnityEngine;
 
 #endregion
@@ -10,9 +11,9 @@ namespace Secyud.Ugf.TableComponents
 {
     public class Table : MonoBehaviour
     {
-        [SerializeField] private Transform TableContent;
+        [SerializeField] private GridLayoutTrigger TableContent;
         [SerializeField] private int PageSize = 12;
-        [SerializeField] private SButton[] PageButtons;
+        [SerializeField] private SText PageText;
 
         private Transform[] _cells;
 
@@ -44,7 +45,7 @@ namespace Secyud.Ugf.TableComponents
                     _page = MaxPage;
                 else
                     _page = value;
-
+                PageText.text = _page.ToString();
                 RefreshPage();
             }
         }
@@ -60,13 +61,12 @@ namespace Secyud.Ugf.TableComponents
 
         private void LateUpdate()
         {
-            if (_refreshLevel > 0)
-            {
-                if (_refreshLevel > 1) TableProperty.ApplySorter();
-                if (_refreshLevel > 2) TableProperty.ApplyFilter();
-                _refreshLevel = 0;
-                OnInitialize();
-            }
+            enabled = false;
+            if (TableProperty is null) return;
+            if (_refreshLevel > 2) TableProperty.ApplyFilter();
+            if (_refreshLevel > 1) TableProperty.ApplySorter();
+            OnInitialize();
+            _refreshLevel = 0;
         }
 
         public void TurnToFirstPage()
@@ -89,43 +89,21 @@ namespace Secyud.Ugf.TableComponents
             Page = MaxPage;
         }
 
-        public void CheckButtonState()
-        {
-            if (Page <= 1)
-            {
-                PageButtons[0].enabled = false;
-                PageButtons[1].enabled = false;
-            }
-            else
-            {
-                PageButtons[0].enabled = true;
-                PageButtons[1].enabled = true;
-            }
-
-            if (Page >= MaxPage)
-            {
-                PageButtons[2].enabled = false;
-                PageButtons[3].enabled = false;
-            }
-            else
-            {
-                PageButtons[2].enabled = true;
-                PageButtons[3].enabled = true;
-            }
-        }
-
         public void RefreshFilter()
         {
+            enabled = true;
             _refreshLevel = 3;
         }
 
         public void RefreshSorter()
         {
+            enabled = true;
             _refreshLevel = 2;
         }
 
         public void RefreshPage()
         {
+            enabled = true;
             _refreshLevel = 1;
         }
 
@@ -145,9 +123,11 @@ namespace Secyud.Ugf.TableComponents
                 TableProperty.ResetCell(_cells[i], i + IndexFirst);
             }
 
-            _cells[cellIndex] = TableProperty.CreateCell(TableContent, IndexFirst + cellIndex);
+            _cells[cellIndex] = TableProperty.CreateCell(
+                TableContent.transform, IndexFirst + cellIndex);
             if (_cells[cellIndex])
                 _cells[cellIndex].SetSiblingIndex(cellIndex);
+            TableContent.enabled = true;
         }
 
         public void RemoveAt(int index)
@@ -163,12 +143,11 @@ namespace Secyud.Ugf.TableComponents
             for (var i = cellIndex; i < PageSize - 1; i++)
             {
                 _cells[i] = _cells[i + 1];
-                if (!_cells[i]) return;
+                if (!_cells[i]) break;
                 TableProperty.ResetCell(_cells[i], i + IndexFirst);
             }
-
-
-            _cells[PageSize - 1] = TableProperty.CreateCell(TableContent, IndexLast - 1);
+            _cells[PageSize - 1] = TableProperty.CreateCell(TableContent.transform, IndexLast - 1);
+            TableContent.enabled = true;
         }
 
         public void ReplaceAt(int index)
@@ -178,9 +157,10 @@ namespace Secyud.Ugf.TableComponents
             if (_cells[cellIndex])
                 Destroy(_cells[cellIndex].gameObject);
 
-            _cells[cellIndex] = TableProperty.CreateCell(TableContent, index);
+            _cells[cellIndex] = TableProperty.CreateCell(TableContent.transform, index);
             if (_cells[cellIndex])
                 _cells[cellIndex].SetSiblingIndex(cellIndex);
+            TableContent.enabled = true;
         }
 
         public void OnInitialize()
@@ -188,10 +168,11 @@ namespace Secyud.Ugf.TableComponents
             Clear();
             for (var i = 0; i < PageSize; i++)
             {
-                _cells[i] = TableProperty.CreateCell(TableContent, i + IndexFirst);
+                _cells[i] = TableProperty.CreateCell(TableContent.transform, i + IndexFirst);
                 if (!_cells[i])
-                    return;
+                    break;
             }
+            TableContent.enabled = true;
         }
 
         public void Clear()

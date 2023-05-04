@@ -77,6 +77,5 @@ namespace UnityEngine
             component.Destroy();
             component = value;
         }
-
     }
 }

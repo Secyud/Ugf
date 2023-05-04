@@ -1,4 +1,5 @@
-﻿using UnityEngine.UI;
+﻿using System;
+using UnityEngine.UI;
 
 namespace UnityEngine
 {
@@ -8,21 +9,30 @@ namespace UnityEngine
 		{
 			LayoutRebuilder.ForceRebuildLayoutImmediate(transform);
 
-			Vector2 position = transform.anchoredPosition;
+			Rect rect = transform.rect;
+			Vector2 lb = GetLeftBottom(transform);
+			float dx = Math.Min(0, Screen.currentResolution.width - lb.x - rect.width);
+			float dy = Math.Max(0, -lb.y);
 
-			if (position.x + transform.rect.width > Screen.currentResolution.width)
-				position.x = Screen.currentResolution.width - transform.rect.width;
-
-			if (position.y - transform.rect.height < -Screen.currentResolution.height)
-				position.y = transform.rect.height - Screen.currentResolution.height;
-
-			transform.anchoredPosition = position;
+			transform.anchoredPosition += new Vector2(dx, dy);
 		}
 
 
 		public static bool MouseIn(this RectTransform transform)
 		{
 			LayoutRebuilder.ForceRebuildLayoutImmediate(transform);
+			RectTransform pTransform = transform.parent.GetComponent<RectTransform>();
+			Rect rect = transform.rect;
+			Vector3 mouse = Input.mousePosition;
+			Vector2 lb = GetLeftBottom(transform);
+			return mouse.x < lb.x + rect.width &&
+				mouse.x > lb.x &&
+				mouse.y < lb.y + rect.height &&
+				mouse.y > lb.y;
+		}
+
+		private static Vector2 GetLeftBottom(RectTransform transform)
+		{
 			RectTransform pTransform = transform.parent.GetComponent<RectTransform>();
 			Rect rect = transform.rect;
 			Rect pRect = pTransform.rect;
@@ -43,10 +53,7 @@ namespace UnityEngine
 			else
 				y = anchorMin.y * pRect.height + (anchorMax.y - anchorMin.y) * pivot.y * pRect.height +
 					anchoredPosition.y - rect.height / 2;
-			return mouse.x < x + rect.width &&
-				mouse.x > x &&
-				mouse.y < y + rect.height &&
-				mouse.y > y;
+			return new Vector2(x, y);
 		}
 	}
 }

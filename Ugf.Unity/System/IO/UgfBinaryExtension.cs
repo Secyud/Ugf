@@ -1,7 +1,6 @@
-﻿using System.IO;
-using Secyud.Ugf;
+﻿using Secyud.Ugf;
 
-namespace System
+namespace System.IO
 {
     public static class UgfBinaryExtension
     {

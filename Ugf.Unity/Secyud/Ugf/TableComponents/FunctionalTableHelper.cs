@@ -1,5 +1,6 @@
 #region
 
+using Secyud.Ugf.Layout;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,28 +25,30 @@ namespace Secyud.Ugf.TableComponents
             TotalItems = showItems;
             FilteredItems = TotalItems;
 
-            var service = Og.Get<TListService>();
+            TListService service = Og.Get<TListService>();
 
             FilterGroups = service.FilterGroups.ToList();
 
-            for (var i = 0; i < table.FixedContent.childCount; i++)
-                Object.Destroy(table.FixedContent.GetChild(i).gameObject);
+            for (int i = 0; i < table.FixedContent.transform.childCount; i++)
+                Object.Destroy(table.FixedContent.transform.GetChild(i).gameObject);
 
-            foreach (var filterGroup in FilterGroups)
+            foreach (FilterRegistrationGroup<TItem> filterGroup in FilterGroups)
             {
-                var fgc = table.FilterGroupTemplate.Create(table.FixedContent, table, filterGroup);
+                FilterGroup fgc = table.FilterGroupTemplate.Create(table.FixedContent.transform, table, filterGroup);
                 table.FilterGroups.Add(fgc);
                 fgc.ChildFilters.AddRange(filterGroup.Filters);
             }
-
+            
+            table.FixedContent.enabled = true;
+            
             Sorters = new List<Pair<ISorterRegistration<TItem>, Transform>>();
 
-            for (var i = 0; i < table.SortableContent.childCount; i++)
-                Object.Destroy(table.SortableContent.GetChild(i).gameObject);
+            for (int i = 0; i < table.SortableContent.transform.childCount; i++)
+                Object.Destroy(table.SortableContent.transform.GetChild(i).gameObject);
 
-            foreach (var sorter in service.Sorters)
+            foreach (ISorterRegistration<TItem> sorter in service.Sorters)
             {
-                var s = table.SorterTemplate.Create(table.SortableContent, table, sorter);
+                Sorter s = table.SorterTemplate.Create(table.SortableContent.transform, table, sorter);
 
                 Sorters.Add(new Pair<ISorterRegistration<TItem>, Transform>
                 {
@@ -53,6 +56,7 @@ namespace Secyud.Ugf.TableComponents
                     Second = s.transform
                 });
             }
+            table.SortableContent.enabled = true;
 
             base.OnInitialize(table, cellTemplate, showItems);
         }
@@ -61,7 +65,7 @@ namespace Secyud.Ugf.TableComponents
         {
             if (FilterGroups is null) return;
 
-            var filterGroups =
+            IEnumerable<IEnumerable<FilterRegistration<TItem>>> filterGroups =
                 FilterGroups
                     .Where(u => u.Enabled)
                     .Select(u =>
@@ -74,7 +78,7 @@ namespace Secyud.Ugf.TableComponents
         {
             if (Sorters is null) return;
 
-            var sorters =
+            IEnumerable<Pair<ISorterRegistration<TItem>, bool>> sorters =
                 Sorters
                     .Where(u => u.First.Enabled != null)
                     .OrderBy(u => u.Second.GetSiblingIndex())

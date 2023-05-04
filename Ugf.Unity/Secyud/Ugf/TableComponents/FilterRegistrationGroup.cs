@@ -14,7 +14,7 @@ namespace Secyud.Ugf.TableComponents
         public List<FilterRegistration<TItem>> Filters { get; set; }
         public virtual string Name { get; set; }
         public virtual string Description => null;
-        public virtual IObjectAccessor<Sprite> Icon => null;
+        public virtual SpriteContainer Icon => null;
 
         public void SetEnabled(bool value)
         {

@@ -1,5 +1,6 @@
 #region
 
+using Secyud.Ugf.Layout;
 using UnityEngine;
 
 #endregion
@@ -7,26 +8,15 @@ using UnityEngine;
 namespace Secyud.Ugf.BasicComponents
 {
     [RequireComponent(typeof(RectTransform))]
-    public class SFloating : MonoBehaviour
+    public class SFloating : VerticalLayoutTrigger
     {
-        public RectTransform Content;
-        public RectTransform RectTransform { get; private set; }
-
-        private void Awake()
-        {
-            RectTransform = GetComponent<RectTransform>();
-        }
+        [SerializeField] private RectTransform MsgContent;
 
         public void OnInitialize(Vector2 position)
         {
             RectTransform.anchoredPosition = position;
         }
-
-        public void CheckBoundary()
-        {
-            RectTransform.CheckBoundary();
-        }
-
+        
         public SFloating Create(Vector2 position)
         {
             var floating = Instantiate(this, Og.Canvas.transform);
@@ -36,10 +26,17 @@ namespace Secyud.Ugf.BasicComponents
 
         public SFloating CreateOnMouse()
         {
-            var floating = Create(UgfUnityExtensions.GetMousePosition() + new Vector2(-16, 8));
+            var floating = Create(UgfUnityExtensions.GetMousePosition());
             return floating;
         }
 
+        public RectTransform MContent => MsgContent;
+
+        public void RefreshLayout()
+        {
+            enabled = true;
+        }
+        
         public void Die()
         {
             Destroy(gameObject);

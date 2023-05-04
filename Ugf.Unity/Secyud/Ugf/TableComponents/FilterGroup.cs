@@ -39,9 +39,9 @@ namespace Secyud.Ugf.TableComponents
                     Filters.Clear();
 
                     foreach (var filter in ChildFilters)
-                        Filters.Add(FilterTemplate.Create(_floatingExist.Content, this, filter));
+                        Filters.Add(FilterTemplate.Create(_floatingExist.MContent, this, filter));
 
-                    _floatingExist.CheckBoundary();
+                    _floatingExist.RefreshLayout();
                 }
                 else if (_floatingExist)
                 {

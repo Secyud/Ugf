@@ -51,11 +51,11 @@ namespace Secyud.Ugf.TableComponents
                 eventData.pointerCurrentRaycast.gameObject.transform.parent != transform.parent)
                 return;
 
-            var result = 0;
+            int result = 0;
 
-            for (var i = 0; i < FunctionalTable.SortableContent.childCount; i++)
+            for (int i = 0; i < FunctionalTable.SortableContent.transform.childCount; i++)
             {
-                var trans = FunctionalTable.SortableContent.GetChild(i);
+                Transform trans = FunctionalTable.SortableContent.transform.GetChild(i);
 
                 if ((trans.position - _rectTransform.position).x > 0)
                     result = i;
@@ -63,7 +63,7 @@ namespace Secyud.Ugf.TableComponents
                     break;
             }
 
-            _rectTransform.SetParent(FunctionalTable.SortableContent);
+            _rectTransform.SetParent(FunctionalTable.SortableContent.transform);
 
             transform.SetSiblingIndex(result);
 
@@ -102,7 +102,7 @@ namespace Secyud.Ugf.TableComponents
 
         public Sorter Create(Transform parent, FunctionalTable functionalTable, ICanBeStated triggerable)
         {
-            var ret = Instantiate(this, parent);
+            Sorter ret = Instantiate(this, parent);
 
             ret.OnInitialize(functionalTable, triggerable);
 

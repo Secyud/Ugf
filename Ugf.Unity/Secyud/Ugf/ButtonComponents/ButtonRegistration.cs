@@ -13,15 +13,12 @@ namespace Secyud.Ugf.ButtonComponents
         public abstract void Trigger();
         public abstract string Name { get; }
         public virtual string Description => null;
-        public virtual IObjectAccessor<Sprite> Icon => null;
+        public virtual SpriteContainer Icon => null;
 
         public virtual void SetButton(SButton button)
         {
         }
 
-        public virtual bool Visible(TItem target)
-        {
-            return true;
-        }
+        public abstract bool Visible(TItem target);
     }
 }
