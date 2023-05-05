@@ -68,16 +68,7 @@ namespace Secyud.Ugf.DependencyInjection
 
         public void AddType(Type type)
         {
-
-            Guid id = type.GetId();
-            if (id != Guid.Empty)
-            {
-                if(_typeManager.TryGetValue(id, out var origin))
-                    Debug.LogWarning($"Type manager: {type} replaced {origin.Type}");
-                
-                _typeManager[id] = new ConstructorContainer(type);
-                return;
-            }
+            _typeManager.TryAddType(type);
             
             if (IsConventionalRegistrationDisabled(type))
                 return;

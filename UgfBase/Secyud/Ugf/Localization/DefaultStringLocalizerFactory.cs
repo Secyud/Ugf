@@ -9,6 +9,7 @@ using System.Reflection;
 using System.Text;
 using Newtonsoft.Json;
 using Secyud.Ugf.DependencyInjection;
+using UnityEngine;
 
 #endregion
 
@@ -71,7 +72,7 @@ namespace Secyud.Ugf.Localization
             var path = resourceType.FullName!.Replace('.', '/');
 
             path = Path.Combine(Og.AppPath, $"{path}/{CultureInfo.CurrentCulture.Name}.json");
-
+            
             if (!File.Exists(path))
                 return;
 

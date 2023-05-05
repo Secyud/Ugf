@@ -115,6 +115,7 @@ namespace System
 
         private static TypeManager _typeManager;
         
+        private static TypeManager TypeManager => _typeManager??= Og.Get<TypeManager>();
         public static void WriteArchiving(this BinaryWriter writer, object obj)
         {
             Guid typeId = obj.GetTypeId();
@@ -127,19 +128,28 @@ namespace System
 
         public static object ReadArchiving(this BinaryReader reader)
         {
-            _typeManager ??= Og.Get<TypeManager>();
-            object obj = _typeManager.Construct(reader);
+            object obj = TypeManager.Construct(reader);
             if (obj is IArchivable archivable)
                 archivable.Load(reader);
             return obj;
         }
         public static TResult ReadArchiving<TResult>(this BinaryReader reader) where TResult : class
         {
-            _typeManager ??= Og.Get<TypeManager>();
-            object obj = _typeManager.Construct(reader);
+            object obj = TypeManager.Construct(reader);
             if (obj is IArchivable archivable)
                 archivable.Load(reader);
             return obj as TResult;
+        }
+        
+        
+        
+        public static Guid GetTypeId(this object type)
+        {
+            return type.GetType().GetId();
+        }
+        public static Guid GetId(this Type type)
+        {
+            return TypeManager.GetId(type);
         }
     }
 }

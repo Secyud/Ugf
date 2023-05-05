@@ -38,10 +38,10 @@ namespace Secyud.Ugf.TableComponents
 
                     Filters.Clear();
 
+                    RectTransform content = _floatingExist.PrepareLayout();
+                    
                     foreach (var filter in ChildFilters)
-                        Filters.Add(FilterTemplate.Create(_floatingExist.MContent, this, filter));
-
-                    _floatingExist.RefreshLayout();
+                        Filters.Add(FilterTemplate.Create(content, this, filter));
                 }
                 else if (_floatingExist)
                 {

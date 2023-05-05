@@ -12,6 +12,8 @@ namespace Secyud.Ugf.Layout
 		protected RectTransform RectTransform;
 		private const int RecordMax = 1;
 		private int _record;
+
+		public TLayoutElement Element => LayoutElement;
 		
 		protected virtual void Awake()
 		{
@@ -52,6 +54,21 @@ namespace Secyud.Ugf.Layout
 			if (ContentSizeFitter)
 				ContentSizeFitter.enabled = true;
 			RectTransform.CheckBoundary();
+		}
+
+		public virtual void RefreshContent(IHasContent content)
+		{
+			for (int i = 0; i < transform.childCount; i++)
+				Destroy(transform.GetChild(i).gameObject);
+			content?.SetContent(PrepareLayout());
+		}
+
+		public virtual RectTransform PrepareLayout()
+		{
+			for (int i = 0; i < RectTransform.childCount; i++)
+				Destroy(RectTransform.GetChild(i).gameObject);
+			enabled = true;
+			return RectTransform;
 		}
 	}
 }

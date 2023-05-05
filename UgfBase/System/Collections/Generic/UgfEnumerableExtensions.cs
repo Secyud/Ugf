@@ -32,5 +32,10 @@ namespace System.Collections.Generic
                 ? source.Where(predicate)
                 : source;
         }
+
+        public static List<TTarget> TryFindCast<TSource,TTarget>(this IEnumerable<TSource> source)
+        {
+            return source.Where(u => u is TTarget).Cast<TTarget>().ToList();
+        }
     }
 }

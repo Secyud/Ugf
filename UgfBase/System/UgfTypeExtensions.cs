@@ -24,14 +24,5 @@ namespace System
             return null;
         }
 
-        
-        public static Guid GetTypeId(this object type)
-        {
-            return type.GetType().GetId();
-        }
-        public static Guid GetId(this Type type)
-        {
-            return type.GetCustomAttribute<TypeIdAttribute>()?.Id ?? Guid.Empty;
-        }
     }
 }

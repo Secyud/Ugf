@@ -32,13 +32,13 @@ namespace Secyud.Ugf.HexMap
 
 		private float _zoom = 1f;
 
-		private void Awake ()
+		private void Awake()
 		{
 			_swivel = transform.GetChild(0);
 			_stick = _swivel.GetChild(0);
 		}
 
-		private void Update ()
+		private void Update()
 		{
 			if (!EventSystem.current.IsPointerOverGameObject())
 			{
@@ -75,12 +75,12 @@ namespace Secyud.Ugf.HexMap
 			}
 		}
 
-		private void OnEnable ()
+		private void OnEnable()
 		{
 			ValidatePosition();
 		}
 
-		public void Adjust ()
+		public void Adjust()
 		{
 			int gridSize = Math.Max(Grid.CellCountX, Grid.CellCountZ);
 			if (MaxDistance > gridSize * 2)
@@ -99,12 +99,12 @@ namespace Secyud.Ugf.HexMap
 		/// <summary>
 		///     Validate the position of the singleton camera.
 		/// </summary>
-		public void ValidatePosition ()
+		public void ValidatePosition()
 		{
 			AdjustPosition(0.1f, 0.1f);
 		}
 
-		private void AdjustZoom (float delta)
+		private void AdjustZoom(float delta)
 		{
 			_zoom = Mathf.Clamp01(_zoom + delta);
 			float w = Screen.currentResolution.width / 2f;
@@ -122,7 +122,7 @@ namespace Secyud.Ugf.HexMap
 			AdjustPosition(w, h);
 		}
 
-		private void AdjustRotation (float delta)
+		private void AdjustRotation(float delta)
 		{
 			_rotationAngle += delta * RotationSpeed * Time.deltaTime;
 			if (_rotationAngle < 0f)
@@ -132,7 +132,7 @@ namespace Secyud.Ugf.HexMap
 			transform.localRotation = Quaternion.Euler(0f, _rotationAngle, 0f);
 		}
 
-		private void AdjustPosition (float xDelta, float zDelta)
+		private void AdjustPosition(float xDelta, float zDelta)
 		{
 			Vector3 direction = transform.localRotation *
 				new Vector3(xDelta, 0f, zDelta).normalized;
@@ -146,7 +146,7 @@ namespace Secyud.Ugf.HexMap
 			transform.localPosition = Grid.Wrapping ? WrapPosition(position) : ClampPosition(position);
 		}
 
-		private Vector3 ClampPosition (Vector3 position)
+		private Vector3 ClampPosition(Vector3 position)
 		{
 			float distance = Mathf.Lerp(MinDistance, MaxDistance, 1 - _zoom);
 
@@ -159,7 +159,7 @@ namespace Secyud.Ugf.HexMap
 			return position;
 		}
 
-		private Vector3 WrapPosition (Vector3 position)
+		private Vector3 WrapPosition(Vector3 position)
 		{
 			float width = Grid.CellCountX * HexMetrics.InnerDiameter;
 			while (position.x < 0f) position.x += width;
@@ -173,7 +173,7 @@ namespace Secyud.Ugf.HexMap
 			return position;
 		}
 
-		public void SetTargetPosition (Vector3 position)
+		public void SetTargetPosition(Vector3 position)
 		{
 			_targetPosition = position;
 			_targetPosition.y = 0;
