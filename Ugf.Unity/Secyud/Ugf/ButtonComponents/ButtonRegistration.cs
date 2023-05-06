@@ -11,9 +11,9 @@ namespace Secyud.Ugf.ButtonComponents
     {
         public TItem Target { get; set; }
         public abstract void Trigger();
-        public abstract string Name { get; }
-        public virtual string Description => null;
-        public virtual SpriteContainer Icon => null;
+        public abstract string ShowName { get; }
+        public virtual string ShowDescription => null;
+        public virtual IObjectAccessor<Sprite> ShowIcon => null;
 
         public virtual void SetButton(SButton button)
         {

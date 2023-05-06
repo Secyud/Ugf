@@ -7,16 +7,14 @@ namespace Secyud.Ugf.InputManaging
 {
 	public class InputUnit
 	{
-		internal InputUnit(string name,KeyCode code)
+		internal InputUnit(KeyCode code, UnityEvent @event)
 		{
-			Name = name;
 			KeyCode = code;
+			Event = @event;
 		}
-
-		public string Name { get; }
 		
-		public KeyCode KeyCode { get; set; }
+		public KeyCode KeyCode { get;  }
 
-		public List<Pair<int,UnityEvent>> Events { get; } = new();
+		public UnityEvent Event { get; }
 	}
 }

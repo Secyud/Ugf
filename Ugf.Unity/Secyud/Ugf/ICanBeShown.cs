@@ -1,9 +1,11 @@
+using UnityEngine;
+
 namespace Secyud.Ugf
 {
     public interface ICanBeShown
     {
-        string Name { get; }
-        string Description { get; }
-        SpriteContainer Icon { get; }
+        string ShowName { get; }
+        string ShowDescription { get; }
+        IObjectAccessor<Sprite> ShowIcon { get; }
     }
 }

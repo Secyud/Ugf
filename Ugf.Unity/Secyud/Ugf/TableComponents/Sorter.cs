@@ -17,7 +17,6 @@ namespace Secyud.Ugf.TableComponents
         [SerializeField] private SText Name;
         private CanvasGroup _canvasGroup;
         private Vector2 _deltaRecord;
-
         private RectTransform _rectTransform;
 
         public FunctionalTable FunctionalTable { get; private set; }
@@ -33,7 +32,7 @@ namespace Secyud.Ugf.TableComponents
         {
             if (eventData.button != PointerEventData.InputButton.Left)
                 return;
-            _canvasGroup.blocksRaycasts = true;
+            _canvasGroup.blocksRaycasts = false;
             _rectTransform.SetParent(Og.Canvas.gameObject.transform);
             _deltaRecord = _rectTransform.anchoredPosition - eventData.position;
         }
@@ -47,12 +46,7 @@ namespace Secyud.Ugf.TableComponents
 
         public void OnEndDrag(PointerEventData eventData)
         {
-            if (eventData.button != PointerEventData.InputButton.Left ||
-                eventData.pointerCurrentRaycast.gameObject.transform.parent != transform.parent)
-                return;
-
             int result = 0;
-
             for (int i = 0; i < FunctionalTable.SortableContent.transform.childCount; i++)
             {
                 Transform trans = FunctionalTable.SortableContent.transform.GetChild(i);
@@ -62,13 +56,10 @@ namespace Secyud.Ugf.TableComponents
                 else
                     break;
             }
-
             _rectTransform.SetParent(FunctionalTable.SortableContent.transform);
-
             transform.SetSiblingIndex(result);
-
-            _canvasGroup.blocksRaycasts = false;
-
+            _canvasGroup.blocksRaycasts = true;
+            FunctionalTable.SortableContent.enabled = true;
             FunctionalTable.RefreshSorter();
         }
 
@@ -97,7 +88,7 @@ namespace Secyud.Ugf.TableComponents
         {
             FunctionalTable = functionalTable;
             Triggerable = triggerable;
-            Name.text = Og.L[triggerable.Name];
+            Name.text = Og.L[triggerable.ShowName];
         }
 
         public Sorter Create(Transform parent, FunctionalTable functionalTable, ICanBeStated triggerable)

@@ -9,89 +9,51 @@ namespace Secyud.Ugf.InputManaging
 {
 	public class InputService : ISingleton
 	{
-		private readonly Dictionary<string, InputUnit> _dictionary = new();
-		private readonly List<InputUnit> _list = new();
-		private int _currentLayer;
+		private readonly List<InputLayer> _list = new();
 
-		public void RegisterKey(string name, KeyCode key)
+		public void AddEvent(KeyCode key, int uiLayer, UnityEvent @event)
 		{
-			var unit = new InputUnit(name, key);
-			_dictionary[name] = unit;
-			_list.AddLast(unit);
-		}
-
-		public void AddEvent(string key, int uiLayer, UnityEvent @event)
-		{
-			if (_dictionary.TryGetValue(key, out InputUnit unit))
+			InputLayer layer = null;
+			if (_list.Any())
 			{
-				if (!unit.Events.IsNullOrEmpty())
-				{
-					Pair<int, UnityEvent> last = unit.Events.Last();
-
-					if (last.First >= uiLayer)
-						return;
-				}
-
-				unit.Events.AddLast(
-					new Pair<int, UnityEvent>
-					{
-						First = uiLayer,
-						Second = @event
-					}
-				);
-				if (uiLayer > _currentLayer)
-					_currentLayer = uiLayer;
-			}
-		}
-
-		public void RemoveEvent(string key, int uiLayer, UnityEvent @event)
-		{
-			if (_dictionary.TryGetValue(key, out InputUnit unit))
-				for (int i = unit.Events.Count - 1; i >= 0; i++)
-					if (unit.Events[i].Second == @event)
-					{
-						unit.Events.RemoveAt(i);
-						if (uiLayer >= _currentLayer)
-							RefreshLayer();
-						return;
-					}
-					else if (uiLayer > unit.Events[i].First)
-					{
-						return;
-					}
-		}
-
-		private void RefreshLayer()
-		{
-			int max = 0;
-			foreach (var unit in _dictionary.Values)
-			{
-				if (unit.Events.IsNullOrEmpty())
-					continue;
-
-				Pair<int, UnityEvent> e = unit.Events.Last();
-
-				if (_currentLayer == e.First)
+				InputLayer last = _list.Last();
+				if (last.Index > uiLayer)
 					return;
 
-				if (max < e.First)
-					max = e.First;
+				if (last.Index == uiLayer)
+					layer = last;
 			}
-			_currentLayer = max;
+
+			if (layer is null)
+			{
+				layer = new InputLayer(uiLayer);
+				_list.AddLast(layer);
+			}
+
+			layer.Inputs[key] = new InputUnit(key, @event);
+		}
+
+		public void RemoveEvent(KeyCode key, int uiLayer, UnityEvent @event)
+		{
+			for (int i = _list.Count - 1; i >= 0; i++)
+				if (_list[i].Index == uiLayer)
+				{
+					_list[i].Inputs.Remove(key);
+					if (!_list[i].Inputs.Any())
+						_list.RemoveAt(i);
+					return;
+				}
+				else if (uiLayer > _list[i].Index)
+					return;
 		}
 
 		public void Update()
 		{
-			foreach (Pair<int, UnityEvent> last in
-				from unit in _list 
-				where !unit.Events.IsNullOrEmpty() 
-				let last = unit.Events.Last() 
-				where last.First == _currentLayer && Input.GetKeyUp(unit.KeyCode) 
-				select last)
-			{
-				last.Second.Invoke();
-				return;
-			}
+			if (!_list.Any()) return;
+
+			InputUnit unit = _list.Last().Inputs.Values
+				.FirstOrDefault(inputUnit => Input.GetKeyUp(inputUnit.KeyCode));
+			unit?.Event.Invoke();
 		}
 	}
 }

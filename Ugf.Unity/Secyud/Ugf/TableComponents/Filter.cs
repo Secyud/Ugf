@@ -41,7 +41,7 @@ namespace Secyud.Ugf.TableComponents
         {
             _filterGroup = filterGroup;
             Toggle.Bind(canBeEnabled.SetEnabled);
-            Name.text = Og.L[canBeEnabled.Name];
+            Name.text = Og.L[canBeEnabled.ShowName];
         }
 
         public Filter Create(Transform parent, FilterGroup filterGroup, ICanBeEnabled canBeEnabled)

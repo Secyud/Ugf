@@ -8,13 +8,14 @@ using UnityEngine;
 
 namespace Secyud.Ugf.TableComponents
 {
-    public class FilterRegistrationGroup<TItem> : ICanBeEnabled
+    public sealed class FilterRegistrationGroup<TItem> : ICanBeEnabled
     {
         public bool Enabled = true;
-        public List<FilterRegistration<TItem>> Filters { get; set; }
-        public virtual string Name { get; set; }
-        public virtual string Description => null;
-        public virtual SpriteContainer Icon => null;
+
+        public List<FilterRegistration<TItem>> Filters { get; set; } = new();
+        public string ShowName { get; set; }
+        public string ShowDescription => null;
+        public IObjectAccessor<Sprite> ShowIcon => null;
 
         public void SetEnabled(bool value)
         {
