@@ -1,6 +1,5 @@
 ﻿#region
 
-using System;
 using Secyud.Ugf.HexMap.Utilities;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -22,8 +21,6 @@ namespace Secyud.Ugf.HexMap
 		[SerializeField] private float MoveSpeedMaxZoom;
 		[SerializeField] private float RotationSpeed;
 		[SerializeField] private HexGrid Grid;
-		[SerializeField] private int MaxDistance;
-		[SerializeField] private int MinDistance;
 		private Vector3 _targetPosition;
 		private bool _moveToTarget;
 		private float _rotationAngle;
@@ -58,20 +55,14 @@ namespace Secyud.Ugf.HexMap
 			}
 			if (_moveToTarget)
 			{
-				var speed = MoveSpeedMinZoom / 16;
+				float speed = MoveSpeedMinZoom / 16;
 				Vector3 vector = _targetPosition - transform.localPosition;
-				if (vector.magnitude < speed)
+				Vector3 tmp = vector.normalized * speed;
+				if (vector.magnitude > tmp.magnitude)
+					vector = tmp;
+				transform.localPosition += vector;
+				if ((vector - transform.localPosition).magnitude < 1f)
 					_moveToTarget = false;
-				else
-				{
-					vector = vector.normalized * speed;
-					vector += transform.localPosition;
-					transform.localPosition = Grid.Wrapping
-						? WrapPosition(vector)
-						: ClampPosition(vector);
-					if ((vector - transform.localPosition).magnitude > speed)
-						_moveToTarget = false;
-				}
 			}
 		}
 
@@ -82,12 +73,6 @@ namespace Secyud.Ugf.HexMap
 
 		public void Adjust()
 		{
-			int gridSize = Math.Max(Grid.CellCountX, Grid.CellCountZ);
-			if (MaxDistance > gridSize * 2)
-				MaxDistance = gridSize * 2;
-			if (MinDistance > MaxDistance / 2)
-				MinDistance = MaxDistance / 2;
-
 			if (StickMaxZoom > -80)
 				StickMaxZoom = -80;
 
@@ -143,33 +128,17 @@ namespace Secyud.Ugf.HexMap
 
 			Vector3 position = transform.localPosition;
 			position += direction * distance;
-			transform.localPosition = Grid.Wrapping ? WrapPosition(position) : ClampPosition(position);
+			transform.localPosition = ClampPosition(position);
 		}
 
 		private Vector3 ClampPosition(Vector3 position)
 		{
-			float distance = Mathf.Lerp(MinDistance, MaxDistance, 1 - _zoom);
-
 			float xMax = (Grid.CellCountX - 0.5f) * HexMetrics.InnerDiameter;
-			position.x = Mathf.Clamp(position.x, distance, xMax - distance);
+			position.x = Mathf.Clamp(position.x, 0, xMax);
 
 			float zMax = (Grid.CellCountZ - 1) * (1.5f * HexMetrics.OuterRadius);
-			position.z = Mathf.Clamp(position.z, distance, zMax - distance);
+			position.z = Mathf.Clamp(position.z, 0, zMax);
 
-			return position;
-		}
-
-		private Vector3 WrapPosition(Vector3 position)
-		{
-			float width = Grid.CellCountX * HexMetrics.InnerDiameter;
-			while (position.x < 0f) position.x += width;
-
-			while (position.x > width) position.x -= width;
-
-			float zMax = (Grid.CellCountZ - 1) * (1.5f * HexMetrics.OuterRadius);
-			position.z = Mathf.Clamp(position.z, 0f, zMax);
-
-			Grid.CenterMap(position.x);
 			return position;
 		}
 

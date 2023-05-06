@@ -21,7 +21,8 @@ namespace Secyud.Ugf.HexMap.Generator
         public int ErosionPercentage { get; set; } = 50;
 
         public int ElevationMinimum { get; set; } = -2;
-        public int WaterLevel { get; set; } = 3;
+        public int WaterLevel => 3;
+
         public int ElevationMaximum { get; set; } = 8;
 
         // min 0 max 10

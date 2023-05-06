@@ -214,8 +214,7 @@ namespace Secyud.Ugf.HexMap.UI
                 new Vector4(
                     cell.Coordinates.HexX,
                     cell.Coordinates.HexZ,
-                    _brushSize * _brushSize + 0.5f,
-                    HexMetrics.WrapSize
+                    _brushSize * _brushSize + 0.5f
                 )
             );
         }
@@ -264,8 +263,7 @@ namespace Secyud.Ugf.HexMap.UI
         {
             if (cell)
             {
-                if (_activeTerrainTypeIndex >= 0)
-                    cell.TerrainTypeIndex = _activeTerrainTypeIndex;
+                cell.TerrainTypeIndex = _activeTerrainTypeIndex;
 
                 switch (_applyElevationWater)
                 {

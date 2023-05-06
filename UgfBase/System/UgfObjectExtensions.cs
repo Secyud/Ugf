@@ -114,7 +114,6 @@ namespace System
 
 
         private static TypeManager _typeManager;
-        
         private static TypeManager TypeManager => _typeManager??= Og.Get<TypeManager>();
         public static void WriteArchiving(this BinaryWriter writer, object obj)
         {

@@ -1,5 +1,6 @@
 ﻿#region
 
+using Secyud.Ugf.HexMap.Generator;
 using System.Collections.Generic;
 using System.IO;
 using Secyud.Ugf.HexMap.Utilities;
@@ -18,27 +19,24 @@ namespace Secyud.Ugf.HexMap
 		[SerializeField] private HexCell CellPrefab;
 		[SerializeField] private Text CellLabelPrefab;
 		[SerializeField] private HexGridChunk ChunkPrefab;
+		[SerializeField] private int BorderChunkSize;
 		public static readonly Color ToCellColor = Color.red;
 		public static readonly Color FromCellColor = Color.blue;
 		public static readonly Color PathCellColor = Color.white;
 
 		private readonly List<HexUnit> _units = new();
 		private HexCell[] _cells;
-
-		private HexCellShaderData _cellShaderData;
-
-		private int _chunkCountX, _chunkCountZ;
+		private HexCell[] _tmpCells;
 		private HexGridChunk[] _chunks;
 
-		private Transform[] _columns;
-
-		private int _currentCenterColumnIndex = -1;
-
-		private HexCell _currentPathFrom, _currentPathTo;
-
-		private HexCellPriorityQueue _searchFrontier;
+		private HexCellShaderData _cellShaderData;
+		private int _chunkCountX, _chunkCountZ;
 
 		private int _searchFrontierPhase;
+		private HexCell _currentPathFrom, _currentPathTo;
+		private HexCellPriorityQueue _searchFrontier;
+		private int _dx;
+		private int _dz;
 
 		public IHexMapManager HexMapManager { get; set; }
 
@@ -57,10 +55,7 @@ namespace Secyud.Ugf.HexMap
 		/// </summary>
 		public bool HasPath { get; private set; }
 
-		/// <summary>
-		///     Whether east-west wrapping is enabled.
-		/// </summary>
-		public bool Wrapping { get; private set; }
+		public int BorderWidth => BorderChunkSize;
 
 		private void Awake()
 		{
@@ -70,10 +65,9 @@ namespace Secyud.Ugf.HexMap
 
 		private void OnEnable()
 		{
-			if (!HexMetrics.NoiseSource) HexMetrics.WrapSize = Wrapping ? CellCountX : 0;
 			if (_cellShaderData && _cells is not null)
 			{
-				_cellShaderData.Initialize(CellCountX, CellCountZ);
+				_cellShaderData.Initialize(CellCountX + _dx * 2, CellCountZ + _dz * 2);
 				foreach (HexCell c in _cells)
 					_cellShaderData.RefreshTerrain(c);
 			}
@@ -105,26 +99,15 @@ namespace Secyud.Ugf.HexMap
 		}
 
 		/// <summary>
-		///     Make a game object a child of a map column.
-		/// </summary>
-		/// <param name="child"><see cref="Transform" /> of the child game object.</param>
-		/// <param name="columnIndex">Index of the parent column.</param>
-		public void MakeChildOfColumn(Transform child, int columnIndex)
-		{
-			child.SetParent(_columns[columnIndex], false);
-		}
-
-		/// <summary>
 		///     Create a new map.
 		/// </summary>
 		/// <param name="x">X size of the map.</param>
 		/// <param name="z">Z size of the map.</param>
-		/// <param name="wrapping">Whether the map wraps east-west.</param>
 		/// <returns>
 		///     Whether the map was successfully created. It fails if the X or Z size
 		///     is not a multiple of the respective chunk size.
 		/// </returns>
-		public bool CreateMap(int x, int z, bool wrapping)
+		public bool CreateMap(int x, int z)
 		{
 			if (x <= 0 || x % HexMetrics.ChunkSizeX != 0 ||
 				z <= 0 || z % HexMetrics.ChunkSizeZ != 0)
@@ -135,18 +118,17 @@ namespace Secyud.Ugf.HexMap
 
 			ClearPath();
 			ClearUnits();
-			if (_columns != null)
-				foreach (Transform columns in _columns)
-					Destroy(columns.gameObject);
+			if (_chunks != null)
+				foreach (HexGridChunk chunk in _chunks)
+					Destroy(chunk.gameObject);
 
 			CellCountX = x;
 			CellCountZ = z;
-			Wrapping = wrapping;
-			_currentCenterColumnIndex = -1;
-			HexMetrics.WrapSize = wrapping ? CellCountX : 0;
 			_chunkCountX = CellCountX / HexMetrics.ChunkSizeX;
 			_chunkCountZ = CellCountZ / HexMetrics.ChunkSizeZ;
-			_cellShaderData.Initialize(CellCountX, CellCountZ);
+			_dx = BorderWidth * HexMetrics.ChunkSizeX;
+			_dz = BorderWidth * HexMetrics.ChunkSizeZ;
+			_cellShaderData.Initialize(CellCountX + _dx * 2, CellCountZ + _dz * 2);
 			CreateChunks();
 			CreateCells();
 			return true;
@@ -154,19 +136,15 @@ namespace Secyud.Ugf.HexMap
 
 		private void CreateChunks()
 		{
-			_columns = new Transform[_chunkCountX];
-			for (int x = 0; x < _chunkCountX; x++)
-			{
-				_columns[x] = new GameObject("Column").transform;
-				_columns[x].SetParent(transform, false);
-			}
+			var chunkCountX = _chunkCountX + 2 * BorderWidth;
+			var chunkCountZ = _chunkCountZ + 2 * BorderWidth;
 
-			_chunks = new HexGridChunk[_chunkCountX * _chunkCountZ];
-			for (int z = 0, i = 0; z < _chunkCountZ; z++)
-			for (int x = 0; x < _chunkCountX; x++)
+			_chunks = new HexGridChunk[chunkCountX * chunkCountZ];
+			for (int z = 0, i = 0; z < chunkCountZ; z++)
+			for (int x = 0; x < chunkCountX; x++)
 			{
 				HexGridChunk chunk = _chunks[i++] = Instantiate(ChunkPrefab);
-				chunk.transform.SetParent(_columns[x], false);
+				chunk.transform.SetParent(transform, false);
 				chunk.Grid = this;
 			}
 		}
@@ -175,8 +153,10 @@ namespace Secyud.Ugf.HexMap
 		{
 			_cells = new HexCell[CellCountZ * CellCountX];
 
-			for (int z = 0, i = 0; z < CellCountZ; z++)
-			for (int x = 0; x < CellCountX; x++)
+			_tmpCells = new HexCell[(CellCountZ + 2 * _dz) * (CellCountX + 2 * _dx)];
+
+			for (int z = -_dz, i = 0; z < CellCountZ + _dz; z++)
+			for (int x = -_dx; x < CellCountX + _dx; x++)
 				CreateCell(x, z, i++);
 		}
 
@@ -229,7 +209,7 @@ namespace Secyud.Ugf.HexMap
 			int z = coordinates.Z;
 			if (z < 0 || z >= CellCountZ) return -1;
 
-			int x = coordinates.X + z / 2;
+			int x = coordinates.X + HexCoordinates.Dx(z);
 			if (x < 0 || x >= CellCountX) return -1;
 
 			return x + z * CellCountX;
@@ -262,56 +242,65 @@ namespace Secyud.Ugf.HexMap
 		/// <param name="visible">Whether the UI should be visible.</param>
 		public void ShowUI(bool visible)
 		{
-			foreach (HexGridChunk chunk in _chunks) chunk.ShowUI(visible);
+			foreach (HexGridChunk chunk in _chunks)
+				chunk.ShowUI(visible);
 		}
 
-		private void CreateCell(int x, int z, int i)
+		private void CreateCell(int x, int z, int iTmp)
 		{
 			Vector3 position;
-			// ReSharper disable once PossibleLossOfFraction
-			position.x = (x + z * 0.5f - z / 2) * HexMetrics.InnerDiameter;
+			position.x = (x + z * 0.5f - HexCoordinates.Dx(z)) * HexMetrics.InnerDiameter;
 			position.y = 0f;
 			position.z = z * (HexMetrics.OuterRadius * 1.5f);
 
-			HexCell cell = _cells[i] = Instantiate(CellPrefab);
+
+			int tmpIndex = (z + _dz) * (CellCountX + _dx * 2) + x + _dx;
+
+			HexCell cell = _tmpCells[tmpIndex] = Instantiate(CellPrefab);
 			cell.transform.localPosition = position;
 			cell.Coordinates = HexCoordinates.FromOffsetCoordinates(x, z);
-			cell.Index = i;
-			cell.ColumnIndex = x / HexMetrics.ChunkSizeX;
+			cell.Index = -1;
+			cell.TmpIndex = tmpIndex;
 			cell.ShaderData = _cellShaderData;
 
-			if (x > 0)
+			bool valid = x >= 0 && x < CellCountX && z >= 0 && z < CellCountZ;
+
+			if (valid)
 			{
-				cell.SetNeighbor(HexDirection.W, _cells[i - 1]);
-				if (Wrapping && x == CellCountX - 1) cell.SetNeighbor(HexDirection.E, _cells[i - x]);
+				int i = z * CellCountX + x;
+				_cells[i] = cell;
+				cell.Index = i;
 			}
 
-			if (z > 0)
+			if (x > -_dx)
+				cell.SetNeighbor(HexDirection.W, _tmpCells[iTmp - 1]);
+
+			if (z > -_dz)
 			{
 				if ((z & 1) == 0)
 				{
-					cell.SetNeighbor(HexDirection.Se, _cells[i - CellCountX]);
-					if (x > 0)
-						cell.SetNeighbor(HexDirection.SW, _cells[i - CellCountX - 1]);
-					else if (Wrapping) cell.SetNeighbor(HexDirection.SW, _cells[i - 1]);
+					cell.SetNeighbor(HexDirection.Se, _tmpCells[iTmp - CellCountX - _dx * 2]);
+					if (x > -_dx)
+						cell.SetNeighbor(HexDirection.SW, _tmpCells[iTmp - CellCountX - _dx * 2 - 1]);
 				}
 				else
 				{
-					cell.SetNeighbor(HexDirection.SW, _cells[i - CellCountX]);
-					if (x < CellCountX - 1)
-						cell.SetNeighbor(HexDirection.Se, _cells[i - CellCountX + 1]);
-					else if (Wrapping)
-						cell.SetNeighbor(
-							HexDirection.Se, _cells[i - CellCountX * 2 + 1]
-						);
+					cell.SetNeighbor(HexDirection.SW, _tmpCells[iTmp - CellCountX - _dx * 2]);
+					if (x < CellCountX + _dx * 2 - 1)
+						cell.SetNeighbor(HexDirection.Se, _tmpCells[iTmp - CellCountX - _dx * 2 + 1]);
 				}
 			}
+
 
 			Text label = Instantiate(CellLabelPrefab);
 			label.rectTransform.anchoredPosition =
 				new Vector2(position.x, position.z);
 			cell.UIRect = label.rectTransform;
 
+			if (!valid)
+			{
+				cell.EnableHighlight(Color.red);
+			}
 			cell.Elevation = 0;
 
 			AddCellToChunk(x, z, cell);
@@ -319,13 +308,28 @@ namespace Secyud.Ugf.HexMap
 
 		private void AddCellToChunk(int x, int z, HexCell cell)
 		{
-			int chunkX = x / HexMetrics.ChunkSizeX;
-			int chunkZ = z / HexMetrics.ChunkSizeZ;
-			HexGridChunk chunk = _chunks[chunkX + chunkZ * _chunkCountX];
+			int chunkX = x % HexMetrics.ChunkSizeX < 0
+				? x / HexMetrics.ChunkSizeX - 1
+				: x / HexMetrics.ChunkSizeX;
+			int chunkZ = z % HexMetrics.ChunkSizeZ < 0
+				? z / HexMetrics.ChunkSizeZ - 1
+				: z / HexMetrics.ChunkSizeZ;
+			HexGridChunk chunk = GetChunk(chunkX, chunkZ);
+			chunk.AddCell(x, z, cell);
+		}
 
-			int localX = x - chunkX * HexMetrics.ChunkSizeX;
-			int localZ = z - chunkZ * HexMetrics.ChunkSizeZ;
-			chunk.AddCell(localX + localZ * HexMetrics.ChunkSizeX, cell);
+		private HexGridChunk GetChunk(int x, int z)
+		{
+			return _chunks[x + BorderWidth + (z + BorderWidth) * (_chunkCountX + 2 * BorderWidth)];
+		}
+
+		public void SetGenerator(IHexMapGenerator generator)
+		{
+			generator.TmpCells = _tmpCells;
+			generator.CellCountX = CellCountX + _dx * 2;
+			generator.CellCountZ = CellCountZ + _dz * 2;
+			generator.DeltaX = _dx;
+			generator.DeltaZ = _dz;
 		}
 
 		/// <summary>
@@ -336,9 +340,8 @@ namespace Secyud.Ugf.HexMap
 		{
 			writer.Write(CellCountX);
 			writer.Write(CellCountZ);
-			writer.Write(Wrapping);
 
-			foreach (HexCell cell in _cells)
+			foreach (HexCell cell in _tmpCells)
 				cell.Save(writer);
 		}
 
@@ -352,16 +355,19 @@ namespace Secyud.Ugf.HexMap
 			ClearUnits();
 			int x = reader.ReadInt32();
 			int z = reader.ReadInt32();
-			bool wrapping = reader.ReadBoolean();
-			if (x != CellCountX || z != CellCountZ || Wrapping != wrapping)
-				if (!CreateMap(x, z, wrapping))
+			if (x != CellCountX || z != CellCountZ)
+				if (!CreateMap(x, z))
 					return;
 
 			bool originalImmediateMode = _cellShaderData.ImmediateMode;
 			_cellShaderData.ImmediateMode = true;
 
-			foreach (HexCell cell in _cells)
+			foreach (HexCell cell in _tmpCells)
+			{
 				cell.Load(reader);
+				HexCoordinates c = cell.Coordinates;
+				cell.TmpIndex = (c.Z + _dz) * (CellCountX + _dx * 2) + c.X + _dx;
+			}
 
 			foreach (HexGridChunk chunk in _chunks)
 				chunk.Refresh();
@@ -473,7 +479,7 @@ namespace Secyud.Ugf.HexMap
 						neighbor.SearchPhase > _searchFrontierPhase)
 						continue;
 
-					int moveCost = HexMapManager.GetMoveCost(unit,current, neighbor, d);
+					int moveCost = HexMapManager.GetMoveCost(unit, current, neighbor, d);
 					if (moveCost < 0) continue;
 
 					int distance = current.Distance + moveCost;
@@ -500,39 +506,6 @@ namespace Secyud.Ugf.HexMap
 			}
 
 			return false;
-		}
-
-		/// <summary>
-		///     Center the map given an X position, to facilitate east-west wrapping.
-		/// </summary>
-		/// <param name="xPosition">X position.</param>
-		public void CenterMap(float xPosition)
-		{
-			int centerColumnIndex = (int)
-				(xPosition / (HexMetrics.InnerDiameter * HexMetrics.ChunkSizeX));
-
-			if (centerColumnIndex == _currentCenterColumnIndex) return;
-
-			_currentCenterColumnIndex = centerColumnIndex;
-
-			int minColumnIndex = centerColumnIndex - _chunkCountX / 2;
-			int maxColumnIndex = centerColumnIndex + _chunkCountX / 2;
-
-			Vector3 position;
-			position.y = position.z = 0f;
-			for (int i = 0; i < _columns.Length; i++)
-			{
-				if (i < minColumnIndex)
-					position.x = _chunkCountX *
-						(HexMetrics.InnerDiameter * HexMetrics.ChunkSizeX);
-				else if (i > maxColumnIndex)
-					position.x = _chunkCountX *
-						-(HexMetrics.InnerDiameter * HexMetrics.ChunkSizeX);
-				else
-					position.x = 0f;
-
-				_columns[i].localPosition = position;
-			}
 		}
 	}
 }

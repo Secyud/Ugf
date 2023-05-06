@@ -49,11 +49,16 @@ namespace Secyud.Ugf.HexMap
         /// <summary>
         ///     Add a cell to the chunk.
         /// </summary>
-        /// <param name="index">Index of the cell for the chunk.</param>
+        /// <param name="z"></param>
         /// <param name="cell">Cell to add.</param>
-        public void AddCell(int index, HexCell cell)
+        /// <param name="x"></param>
+        public void AddCell(int x,int z, HexCell cell)
         {
-            _cells[index] = cell;
+            x %= HexMetrics.ChunkSizeX;
+            z %= HexMetrics.ChunkSizeZ;
+            if (x < 0) x += HexMetrics.ChunkSizeX;
+            if (z < 0) z += HexMetrics.ChunkSizeZ;
+            _cells[z * HexMetrics.ChunkSizeZ + x] = cell;
             cell.Chunk = this;
             cell.transform.SetParent(transform, false);
             cell.UIRect.SetParent(_gridCanvas.transform, false);
@@ -101,7 +106,10 @@ namespace Secyud.Ugf.HexMap
 
         private void Triangulate(HexCell cell)
         {
-            for (var d = HexDirection.Ne; d <= HexDirection.Nw; d++) Triangulate(d, cell);
+            if (!cell) return;
+            
+            for (var d = HexDirection.Ne; d <= HexDirection.Nw; d++)
+                Triangulate(d, cell);
 
             if (!cell.IsUnderwater)
             {
@@ -114,6 +122,7 @@ namespace Secyud.Ugf.HexMap
 
         private void Triangulate(HexDirection direction, HexCell cell)
         {
+
             var center = cell.Position;
             var e = new EdgeVertices(
                 center + HexMetrics.GetFirstSolidCorner(direction),
@@ -219,13 +228,9 @@ namespace Secyud.Ugf.HexMap
             Water.AddTriangleCellData(indices, Weights1);
             Water.AddTriangleCellData(indices, Weights1);
 
-            var center2 = neighbor.Position;
-            if (neighbor.ColumnIndex < cell.ColumnIndex - 1)
-                center2.x += HexMetrics.WrapSize * HexMetrics.InnerDiameter;
-            else if (neighbor.ColumnIndex > cell.ColumnIndex + 1)
-                center2.x -= HexMetrics.WrapSize * HexMetrics.InnerDiameter;
-
+            Vector3 center2 = neighbor.Position;
             center2.y = center.y;
+            
             var e2 = new EdgeVertices(
                 center2 + HexMetrics.GetSecondSolidCorner(direction.Opposite()),
                 center2 + HexMetrics.GetFirstSolidCorner(direction.Opposite())
@@ -258,11 +263,6 @@ namespace Secyud.Ugf.HexMap
             if (nextNeighbor != null)
             {
                 var center3 = nextNeighbor.Position;
-                if (nextNeighbor.ColumnIndex < cell.ColumnIndex - 1)
-                    center3.x += HexMetrics.WrapSize * HexMetrics.InnerDiameter;
-                else if (nextNeighbor.ColumnIndex > cell.ColumnIndex + 1)
-                    center3.x -= HexMetrics.WrapSize * HexMetrics.InnerDiameter;
-
                 var v3 = center3 + (nextNeighbor.IsUnderwater
                     ? HexMetrics.GetFirstWaterCorner(direction.Previous())
                     : HexMetrics.GetFirstSolidCorner(direction.Previous()));

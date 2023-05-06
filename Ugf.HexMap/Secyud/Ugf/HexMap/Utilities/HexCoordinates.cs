@@ -26,14 +26,6 @@ namespace Secyud.Ugf.HexMap.Utilities
         /// <param name="z">Z coordinate.</param>
         public HexCoordinates(int x, int z)
         {
-            if (HexMetrics.Wrapping)
-            {
-                var oX = x + z / 2;
-                if (oX < 0)
-                    x += HexMetrics.WrapSize;
-                else if (oX >= HexMetrics.WrapSize) x -= HexMetrics.WrapSize;
-            }
-
             this.x = x;
             this.z = z;
         }
@@ -58,7 +50,7 @@ namespace Secyud.Ugf.HexMap.Utilities
         ///     where the distance between cell centers of east-west neighbors is one unit.
         /// </summary>
         // ReSharper disable once PossibleLossOfFraction
-        public float HexX => X + Z / 2 + ((Z & 1) == 0 ? 0f : 0.5f);
+        public float HexX => X + Dx(Z) + ((Z & 1) == 0 ? 0f : 0.5f);
 
         /// <summary>
         ///     Z position in hex space,
@@ -77,27 +69,6 @@ namespace Secyud.Ugf.HexMap.Utilities
             var xy =
                 (x < other.x ? other.x - x : x - other.x) +
                 (Y < other.Y ? other.Y - Y : Y - other.Y);
-
-            if (HexMetrics.Wrapping)
-            {
-                other.x += HexMetrics.WrapSize;
-                var xyWrapped =
-                    (x < other.x ? other.x - x : x - other.x) +
-                    (Y < other.Y ? other.Y - Y : Y - other.Y);
-                if (xyWrapped < xy)
-                {
-                    xy = xyWrapped;
-                }
-                else
-                {
-                    other.x -= 2 * HexMetrics.WrapSize;
-                    xyWrapped =
-                        (x < other.x ? other.x - x : x - other.x) +
-                        (Y < other.Y ? other.Y - Y : Y - other.Y);
-                    if (xyWrapped < xy) xy = xyWrapped;
-                }
-            }
-
             return (xy + (z < other.z ? other.z - z : z - other.z)) / 2;
         }
 
@@ -109,9 +80,14 @@ namespace Secyud.Ugf.HexMap.Utilities
         /// <returns>Hex coordinates.</returns>
         public static HexCoordinates FromOffsetCoordinates(int x, int z)
         {
-            return new HexCoordinates(x - z / 2, z);
+            return new HexCoordinates(x - Dx(z), z);
         }
 
+        public static int Dx(int z)
+        {
+            return z % 2 < 0 ? z / 2 - 1 : z / 2;
+        }
+        
         /// <summary>
         ///     Create hex coordinates for the cell that contains a position.
         /// </summary>

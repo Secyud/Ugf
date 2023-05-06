@@ -1,5 +1,6 @@
 #region
 
+using Localization;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
@@ -17,15 +18,31 @@ namespace Secyud.Ugf.Localization
 {
     public class DefaultStringLocalizerFactory : IStringLocalizerFactory, ISingleton
     {
+        private readonly IDependencyRegistrar _registrar;
         private readonly Dictionary<Type, Dictionary<string, string>> _localizationStrings = new();
         private readonly Dictionary<Type, List<Type>> _registeredResource = new();
 
-        public void AddResource<TResource>()
+        public DefaultStringLocalizerFactory(IDependencyRegistrar registrar)
+        {
+            _registrar = registrar;
+        }
+        
+        
+        public void AddResource<TResource>() 
+            where TResource : DefaultResource
         {
             AddResource(typeof(TResource));
         }
 
-        public IDictionary<string, string> GetLocalizerStringDictionary<TResource>()
+        public void RegisterResource<TResource>() 
+            where TResource : DefaultResource
+        {
+            _registrar.AddTransient<DefaultStringLocalizer<TResource>, IStringLocalizer<TResource>>();
+            AddResource<TResource>();
+        }
+
+        public IDictionary<string, string> GetLocalizerStringDictionary<TResource>() 
+            where TResource : DefaultResource
         {
             return GetLocalizerStringDictionary(typeof(TResource));
         }

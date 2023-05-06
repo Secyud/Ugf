@@ -1,6 +1,8 @@
 #region
 
 using Secyud.Ugf.DependencyInjection;
+using Secyud.Ugf.InputManaging;
+using System;
 using UnityEngine;
 
 #endregion
@@ -12,6 +14,7 @@ namespace Secyud.Ugf.Modularity
 
     {
         private static UgfApplicationFactory<TStartupModule> _factory;
+        private InputService _inputService;
 
         public IUgfApplication Application { get; private set; }
 
@@ -21,6 +24,12 @@ namespace Secyud.Ugf.Modularity
         {
             Application = Create(PlugInSourceList);
             _factory = this;
+            _inputService = Application.DependencyProvider.Get<InputService>();
+        }
+
+        protected virtual void Update()
+        {
+            _inputService.Update();
         }
 
         public static void Initialize()

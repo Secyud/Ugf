@@ -32,11 +32,8 @@ namespace Secyud.Ugf.HexMap.Utilities
         ///     Inner radius of a hex cell.
         /// </summary>
         public const float InnerRadius = OuterRadius * OuterToInner;
-
-        /// <summary>
-        ///     Inner diameter of a hex cell.
-        /// </summary>
-        public const float InnerDiameter = InnerRadius * 2f;
+        
+        public const float InnerDiameter = InnerRadius * 2;
 
         /// <summary>
         ///     Factor of the solid uniform region inside a hex cell.
@@ -141,12 +138,12 @@ namespace Secyud.Ugf.HexMap.Utilities
         /// <summary>
         ///     Hex grid chunk size in the X dimension.
         /// </summary>
-        public const int ChunkSizeX = 5;
+        public const int ChunkSizeX = 4;
 
         /// <summary>
         ///     Hex grid chunk size in the Z dimension.
         /// </summary>
-        public const int ChunkSizeZ = 5;
+        public const int ChunkSizeZ = 4;
 
         /// <summary>
         ///     Size of the hash grid.
@@ -184,16 +181,6 @@ namespace Secyud.Ugf.HexMap.Utilities
         public static Texture2D NoiseSource;
 
         /// <summary>
-        ///     Wrap size of the map, matching its X size if east-west wrapping is enabled.
-        /// </summary>
-        public static int WrapSize;
-
-        /// <summary>
-        ///     Whether east-west map wrapping is enabled.
-        /// </summary>
-        public static bool Wrapping => WrapSize > 0;
-
-        /// <summary>
         ///     Sample the noise texture.
         /// </summary>
         /// <param name="position">Sample position.</param>
@@ -204,17 +191,6 @@ namespace Secyud.Ugf.HexMap.Utilities
                 position.x * NoiseScale,
                 position.z * NoiseScale
             );
-
-            if (Wrapping && position.x < InnerDiameter * 1.5f)
-            {
-                Vector4 sample2 = NoiseSource.GetPixelBilinear(
-                    (position.x + WrapSize * InnerDiameter) * NoiseScale,
-                    position.z * NoiseScale
-                );
-                sample = Vector4.Lerp(
-                    sample2, sample, position.x * (1f / InnerDiameter) - 0.5f
-                );
-            }
 
             return sample;
         }

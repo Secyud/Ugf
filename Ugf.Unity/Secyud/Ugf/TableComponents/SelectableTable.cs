@@ -2,6 +2,7 @@
 
 using System;
 using UnityEngine;
+using UnityEngine.Events;
 
 #endregion
 
@@ -11,8 +12,8 @@ namespace Secyud.Ugf.TableComponents
     {
         public Transform ShowCellContent;
         
-        public event Action EnsureAction;
-        public event Action CancelAction;
+        public event UnityAction EnsureAction;
+        public event UnityAction CancelAction;
 
         public void Cancel()
         {

@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using Object = UnityEngine.Object;
 
 #endregion
@@ -27,7 +28,7 @@ namespace Secyud.Ugf.TableComponents
                 SetCell(cell,_selectedItem);
             }
         }
-        public Action<TItem> CallBackAction;
+        public UnityAction<TItem> CallBackAction;
         private TItem _selectedItem;
 
         public void OnInitialize(SelectableTable table, TCell cellTemplate, IList<TItem> totalItems)

@@ -45,11 +45,6 @@ namespace Secyud.Ugf.HexMap
 		public HexGridChunk Chunk { get; set; }
 
 		/// <summary>
-		///     Map column index of the cell.
-		/// </summary>
-		public int ColumnIndex { get; set; }
-
-		/// <summary>
 		///     Elevation at which the cell is visible. Highest of surface and water level.
 		/// </summary>
 		public int ViewElevation => _elevation >= _waterLevel ? _elevation : _waterLevel;
@@ -251,6 +246,8 @@ namespace Secyud.Ugf.HexMap
 		///     Unique global index of the cell.
 		/// </summary>
 		public int Index { get; set; }
+
+		public int TmpIndex { get; set; }
 
 		/// <summary>
 		///     Surface elevation level.
@@ -574,8 +571,11 @@ namespace Secyud.Ugf.HexMap
 			_highlight.enabled = true;
 		}
 
-		public int CostTo(HexCell target, HexDirection direction,bool ship)
+		public int CostTo(HexCell target, HexDirection direction, bool ship)
 		{
+			if (target.Index < 0)
+				return -1;
+
 			int dHeight = Math.Abs(target.Elevation - Elevation) + 3;
 			if (target.Elevation > Elevation)
 				dHeight += 3;

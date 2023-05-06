@@ -12,10 +12,11 @@ namespace Secyud.Ugf.BasicComponents
         [SerializeField] private string Value;
         [SerializeField] private bool Translate;
 
-        private void Awake()
+        private void OnEnable()
         {
             GetComponent<SText>().text =
                 Translate ? Og.L.Translate(Value) : Og.L[Value];
+            enabled = false;
         }
     }
 }

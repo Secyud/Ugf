@@ -69,12 +69,12 @@ namespace Secyud.Ugf.HexMap
         /// <param name="cell">Cell with changed terrain type.</param>
         public void RefreshTerrain(HexCell cell)
         {
-            Color32 data = _cellTextureData[cell.Index];
+            Color32 data = _cellTextureData[cell.TmpIndex];
             data.r = 1;
             data.g = 1;
             data.b = GetCellVisibility(cell);
             data.a = (byte)cell.TerrainTypeIndex;
-            _cellTextureData[cell.Index] = data;
+            _cellTextureData[cell.TmpIndex] = data;
             enabled = true;
         }
 
@@ -85,7 +85,7 @@ namespace Secyud.Ugf.HexMap
         /// <param name="cell">Changed cell.</param>
         public void ViewElevationChanged(HexCell cell)
         {
-            _cellTextureData[cell.Index].b = GetCellVisibility(cell);
+            _cellTextureData[cell.TmpIndex].b = GetCellVisibility(cell);
             enabled = true;
         }
 

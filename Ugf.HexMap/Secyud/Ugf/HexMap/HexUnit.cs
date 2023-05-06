@@ -42,9 +42,7 @@ namespace Secyud.Ugf.HexMap
 
                 _location = value;
                 value.Unit = this;
-                var trans = transform;
-                trans.localPosition = value.Position;
-                Grid.MakeChildOfColumn(trans, value.ColumnIndex);
+                transform.localPosition = value.Position;
             }
         }
 
@@ -125,32 +123,12 @@ namespace Secyud.Ugf.HexMap
 
             if (!_currentTravelLocation) _currentTravelLocation = _pathToTravel[0];
 
-            var currentColumn = _currentTravelLocation.ColumnIndex;
-
             var t = Time.deltaTime * TravelSpeed;
             for (var i = 1; i < _pathToTravel.Count; i++)
             {
                 _currentTravelLocation = _pathToTravel[i];
                 a = c;
                 b = _pathToTravel[i - 1].Position;
-
-                var nextColumn = _currentTravelLocation.ColumnIndex;
-                if (currentColumn != nextColumn)
-                {
-                    if (nextColumn < currentColumn - 1)
-                    {
-                        a.x -= HexMetrics.InnerDiameter * HexMetrics.WrapSize;
-                        b.x -= HexMetrics.InnerDiameter * HexMetrics.WrapSize;
-                    }
-                    else if (nextColumn > currentColumn + 1)
-                    {
-                        a.x += HexMetrics.InnerDiameter * HexMetrics.WrapSize;
-                        b.x += HexMetrics.InnerDiameter * HexMetrics.WrapSize;
-                    }
-
-                    Grid.MakeChildOfColumn(transform, nextColumn);
-                    currentColumn = nextColumn;
-                }
 
                 c = (b + _currentTravelLocation.Position) * 0.5f;
 
@@ -189,15 +167,6 @@ namespace Secyud.Ugf.HexMap
 
         private IEnumerator LookAt(Vector3 point)
         {
-            if (HexMetrics.Wrapping)
-            {
-                var xDistance = point.x - transform.localPosition.x;
-                if (xDistance < -HexMetrics.InnerRadius * HexMetrics.WrapSize)
-                    point.x += HexMetrics.InnerDiameter * HexMetrics.WrapSize;
-                else if (xDistance > HexMetrics.InnerRadius * HexMetrics.WrapSize)
-                    point.x -= HexMetrics.InnerDiameter * HexMetrics.WrapSize;
-            }
-
             var trans = transform;
             var localPosition = trans.localPosition;
             point.y = localPosition.y;

@@ -19,8 +19,6 @@ namespace Secyud.Ugf.HexMap.UI
 
         private bool _generateMaps = true;
 
-        private bool _wrapping = true;
-
         [FormerlySerializedAs("mapGenerator")] [SerializeField]
         private HexMapGenerator MapGenerator;
 
@@ -29,10 +27,6 @@ namespace Secyud.Ugf.HexMap.UI
             _generateMaps = toggle;
         }
 
-        public void ToggleWrapping(bool toggle)
-        {
-            _wrapping = toggle;
-        }
 
         public void Open()
         {
@@ -62,9 +56,9 @@ namespace Secyud.Ugf.HexMap.UI
         private void CreateMap(int x, int z)
         {
             if (_generateMaps)
-                MapGenerator.GenerateMap(HexGrid, x, z, _wrapping);
+                MapGenerator.GenerateMap(HexGrid, x, z);
             else
-                HexGrid.CreateMap(x, z, _wrapping);
+                HexGrid.CreateMap(x, z);
 
             Close();
         }

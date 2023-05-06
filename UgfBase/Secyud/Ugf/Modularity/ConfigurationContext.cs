@@ -22,6 +22,8 @@ namespace Secyud.Ugf.Modularity
 
         public IDependencyManager Manager { get; }
 
+        private IStringLocalizerFactory StringLocalizerFactory => Manager.Get<IStringLocalizerFactory>();
+
         private IDictionary<string, object> Items { get; }
 
         public object this[string key]
@@ -38,8 +40,7 @@ namespace Secyud.Ugf.Modularity
         public void AddResource<TResource>()
             where TResource : DefaultResource
         {
-            Manager.AddTransient<DefaultStringLocalizer<TResource>, IStringLocalizer<TResource>>();
-            Manager.Get<IStringLocalizerFactory>().AddResource<TResource>();
+            StringLocalizerFactory.RegisterResource<TResource>();
         }
 
         public void Configure<TOption>(Action<TOption> option)
