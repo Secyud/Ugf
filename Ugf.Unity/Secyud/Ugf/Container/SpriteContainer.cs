@@ -28,20 +28,13 @@ namespace Secyud.Ugf.Container
 
 		public static SpriteContainer Icon(Type abType, string spriteName)
 		{
-			return Create(abType, spriteName + "_64_64");
+			return  new SpriteContainer(abType, spriteName + "_64_64");
 		}
 
 		public new static SpriteContainer Create<TAbBase>(string spriteName)
 			where TAbBase : AssetBundleBase
 		{
-			return Create(typeof(TAbBase), spriteName);
+			return new SpriteContainer(typeof(TAbBase), spriteName);
 		}
-
-		public new static SpriteContainer Create(Type abType, string spriteName)
-		{
-			return new SpriteContainer(abType, spriteName);
-		}
-
-
 	}
 }

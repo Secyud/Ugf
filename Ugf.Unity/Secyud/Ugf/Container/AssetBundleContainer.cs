@@ -1,14 +1,12 @@
-﻿using Secyud.Ugf.Archiving;
-using System;
-using System.IO;
+﻿using System;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
 namespace Secyud.Ugf.Container
 {
-	public class AssetBundleContainer : ObjectContainer<AssetBundle>, IArchivable
+	public class AssetBundleContainer : ObjectContainer<AssetBundle>
 	{
-		protected string AssetBundleName;
+		public readonly string AssetBundleName;
 
 		public AssetBundleContainer()
 		{
@@ -25,16 +23,6 @@ namespace Secyud.Ugf.Container
 		}
 
 		public override AssetBundle Value => CurrentInstance ? CurrentInstance : CurrentInstance ??= GetObject();
-
-		public void Save(BinaryWriter writer)
-		{
-			writer.Write(AssetBundleName);
-		}
-
-		public void Load(BinaryReader reader)
-		{
-			AssetBundleName = reader.ReadString();
-		}
 
 		public TAsset LoadObject<TAsset>(string name)
 			where TAsset : Component

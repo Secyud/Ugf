@@ -1,5 +1,4 @@
 ﻿using JetBrains.Annotations;
-using Secyud.Ugf.Archiving;
 using Secyud.Ugf.AssetBundles;
 using System;
 using System.IO;
@@ -7,7 +6,7 @@ using Object = UnityEngine.Object;
 
 namespace Secyud.Ugf.Container
 {
-	public class AssetContainer<TAsset> : ObjectContainer<TAsset>, IArchivable
+	public class AssetContainer<TAsset> : ObjectContainer<TAsset>
 		where TAsset : Object
 	{
 		protected AssetBundleContainer AssetBundleContainer;
@@ -15,9 +14,8 @@ namespace Secyud.Ugf.Container
 
 		public AssetContainer()
 		{
-			
 		}
-		
+
 		public AssetContainer([NotNull] AssetBundleContainer assetBundleContainer, string assetName)
 		{
 			AssetBundleContainer = assetBundleContainer;
@@ -39,22 +37,37 @@ namespace Secyud.Ugf.Container
 
 		public virtual void Save(BinaryWriter writer)
 		{
-			writer.WriteAssetBundleContainer(AssetBundleContainer);
+			if (AssetBundleContainer is AssetBundleBase)
+			{
+				writer.Write(true);
+				writer.Write(AssetBundleContainer.GetTypeId());
+			}
+			else
+			{
+				writer.Write(false);
+				writer.Write(AssetBundleContainer.AssetBundleName);
+			}
 			writer.Write(AssetName);
 		}
 
 		public virtual void Load(BinaryReader reader)
 		{
-			AssetBundleContainer = reader.ReadAssetBundleContainer();
+			if (reader.ReadBoolean())
+				AssetBundleContainer = Og.Provider.Get(
+					Og.TypeManager[reader.ReadGuid()].Type
+				) as AssetBundleContainer;
+			else
+				AssetBundleContainer = new AssetBundleContainer(reader.ReadString());
 			AssetName = reader.ReadString();
 		}
-		
+
 		public static AssetContainer<TAsset> Create<TAbBase>(string spriteName)
-			where TAbBase: AssetBundleBase
+			where TAbBase : AssetBundleBase
 		{
-			return Create(typeof(TAbBase),spriteName);
+			return Create(typeof(TAbBase), spriteName);
 		}
-		public static AssetContainer<TAsset> Create(Type abType,string assetName)
+
+		public static AssetContainer<TAsset> Create(Type abType, string assetName)
 		{
 			return new AssetContainer<TAsset>(abType, assetName);
 		}

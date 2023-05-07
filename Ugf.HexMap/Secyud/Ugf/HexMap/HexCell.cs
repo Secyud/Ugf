@@ -571,7 +571,7 @@ namespace Secyud.Ugf.HexMap
 			_highlight.enabled = true;
 		}
 
-		public int CostTo(HexCell target, HexDirection direction, bool ship)
+		public int CostTo(HexCell target, HexDirection direction)
 		{
 			if (target.Index < 0)
 				return -1;
@@ -579,7 +579,7 @@ namespace Secyud.Ugf.HexMap
 			int dHeight = Math.Abs(target.Elevation - Elevation) + 3;
 			if (target.Elevation > Elevation)
 				dHeight += 3;
-			if (target.IsUnderwater && !ship)
+			if (target.IsUnderwater)
 				dHeight += 3;
 			if (Walled != target.Walled)
 				dHeight += 3;
