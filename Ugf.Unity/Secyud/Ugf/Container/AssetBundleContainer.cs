@@ -24,7 +24,7 @@ namespace Secyud.Ugf.Container
 			return Og.GetAssetBundle(AssetBundleName);
 		}
 
-		public override AssetBundle Value => Instance ? Instance : Instance ??= GetObject();
+		public override AssetBundle Value => CurrentInstance ? CurrentInstance : CurrentInstance ??= GetObject();
 
 		public void Save(BinaryWriter writer)
 		{

@@ -40,7 +40,7 @@ namespace Secyud.Ugf.Container
 			return AssetBundleContainer.LoadObject<TComponent>(AssetName);
 		}
 
-		public override TComponent Value => Instance;
+		public override TComponent Value => CurrentInstance;
 
 		public TComponent Create()
 		{
@@ -51,18 +51,18 @@ namespace Secyud.Ugf.Container
 					Debug.LogError($"{typeof(TComponent)} cannot be found!");
 			}
 
-			if (Instance)
-				Instance.Destroy();
+			if (CurrentInstance)
+				CurrentInstance.Destroy();
 
-			Instance = _onCanvas ? _prefab.InstantiateOnCanvas() : _prefab.Instantiate();
+			CurrentInstance = _onCanvas ? _prefab.InstantiateOnCanvas() : _prefab.Instantiate();
 
-			return Instance;
+			return CurrentInstance;
 		}
 
 		public void Destroy()
 		{
-			if (Instance) Instance.Destroy();
-			Instance = null;
+			if (CurrentInstance) CurrentInstance.Destroy();
+			CurrentInstance = null;
 		}
 	}
 }

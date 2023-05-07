@@ -4,7 +4,7 @@ namespace Secyud.Ugf.Container
 {
     public abstract class ObjectContainer<TObject> : IObjectAccessor<TObject>
     {
-        protected TObject Instance;
+        protected TObject CurrentInstance;
 
         protected ObjectContainer()
         {
@@ -12,6 +12,6 @@ namespace Secyud.Ugf.Container
 
         protected abstract TObject GetObject();
         
-        public virtual TObject Value => Instance ??= GetObject();
+        public virtual TObject Value => CurrentInstance ??= GetObject();
     }
 }

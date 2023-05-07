@@ -30,7 +30,7 @@ namespace Secyud.Ugf.Container
 			AssetName = assetName;
 		}
 
-		public override TAsset Value => Instance ? Instance : Instance = GetObject();
+		public override TAsset Value => CurrentInstance ? CurrentInstance : CurrentInstance = GetObject();
 
 		protected override TAsset GetObject()
 		{
