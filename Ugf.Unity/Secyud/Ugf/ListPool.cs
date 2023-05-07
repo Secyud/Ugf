@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 #endregion
 
-namespace Secyud.Ugf.HexMap.Utilities
+namespace Secyud.Ugf
 {
     /// <summary>
     ///     Generic static pool for lists.
@@ -21,7 +21,6 @@ namespace Secyud.Ugf.HexMap.Utilities
         public static List<T> Get()
         {
             if (Stack.Count > 0) return Stack.Pop();
-
             return new List<T>();
         }
 

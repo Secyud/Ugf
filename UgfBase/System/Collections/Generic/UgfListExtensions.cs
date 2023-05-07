@@ -13,6 +13,10 @@ namespace System.Collections.Generic
         {
             return source[(int)(choice * source.Count)];
         }
+        public static T Pick<T>(this IList<T> source)
+        {
+            return source[Og.GetRandom(source.Count)];
+        }
 
         public static void InsertRange<T>(this IList<T> source, int index, IEnumerable<T> items)
         {

@@ -49,16 +49,11 @@ namespace Secyud.Ugf.Archiving
 
 		public void TryAddType(Type type)
 		{
-			ConstructorInfo constructor = type.GetConstructor(Type.EmptyTypes);
-			
-			if (constructor is null)
-				return;
-			
 			Guid id = GetId(type);
 			if(TryGetValue(id, out TypeContainer origin))
 				Debug.LogWarning($"Type manager: {type} replaced {origin.Type}");
 			
-			this[id] = new TypeContainer(type,constructor);
+			this[id] = new TypeContainer(type);
 		}
 
 		public Guid GetId(Type type)

@@ -9,20 +9,17 @@ namespace Secyud.Ugf.Archiving
 		public readonly ConstructorInfo Constructor;
 		public readonly Type Type;
 
-		public object Construct() => Constructor.Invoke(Array.Empty<object>());
+		public object Construct()
+		{
+			return Constructor?.Invoke(Array.Empty<object>());
+		}
 
 		public TypeContainer(Type type)
 		{
 			Type = type;
 			Constructor = type.GetConstructor(Type.EmptyTypes);
 			if (Constructor is null)
-				Debug.LogError($"As type with guid, {type} should have a non-parameter constructor but not!");
-		}
-
-		public TypeContainer(Type type, ConstructorInfo constructor)
-		{
-			Type = type;
-			Constructor = constructor;
+				Debug.LogWarning($"As type with guid, {type} should have a non-parameter constructor but not!");
 		}
 	}
 }
