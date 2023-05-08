@@ -34,11 +34,7 @@ namespace Secyud.Ugf.DependencyInjection
         public override object Get(Type type)
         {
             var descriptor = GetDescriptor(type);
-
-            if (descriptor is null)
-                throw new UgfException($"Could not find dependency: {type.FullName}!");
-
-            return descriptor.InstanceAccessor();
+            return descriptor?.InstanceAccessor();
         }
 
         public IDependencyScope CreateScope()

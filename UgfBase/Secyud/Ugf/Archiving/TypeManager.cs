@@ -35,7 +35,14 @@ namespace Secyud.Ugf.Archiving
 
 		public object Construct(Guid id) => this[id].Construct();
 		public object Construct(BinaryReader reader) => this[reader.ReadGuid()].Construct();
-		public T CloneInit<T>(T obj) where T : class => Construct(typeof(T)) as T;
+		public T CloneInit<T>(T obj) where T : class
+		{
+			object ret = Construct(obj.GetType());
+			if (obj is ICloneable cloneable)
+				cloneable.CopyTo(ret);
+			return ret as T;
+		}
+
 		public object Construct(Type type)
 		{
 			Guid id = GetId(type);

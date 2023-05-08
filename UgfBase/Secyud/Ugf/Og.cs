@@ -7,7 +7,6 @@ using Secyud.Ugf.AssetBundles;
 using Secyud.Ugf.DependencyInjection;
 using Secyud.Ugf.Localization;
 using Secyud.Ugf.Modularity;
-using UnityEditor.VersionControl;
 using UnityEngine;
 
 #endregion
