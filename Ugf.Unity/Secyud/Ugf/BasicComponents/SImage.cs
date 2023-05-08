@@ -9,9 +9,14 @@ namespace Secyud.Ugf.BasicComponents
 {
     public class SImage : Image
     {
-        public void Set(Sprite img)
+        public virtual Sprite Sprite
         {
-            sprite = img ? img : Og.EmptyImage;
+            get => sprite;
+            set
+            {
+                sprite = value;
+                enabled = sprite;
+            }
         }
     }
 }

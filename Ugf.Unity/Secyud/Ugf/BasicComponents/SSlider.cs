@@ -19,5 +19,15 @@ namespace Secyud.Ugf.BasicComponents
         {
             onValueChanged.RemoveAllListeners();
         }
+
+        public void Next()
+        {
+            value += 1;
+        }
+
+        public void Preview()
+        {
+            value -= 1;
+        }
     }
 }

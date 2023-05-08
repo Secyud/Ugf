@@ -54,6 +54,11 @@ namespace UnityEngine.Editor
         {
             Create("Basic", "SToggle");
         }
+        [MenuItem("GameObject/Secyud/SFaceSlider")]
+        public static void CreateSFaceSlider()
+        {
+            Create("Basic", "SFaceSlider");
+        }
 
         private static void Create(string path, string name)
         {

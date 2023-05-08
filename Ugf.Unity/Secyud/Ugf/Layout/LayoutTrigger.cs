@@ -9,7 +9,7 @@ namespace Secyud.Ugf.Layout
 	{
 		protected ContentSizeFitter ContentSizeFitter;
 		protected TLayoutElement LayoutElement;
-		protected RectTransform RectTransform;
+		public RectTransform RectTransform;
 		private const int RecordMax = 1;
 		private int _record;
 

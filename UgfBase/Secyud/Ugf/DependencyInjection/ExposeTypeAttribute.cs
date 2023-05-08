@@ -42,7 +42,7 @@ namespace Secyud.Ugf.DependencyInjection
 
             foreach (var interfaceType in type.GetTypeInfo().GetInterfaces())
             {
-                var interfaceName = interfaceType.Name;
+                string interfaceName = interfaceType.Name;
 
                 if (interfaceType.IsGenericType)
                     interfaceName = interfaceType.Name[..interfaceType.Name.IndexOf('`')];

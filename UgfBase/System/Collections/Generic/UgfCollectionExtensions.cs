@@ -66,10 +66,5 @@ namespace System.Collections.Generic
             foreach (var item in items)
                 source.Remove(item);
         }
-        
-        public static T Pick<T>(this T[] source)
-        {
-            return source[Og.GetRandom(source.Length)];
-        }
     }
 }

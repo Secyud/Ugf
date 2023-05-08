@@ -14,7 +14,7 @@ namespace System.Collections.Generic
 		{
 			return source.IsNullOrEmpty()
 				? default
-				: source[(int)(choice * source.Count)];
+				: source[(int)choice];
 		}
 
 		public static T RandomPick<T>(this IList<T> source)
@@ -24,6 +24,14 @@ namespace System.Collections.Generic
 				: source[Og.GetRandom(source.Count)];
 		}
 
+        
+		public static T RandomPick<T>(this T[] source)
+		{
+			return source.IsNullOrEmpty()
+				? default
+				: source[Og.GetRandom(source.Length)];
+		}
+		
 		public static void InsertRange<T>(this IList<T> source, int index, IEnumerable<T> items)
 		{
 			foreach (var item in items)

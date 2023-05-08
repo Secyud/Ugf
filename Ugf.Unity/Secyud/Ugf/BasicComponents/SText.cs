@@ -7,8 +7,6 @@ using UnityEngine;
 
 namespace Secyud.Ugf.BasicComponents
 {
-    [AddComponentMenu("Secyud/Text", 11)]
-    [ExecuteAlways]
     public class SText : TextMeshProUGUI
     {
         public SText Create(Transform parent, string label)
@@ -16,6 +14,11 @@ namespace Secyud.Ugf.BasicComponents
             var sText = Instantiate(this, parent);
             sText.text = label;
             return sText;
+        }
+
+        public void SetTextFloatToInt(float f)
+        {
+            text = ((int)f).ToString();
         }
     }
 }
