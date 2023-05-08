@@ -2,232 +2,239 @@
 
 using System.Linq;
 using Secyud.Ugf;
+using UnityEngine;
 
 #endregion
 
 namespace System.Collections.Generic
 {
-    public static class UgfListExtensions
-    {
-        public static T Pick<T>(this List<T> source, float choice)
-        {
-            return source[(int)(choice * source.Count)];
-        }
-        public static T Pick<T>(this IList<T> source)
-        {
-            return source[Og.GetRandom(source.Count)];
-        }
+	public static class UgfListExtensions
+	{
+		public static T Pick<T>(this List<T> source, float choice)
+		{
+			return source.IsNullOrEmpty()
+				? default
+				: source[(int)(choice * source.Count)];
+		}
 
-        public static void InsertRange<T>(this IList<T> source, int index, IEnumerable<T> items)
-        {
-            foreach (var item in items)
-                source.Insert(index++, item);
-        }
+		public static T RandomPick<T>(this IList<T> source)
+		{
+			return source.IsNullOrEmpty()
+				? default
+				: source[Og.GetRandom(source.Count)];
+		}
 
-        public static int FindIndex<T>(this IList<T> source, Predicate<T> selector)
-        {
-            for (var i = 0; i < source.Count; ++i)
-                if (selector(source[i]))
-                    return i;
-            return -1;
-        }
+		public static void InsertRange<T>(this IList<T> source, int index, IEnumerable<T> items)
+		{
+			foreach (var item in items)
+				source.Insert(index++, item);
+		}
 
-        public static void AddFirst<T>(this IList<T> source, T item)
-        {
-            source.Insert(0, item);
-        }
+		public static int FindIndex<T>(this IList<T> source, Predicate<T> selector)
+		{
+			for (var i = 0; i < source.Count; ++i)
+				if (selector(source[i]))
+					return i;
 
-        public static void AddLast<T>(this IList<T> source, T item)
-        {
-            source.Insert(source.Count, item);
-        }
+			return -1;
+		}
 
-        public static void InsertAfter<T>(this IList<T> source, T existingItem, T item)
-        {
-            var index = source.IndexOf(existingItem);
-            if (index < 0)
-            {
-                source.AddFirst(item);
-                return;
-            }
+		public static void AddFirst<T>(this IList<T> source, T item)
+		{
+			source.Insert(0, item);
+		}
 
-            source.Insert(index + 1, item);
-        }
+		public static void AddLast<T>(this IList<T> source, T item)
+		{
+			source.Insert(source.Count, item);
+		}
 
-        public static void InsertAfter<T>(this IList<T> source, Predicate<T> selector, T item)
-        {
-            var index = source.FindIndex(selector);
-            if (index < 0)
-            {
-                source.AddFirst(item);
-                return;
-            }
+		public static void InsertAfter<T>(this IList<T> source, T existingItem, T item)
+		{
+			var index = source.IndexOf(existingItem);
+			if (index < 0)
+			{
+				source.AddFirst(item);
+				return;
+			}
 
-            source.Insert(index + 1, item);
-        }
+			source.Insert(index + 1, item);
+		}
 
-        public static void InsertBefore<T>(this IList<T> source, T existingItem, T item)
-        {
-            var index = source.IndexOf(existingItem);
-            if (index < 0)
-            {
-                source.AddLast(item);
-                return;
-            }
+		public static void InsertAfter<T>(this IList<T> source, Predicate<T> selector, T item)
+		{
+			var index = source.FindIndex(selector);
+			if (index < 0)
+			{
+				source.AddFirst(item);
+				return;
+			}
 
-            source.Insert(index, item);
-        }
+			source.Insert(index + 1, item);
+		}
 
-        public static void InsertBefore<T>(this IList<T> source, Predicate<T> selector, T item)
-        {
-            var index = source.FindIndex(selector);
-            if (index < 0)
-            {
-                source.AddLast(item);
-                return;
-            }
+		public static void InsertBefore<T>(this IList<T> source, T existingItem, T item)
+		{
+			var index = source.IndexOf(existingItem);
+			if (index < 0)
+			{
+				source.AddLast(item);
+				return;
+			}
 
-            source.Insert(index, item);
-        }
+			source.Insert(index, item);
+		}
 
-        public static void ReplaceWhile<T>(this IList<T> source, Predicate<T> selector, T item)
-        {
-            for (var i = 0; i < source.Count; i++)
-                if (selector(source[i]))
-                    source[i] = item;
-        }
+		public static void InsertBefore<T>(this IList<T> source, Predicate<T> selector, T item)
+		{
+			var index = source.FindIndex(selector);
+			if (index < 0)
+			{
+				source.AddLast(item);
+				return;
+			}
 
-        public static void ReplaceWhile<T>(this IList<T> source, Predicate<T> selector, Func<T, T> itemFactory)
-        {
-            for (var i = 0; i < source.Count; i++)
-            {
-                var item = source[i];
-                if (selector(item))
-                    source[i] = itemFactory(item);
-            }
-        }
+			source.Insert(index, item);
+		}
 
-        public static void ReplaceOne<T>(this IList<T> source, Predicate<T> selector, T item)
-        {
-            for (var i = 0; i < source.Count; i++)
-                if (selector(source[i]))
-                {
-                    source[i] = item;
-                    return;
-                }
-        }
+		public static void ReplaceWhile<T>(this IList<T> source, Predicate<T> selector, T item)
+		{
+			for (var i = 0; i < source.Count; i++)
+				if (selector(source[i]))
+					source[i] = item;
+		}
 
-        public static void ReplaceOne<T>(this IList<T> source, Predicate<T> selector, Func<T, T> itemFactory)
-        {
-            for (var i = 0; i < source.Count; i++)
-            {
-                var item = source[i];
-                if (selector(item))
-                {
-                    source[i] = itemFactory(item);
-                    return;
-                }
-            }
-        }
+		public static void ReplaceWhile<T>(this IList<T> source, Predicate<T> selector, Func<T, T> itemFactory)
+		{
+			for (var i = 0; i < source.Count; i++)
+			{
+				var item = source[i];
+				if (selector(item))
+					source[i] = itemFactory(item);
+			}
+		}
 
-        public static void ReplaceOne<T>(this IList<T> source, T item, T replaceWith)
-        {
-            for (var i = 0; i < source.Count; i++)
-                if (Comparer<T>.Default.Compare(source[i], item) == 0)
-                {
-                    source[i] = replaceWith;
-                    return;
-                }
-        }
+		public static void ReplaceOne<T>(this IList<T> source, Predicate<T> selector, T item)
+		{
+			for (var i = 0; i < source.Count; i++)
+				if (selector(source[i]))
+				{
+					source[i] = item;
+					return;
+				}
+		}
 
-        public static void MoveItem<T>(this List<T> source, Predicate<T> selector, int targetIndex)
-        {
-            if (!targetIndex.IsInRange(0, source.Count))
-                throw new IndexOutOfRangeException("targetIndex should be between 0 and " + (source.Count - 1));
+		public static void ReplaceOne<T>(this IList<T> source, Predicate<T> selector, Func<T, T> itemFactory)
+		{
+			for (var i = 0; i < source.Count; i++)
+			{
+				var item = source[i];
+				if (selector(item))
+				{
+					source[i] = itemFactory(item);
+					return;
+				}
+			}
+		}
 
-            var currentIndex = source.FindIndex(0, selector);
-            if (currentIndex == targetIndex) return;
+		public static void ReplaceOne<T>(this IList<T> source, T item, T replaceWith)
+		{
+			for (var i = 0; i < source.Count; i++)
+				if (Comparer<T>.Default.Compare(source[i], item) == 0)
+				{
+					source[i] = replaceWith;
+					return;
+				}
+		}
 
-            var item = source[currentIndex];
-            source.RemoveAt(currentIndex);
-            source.Insert(targetIndex, item);
-        }
+		public static void MoveItem<T>(this List<T> source, Predicate<T> selector, int targetIndex)
+		{
+			if (!targetIndex.IsInRange(0, source.Count))
+				throw new IndexOutOfRangeException("targetIndex should be between 0 and " + (source.Count - 1));
 
-        public static T GetOrAdd<T>(this IList<T> source, Func<T, bool> selector, Func<T> factory)
-        {
-            Thrower.IfNull(source);
+			var currentIndex = source.FindIndex(0, selector);
+			if (currentIndex == targetIndex) return;
 
-            var item = source.FirstOrDefault(selector);
+			var item = source[currentIndex];
+			source.RemoveAt(currentIndex);
+			source.Insert(targetIndex, item);
+		}
 
-            if (item == null)
-            {
-                item = factory();
-                source.Add(item);
-            }
+		public static T GetOrAdd<T>(this IList<T> source, Func<T, bool> selector, Func<T> factory)
+		{
+			Thrower.IfNull(source);
 
-            return item;
-        }
+			var item = source.FirstOrDefault(selector);
 
-        /// <summary>
-        ///     Sort a list by a topological sorting, which consider their dependencies.
-        /// </summary>
-        /// <typeparam name="T">The type of the members of values.</typeparam>
-        /// <param name="source">A list of objects to sort</param>
-        /// <param name="getDependencies">Function to resolve the dependencies</param>
-        /// <param name="comparer">Equality comparer for dependencies </param>
-        /// <returns>
-        ///     Returns a new list ordered by dependencies.
-        ///     If A depends on B, then B will come before than A in the resulting list.
-        /// </returns>
-        public static List<T> SortByDependencies<T>(
-            this IEnumerable<T> source,
-            Func<T, IEnumerable<T>> getDependencies,
-            IEqualityComparer<T> comparer = null)
-        {
-            // See: http://www.codeproject.com/Articles/869059/Topological-sorting-in-Csharp
-            //      http://en.wikipedia.org/wiki/Topological_sorting
+			if (item == null)
+			{
+				item = factory();
+				source.Add(item);
+			}
 
-            var sorted = new List<T>();
-            var visited = new Dictionary<T, bool>(comparer);
+			return item;
+		}
 
-            foreach (var item in source)
-                SortByDependenciesVisit(item, getDependencies, sorted, visited);
+		/// <summary>
+		///     Sort a list by a topological sorting, which consider their dependencies.
+		/// </summary>
+		/// <typeparam name="T">The type of the members of values.</typeparam>
+		/// <param name="source">A list of objects to sort</param>
+		/// <param name="getDependencies">Function to resolve the dependencies</param>
+		/// <param name="comparer">Equality comparer for dependencies </param>
+		/// <returns>
+		///     Returns a new list ordered by dependencies.
+		///     If A depends on B, then B will come before than A in the resulting list.
+		/// </returns>
+		public static List<T> SortByDependencies<T>(
+			this IEnumerable<T> source,
+			Func<T, IEnumerable<T>> getDependencies,
+			IEqualityComparer<T> comparer = null)
+		{
+			// See: http://www.codeproject.com/Articles/869059/Topological-sorting-in-Csharp
+			//      http://en.wikipedia.org/wiki/Topological_sorting
 
-            return sorted;
-        }
+			var sorted = new List<T>();
+			var visited = new Dictionary<T, bool>(comparer);
 
-        /// <summary>
-        /// </summary>
-        /// <typeparam name="T">The type of the members of values.</typeparam>
-        /// <param name="item">Item to resolve</param>
-        /// <param name="getDependencies">Function to resolve the dependencies</param>
-        /// <param name="sorted">List with the sorted items</param>
-        /// <param name="visited">Dictionary with the visited items</param>
-        private static void SortByDependenciesVisit<T>(
-            T item,
-            Func<T, IEnumerable<T>> getDependencies,
-            ICollection<T> sorted,
-            IDictionary<T, bool> visited)
-        {
-            var alreadyVisited = visited.TryGetValue(item, out var inProcess);
+			foreach (var item in source)
+				SortByDependenciesVisit(item, getDependencies, sorted, visited);
 
-            if (alreadyVisited)
-            {
-                if (inProcess)
-                    throw new ArgumentException("Cyclic dependency found! Item: " + item);
-            }
-            else
-            {
-                visited[item] = true;
+			return sorted;
+		}
 
-                var dependencies = getDependencies(item);
-                if (dependencies != null)
-                    foreach (var dependency in dependencies)
-                        SortByDependenciesVisit(dependency, getDependencies, sorted, visited);
+		/// <summary>
+		/// </summary>
+		/// <typeparam name="T">The type of the members of values.</typeparam>
+		/// <param name="item">Item to resolve</param>
+		/// <param name="getDependencies">Function to resolve the dependencies</param>
+		/// <param name="sorted">List with the sorted items</param>
+		/// <param name="visited">Dictionary with the visited items</param>
+		private static void SortByDependenciesVisit<T>(
+			T item,
+			Func<T, IEnumerable<T>> getDependencies,
+			ICollection<T> sorted,
+			IDictionary<T, bool> visited)
+		{
+			var alreadyVisited = visited.TryGetValue(item, out var inProcess);
 
-                visited[item] = false;
-                sorted.Add(item);
-            }
-        }
-    }
+			if (alreadyVisited)
+			{
+				if (inProcess)
+					throw new ArgumentException("Cyclic dependency found! Item: " + item);
+			}
+			else
+			{
+				visited[item] = true;
+
+				var dependencies = getDependencies(item);
+				if (dependencies != null)
+					foreach (var dependency in dependencies)
+						SortByDependenciesVisit(dependency, getDependencies, sorted, visited);
+
+				visited[item] = false;
+				sorted.Add(item);
+			}
+		}
+	}
 }
