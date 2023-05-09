@@ -17,7 +17,7 @@ namespace Secyud.Ugf.BasicComponents
         [SerializeField] private DualToggleEvent RightClickEvent = new();
         [SerializeField] private Graphic Graphic;
 
-        private UnityEvent<bool> _onValueChanged;
+        private readonly UnityEvent<bool> _onValueChanged = new();
 
         private bool _isOn;
 
@@ -60,6 +60,19 @@ namespace Secyud.Ugf.BasicComponents
                 return;
 
             LeftClickEvent.Invoke();
+        }
+
+        public override void OnPointerDown(PointerEventData eventData)
+        {
+            if (eventData.button != PointerEventData.InputButton.Left&&
+                eventData.button != PointerEventData.InputButton.Right)
+                return;
+            
+            // Selection tracking
+            if (IsInteractable() && navigation.mode != Navigation.Mode.None && EventSystem.current != null)
+                EventSystem.current.SetSelectedGameObject(gameObject, eventData);
+
+            DoStateTransition(SelectionState.Pressed, false);
         }
 
         private void PressRight()

@@ -20,5 +20,7 @@ namespace Secyud.Ugf.ButtonComponents
         }
 
         public abstract bool Visible(TItem target);
+
+        public virtual bool Visible() => true;
     }
 }

@@ -20,7 +20,7 @@ namespace Secyud.Ugf.TableComponents
         protected List<Pair<ISorterRegistration<TItem>, Transform>> Sorters;
         protected IList<TItem> TotalItems;
 
-        public void OnInitialize(FunctionalTable table, TCell cellTemplate, IList<TItem> showItems)
+        public virtual void OnInitialize(FunctionalTable table, TCell cellTemplate, IList<TItem> showItems)
         {
             TotalItems = showItems;
             FilteredItems = TotalItems;
