@@ -19,6 +19,8 @@ namespace Secyud.Ugf.TableComponents
             Enabled = value;
         }
 
+        public bool GetEnabled() => Enabled;
+
         public abstract bool Filter(TTarget target);
     }
 }

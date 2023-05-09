@@ -10,9 +10,9 @@ namespace System.Collections.Generic
 {
 	public static class UgfListExtensions
 	{
-		public static T Pick<T>(this List<T> source, float choice)
+		public static T Pick<T>(this IReadOnlyList<T> source, float choice)
 		{
-			return source.IsNullOrEmpty()
+			return source is null || source.Count == 0
 				? default
 				: source[(int)choice];
 		}
@@ -24,14 +24,14 @@ namespace System.Collections.Generic
 				: source[Og.GetRandom(source.Count)];
 		}
 
-        
+
 		public static T RandomPick<T>(this T[] source)
 		{
 			return source.IsNullOrEmpty()
 				? default
 				: source[Og.GetRandom(source.Length)];
 		}
-		
+
 		public static void InsertRange<T>(this IList<T> source, int index, IEnumerable<T> items)
 		{
 			foreach (var item in items)

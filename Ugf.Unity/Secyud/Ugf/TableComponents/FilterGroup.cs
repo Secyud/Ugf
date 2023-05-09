@@ -22,8 +22,6 @@ namespace Secyud.Ugf.TableComponents
         public List<ICanBeEnabled> ChildFilters { get; private set; }
         public List<Filter> Filters { get; private set; }
 
-        public bool IsOn => Toggle.isOn;
-
         public bool IsDropped
         {
             get => _floatingExist;
@@ -40,7 +38,7 @@ namespace Secyud.Ugf.TableComponents
 
                     RectTransform content = _floatingExist.PrepareLayout();
                     
-                    foreach (var filter in ChildFilters)
+                    foreach (ICanBeEnabled filter in ChildFilters)
                         Filters.Add(FilterTemplate.Create(content, this, filter));
                 }
                 else if (_floatingExist)
@@ -58,17 +56,17 @@ namespace Secyud.Ugf.TableComponents
 
         public void OnLeftClick()
         {
-            Toggle.isOn = !Toggle.isOn;
+            Toggle.IsOn = !Toggle.IsOn;
             Refresh();
         }
 
         public void OnRightClick()
         {
-            var value = FunctionalTable.FilterGroups.All(u => (this == u) ^ u.Toggle.isOn);
+            var value = FunctionalTable.FilterGroups.All(u => (this == u) ^ u.Toggle.IsOn);
 
             foreach (var filterGroup in FunctionalTable.FilterGroups)
             {
-                filterGroup.Toggle.isOn = (this == filterGroup) ^ !value;
+                filterGroup.Toggle.IsOn = (this == filterGroup) ^ !value;
                 filterGroup.Refresh();
             }
         }
@@ -93,6 +91,7 @@ namespace Secyud.Ugf.TableComponents
         private void OnInitialize(FunctionalTable functionalManager, ICanBeEnabled canBeEnabled)
         {
             FunctionalTable = functionalManager;
+            Toggle.SetIsOnWithoutNotify(canBeEnabled.GetEnabled());
             Toggle.Bind(canBeEnabled.SetEnabled);
             Name.text = Og.L[canBeEnabled.ShowName];
         }

@@ -10,8 +10,7 @@ namespace Secyud.Ugf.TableComponents
 {
     public sealed class FilterRegistrationGroup<TItem> : ICanBeEnabled
     {
-        public bool Enabled = true;
-
+        private bool _enabled = true;
         public List<FilterRegistration<TItem>> Filters { get; set; } = new();
         public string ShowName { get; set; }
         public string ShowDescription => null;
@@ -19,7 +18,9 @@ namespace Secyud.Ugf.TableComponents
 
         public void SetEnabled(bool value)
         {
-            Enabled = value;
+            _enabled = value;
         }
+
+        public bool GetEnabled() => _enabled;
     }
 }

@@ -46,7 +46,7 @@ namespace Secyud.Ugf.FunctionalComponents
 
         public void OnPointerExit(PointerEventData eventData)
         {
-            if (!GetComponent<RectTransform>().MouseIn())
+            if (!_rectTransform.MouseIn())
             {
                 _isIn = false;
             }

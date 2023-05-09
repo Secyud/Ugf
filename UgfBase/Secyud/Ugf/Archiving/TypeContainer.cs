@@ -18,8 +18,6 @@ namespace Secyud.Ugf.Archiving
 		{
 			Type = type;
 			Constructor = type.GetConstructor(Type.EmptyTypes);
-			if (Constructor is null)
-				Debug.LogWarning($"As type with guid, {type} should have a non-parameter constructor but not!");
 		}
 	}
 }

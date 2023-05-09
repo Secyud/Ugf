@@ -31,9 +31,7 @@ namespace Secyud.Ugf.Collections
 		{
 			return _keys.RandomPick();
 		}
-		public List<TKey> GetKeyList()
-		{
-			return _keys.ToList();
-		}
+
+		public IReadOnlyList<TKey> KeyList => _keys;
 	}
 }

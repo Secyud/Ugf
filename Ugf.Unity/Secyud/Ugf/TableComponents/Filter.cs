@@ -3,6 +3,7 @@
 using System.Linq;
 using Secyud.Ugf.BasicComponents;
 using Secyud.Ugf.ButtonComponents;
+using System;
 using UnityEngine;
 
 #endregion
@@ -17,17 +18,17 @@ namespace Secyud.Ugf.TableComponents
 
         public void OnLeftClick()
         {
-            Toggle.isOn = !Toggle.isOn;
+            Toggle.IsOn = !Toggle.IsOn;
             Refresh();
         }
 
         public void OnRightClick()
         {
-            var value = _filterGroup.Filters.All(u => (this == u) ^ u.Toggle.isOn);
+            var value = _filterGroup.Filters.All(u => (this == u) ^ u.Toggle.IsOn);
 
             foreach (var filter in _filterGroup.Filters)
             {
-                filter.Toggle.isOn = (this == filter) ^ !value;
+                filter.Toggle.IsOn = (this == filter) ^ !value;
                 filter.Refresh();
             }
         }
@@ -40,6 +41,7 @@ namespace Secyud.Ugf.TableComponents
         private void OnInitialize(FilterGroup filterGroup, ICanBeEnabled canBeEnabled)
         {
             _filterGroup = filterGroup;
+            Toggle.SetIsOnWithoutNotify(canBeEnabled.GetEnabled());
             Toggle.Bind(canBeEnabled.SetEnabled);
             Name.text = Og.L[canBeEnabled.ShowName];
         }

@@ -11,16 +11,18 @@ using UnityEditor.UI;
 namespace UnityEngine.Editor
 {
     [CustomEditor(typeof(SDualToggle))]
-    public class SDualToggleEditor : ToggleEditor
+    public class SDualToggleEditor : SelectableEditor
     {
         private SerializedProperty _leftClickEvent;
         private SerializedProperty _rightClickEvent;
+        private SerializedProperty _graphic;
 
         protected override void OnEnable()
         {
             base.OnEnable();
             _leftClickEvent = serializedObject.FindProperty("LeftClickEvent");
             _rightClickEvent = serializedObject.FindProperty("RightClickEvent");
+            _graphic = serializedObject.FindProperty("Graphic");
         }
 
         public override void OnInspectorGUI()
@@ -30,6 +32,7 @@ namespace UnityEngine.Editor
             serializedObject.Update();
             EditorGUILayout.PropertyField(_leftClickEvent);
             EditorGUILayout.PropertyField(_rightClickEvent);
+            EditorGUILayout.PropertyField(_graphic);
             serializedObject.ApplyModifiedProperties();
         }
     }

@@ -67,7 +67,7 @@ namespace Secyud.Ugf.TableComponents
 
             IEnumerable<IEnumerable<FilterRegistration<TItem>>> filterGroups =
                 FilterGroups
-                    .Where(u => u.Enabled)
+                    .Where(u => u.GetEnabled())
                     .Select(u =>
                         u.Filters.Where(v => v.Enabled));
 

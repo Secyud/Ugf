@@ -37,9 +37,12 @@ namespace Secyud.Ugf.Archiving
 		public object Construct(BinaryReader reader) => this[reader.ReadGuid()].Construct();
 		public T CloneInit<T>(T obj) where T : class
 		{
-			object ret = Construct(obj.GetType());
-			if (obj is ICloneable cloneable)
-				cloneable.CopyTo(ret);
+			object ret = 
+				obj is ICloneable cloneable
+				?cloneable.Clone() 
+				: Construct(obj.GetType());
+			if (obj is ICopyable copyable)
+				copyable.CopyTo(ret);
 			return ret as T;
 		}
 
@@ -51,6 +54,8 @@ namespace Secyud.Ugf.Archiving
 				c = new TypeContainer(type);
 				this[id] = c;
 			}
+			if (c.Constructor is null)
+				Debug.LogError($"As type with guid, {type} should have a non-parameter constructor but not!");
 			return c.Construct();
 		}
 

@@ -2,6 +2,10 @@
 {
 	public interface ICloneable
 	{
-		public void CopyTo(object obj);
+		public object Clone();
+	}
+	public interface ICopyable
+	{
+		public object CopyTo(object target);
 	}
 }

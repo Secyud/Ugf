@@ -4,15 +4,43 @@ using System;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
+using UnityEngine.Serialization;
+using UnityEngine.UI;
 
 #endregion
 
 namespace Secyud.Ugf.BasicComponents
 {
-    public class SDualToggle : SToggle
+    public class SDualToggle : Selectable,IPointerClickHandler
     {
         [SerializeField] private DualToggleEvent LeftClickEvent = new();
         [SerializeField] private DualToggleEvent RightClickEvent = new();
+        [SerializeField] private Graphic Graphic;
+
+        private UnityEvent<bool> _onValueChanged;
+
+        private bool _isOn;
+
+
+        public bool IsOn
+        {
+            get => _isOn;
+            set => Set(value);
+        }
+        
+
+        public void SetIsOnWithoutNotify(bool getEnabled)
+        {
+            Set(getEnabled, false);
+        }
+
+        private void Set(bool isOn, bool callBack = true)
+        {
+            _isOn = isOn;
+            Graphic.enabled = _isOn;
+            if (callBack)
+                _onValueChanged.Invoke(_isOn);
+        }
 
         public DualToggleEvent OnLeftClick
         {
@@ -31,7 +59,6 @@ namespace Secyud.Ugf.BasicComponents
             if (!IsActive() || !IsInteractable())
                 return;
 
-            UISystemProfilerApi.AddMarker("Button.onClick", this);
             LeftClickEvent.Invoke();
         }
 
@@ -40,11 +67,11 @@ namespace Secyud.Ugf.BasicComponents
             if (!IsActive() || !IsInteractable())
                 return;
 
-            UISystemProfilerApi.AddMarker("Button.onClick", this);
             RightClickEvent.Invoke();
         }
 
-        public override void OnPointerClick(PointerEventData eventData)
+
+        public  void OnPointerClick(PointerEventData eventData)
         {
             switch (eventData.button)
             {
@@ -70,10 +97,16 @@ namespace Secyud.Ugf.BasicComponents
         {
             RightClickEvent.AddListener(action);
         }
+        public void Bind(UnityAction<bool> action)
+        {
+            Clear();
+            _onValueChanged.AddListener(action);
+        }
 
+        
         private void Clear()
         {
-            onValueChanged.RemoveAllListeners();
+            _onValueChanged.RemoveAllListeners();
         }
 
         [Serializable]

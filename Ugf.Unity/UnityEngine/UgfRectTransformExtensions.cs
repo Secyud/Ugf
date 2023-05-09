@@ -32,8 +32,8 @@ namespace UnityEngine
 			Vector3 mouse = UgfUnityExtensions.GetMousePosition();
 			return mouse.x < lb.x + rect.width &&
 				mouse.x > lb.x &&
-				mouse.y < lb.y &&
-				mouse.y > lb.y - rect.height;
+				mouse.y > lb.y &&
+				mouse.y < lb.y + rect.height;
 		}
 
 		public static Vector2 GetLeftBottomBias(this RectTransform transform)
