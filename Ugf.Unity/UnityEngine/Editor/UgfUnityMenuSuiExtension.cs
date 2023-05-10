@@ -63,7 +63,7 @@ namespace UnityEngine.Editor
 
 		private static void Create(string path, string name)
 		{
-			path = $"{RootPath}/UnityEngine/Resources/Prefabs/{path}/{name}.prefab";
+			path = $"{RootPath}/UnityEngine/Prefabs/{path}/{name}.prefab";
 
 			var obj = AssetDatabase
 				.LoadAssetAtPath<GameObject>(path);

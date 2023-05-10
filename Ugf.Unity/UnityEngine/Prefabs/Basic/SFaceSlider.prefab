@@ -100,6 +100,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5703576057919602589, guid: 6653319ae6fa4d341aeccc617615097b, type: 3}
+      propertyPath: m_Icon
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 5703576057919602589, guid: 6653319ae6fa4d341aeccc617615097b, type: 3}
       propertyPath: m_Name
       value: SFaceSlider
       objectReference: {fileID: 0}
