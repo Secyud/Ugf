@@ -6,10 +6,10 @@ using System;
 
 namespace Secyud.Ugf.DependencyInjection
 {
-    public interface IDependencyProvider
-    {
-        object Get(Type type);
+	public interface IDependencyProvider
+	{
+		object Get(Type type);
 
-        T Get<T>() where T : class;
-    }
+		T Get<T>() where T : class;
+	}
 }

@@ -1,64 +1,63 @@
 #region
 
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
-using Object = UnityEngine.Object;
 
 #endregion
 
 namespace Secyud.Ugf.TableComponents
 {
-    public abstract class
-        SelectableTableHelper<TItem, TCell, TListService> : FunctionalTableHelper<TItem, TCell, TListService>
-        where TListService : TableFunctionBase<TItem>
-        where TCell : MonoBehaviour
-    {
-        private SelectableTable SelectableTable => (SelectableTable)Table;
-        protected TItem SelectedItem
-        {
-            get => _selectedItem;
-            set
-            {
-                _selectedItem = value;
-                for (int i = 0; i <SelectableTable.ShowCellContent.childCount ; i++)
-                    Object.Destroy(SelectableTable.ShowCellContent.GetChild(i).gameObject);
-                TCell cell = Object.Instantiate(CellTemplate, SelectableTable.ShowCellContent);
-                SetCell(cell,_selectedItem);
-            }
-        }
-        public UnityAction<TItem> CallBackAction;
-        private TItem _selectedItem;
+	public abstract class
+		SelectableTableHelper<TItem, TCell, TListService> : FunctionalTableHelper<TItem, TCell, TListService>
+		where TListService : TableFunctionBase<TItem>
+		where TCell : MonoBehaviour
+	{
+		private SelectableTable SelectableTable => (SelectableTable)Table;
 
-        public void OnInitialize(SelectableTable table, TCell cellTemplate, IList<TItem> totalItems)
-        {
-            table.EnsureAction += OnEnsure;
-            base.OnInitialize(table, cellTemplate, totalItems);
-        }
+		protected TItem SelectedItem
+		{
+			get => _selectedItem;
+			set
+			{
+				_selectedItem = value;
+				for (int i = 0; i < SelectableTable.ShowCellContent.childCount; i++)
+					Object.Destroy(SelectableTable.ShowCellContent.GetChild(i).gameObject);
+				TCell cell = Object.Instantiate(CellTemplate, SelectableTable.ShowCellContent);
+				SetCell(cell, _selectedItem);
+			}
+		}
+		public UnityAction<TItem> CallBackAction;
+		private TItem _selectedItem;
 
-        private void OnEnsure()
-        {
-            CallBackAction?.Invoke(SelectedItem);
-            CallBackAction = null;
-        }
+		public void OnInitialize(SelectableTable table, TCell cellTemplate, IList<TItem> totalItems)
+		{
+			table.EnsureAction += OnEnsure;
+			base.OnInitialize(table, cellTemplate, totalItems);
+		}
 
-        public void ClearCallBackActions()
-        {
-            CallBackAction = null;
-        }
+		private void OnEnsure()
+		{
+			CallBackAction?.Invoke(SelectedItem);
+			CallBackAction = null;
+		}
 
-        public override Transform CreateCell(Transform content, int index)
-        {
-            var transform = base.CreateCell(content, index);
-            if (transform) transform.gameObject.GetOrAddButton(() => SelectedItem = Items[index]);
-            return transform;
-        }
+		public void ClearCallBackActions()
+		{
+			CallBackAction = null;
+		}
 
-        public override void ResetCell(Transform cell, int index)
-        {
-            base.ResetCell(cell, index);
-            if (cell) cell.gameObject.GetOrAddButton(() => SelectedItem = Items[index]);
-        }
-    }
+		public override Transform CreateCell(Transform content, int index)
+		{
+			var transform = base.CreateCell(content, index);
+			if (transform) transform.gameObject.GetOrAddButton(() => SelectedItem = Items[index]);
+			return transform;
+		}
+
+		public override void ResetCell(Transform cell, int index)
+		{
+			base.ResetCell(cell, index);
+			if (cell) cell.gameObject.GetOrAddButton(() => SelectedItem = Items[index]);
+		}
+	}
 }

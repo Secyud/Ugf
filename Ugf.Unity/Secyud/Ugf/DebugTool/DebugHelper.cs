@@ -1,8 +1,12 @@
-﻿using UnityEngine;
+﻿#region
+
+using UnityEngine;
+
+#endregion
 
 namespace Secyud.Ugf.DebugTool
 {
-	public class DebugHelper:MonoBehaviour
+	public class DebugHelper : MonoBehaviour
 	{
 
 
@@ -16,6 +20,6 @@ namespace Secyud.Ugf.DebugTool
 			Debug.Log(f);
 		}
 
-		
+
 	}
 }

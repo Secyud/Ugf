@@ -9,16 +9,16 @@ using UnityEngine;
 
 namespace Secyud.Ugf
 {
-    [DependsOn(
-        typeof(UgfUnityModule)
-    )]
-    public class UgfHexMapModule : IUgfModule
-    {
-        public void ConfigureGame(ConfigurationContext context)
-        {
-            HexMetrics.NoiseSource = Resources.Load<Texture2D>("Noise");
-            HexMetrics.InitializeHashGrid(1238);
-            context.Manager.AddType<HexMapGenerator>();
-        }
-    }
+	[DependsOn(
+		typeof(UgfUnityModule)
+	)]
+	public class UgfHexMapModule : IUgfModule
+	{
+		public void ConfigureGame(ConfigurationContext context)
+		{
+			HexMetrics.NoiseSource = Resources.Load<Texture2D>("Noise");
+			HexMetrics.InitializeHashGrid(1238);
+			context.Manager.AddType<HexMapGenerator>();
+		}
+	}
 }

@@ -1,16 +1,20 @@
-﻿using System.Collections.Generic;
+﻿#region
+
+using System.Collections.Generic;
 using UnityEngine;
+
+#endregion
 
 namespace Secyud.Ugf.InputManaging
 {
 	public class InputLayer
 	{
-		internal InputLayer(int index)
+		internal InputLayer(RectTransform layer)
 		{
-			Index = index;
+			Layer = layer;
 		}
-		
-		public int Index { get; }
+
+		public RectTransform Layer { get; }
 
 		public Dictionary<KeyCode, InputUnit> Inputs { get; } = new();
 	}

@@ -1,12 +1,13 @@
 #region
 
-using System.IO;
 using Localization;
 using Secyud.Ugf.Archiving;
 using Secyud.Ugf.AssetBundles;
 using Secyud.Ugf.DependencyInjection;
 using Secyud.Ugf.Localization;
 using Secyud.Ugf.Modularity;
+using System.IO;
+using System.Reflection;
 using UnityEngine;
 
 #endregion
@@ -15,9 +16,11 @@ namespace Secyud.Ugf
 {
 	public static class Og
 	{
+		internal const BindingFlags ConstructFlag =
+			BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
+
 		public static readonly Camera MainCamera = Camera.main;
 		public static readonly Canvas Canvas = GameObject.Find("StaticObject/Canvas").GetComponent<Canvas>();
-		public static readonly Sprite EmptyImage = Resources.Load<Sprite>("Images/empty");
 
 		public static readonly string AppPath = Application.dataPath;
 
@@ -27,7 +30,7 @@ namespace Secyud.Ugf
 		{
 			return Path.Combine(AppPath, AssetBundlePath, name);
 		}
-		
+
 		public static AssetBundle GetAssetBundle(string name)
 		{
 			return AssetBundleProvider.GetByPath(GetAssetBundlePath(name));
@@ -36,6 +39,8 @@ namespace Secyud.Ugf
 		public static IDependencyProvider Provider { get; private set; }
 
 		public static IStringLocalizer<DefaultResource> L { get; private set; }
+
+		public static ISpriteLocalizer<DefaultResource> IL { get; private set; }
 
 		public static LoadingService LoadingService { get; private set; }
 
@@ -47,6 +52,7 @@ namespace Secyud.Ugf
 		{
 			Provider = provider;
 			L = Get<IStringLocalizer<DefaultResource>>();
+			IL = Get<ISpriteLocalizer<DefaultResource>>();
 			LoadingService = Get<LoadingService>();
 			TypeManager = Get<TypeManager>();
 			AssetBundleProvider = Get<IAssetBundleProvider>();
@@ -57,7 +63,7 @@ namespace Secyud.Ugf
 			return Provider.Get<T>();
 		}
 
-		public static int GetRandom(int max,int min = 0)
+		public static int GetRandom(int max, int min = 0)
 		{
 			return Random.Range(min, max);
 		}

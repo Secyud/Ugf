@@ -1,10 +1,10 @@
 ﻿#region
 
+using Secyud.Ugf.Archiving;
+using Secyud.Ugf.HexMap.Utilities;
 using System;
 using System.IO;
 using System.Linq;
-using Secyud.Ugf.Archiving;
-using Secyud.Ugf.HexMap.Utilities;
 using UnityEngine;
 using UnityEngine.UI;
 

@@ -1,6 +1,9 @@
-﻿using System;
+﻿#region
+
+using System;
 using System.Reflection;
-using UnityEngine;
+
+#endregion
 
 namespace Secyud.Ugf.Archiving
 {
@@ -17,7 +20,7 @@ namespace Secyud.Ugf.Archiving
 		public TypeContainer(Type type)
 		{
 			Type = type;
-			Constructor = type.GetConstructor(Type.EmptyTypes);
+			Constructor = type.GetConstructor(Og.ConstructFlag, null, Type.EmptyTypes, null);
 		}
 	}
 }

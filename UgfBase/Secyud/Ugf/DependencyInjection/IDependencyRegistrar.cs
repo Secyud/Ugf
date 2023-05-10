@@ -7,26 +7,26 @@ using System.Reflection;
 
 namespace Secyud.Ugf.DependencyInjection
 {
-    public interface IDependencyRegistrar
-    {
-        void AddAssembly(Assembly assembly);
+	public interface IDependencyRegistrar
+	{
+		void AddAssembly(Assembly assembly);
 
-        void AddTypes(params Type[] types);
+		void AddTypes(params Type[] types);
 
-        void AddType(Type type);
+		void AddType(Type type);
 
-        void AddType<T>();
+		void AddType<T>();
 
-        void AddSingleton(Type type, object instance);
+		void AddSingleton(Type type, object instance);
 
-        void AddSingleton<T>(T instance);
+		void AddSingleton<T>(T instance);
 
-        void AddSingleton<T, TExposed>();
+		void AddSingleton<T, TExposed>();
 
-        void AddScoped<T, TExposed>();
+		void AddScoped<T, TExposed>();
 
-        void AddTransient<T, TExposed>();
+		void AddTransient<T, TExposed>();
 
-        void AddCustom<T, TExposed>(Func<object> instanceAccessor);
-    }
+		void AddCustom<T, TExposed>(Func<object> instanceAccessor);
+	}
 }

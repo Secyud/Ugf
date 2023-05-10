@@ -7,25 +7,25 @@ using UnityEngine.UI;
 
 namespace Secyud.Ugf.BasicComponents
 {
-    public class SButton : Button
-    {
-        public void Bind(UnityAction action)
-        {
-            Clear();
-            onClick.AddListener(action);
-        }
+	public class SButton : Button
+	{
+		public void Bind(UnityAction action)
+		{
+			Clear();
+			onClick.AddListener(action);
+		}
 
-        public void SetSelect(bool isSelect)
-        {
-            if (isSelect)
-                OnSelect(null);
-            else
-                OnDeselect(null);
-        }
+		public void SetSelect(bool isSelect)
+		{
+			if (isSelect)
+				OnSelect(null);
+			else
+				OnDeselect(null);
+		}
 
-        public void Clear()
-        {
-            onClick.RemoveAllListeners();
-        }
-    }
+		public void Clear()
+		{
+			onClick.RemoveAllListeners();
+		}
+	}
 }

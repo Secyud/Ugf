@@ -1,6 +1,6 @@
 namespace Secyud.Ugf.DependencyInjection
 {
-    public interface ISingleton
-    {
-    }
+	public interface ISingleton
+	{
+	}
 }

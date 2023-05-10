@@ -1,26 +1,29 @@
 #region
 
+using Secyud.Ugf.DependencyInjection;
 using System;
 using System.Collections;
-using Secyud.Ugf.DependencyInjection;
 
 #endregion
 
 namespace Secyud.Ugf.Modularity
 {
-    public interface IUgfApplication : IModuleContainer
-    {
-        Type StartupModuleType { get; }
+	public interface IUgfApplication : IModuleContainer
+	{
+		Type StartupModuleType { get; }
 
-        IDependencyProvider DependencyProvider { get; }
+		IDependencyProvider DependencyProvider { get; }
 
-        IDependencyScope CreateDependencyScope();
+		IDependencyScope CreateDependencyScope();
 
-        void Configure();
+		void Configure();
 
-        IEnumerator GameCreate();
-        IEnumerator GameLoad();
-        IEnumerator GameSave();
-        IEnumerator Shutdown();
-    }
+		IEnumerator GameCreate();
+
+		IEnumerator GameLoad();
+
+		IEnumerator GameSave();
+
+		IEnumerator Shutdown();
+	}
 }

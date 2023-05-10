@@ -1,165 +1,173 @@
 #region
 
+using Secyud.Ugf.Archiving;
 using System;
 using System.Collections.Concurrent;
 using System.Linq;
 using System.Reflection;
-using Secyud.Ugf.Archiving;
-using UnityEngine;
 
 #endregion
 
 namespace Secyud.Ugf.DependencyInjection
 {
-    [ExposeType(
-        typeof(IDependencyProvider),
-        typeof(IDependencyRegistrar),
-        typeof(IDependencyScopeFactory)
-    )]
-    public class DependencyManager :
-        DependencyProviderBase,
-        IDependencyManager,
-        ISingleton
-    {
-        private readonly TypeManager _typeManager = new();
+	[ExposeType(
+		typeof(IDependencyProvider),
+		typeof(IDependencyRegistrar),
+		typeof(IDependencyScopeFactory)
+	)]
+	public class DependencyManager :
+		DependencyProviderBase,
+		IDependencyManager,
+		ISingleton
+	{
+		private readonly TypeManager _typeManager = new();
 
-        internal DependencyManager(IDependencyCollection dependencyCollection = null)
-            : base(dependencyCollection ?? new DependencyCollection(),
-                new ConcurrentDictionary<Type, object>())
-        {
-            Instances[GetType()] = this;
-            AddSingleton(_typeManager);
-        }
+		internal DependencyManager(IDependencyCollection dependencyCollection = null)
+			: base(
+				dependencyCollection ?? new DependencyCollection(),
+				new ConcurrentDictionary<Type, object>()
+			)
+		{
+			Instances[GetType()] = this;
+			AddSingleton(_typeManager);
+		}
 
-        public override object Get(Type type)
-        {
-            var descriptor = GetDescriptor(type);
-            return descriptor?.InstanceAccessor();
-        }
+		public override object Get(Type type)
+		{
+			var descriptor = GetDescriptor(type);
+			return descriptor?.InstanceAccessor();
+		}
 
-        public IDependencyScope CreateScope()
-        {
-            return new DependencyScope(new DependencyProvider(this));
-        }
+		public IDependencyScope CreateScope()
+		{
+			return new DependencyScope(new DependencyProvider(this));
+		}
 
-        public void AddAssembly(Assembly assembly)
-        {
-            AddTypes(
-                assembly.GetTypes()
-                    .Where(type =>
-                        type is
-                        {
-                            IsClass: true,
-                            IsAbstract: false,
-                            IsGenericType: false
-                        }).ToArray()
-            );
-        }
+		public void AddAssembly(Assembly assembly)
+		{
+			AddTypes(
+				assembly.GetTypes()
+					.Where(
+						type =>
+							type is
+							{
+								IsClass: true,
+								IsAbstract: false,
+								IsGenericType: false
+							}
+					).ToArray()
+			);
+		}
 
-        public void AddTypes(params Type[] types)
-        {
-            foreach (var type in types)
-                AddType(type);
-        }
+		public void AddTypes(params Type[] types)
+		{
+			foreach (var type in types)
+				AddType(type);
+		}
 
-        public void AddType(Type type)
-        {
-            _typeManager.TryAddType(type);
-            
-            if (IsConventionalRegistrationDisabled(type))
-                return;
+		public void AddType(Type type)
+		{
+			_typeManager.TryAddType(type);
 
-            var lifeTime = type.GetLifeTimeOrNull();
+			if (IsConventionalRegistrationDisabled(type))
+				return;
 
-            if (lifeTime == null)
-                return;
+			var lifeTime = type.GetLifeTimeOrNull();
 
-            var exposedServiceTypes = ExposedServiceExplorer.GetExposedServices(type);
+			if (lifeTime == null)
+				return;
 
-            foreach (var exposedServiceType in exposedServiceTypes)
-                CreateDependencyDescriptor(
-                    type,
-                    exposedServiceType,
-                    lifeTime.Value);
-        }
+			var exposedServiceTypes = ExposedServiceExplorer.GetExposedServices(type);
 
-        public void AddType<T>()
-        {
-            AddType(typeof(T));
-        }
+			foreach (var exposedServiceType in exposedServiceTypes)
+				CreateDependencyDescriptor(
+					type,
+					exposedServiceType,
+					lifeTime.Value
+				);
+		}
 
-        public void AddSingleton<TExposed>(TExposed instance)
-        {
-            AddSingleton(typeof(TExposed), instance);
-        }
+		public void AddType<T>()
+		{
+			AddType(typeof(T));
+		}
 
-        public void AddSingleton(Type type, object instance)
-        {
-            CreateDependencyDescriptor(
-                instance.GetType(),
-                type,
-                DependencyLifeTime.Singleton);
-            Instances[instance.GetType()] = instance;
-        }
+		public void AddSingleton<TExposed>(TExposed instance)
+		{
+			AddSingleton(typeof(TExposed), instance);
+		}
 
-        public void AddSingleton<T, TExposed>()
-        {
-            CreateDependencyDescriptor(
-                typeof(T),
-                typeof(TExposed),
-                DependencyLifeTime.Singleton);
-        }
+		public void AddSingleton(Type type, object instance)
+		{
+			CreateDependencyDescriptor(
+				instance.GetType(),
+				type,
+				DependencyLifeTime.Singleton
+			);
+			Instances[instance.GetType()] = instance;
+		}
 
-        public void AddScoped<T, TExposed>()
-        {
-            CreateDependencyDescriptor(
-                typeof(T),
-                typeof(TExposed),
-                DependencyLifeTime.Scoped);
-        }
+		public void AddSingleton<T, TExposed>()
+		{
+			CreateDependencyDescriptor(
+				typeof(T),
+				typeof(TExposed),
+				DependencyLifeTime.Singleton
+			);
+		}
 
-        public void AddTransient<T, TExposed>()
-        {
-            CreateDependencyDescriptor(
-                typeof(T),
-                typeof(TExposed),
-                DependencyLifeTime.Transient);
-        }
+		public void AddScoped<T, TExposed>()
+		{
+			CreateDependencyDescriptor(
+				typeof(T),
+				typeof(TExposed),
+				DependencyLifeTime.Scoped
+			);
+		}
 
-        public void AddCustom<T, TExposed>(Func<object> instanceAccessor)
-        {
-            DependencyCollection[typeof(TExposed)]
-                = DependencyDescriptor.Describe(
-                    typeof(T),
-                    DependencyLifeTime.Singleton,
-                    instanceAccessor
-                );
-        }
+		public void AddTransient<T, TExposed>()
+		{
+			CreateDependencyDescriptor(
+				typeof(T),
+				typeof(TExposed),
+				DependencyLifeTime.Transient
+			);
+		}
 
-        private bool IsConventionalRegistrationDisabled(Type type)
-        {
-            return type.IsDefined(typeof(DisableRegistrationAttribute), true);
-        }
+		public void AddCustom<T, TExposed>(Func<object> instanceAccessor)
+		{
+			DependencyCollection[typeof(TExposed)]
+				= DependencyDescriptor.Describe(
+					typeof(T),
+					DependencyLifeTime.Singleton,
+					instanceAccessor
+				);
+		}
 
-        private void CreateDependencyDescriptor(
-            Type implementationType,
-            Type exposedType,
-            DependencyLifeTime lifeTime)
-        {
-            if (lifeTime == DependencyLifeTime.Transient)
-                DependencyCollection[exposedType]
-                    = DependencyDescriptor.Describe(
-                        implementationType,
-                        lifeTime,
-                        () => CreateInstance(implementationType)
-                    );
-            else
-                DependencyCollection[exposedType]
-                    = DependencyDescriptor.Describe(
-                        implementationType,
-                        lifeTime,
-                        () => GetInstance(implementationType)
-                    );
-        }
-    }
+		private bool IsConventionalRegistrationDisabled(Type type)
+		{
+			return type.IsDefined(typeof(DisableRegistrationAttribute), true);
+		}
+
+		private void CreateDependencyDescriptor(
+			Type implementationType,
+			Type exposedType,
+			DependencyLifeTime lifeTime)
+		{
+			if (lifeTime == DependencyLifeTime.Transient)
+				DependencyCollection[exposedType]
+					= DependencyDescriptor.Describe(
+						implementationType,
+						lifeTime,
+						() => CreateInstance(implementationType)
+					);
+			else
+				DependencyCollection[exposedType]
+					= DependencyDescriptor.Describe(
+						implementationType,
+						lifeTime,
+						() => GetInstance(implementationType)
+					);
+		}
+	}
 }

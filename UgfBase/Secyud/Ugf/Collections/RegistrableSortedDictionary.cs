@@ -1,5 +1,8 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿#region
+
+using System.Collections.Generic;
+
+#endregion
 
 namespace Secyud.Ugf.Collections
 {

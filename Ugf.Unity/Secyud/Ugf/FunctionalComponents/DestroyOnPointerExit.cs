@@ -7,11 +7,11 @@ using UnityEngine.EventSystems;
 
 namespace Secyud.Ugf.FunctionalComponents
 {
-    public class DestroyOnPointerExit : MonoBehaviour, IPointerExitHandler
-    {
-        public void OnPointerExit(PointerEventData eventData)
-        {
-            Destroy(gameObject);
-        }
-    }
+	public class DestroyOnPointerExit : MonoBehaviour, IPointerExitHandler
+	{
+		public void OnPointerExit(PointerEventData eventData)
+		{
+			Destroy(gameObject);
+		}
+	}
 }

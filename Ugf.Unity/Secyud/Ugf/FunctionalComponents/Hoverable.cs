@@ -26,7 +26,7 @@ namespace Secyud.Ugf.FunctionalComponents
 		{
 			if (!_hovered)
 				return;
-			
+
 			if (Input.GetMouseButtonDown(0))
 				ResetHover();
 			else

@@ -30,7 +30,7 @@ float River (const float2 riverUV, UnityTexture2D noiseTex) {
 	uv2.x -= _Time.y * 0.23;
 	float4 noise2 = noiseTex.Sample(noiseTex.samplerstate, uv2);
 
-	return noise.r * noise2.w ;
+	return noise.r * noise2.w;
 }
 
 float Waves (float2 worldXZ, UnityTexture2D noiseTex) {

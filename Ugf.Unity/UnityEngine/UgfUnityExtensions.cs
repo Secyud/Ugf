@@ -1,10 +1,10 @@
 #region
 
+using Secyud.Ugf.ButtonComponents;
+using Secyud.Ugf.Localization;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Secyud.Ugf.ButtonComponents;
-using Secyud.Ugf.Localization;
 using TMPro;
 
 #endregion
@@ -29,7 +29,7 @@ namespace UnityEngine
 				.ToList();
 		}
 
-		public static Vector2 GetMousePosition(Vector2 bias = default,bool useDefault = true)
+		public static Vector2 GetMousePosition(Vector2 bias = default, bool useDefault = true)
 		{
 			var x = Input.mousePosition.x / Screen.width * Screen.currentResolution.width;
 			var y = Input.mousePosition.y / Screen.height * Screen.currentResolution.height -

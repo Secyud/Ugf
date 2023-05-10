@@ -1,9 +1,9 @@
 ﻿#region
 
 using Secyud.Ugf.HexMap.Generator;
+using Secyud.Ugf.HexMap.Utilities;
 using System.Collections.Generic;
 using System.IO;
-using Secyud.Ugf.HexMap.Utilities;
 using UnityEngine;
 using UnityEngine.UI;
 

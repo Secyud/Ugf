@@ -1,6 +1,5 @@
 #region
 
-using System;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -8,22 +7,23 @@ using UnityEngine.Events;
 
 namespace Secyud.Ugf.TableComponents
 {
-    public class SelectableTable : FunctionalTable
-    {
-        public Transform ShowCellContent;
-        
-        public event UnityAction EnsureAction;
-        public event UnityAction CancelAction;
+	public class SelectableTable : FunctionalTable
+	{
+		public Transform ShowCellContent;
 
-        public void Cancel()
-        {
-            CancelAction?.Invoke();
-        }
+		public event UnityAction EnsureAction;
 
-        public void Ensure()
-        {
-            EnsureAction?.Invoke();
-            CancelAction?.Invoke();
-        }
-    }
+		public event UnityAction CancelAction;
+
+		public void Cancel()
+		{
+			CancelAction?.Invoke();
+		}
+
+		public void Ensure()
+		{
+			EnsureAction?.Invoke();
+			CancelAction?.Invoke();
+		}
+	}
 }

@@ -6,8 +6,8 @@ using Secyud.Ugf.ButtonComponents;
 
 namespace Secyud.Ugf.TableComponents
 {
-    public interface ISorterRegistration<in TTarget> : ICanBeStated
-    {
-        int SortValue(TTarget target);
-    }
+	public interface ISorterRegistration<in TTarget> : ICanBeStated
+	{
+		int SortValue(TTarget target);
+	}
 }

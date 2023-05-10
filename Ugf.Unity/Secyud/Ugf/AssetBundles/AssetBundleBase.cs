@@ -1,16 +1,16 @@
-﻿using Secyud.Ugf.Container;
-using System;
+﻿#region
+
 using Secyud.Ugf.DependencyInjection;
-using UnityEngine;
-using Object = UnityEngine.Object;
+
+#endregion
 
 namespace Secyud.Ugf.AssetBundles
 {
-    public abstract class AssetBundleBase : AssetBundleContainer, ISingleton
-    {
-        protected AssetBundleBase(string assetBundleName)
-            :base(assetBundleName)
-        {
-        }
-    }
+	public abstract class AssetBundleBase : AssetBundleContainer, ISingleton
+	{
+		protected AssetBundleBase(string assetBundleName)
+			: base(assetBundleName)
+		{
+		}
+	}
 }

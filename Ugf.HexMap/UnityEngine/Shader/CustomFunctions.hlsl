@@ -27,7 +27,7 @@ void GetFragmentDataRoad_float (
 	float3 WorldPosition,
 	out float2 UV
 ) {
-	UV = WorldPosition.xz* (3 * TILING_SCALE);
+	UV = WorldPosition.xz * (3 * TILING_SCALE);
 }
 
 void GetFragmentDataRiver_float (

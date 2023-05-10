@@ -1,108 +1,111 @@
 #region
 
-using System.Collections.Generic;
-using System.Linq;
 using Secyud.Ugf.BasicComponents;
 using Secyud.Ugf.ButtonComponents;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 #endregion
 
 namespace Secyud.Ugf.TableComponents
 {
-    public class FilterGroup : MonoBehaviour
-    {
-        [SerializeField] private SText Name;
-        [SerializeField] private SDualToggle Toggle;
-        [SerializeField] private Filter FilterTemplate;
-        [SerializeField] private SFloating FloatingTemplate;
+	public class FilterGroup : MonoBehaviour
+	{
+		[SerializeField] private SText Name;
+		[SerializeField] private SDualToggle Toggle;
+		[SerializeField] private Filter FilterTemplate;
+		[SerializeField] private SFloating FloatingTemplate;
 
-        private SFloating _floatingExist;
-        public FunctionalTable FunctionalTable { get; private set; }
-        public List<ICanBeEnabled> ChildFilters { get; private set; }
-        public List<Filter> Filters { get; private set; }
+		private SFloating _floatingExist;
 
-        public bool IsDropped
-        {
-            get => _floatingExist;
-            set
-            {
-                if (value)
-                {
-                    foreach (var group in FunctionalTable.FilterGroups)
-                        group.IsDropped = false;
+		public FunctionalTable FunctionalTable { get; private set; }
 
-                    _floatingExist = FloatingTemplate.CreateOnMouse();
+		public List<ICanBeEnabled> ChildFilters { get; private set; }
 
-                    Filters.Clear();
+		public List<Filter> Filters { get; private set; }
 
-                    RectTransform content = _floatingExist.PrepareLayout();
-                    
-                    foreach (ICanBeEnabled filter in ChildFilters)
-                        Filters.Add(FilterTemplate.Create(content, this, filter));
-                }
-                else if (_floatingExist)
-                {
-                    CloseFlow();
-                }
-            }
-        }
+		public bool IsDropped
+		{
+			get => _floatingExist;
+			set
+			{
+				if (value)
+				{
+					foreach (var group in FunctionalTable.FilterGroups)
+						group.IsDropped = false;
 
-        private void Awake()
-        {
-            ChildFilters = new List<ICanBeEnabled>();
-            Filters = new List<Filter>();
-        }
+					_floatingExist = FloatingTemplate.CreateOnMouse();
 
-        public void OnLeftClick()
-        {
-            Toggle.IsOn = !Toggle.IsOn;
-            Refresh();
-        }
+					Filters.Clear();
 
-        public void OnRightClick()
-        {
-            var value = FunctionalTable.FilterGroups.All(u => (this == u) ^ u.Toggle.IsOn);
+					RectTransform content = _floatingExist.PrepareLayout();
 
-            foreach (var filterGroup in FunctionalTable.FilterGroups)
-            {
-                filterGroup.Toggle.IsOn = (this == filterGroup) ^ !value;
-                filterGroup.Refresh();
-            }
-        }
+					foreach (ICanBeEnabled filter in ChildFilters)
+						Filters.Add(FilterTemplate.Create(content, this, filter));
+				}
+				else if (_floatingExist)
+				{
+					CloseFlow();
+				}
+			}
+		}
 
-        public void OnClick()
-        {
-            IsDropped = !IsDropped;
-        }
+		private void Awake()
+		{
+			ChildFilters = new List<ICanBeEnabled>();
+			Filters = new List<Filter>();
+		}
 
-        private void Refresh()
-        {
-            FunctionalTable.RefreshFilter();
-        }
+		public void OnLeftClick()
+		{
+			Toggle.IsOn = !Toggle.IsOn;
+			Refresh();
+		}
 
-        private void CloseFlow()
-        {
-            Destroy(_floatingExist.gameObject);
-            _floatingExist = null;
-            Filters.Clear();
-        }
+		public void OnRightClick()
+		{
+			var value = FunctionalTable.FilterGroups.All(u => (this == u) ^ u.Toggle.IsOn);
 
-        private void OnInitialize(FunctionalTable functionalManager, ICanBeEnabled canBeEnabled)
-        {
-            FunctionalTable = functionalManager;
-            Toggle.SetIsOnWithoutNotify(canBeEnabled.GetEnabled());
-            Toggle.Bind(canBeEnabled.SetEnabled);
-            Name.text = Og.L[canBeEnabled.ShowName];
-        }
+			foreach (var filterGroup in FunctionalTable.FilterGroups)
+			{
+				filterGroup.Toggle.IsOn = (this == filterGroup) ^ !value;
+				filterGroup.Refresh();
+			}
+		}
 
-        public FilterGroup Create(Transform parent, FunctionalTable functionalTable, ICanBeEnabled canBeEnabled)
-        {
-            var ret = Instantiate(this, parent);
+		public void OnClick()
+		{
+			IsDropped = !IsDropped;
+		}
 
-            ret.OnInitialize(functionalTable, canBeEnabled);
+		private void Refresh()
+		{
+			FunctionalTable.RefreshFilter();
+		}
 
-            return ret;
-        }
-    }
+		private void CloseFlow()
+		{
+			Destroy(_floatingExist.gameObject);
+			_floatingExist = null;
+			Filters.Clear();
+		}
+
+		private void OnInitialize(FunctionalTable functionalManager, ICanBeEnabled canBeEnabled)
+		{
+			FunctionalTable = functionalManager;
+			Toggle.SetIsOnWithoutNotify(canBeEnabled.GetEnabled());
+			Toggle.Bind(canBeEnabled.SetEnabled);
+			Name.text = Og.L[canBeEnabled.ShowName];
+		}
+
+		public FilterGroup Create(Transform parent, FunctionalTable functionalTable, ICanBeEnabled canBeEnabled)
+		{
+			var ret = Instantiate(this, parent);
+
+			ret.OnInitialize(functionalTable, canBeEnabled);
+
+			return ret;
+		}
+	}
 }

@@ -10,50 +10,52 @@ using UnityEngine.UI;
 
 namespace Secyud.Ugf.BasicComponents
 {
-    public class SStateToggle : Selectable, IPointerClickHandler
-    {
-        [SerializeField] private StateToggleEvent ClickEvent = new();
+	public class SStateToggle : Selectable, IPointerClickHandler
+	{
+		[SerializeField] private StateToggleEvent ClickEvent = new();
 
-        public StateToggleEvent OnClick
-        {
-            get => ClickEvent;
-            set => ClickEvent = value;
-        }
+		public StateToggleEvent OnClick
+		{
+			get => ClickEvent;
+			set => ClickEvent = value;
+		}
 
-        public int StateValue { get; private set; }
-        protected virtual int MaxValue => 3;
+		public int StateValue { get; private set; }
 
-        public virtual void OnPointerClick(PointerEventData eventData)
-        {
-            if (eventData.button != PointerEventData.InputButton.Left)
-                return;
-            Press();
-        }
+		protected virtual int MaxValue => 3;
 
-        private void Press()
-        {
-            if (!IsActive() || !IsInteractable())
-                return;
+		public virtual void OnPointerClick(PointerEventData eventData)
+		{
+			if (eventData.button != PointerEventData.InputButton.Left)
+				return;
 
-            UISystemProfilerApi.AddMarker("Button.onClick", this);
-            StateValue = (StateValue + 1) % MaxValue;
-            ClickEvent.Invoke(StateValue);
-        }
+			Press();
+		}
 
-        public void Bind(UnityAction<int> action)
-        {
-            Clear();
-            ClickEvent.AddListener(action);
-        }
+		private void Press()
+		{
+			if (!IsActive() || !IsInteractable())
+				return;
 
-        private void Clear()
-        {
-            ClickEvent.RemoveAllListeners();
-        }
+			UISystemProfilerApi.AddMarker("Button.onClick", this);
+			StateValue = (StateValue + 1) % MaxValue;
+			ClickEvent.Invoke(StateValue);
+		}
 
-        [Serializable]
-        public class StateToggleEvent : UnityEvent<int>
-        {
-        }
-    }
+		public void Bind(UnityAction<int> action)
+		{
+			Clear();
+			ClickEvent.AddListener(action);
+		}
+
+		private void Clear()
+		{
+			ClickEvent.RemoveAllListeners();
+		}
+
+		[Serializable]
+		public class StateToggleEvent : UnityEvent<int>
+		{
+		}
+	}
 }

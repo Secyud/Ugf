@@ -1,5 +1,9 @@
-﻿using System;
+﻿#region
+
+using System;
 using Object = UnityEngine.Object;
+
+#endregion
 
 namespace Secyud.Ugf.Container
 {
@@ -11,7 +15,7 @@ namespace Secyud.Ugf.Container
 		{
 			_getter = getter;
 		}
-		
+
 		protected override TObject GetObject() => _getter();
 	}
 }

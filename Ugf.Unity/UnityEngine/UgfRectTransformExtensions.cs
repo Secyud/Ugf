@@ -1,5 +1,9 @@
-﻿using System;
+﻿#region
+
+using System;
 using UnityEngine.UI;
+
+#endregion
 
 namespace UnityEngine
 {

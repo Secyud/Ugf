@@ -6,8 +6,8 @@ using System.Collections.Generic;
 
 namespace Secyud.Ugf.TableComponents
 {
-    public interface IHasFilterGroups<TItem>
-    {
-        public IEnumerable<FilterRegistrationGroup<TItem>> FilterGroups { get; }
-    }
+	public interface IHasFilterGroups<TItem>
+	{
+		public IEnumerable<FilterRegistrationGroup<TItem>> FilterGroups { get; }
+	}
 }

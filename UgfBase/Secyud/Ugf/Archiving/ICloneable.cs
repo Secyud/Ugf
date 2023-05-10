@@ -4,6 +4,7 @@
 	{
 		public object Clone();
 	}
+
 	public interface ICopyable
 	{
 		public object CopyTo(object target);

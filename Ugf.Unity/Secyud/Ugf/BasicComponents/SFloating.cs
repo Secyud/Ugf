@@ -8,34 +8,35 @@ using UnityEngine;
 namespace Secyud.Ugf.BasicComponents
 {
 	[RequireComponent(typeof(RectTransform))]
-	public class SFloating : VerticalLayoutTrigger
+	public class SFloating : LayoutGroupTrigger
 	{
-		[SerializeField] private VerticalLayoutTrigger LayoutTrigger;
+		[SerializeField] private LayoutGroupTrigger SubLayoutGroupTrigger;
 
 
-		public void OnInitialize(Vector2 position,Vector2 bias)
+		public void OnInitialize(Vector2 position, Vector2 bias)
 		{
-			RectTransform.SetRectPosition(position,bias);
+			RectTransform.SetRectPosition(position, bias);
 		}
-		
-		public SFloating Create(Vector2 position,Vector2 bias)
+
+		public SFloating Create(Vector2 position, Vector2 bias)
 		{
 			SFloating floating = Instantiate(this, Og.Canvas.transform);
-			floating.OnInitialize(position,bias);
+			floating.OnInitialize(position, bias);
 			return floating;
 		}
 
 		public SFloating CreateOnCenter()
 		{
 			Vector2 position = new(
-				Screen.currentResolution.width / 2f, 
-				-Screen.currentResolution.height / 2f);
-			return Create(position,new Vector2(-0.5f,-0.5f));
+				Screen.currentResolution.width / 2f,
+				-Screen.currentResolution.height / 2f
+			);
+			return Create(position, new Vector2(-0.5f, -0.5f));
 		}
 
 		public SFloating CreateOnMouse()
 		{
-			return Create(UgfUnityExtensions.GetMousePosition(),new Vector2(0,-1));
+			return Create(UgfUnityExtensions.GetMousePosition(), new Vector2(0, -1));
 		}
 
 		public void Die()
@@ -45,17 +46,17 @@ namespace Secyud.Ugf.BasicComponents
 
 		public override void RefreshContent(IHasContent hasContent)
 		{
-			if (LayoutTrigger == this)
+			if (SubLayoutGroupTrigger == this)
 				base.RefreshContent(hasContent);
 			else
-				LayoutTrigger.RefreshContent(hasContent);
+				SubLayoutGroupTrigger.RefreshContent(hasContent);
 			enabled = true;
 		}
 
 		public override RectTransform PrepareLayout()
 		{
 			enabled = true;
-			return LayoutTrigger == this ? base.PrepareLayout() : LayoutTrigger.PrepareLayout();
+			return SubLayoutGroupTrigger == this ? base.PrepareLayout() : SubLayoutGroupTrigger.PrepareLayout();
 		}
 	}
 }

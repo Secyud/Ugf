@@ -7,16 +7,16 @@ using Secyud.Ugf.Modularity;
 
 namespace Secyud.Ugf
 {
-    [DependsOn(
-        typeof(UgfCoreModule)
-    )]
-    public class UgfUnityModule : IUgfModule
-    {
-        public void ConfigureGame(ConfigurationContext context)
-        {
-            context.Manager.AddTypes(
-                typeof(AssetBundleManager)
-            );
-        }
-    }
+	[DependsOn(
+		typeof(UgfCoreModule)
+	)]
+	public class UgfUnityModule : IUgfModule
+	{
+		public void ConfigureGame(ConfigurationContext context)
+		{
+			context.Manager.AddTypes(
+				typeof(AssetBundleManager)
+			);
+		}
+	}
 }

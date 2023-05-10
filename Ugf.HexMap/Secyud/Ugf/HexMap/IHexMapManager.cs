@@ -7,12 +7,14 @@ using UnityEngine;
 
 namespace Secyud.Ugf.HexMap
 {
-    public interface IHexMapManager
-    {
-        public Transform GetFeature(HexCell cell);
-        public Transform GetSpecialFeature(HexCell cell);
+	public interface IHexMapManager
+	{
+		public Transform GetFeature(HexCell cell);
 
-        public int GetMoveCost(HexUnit unit,HexCell from, HexCell to, HexDirection direction);
-        public int GetSpeed(HexUnit unit);
-    }
+		public Transform GetSpecialFeature(HexCell cell);
+
+		public int GetMoveCost(HexUnit unit, HexCell from, HexCell to, HexDirection direction);
+
+		public int GetSpeed(HexUnit unit);
+	}
 }

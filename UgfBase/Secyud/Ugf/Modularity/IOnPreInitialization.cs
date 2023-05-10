@@ -1,7 +1,7 @@
 namespace Secyud.Ugf.Modularity
 {
-    public interface IOnPreInitialization
-    {
-        void OnGamePreInitialization(InitializationContext context);
-    }
+	public interface IOnPreInitialization
+	{
+		void OnGamePreInitialization(InitializationContext context);
+	}
 }

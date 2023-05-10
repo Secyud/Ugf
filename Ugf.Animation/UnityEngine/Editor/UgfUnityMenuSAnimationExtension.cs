@@ -2,67 +2,70 @@
 
 #region
 
-using System.IO;
 using Secyud.Ugf;
 using Secyud.Ugf.Animation;
+using System.IO;
 using UnityEditor;
 
 #endregion
 
 namespace UnityEngine.Editor
 {
-    public class UgfUnityMenuSAnimationExtension : UnityEditor.Editor
-    {
-        [MenuItem("Secyud/ShowType")]
-        private static void ShowType()
-        {
-            if (Selection.activeObject)
-                Debug.Log(Selection.activeObject.GetType());
-        }
+	public class UgfUnityMenuSAnimationExtension : UnityEditor.Editor
+	{
+		[MenuItem("Secyud/ShowType")]
+		private static void ShowType()
+		{
+			if (Selection.activeObject)
+				Debug.Log(Selection.activeObject.GetType());
+		}
 
 
-        [MenuItem("Secyud/ConvertAnimation")]
-        private static void ConvertAnimation()
-        {
-            var animator = Selection.activeGameObject.GetComponent<Animator>();
+		[MenuItem("Secyud/ConvertAnimation")]
+		private static void ConvertAnimation()
+		{
+			var animator = Selection.activeGameObject.GetComponent<Animator>();
 
-            if (!animator)
-            {
-                Debug.LogWarning("Can't find animator!");
+			if (!animator)
+			{
+				Debug.LogWarning("Can't find animator!");
 
-                return;
-            }
+				return;
+			}
 
-            foreach (var o in Selection.objects)
-            {
-                if (o is not AnimationClip clip) return;
-                var path = Path.Combine(Og.AppPath, AssetDatabase.GetAssetPath(o.GetInstanceID())[7..] + "ation");
+			foreach (var o in Selection.objects)
+			{
+				if (o is not AnimationClip clip) return;
 
-                SaveAnimSequence(clip, animator, path);
+				var path = Path.Combine(
+					Og.AppPath, AssetDatabase.GetAssetPath(o.GetInstanceID())[7..] + "ation"
+				);
 
-                Debug.Log($"Convert {clip.name} finished!");
-            }
+				SaveAnimSequence(clip, animator, path);
 
-            Debug.Log("All clips convert finished!");
-        }
+				Debug.Log($"Convert {clip.name} finished!");
+			}
+
+			Debug.Log("All clips convert finished!");
+		}
 
 
-        public static void SaveAnimSequence(
-            AnimationClip clip,
-            Animator animator,
-            string filePath)
-        {
-            AnimDataSequence sequence = new(clip, animator);
+		public static void SaveAnimSequence(
+			AnimationClip clip,
+			Animator animator,
+			string filePath)
+		{
+			AnimDataSequence sequence = new(clip, animator);
 
-            var directoryName = Path.GetDirectoryName(filePath);
+			var directoryName = Path.GetDirectoryName(filePath);
 
-            if (!Directory.Exists(directoryName))
-                Directory.CreateDirectory(directoryName);
+			if (!Directory.Exists(directoryName))
+				Directory.CreateDirectory(directoryName);
 
-            using BinaryWriter writer = new(File.Open(filePath, FileMode.Create));
+			using BinaryWriter writer = new(File.Open(filePath, FileMode.Create));
 
-            sequence.Save(writer);
-        }
-    }
+			sequence.Save(writer);
+		}
+	}
 }
 #endif

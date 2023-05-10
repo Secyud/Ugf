@@ -1,17 +1,15 @@
-﻿using Object = UnityEngine.Object;
-
-namespace Secyud.Ugf.Container
+﻿namespace Secyud.Ugf.Container
 {
-    public abstract class ObjectContainer<TObject> : IObjectAccessor<TObject>
-    {
-        protected TObject CurrentInstance;
+	public abstract class ObjectContainer<TObject> : IObjectAccessor<TObject>
+	{
+		protected TObject CurrentInstance;
 
-        protected ObjectContainer()
-        {
-        }
+		protected ObjectContainer()
+		{
+		}
 
-        protected abstract TObject GetObject();
-        
-        public virtual TObject Value => CurrentInstance ??= GetObject();
-    }
+		protected abstract TObject GetObject();
+
+		public virtual TObject Value => CurrentInstance ??= GetObject();
+	}
 }

@@ -1,14 +1,19 @@
-﻿using System;
+﻿#region
+
+using Secyud.Ugf.Container;
+using System;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace Secyud.Ugf.Container
+#endregion
+
+namespace Secyud.Ugf.AssetBundles
 {
 	public class AssetBundleContainer : ObjectContainer<AssetBundle>
 	{
 		public readonly string AssetBundleName;
 
-		public AssetBundleContainer()
+		protected AssetBundleContainer()
 		{
 		}
 

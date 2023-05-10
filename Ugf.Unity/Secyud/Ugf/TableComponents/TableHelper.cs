@@ -10,121 +10,122 @@ using Object = UnityEngine.Object;
 
 namespace Secyud.Ugf.TableComponents
 {
-    public abstract class TableHelper<TItem, TCell> : ITableProperty, IList<TItem>
-        where TCell : MonoBehaviour
-    {
-        private Action<TCell, int> _prepareCellAction;
-        protected TCell CellTemplate;
-        protected IList<TItem> Items;
-        protected Table Table;
+	public abstract class TableHelper<TItem, TCell> : ITableProperty, IList<TItem>
+		where TCell : MonoBehaviour
+	{
+		private Action<TCell, int> _prepareCellAction;
+		protected TCell CellTemplate;
+		protected IList<TItem> Items;
+		protected Table Table;
 
-        public int IndexOf(TItem item)
-        {
-            return Items.IndexOf(item);
-        }
+		public int IndexOf(TItem item)
+		{
+			return Items.IndexOf(item);
+		}
 
-        public void Insert(int index, TItem item)
-        {
-            Items.Insert(index, item);
-            Table.InsertAt(index);
-        }
+		public void Insert(int index, TItem item)
+		{
+			Items.Insert(index, item);
+			Table.InsertAt(index);
+		}
 
-        public void RemoveAt(int index)
-        {
-            Items.RemoveAt(index);
-            Table.RemoveAt(index);
-        }
+		public void RemoveAt(int index)
+		{
+			Items.RemoveAt(index);
+			Table.RemoveAt(index);
+		}
 
-        public TItem this[int index]
-        {
-            get => Items[index];
-            set => Items[index] = value;
-        }
+		public TItem this[int index]
+		{
+			get => Items[index];
+			set => Items[index] = value;
+		}
 
-        public IEnumerator<TItem> GetEnumerator()
-        {
-            return Items.GetEnumerator();
-        }
+		public IEnumerator<TItem> GetEnumerator()
+		{
+			return Items.GetEnumerator();
+		}
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
+		IEnumerator IEnumerable.GetEnumerator()
+		{
+			return GetEnumerator();
+		}
 
-        public void Add(TItem item)
-        {
-            Items.AddLast(item);
-            Table.InsertAt(Items.Count - 1);
-        }
+		public void Add(TItem item)
+		{
+			Items.AddLast(item);
+			Table.InsertAt(Items.Count - 1);
+		}
 
-        public void Clear()
-        {
-            Items.Clear();
-            Table.Clear();
-        }
+		public void Clear()
+		{
+			Items.Clear();
+			Table.Clear();
+		}
 
-        public bool Contains(TItem item)
-        {
-            return Items.Contains(item);
-        }
+		public bool Contains(TItem item)
+		{
+			return Items.Contains(item);
+		}
 
-        public void CopyTo(TItem[] array, int arrayIndex)
-        {
-            Items.CopyTo(array, arrayIndex);
-            for (var i = arrayIndex; i < array.Length + arrayIndex; i++) Table.ReplaceAt(i);
-        }
+		public void CopyTo(TItem[] array, int arrayIndex)
+		{
+			Items.CopyTo(array, arrayIndex);
+			for (var i = arrayIndex; i < array.Length + arrayIndex; i++) Table.ReplaceAt(i);
+		}
 
-        public bool Remove(TItem item)
-        {
-            var index = Items.IndexOf(item);
-            if (index < 0) return false;
-            RemoveAt(index);
-            return true;
-        }
+		public bool Remove(TItem item)
+		{
+			var index = Items.IndexOf(item);
+			if (index < 0) return false;
 
-        public bool IsReadOnly => Items.IsReadOnly;
+			RemoveAt(index);
+			return true;
+		}
 
-        public virtual Transform CreateCell(Transform content, int index)
-        {
-            if (index >= Count)
-                return null;
+		public bool IsReadOnly => Items.IsReadOnly;
 
-            var cell = Object.Instantiate(CellTemplate, content);
-            _prepareCellAction?.Invoke(cell, index);
-            SetCell(cell, Items[index]);
-            return cell.transform;
-        }
+		public virtual Transform CreateCell(Transform content, int index)
+		{
+			if (index >= Count)
+				return null;
 
-        public virtual void ResetCell(Transform cell, int index)
-        {
-            var c = cell.GetComponent<TCell>();
-            _prepareCellAction?.Invoke(c, index);
-            SetCell(c, Items[index]);
-        }
+			var cell = Object.Instantiate(CellTemplate, content);
+			_prepareCellAction?.Invoke(cell, index);
+			SetCell(cell, Items[index]);
+			return cell.transform;
+		}
 
-        public virtual void ApplyFilter()
-        {
-        }
+		public virtual void ResetCell(Transform cell, int index)
+		{
+			var c = cell.GetComponent<TCell>();
+			_prepareCellAction?.Invoke(c, index);
+			SetCell(c, Items[index]);
+		}
 
-        public virtual void ApplySorter()
-        {
-        }
+		public virtual void ApplyFilter()
+		{
+		}
 
-        public int Count => Items.Count;
+		public virtual void ApplySorter()
+		{
+		}
 
-        public void BindPrepareCellAction(Action<TCell, int> action)
-        {
-            _prepareCellAction = action;
-        }
+		public int Count => Items.Count;
 
-        public void OnInitialize(Table table, TCell cellTemplate, IList<TItem> showItems)
-        {
-            Table = table;
-            CellTemplate = cellTemplate;
-            Items = showItems;
-            table.TableProperty = this;
-        }
+		public void BindPrepareCellAction(Action<TCell, int> action)
+		{
+			_prepareCellAction = action;
+		}
 
-        protected abstract void SetCell(TCell cell, TItem item);
-    }
+		public void OnInitialize(Table table, TCell cellTemplate, IList<TItem> showItems)
+		{
+			Table = table;
+			CellTemplate = cellTemplate;
+			Items = showItems;
+			table.TableProperty = this;
+		}
+
+		protected abstract void SetCell(TCell cell, TItem item);
+	}
 }

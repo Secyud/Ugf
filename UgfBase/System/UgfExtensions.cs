@@ -1,29 +1,31 @@
 #region
 
-using System.Reflection;
 using Secyud.Ugf.Modularity;
+using System.Reflection;
 
 #endregion
 
 namespace System
 {
-    public static class UgfExtensions
-    {
-        public static bool IsUgfModule(Type type)
-        {
-            var typeInfo = type.GetTypeInfo();
+	public static class UgfExtensions
+	{
+		public static bool IsUgfModule(Type type)
+		{
+			var typeInfo = type.GetTypeInfo();
 
-            return
-                typeInfo.IsClass &&
-                !typeInfo.IsAbstract &&
-                !typeInfo.IsGenericType &&
-                typeof(IUgfModule).GetTypeInfo().IsAssignableFrom(type);
-        }
+			return
+				typeInfo.IsClass &&
+				!typeInfo.IsAbstract &&
+				!typeInfo.IsGenericType &&
+				typeof(IUgfModule).GetTypeInfo().IsAssignableFrom(type);
+		}
 
-        public static void CheckUgfModuleType(Type moduleType)
-        {
-            if (!IsUgfModule(moduleType))
-                throw new ArgumentException("Given type is not an UGF module: " + moduleType.AssemblyQualifiedName);
-        }
-    }
+		public static void CheckUgfModuleType(Type moduleType)
+		{
+			if (!IsUgfModule(moduleType))
+				throw new ArgumentException(
+					"Given type is not an UGF module: " + moduleType.AssemblyQualifiedName
+				);
+		}
+	}
 }

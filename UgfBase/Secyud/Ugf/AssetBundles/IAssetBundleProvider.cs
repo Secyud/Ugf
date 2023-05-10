@@ -6,10 +6,10 @@ using UnityEngine;
 
 namespace Secyud.Ugf.AssetBundles
 {
-    public interface IAssetBundleProvider
-    {
-        AssetBundle GetByPath(string path);
+	public interface IAssetBundleProvider
+	{
+		AssetBundle GetByPath(string path);
 
-        void ReleaseByPath(string path);
-    }
+		void ReleaseByPath(string path);
+	}
 }

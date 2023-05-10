@@ -1,9 +1,9 @@
 #region
 
-using System.Collections.Generic;
-using System.Linq;
 using Localization;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 
 #endregion
@@ -15,9 +15,9 @@ namespace Secyud.Ugf.Localization
 	{
 		private readonly IDictionary<string, string> _dictionary;
 
-		public DefaultStringLocalizer(IStringLocalizerFactory stringLocalizerFactory)
+		public DefaultStringLocalizer(ILocalizerFactory localizerFactory)
 		{
-			_dictionary = stringLocalizerFactory.GetLocalizerStringDictionary<TResource>();
+			_dictionary = localizerFactory.GetLocalizerStringDictionary<TResource>();
 		}
 
 		public string this[string str]

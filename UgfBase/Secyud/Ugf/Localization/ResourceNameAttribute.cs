@@ -6,14 +6,14 @@ using System;
 
 namespace Secyud.Ugf.Localization
 {
-    [AttributeUsage(AttributeTargets.Class)]
-    public class ResourceNameAttribute : Attribute
-    {
-        public ResourceNameAttribute(Type toResource)
-        {
-            ToResource = toResource;
-        }
+	[AttributeUsage(AttributeTargets.Class)]
+	public class ResourceNameAttribute : Attribute
+	{
+		public ResourceNameAttribute(Type toResource)
+		{
+			ToResource = toResource;
+		}
 
-        public Type ToResource { get; }
-    }
+		public Type ToResource { get; }
+	}
 }

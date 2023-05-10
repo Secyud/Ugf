@@ -1,8 +1,8 @@
 ﻿#region
 
-using System.Collections.Generic;
 using Secyud.Ugf.DependencyInjection;
 using Secyud.Ugf.HexMap.Utilities;
+using System.Collections.Generic;
 using UnityEngine;
 
 #endregion
@@ -58,7 +58,7 @@ namespace Secyud.Ugf.HexMap.Generator
 			_cellCount = TmpCells.Length;
 			foreach (HexCell cell in TmpCells)
 				cell.WaterLevel = Parameter.WaterLevel;
-			
+
 
 			CreateRegions();
 			CreateLand();
@@ -100,13 +100,13 @@ namespace Secyud.Ugf.HexMap.Generator
 					region.ZMax = CellCountZ - Parameter.MapBorderZ;
 					_regions.Add(region);
 					region.XMin = CellCountX / 2 + Parameter.RegionBorder;
-					region.XMax =CellCountZ - borderX;
+					region.XMax = CellCountZ - borderX;
 					_regions.Add(region);
 				}
 				else
 				{
 					region.XMin = borderX;
-					region.XMax =CellCountX - borderX;
+					region.XMax = CellCountX - borderX;
 					region.ZMin = Parameter.MapBorderZ;
 					region.ZMax = CellCountZ / 2 - Parameter.RegionBorder;
 					_regions.Add(region);

@@ -1,28 +1,32 @@
-﻿using JetBrains.Annotations;
-using Secyud.Ugf.AssetBundles;
+﻿#region
+
+using JetBrains.Annotations;
+using Secyud.Ugf.Container;
 using System;
 using System.IO;
 using Object = UnityEngine.Object;
 
-namespace Secyud.Ugf.Container
+#endregion
+
+namespace Secyud.Ugf.AssetBundles
 {
-	public class AssetContainer<TAsset> : ObjectContainer<TAsset>
+	public class BundleAssetContainer<TAsset> : ObjectContainer<TAsset>
 		where TAsset : Object
 	{
 		protected AssetBundleContainer AssetBundleContainer;
 		protected string AssetName;
 
-		public AssetContainer()
+		protected BundleAssetContainer()
 		{
 		}
 
-		public AssetContainer([NotNull] AssetBundleContainer assetBundleContainer, string assetName)
+		public BundleAssetContainer([NotNull] AssetBundleContainer assetBundleContainer, string assetName)
 		{
 			AssetBundleContainer = assetBundleContainer;
 			AssetName = assetName;
 		}
 
-		public AssetContainer(Type assetBundleContainerType, string assetName)
+		public BundleAssetContainer(Type assetBundleContainerType, string assetName)
 		{
 			AssetBundleContainer = Og.Provider.Get(assetBundleContainerType) as AssetBundleContainer;
 			AssetName = assetName;
@@ -61,15 +65,10 @@ namespace Secyud.Ugf.Container
 			AssetName = reader.ReadString();
 		}
 
-		public static AssetContainer<TAsset> Create<TAbBase>(string spriteName)
+		public static BundleAssetContainer<TAsset> Create<TAbBase>(string assetName)
 			where TAbBase : AssetBundleBase
 		{
-			return Create(typeof(TAbBase), spriteName);
-		}
-
-		public static AssetContainer<TAsset> Create(Type abType, string assetName)
-		{
-			return new AssetContainer<TAsset>(abType, assetName);
+			return new BundleAssetContainer<TAsset>(typeof(TAbBase), assetName);
 		}
 	}
 }

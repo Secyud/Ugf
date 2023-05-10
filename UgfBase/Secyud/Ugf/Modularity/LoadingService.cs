@@ -6,9 +6,10 @@ using Secyud.Ugf.DependencyInjection;
 
 namespace Secyud.Ugf.Modularity
 {
-    public class LoadingService : ISingleton
-    {
-        public float MaxValue { get; set; }
-        public float Value { get; set; }
-    }
+	public class LoadingService : ISingleton
+	{
+		public float MaxValue { get; set; }
+
+		public float Value { get; set; }
+	}
 }

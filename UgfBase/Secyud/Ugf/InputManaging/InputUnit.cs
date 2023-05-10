@@ -1,7 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿#region
+
 using UnityEngine;
 using UnityEngine.Events;
+
+#endregion
 
 namespace Secyud.Ugf.InputManaging
 {
@@ -12,8 +14,8 @@ namespace Secyud.Ugf.InputManaging
 			KeyCode = code;
 			Event = @event;
 		}
-		
-		public KeyCode KeyCode { get;  }
+
+		public KeyCode KeyCode { get; }
 
 		public UnityEvent Event { get; }
 	}

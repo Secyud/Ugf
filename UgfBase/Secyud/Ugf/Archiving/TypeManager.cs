@@ -1,12 +1,15 @@
-﻿using Newtonsoft.Json;
+﻿#region
+
+using Newtonsoft.Json;
+using Secyud.Ugf.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using Secyud.Ugf.DependencyInjection;
-using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
 using UnityEngine;
+
+#endregion
 
 namespace Secyud.Ugf.Archiving
 {
@@ -34,13 +37,15 @@ namespace Secyud.Ugf.Archiving
 		}
 
 		public object Construct(Guid id) => this[id].Construct();
+
 		public object Construct(BinaryReader reader) => this[reader.ReadGuid()].Construct();
+
 		public T CloneInit<T>(T obj) where T : class
 		{
-			object ret = 
+			object ret =
 				obj is ICloneable cloneable
-				?cloneable.Clone() 
-				: Construct(obj.GetType());
+					? cloneable.Clone()
+					: Construct(obj.GetType());
 			if (obj is ICopyable copyable)
 				copyable.CopyTo(ret);
 			return ret as T;
@@ -62,9 +67,9 @@ namespace Secyud.Ugf.Archiving
 		public void TryAddType(Type type)
 		{
 			Guid id = GetId(type);
-			if(TryGetValue(id, out TypeContainer origin))
+			if (TryGetValue(id, out TypeContainer origin))
 				Debug.LogWarning($"Type manager: {type} replaced {origin.Type}");
-			
+
 			this[id] = new TypeContainer(type);
 		}
 
@@ -89,7 +94,7 @@ namespace Secyud.Ugf.Archiving
 				return id;
 			}
 		}
-		
+
 		private Guid GenerateId(Type type)
 		{
 			string s = type.AssemblyQualifiedName + " " + type.FullName;

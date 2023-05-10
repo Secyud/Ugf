@@ -6,8 +6,8 @@ using UnityEngine;
 
 namespace Secyud.Ugf
 {
-    public interface IHasContent
-    {
-        void SetContent(Transform transform);
-    }
+	public interface IHasContent
+	{
+		void SetContent(Transform transform);
+	}
 }

@@ -7,17 +7,17 @@ using UnityEngine.UI;
 
 namespace Secyud.Ugf.BasicComponents
 {
-    public class SToggle : Toggle
-    {
-        public void Bind(UnityAction<bool> action)
-        {
-            Clear();
-            onValueChanged.AddListener(action);
-        }
+	public class SToggle : Toggle
+	{
+		public void Bind(UnityAction<bool> action)
+		{
+			Clear();
+			onValueChanged.AddListener(action);
+		}
 
-        private void Clear()
-        {
-            onValueChanged.RemoveAllListeners();
-        }
-    }
+		private void Clear()
+		{
+			onValueChanged.RemoveAllListeners();
+		}
+	}
 }

@@ -1,38 +1,41 @@
 #region
 
-using Secyud.Ugf.AssetBundles;
+using Secyud.Ugf.Container;
 using System;
-using System.IO;
 using UnityEngine;
 
 #endregion
 
-namespace Secyud.Ugf.Container
+namespace Secyud.Ugf.AssetBundles
 {
-	public class MonoContainer<TComponent> : AssetContainer<TComponent> 
+	public class BundleMonoContainer<TComponent> : BundleAssetContainer<TComponent>, IMonoContainer<TComponent>
 		where TComponent : MonoBehaviour
 	{
 		private readonly bool _onCanvas;
 		private TComponent _prefab;
 
-		public MonoContainer(AssetBundleContainer assetBundleBase, string name, bool onCanvas = true)
+		protected BundleMonoContainer()
+		{
+		}
+
+		public BundleMonoContainer(AssetBundleContainer assetBundleBase, string name, bool onCanvas = true)
 			: base(assetBundleBase, name)
 		{
 			_onCanvas = onCanvas;
 			_prefab = null;
 		}
 
-		public MonoContainer(Type assetBundleType, string name, bool onCanvas = true)
+		public BundleMonoContainer(Type assetBundleType, string name, bool onCanvas = true)
 			: base(assetBundleType, name)
 		{
 			_onCanvas = onCanvas;
 			_prefab = null;
 		}
 
-		public static MonoContainer<TComponent> Create<TAbBase>(string name, bool onCanvas = true)
+		public static BundleMonoContainer<TComponent> Create<TAbBase>(string name, bool onCanvas = true)
 			where TAbBase : AssetBundleBase
 		{
-			return new MonoContainer<TComponent>(typeof(TAbBase), name, onCanvas);
+			return new BundleMonoContainer<TComponent>(typeof(TAbBase), name, onCanvas);
 		}
 
 		protected override TComponent GetObject()

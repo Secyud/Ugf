@@ -1,73 +1,48 @@
-﻿using System;
+﻿#region
+
+using System;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.UI;
+
+#endregion
 
 namespace Secyud.Ugf.Layout
 {
-	public abstract class LayoutTrigger<TLayoutElement> : MonoBehaviour
-		where TLayoutElement : UIBehaviour, ILayoutElement
+	public class LayoutTrigger : MonoBehaviour
 	{
-		[SerializeField] protected bool Float;
-		protected ContentSizeFitter ContentSizeFitter;
-		protected TLayoutElement LayoutElement;
+
 		private const int RecordMax = 1;
+		protected ContentSizeFitter ContentSizeFitter;
 
 		public RectTransform RectTransform { get; private set; }
-		public int Record { get; set; }
 
-		public TLayoutElement Element => LayoutElement;
+		public int Record { get; set; } = 1;
 
 		protected virtual void Awake()
 		{
 			TryGetComponent(out ContentSizeFitter);
-			LayoutElement = GetComponent<TLayoutElement>();
 			RectTransform = GetComponent<RectTransform>();
-		}
-
-		protected virtual void OnEnable()
-		{
-			LayoutElement.enabled = true;
-			if (ContentSizeFitter)
-				ContentSizeFitter.enabled = true;
-			if (Float) RectTransform.CheckBoundary();
-			Record = Math.Max(1, Record);
 		}
 
 		protected virtual void LateUpdate()
 		{
 			if (Record < 0)
-			{
 				enabled = false;
-			}
 			else
-			{
 				Record--;
-			}
 		}
 
 		protected virtual void OnDisable()
 		{
 			if (ContentSizeFitter)
 				ContentSizeFitter.enabled = false;
-			LayoutElement.enabled = false;
-			if (Float) RectTransform.CheckBoundary();
 		}
 
-
-		public virtual void RefreshContent(IHasContent content)
+		protected virtual void OnEnable()
 		{
-			for (int i = 0; i < transform.childCount; i++)
-				Destroy(transform.GetChild(i).gameObject);
-			content?.SetContent(PrepareLayout());
-		}
-
-		public virtual RectTransform PrepareLayout()
-		{
-			for (int i = 0; i < RectTransform.childCount; i++)
-				Destroy(RectTransform.GetChild(i).gameObject);
-			enabled = true;
-			return RectTransform;
+			if (ContentSizeFitter)
+				ContentSizeFitter.enabled = true;
+			Record = Math.Max(1, Record);
 		}
 	}
 }

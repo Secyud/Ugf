@@ -1,8 +1,8 @@
 #region
 
-using System;
 using Secyud.Ugf.BasicComponents;
 using Secyud.Ugf.ButtonComponents;
+using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -10,94 +10,97 @@ using UnityEngine.EventSystems;
 
 namespace Secyud.Ugf.TableComponents
 {
-    [RequireComponent(typeof(CanvasGroup))]
-    public class Sorter : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
-    {
-        [SerializeField] private SImage Check;
-        [SerializeField] private SText Name;
-        private CanvasGroup _canvasGroup;
-        private Vector2 _deltaRecord;
-        private RectTransform _rectTransform;
+	[RequireComponent(typeof(CanvasGroup))]
+	public class Sorter : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
+	{
+		[SerializeField] private SImage Check;
+		[SerializeField] private SText Name;
+		private CanvasGroup _canvasGroup;
+		private Vector2 _deltaRecord;
+		private RectTransform _rectTransform;
 
-        public FunctionalTable FunctionalTable { get; private set; }
-        public ICanBeStated Triggerable { get; private set; }
+		public FunctionalTable FunctionalTable { get; private set; }
 
-        private void Awake()
-        {
-            _canvasGroup = GetComponent<CanvasGroup>();
-            _rectTransform = GetComponent<RectTransform>();
-        }
+		public ICanBeStated Triggerable { get; private set; }
 
-        public void OnBeginDrag(PointerEventData eventData)
-        {
-            if (eventData.button != PointerEventData.InputButton.Left)
-                return;
-            _canvasGroup.blocksRaycasts = false;
-            _rectTransform.SetParent(Og.Canvas.gameObject.transform);
-            _deltaRecord = _rectTransform.anchoredPosition - eventData.position;
-        }
+		private void Awake()
+		{
+			_canvasGroup = GetComponent<CanvasGroup>();
+			_rectTransform = GetComponent<RectTransform>();
+		}
 
-        public void OnDrag(PointerEventData eventData)
-        {
-            if (eventData.button != PointerEventData.InputButton.Left)
-                return;
-            _rectTransform.anchoredPosition = eventData.position + _deltaRecord;
-        }
+		public void OnBeginDrag(PointerEventData eventData)
+		{
+			if (eventData.button != PointerEventData.InputButton.Left)
+				return;
 
-        public void OnEndDrag(PointerEventData eventData)
-        {
-            int result = 0;
-            for (int i = 0; i < FunctionalTable.SortableContent.transform.childCount; i++)
-            {
-                Transform trans = FunctionalTable.SortableContent.transform.GetChild(i);
+			_canvasGroup.blocksRaycasts = false;
+			_rectTransform.SetParent(Og.Canvas.gameObject.transform);
+			_deltaRecord = _rectTransform.anchoredPosition - eventData.position;
+		}
 
-                if ((trans.position - _rectTransform.position).x > 0)
-                    result = i;
-                else
-                    break;
-            }
-            _rectTransform.SetParent(FunctionalTable.SortableContent.transform);
-            transform.SetSiblingIndex(result);
-            _canvasGroup.blocksRaycasts = true;
-            FunctionalTable.SortableContent.enabled = true;
-            FunctionalTable.RefreshSorter();
-        }
+		public void OnDrag(PointerEventData eventData)
+		{
+			if (eventData.button != PointerEventData.InputButton.Left)
+				return;
 
-        public void OnClick(int state)
-        {
-            Check.transform.rotation = state switch
-            {
-                0 => Quaternion.Euler(0, 0, 0),
-                1 => Quaternion.Euler(0, 0, 90),
-                2 => Quaternion.Euler(0, 0, -90),
-                _ => throw new ArgumentOutOfRangeException()
-            };
+			_rectTransform.anchoredPosition = eventData.position + _deltaRecord;
+		}
 
-            Triggerable.Enabled = state switch
-            {
-                0 => null,
-                1 => false,
-                2 => true,
-                _ => throw new ArgumentOutOfRangeException()
-            };
+		public void OnEndDrag(PointerEventData eventData)
+		{
+			int result = 0;
+			for (int i = 0; i < FunctionalTable.SortableContent.transform.childCount; i++)
+			{
+				Transform trans = FunctionalTable.SortableContent.transform.GetChild(i);
 
-            FunctionalTable.RefreshSorter();
-        }
+				if ((trans.position - _rectTransform.position).x > 0)
+					result = i;
+				else
+					break;
+			}
+			_rectTransform.SetParent(FunctionalTable.SortableContent.transform);
+			transform.SetSiblingIndex(result);
+			_canvasGroup.blocksRaycasts = true;
+			FunctionalTable.SortableContent.enabled = true;
+			FunctionalTable.RefreshSorter();
+		}
 
-        private void OnInitialize(FunctionalTable functionalTable, ICanBeStated triggerable)
-        {
-            FunctionalTable = functionalTable;
-            Triggerable = triggerable;
-            Name.text = Og.L[triggerable.ShowName];
-        }
+		public void OnClick(int state)
+		{
+			Check.transform.rotation = state switch
+			{
+				0 => Quaternion.Euler(0, 0, 0),
+				1 => Quaternion.Euler(0, 0, 90),
+				2 => Quaternion.Euler(0, 0, -90),
+				_ => throw new ArgumentOutOfRangeException()
+			};
 
-        public Sorter Create(Transform parent, FunctionalTable functionalTable, ICanBeStated triggerable)
-        {
-            Sorter ret = Instantiate(this, parent);
+			Triggerable.Enabled = state switch
+			{
+				0 => null,
+				1 => false,
+				2 => true,
+				_ => throw new ArgumentOutOfRangeException()
+			};
 
-            ret.OnInitialize(functionalTable, triggerable);
+			FunctionalTable.RefreshSorter();
+		}
 
-            return ret;
-        }
-    }
+		private void OnInitialize(FunctionalTable functionalTable, ICanBeStated triggerable)
+		{
+			FunctionalTable = functionalTable;
+			Triggerable = triggerable;
+			Name.text = Og.L[triggerable.ShowName];
+		}
+
+		public Sorter Create(Transform parent, FunctionalTable functionalTable, ICanBeStated triggerable)
+		{
+			Sorter ret = Instantiate(this, parent);
+
+			ret.OnInitialize(functionalTable, triggerable);
+
+			return ret;
+		}
+	}
 }
