@@ -26,7 +26,7 @@ namespace Secyud.Ugf.BasicComponents
 
 		public void SetCollapse(bool value)
 		{
-			rectTransform.rotation = Quaternion.Euler(0, 0, value ? 0 : -90);
+			rectTransform.rotation = Quaternion.Euler(0, 0, value ? -90 : 0);
 		}
 	}
 }

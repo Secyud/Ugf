@@ -1,6 +1,6 @@
 #region
 
-using Secyud.Ugf.AssetBundles;
+using Secyud.Ugf.AssetLoading;
 using Secyud.Ugf.Modularity;
 
 #endregion
@@ -14,9 +14,6 @@ namespace Secyud.Ugf
 	{
 		public void ConfigureGame(ConfigurationContext context)
 		{
-			context.Manager.AddTypes(
-				typeof(AssetBundleManager)
-			);
 		}
 	}
 }

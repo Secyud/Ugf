@@ -87,7 +87,7 @@ namespace Secyud.Ugf.Localization
 		{
 			var path = resourceType.FullName!.Replace('.', '/');
 
-			path = Path.Combine(Og.AppPath, $"{path}/{CultureInfo.CurrentCulture.Name}.json");
+			path = Path.Combine(Og.DataPath, $"{path}/{CultureInfo.CurrentCulture.Name}.json");
 
 			if (!File.Exists(path))
 				return;

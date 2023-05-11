@@ -68,7 +68,7 @@ namespace Secyud.Ugf.Modularity
 		{
 			if (!_readers.TryGetValue(name, out var reader))
 			{
-				string path = Path.Combine(Og.AppPath, $"/Archiving/{_context.CurrentSlot.Name}", name);
+				string path = Path.Combine(Og.DataPath, $"/Archiving/{_context.CurrentSlot.Name}", name);
 				reader = new BinaryReader(File.Open(path, FileMode.Open));
 				_readers[name] = reader;
 			}

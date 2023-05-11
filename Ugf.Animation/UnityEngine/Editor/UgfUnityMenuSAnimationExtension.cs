@@ -38,7 +38,7 @@ namespace UnityEngine.Editor
 				if (o is not AnimationClip clip) return;
 
 				var path = Path.Combine(
-					Og.AppPath, AssetDatabase.GetAssetPath(o.GetInstanceID())[7..] + "ation"
+					Og.DataPath, AssetDatabase.GetAssetPath(o.GetInstanceID())[7..] + "ation"
 				);
 
 				SaveAnimSequence(clip, animator, path);
