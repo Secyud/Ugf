@@ -85,9 +85,7 @@ namespace Secyud.Ugf.Localization
 
 		private static void CreateLocalizationStrings(Type resourceType, IDictionary<string, string> localizer)
 		{
-			var path = resourceType.FullName!.Replace('.', '/');
-
-			path = Path.Combine(Og.DataPath, $"{path}/{CultureInfo.CurrentCulture.Name}.json");
+			string path = Path.Combine(Og.AppPath,"Localization", $"{resourceType.Name}/{CultureInfo.CurrentCulture.Name}.json");
 
 			if (!File.Exists(path))
 				return;

@@ -20,7 +20,7 @@ namespace Secyud.Ugf.Archiving
 
 		public TypeManager()
 		{
-			string path = Path.Combine(Og.DataPath, "AssemblyInfo.json");
+			string path = Path.Combine(Og.AppPath,"Data", "AssemblyInfo.json");
 
 			if (!File.Exists(path))
 			{

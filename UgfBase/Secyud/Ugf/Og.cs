@@ -24,22 +24,13 @@ namespace Secyud.Ugf
 		public static readonly Camera MainCamera = Camera.main;
 		public static readonly Canvas Canvas = GameObject.Find("StaticObject/Canvas").GetComponent<Canvas>();
 		public static readonly string DataPath = Application.dataPath;
-		public static readonly string StreamingAssetPath = Path.Combine(DataPath, "StreamingAssets");
+		public static readonly string StreamingAssetPath = Application.streamingAssetsPath;
 
 #if UNITY_EDITOR
-		public static readonly string MainPath = DataPath[..^6];
-#endif
-		public static readonly string AssetBundlePath =
-#if UNITY_EDITOR
-			Path.Combine(MainPath, "Library/com.unity.addressables/aa/Windows/StandaloneWindows");
+		public static readonly string AppPath = DataPath;
 #else
-			Path.Combine(StreamingAssetPath, "aa/StandaloneWindows/");
+		public static readonly string AppPath = Application.dataPath[..Application.dataPath.LastIndexOf("/", StringComparison.Ordinal)];
 #endif
-		public static string GetAssetBundlePath(string name)
-		{
-			return Path.Combine(AssetBundlePath, name);
-		}
-
 
 		public static IDependencyProvider Provider { get; private set; }
 

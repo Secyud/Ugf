@@ -16,7 +16,7 @@ namespace Secyud.Ugf.TableComponents
 	{
 		protected IList<TItem> FilteredItems;
 		protected List<FilterRegistrationGroup<TItem>> FilterGroups;
-		protected List<Pair<ISorterRegistration<TItem>, Transform>> Sorters;
+		protected List<Tuple<ISorterRegistration<TItem>, Transform>> Sorters;
 		protected IList<TItem> TotalItems;
 
 		public virtual void OnInitialize(FunctionalTable table, TCell cellTemplate, IList<TItem> showItems)
@@ -42,7 +42,7 @@ namespace Secyud.Ugf.TableComponents
 
 			table.FixedContent.enabled = true;
 
-			Sorters = new List<Pair<ISorterRegistration<TItem>, Transform>>();
+			Sorters = new List<Tuple<ISorterRegistration<TItem>, Transform>>();
 
 			for (int i = 0; i < table.SortableContent.transform.childCount; i++)
 				Object.Destroy(table.SortableContent.transform.GetChild(i).gameObject);
@@ -51,13 +51,7 @@ namespace Secyud.Ugf.TableComponents
 			{
 				Sorter s = table.SorterTemplate.Create(table.SortableContent.transform, table, sorter);
 
-				Sorters.Add(
-					new Pair<ISorterRegistration<TItem>, Transform>
-					{
-						First = sorter,
-						Second = s.transform
-					}
-				);
+				Sorters.Add(new Tuple<ISorterRegistration<TItem>, Transform>(sorter, s.transform));
 			}
 			table.SortableContent.enabled = true;
 
@@ -83,16 +77,13 @@ namespace Secyud.Ugf.TableComponents
 		{
 			if (Sorters is null) return;
 
-			IEnumerable<Pair<ISorterRegistration<TItem>, bool>> sorters =
+			IEnumerable<Tuple<ISorterRegistration<TItem>, bool>> sorters =
 				Sorters
-					.Where(u => u.First.Enabled != null)
-					.OrderBy(u => u.Second.GetSiblingIndex())
+					.Where(u => u.Item1.Enabled != null)
+					.OrderBy(u => u.Item2.GetSiblingIndex())
 					.Select(
-						u => new Pair<ISorterRegistration<TItem>, bool>
-						{
-							First = u.First,
-							Second = u.First.Enabled != null && u.First.Enabled.Value
-						}
+						u => 
+							new Tuple<ISorterRegistration<TItem>, bool>(u.Item1,u.Item2)
 					);
 
 			Items = FilteredItems.SortBy(sorters).ToList();

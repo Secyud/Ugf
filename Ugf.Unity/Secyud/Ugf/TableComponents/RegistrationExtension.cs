@@ -42,14 +42,14 @@ namespace Secyud.Ugf.TableComponents
 		/// <typeparam name="TTarget"></typeparam>
 		/// <returns></returns>
 		public static IEnumerable<TTarget> SortBy<TTarget>(this IEnumerable<TTarget> targets,
-			IEnumerable<Pair<ISorterRegistration<TTarget>, bool>> sorters)
+			IEnumerable<Tuple<ISorterRegistration<TTarget>, bool>> sorters)
 		{
 			return sorters.Reverse().Aggregate(
 				targets,
 				(current, sorter) =>
-					sorter.Second
-						? current.OrderByDescending(sorter.First.SortValue)
-						: current.OrderBy(sorter.First.SortValue)
+					sorter.Item2
+						? current.OrderByDescending(sorter.Item1.SortValue)
+						: current.OrderBy(sorter.Item1.SortValue)
 			);
 		}
 	}
