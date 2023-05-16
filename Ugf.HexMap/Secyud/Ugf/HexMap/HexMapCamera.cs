@@ -21,6 +21,7 @@ namespace Secyud.Ugf.HexMap
 		[SerializeField] private float MoveSpeedMaxZoom;
 		[SerializeField] private float RotationSpeed;
 		[SerializeField] private HexGrid Grid;
+		[SerializeField] private Camera Camera;
 		private Vector3 _targetPosition;
 		private bool _moveToTarget;
 		private float _rotationAngle;
@@ -71,14 +72,6 @@ namespace Secyud.Ugf.HexMap
 			ValidatePosition();
 		}
 
-		public void Adjust()
-		{
-			if (StickMaxZoom > -80)
-				StickMaxZoom = -80;
-
-			if (StickMinZoom > StickMaxZoom * 3)
-				StickMinZoom = StickMaxZoom * 3;
-		}
 
 
 		/// <summary>

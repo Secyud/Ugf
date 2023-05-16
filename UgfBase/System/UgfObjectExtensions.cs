@@ -114,29 +114,39 @@ namespace System
 
 		public static void WriteArchiving(this BinaryWriter writer, object obj)
 		{
-			Guid typeId = obj.GetTypeId();
-			if (typeId == Guid.Empty)
-				throw new UgfInitializationException($"Type {obj.GetType()} need id but not!");
+			if (obj is null)
+				writer.Write(false);
+			else
+			{
+				writer.Write(true);
+				Guid typeId = obj.GetTypeId();
+				if (typeId == Guid.Empty)
+					throw new UgfInitializationException($"Type {obj.GetType()} need id but not!");
 
-			writer.Write(typeId);
-			if (obj is IArchivable archivable)
-				archivable.Save(writer);
+				writer.Write(typeId);
+				if (obj is IArchivable archivable)
+					archivable.Save(writer);
+			}
 		}
 
 		public static object ReadArchiving(this BinaryReader reader)
 		{
-			object obj = Og.TypeManager.Construct(reader);
-			if (obj is IArchivable archivable)
-				archivable.Load(reader);
-			return obj;
+			if (reader.ReadBoolean())
+			{
+				object obj = Og.TypeManager.Construct(reader);
+				if (obj is IArchivable archivable)
+					archivable.Load(reader);
+				return obj;
+			}
+			else
+			{
+				return null;
+			}
 		}
 
 		public static TResult ReadArchiving<TResult>(this BinaryReader reader) where TResult : class
 		{
-			object obj = Og.TypeManager.Construct(reader);
-			if (obj is IArchivable archivable)
-				archivable.Load(reader);
-			return obj as TResult;
+			return ReadArchiving(reader) as TResult;
 		}
 
 

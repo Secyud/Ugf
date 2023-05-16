@@ -1,5 +1,6 @@
 ﻿#region
 
+using InfinityWorldChess.GlobalDomain;
 using JetBrains.Annotations;
 using System;
 using UnityEngine;

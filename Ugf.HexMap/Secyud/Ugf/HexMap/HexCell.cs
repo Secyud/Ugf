@@ -1,6 +1,7 @@
 ﻿#region
 
 using Secyud.Ugf.Archiving;
+using Secyud.Ugf.BasicComponents;
 using Secyud.Ugf.HexMap.Utilities;
 using System;
 using System.IO;
@@ -555,7 +556,7 @@ namespace Secyud.Ugf.HexMap
 		public void DisableHighlight()
 		{
 			if (!_highlight)
-				_highlight = UIRect.GetChild(0).GetComponent<Image>();
+				_highlight = UIRect.GetChild(0).GetComponent<SImage>();
 			_highlight.enabled = false;
 		}
 
@@ -566,7 +567,7 @@ namespace Secyud.Ugf.HexMap
 		public void EnableHighlight(Color color)
 		{
 			if (!_highlight)
-				_highlight = UIRect.GetChild(0).GetComponent<Image>();
+				_highlight = UIRect.GetChild(0).GetComponent<SImage>();
 			_highlight.color = color;
 			_highlight.enabled = true;
 		}

@@ -14,6 +14,16 @@ void GetVertexCellData_float (
 	Terrain.w = max(max(cell0.b, cell1.b), cell2.b) * 30.0;
 }
 
+float4 GetVertexCellData (
+	const float3 Indices
+) {
+	float4 cell0 = GetCellData(Indices, 0);
+	float4 cell1 = GetCellData(Indices, 1);
+	float4 cell2 = GetCellData(Indices, 2);
+	return float4(cell0.w, cell1.w, cell2.w,
+	              max(max(cell0.b, cell1.b), cell2.b) * 30.0);
+}
+
 float3 GetTerrainUV (
 	float3 WorldPosition,
 	float4 Terrain,
@@ -84,6 +94,10 @@ void GetFragmentData_float (
 	if (hgd.IsHighlighted()) {
 		BaseColor = ApplyHighlight(BaseColor, hgd);
 	}
+	// const float average = (BaseColor.r + BaseColor.g + BaseColor.b) / 3;
+	// BaseColor.b = lerp(BaseColor.b,average,0.6);
+	// BaseColor.r = lerp(BaseColor.r,average,0.6);
+	// BaseColor.g = lerp(BaseColor.g,average,0.6);
 	Normal = GetTerrainColor(
 		NormalTexture, Weights[0], Weights[1], Weights[2],
 		uv0, uv1, uv2).xyz;

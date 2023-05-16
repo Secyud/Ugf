@@ -32,6 +32,8 @@ namespace Secyud.Ugf
 		public static readonly string AppPath = Application.dataPath[..Application.dataPath.LastIndexOf("/", StringComparison.Ordinal)];
 #endif
 
+		public static readonly string ArchivingPath = Path.Combine(AppPath, "Archiving");
+
 		public static IDependencyProvider Provider { get; private set; }
 
 		public static IStringLocalizer<DefaultResource> L { get; private set; }

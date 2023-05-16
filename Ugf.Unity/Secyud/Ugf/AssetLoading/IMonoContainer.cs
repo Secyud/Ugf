@@ -1,10 +1,11 @@
 ﻿#region
 
+using InfinityWorldChess.GlobalDomain;
 using UnityEngine;
 
 #endregion
 
-namespace Secyud.Ugf.Container
+namespace Secyud.Ugf.AssetLoading
 {
 	public interface IMonoContainer<out TComponent> : IObjectAccessor<TComponent>
 		where TComponent : MonoBehaviour

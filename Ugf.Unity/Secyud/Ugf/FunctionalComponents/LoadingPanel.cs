@@ -18,6 +18,13 @@ namespace Secyud.Ugf.FunctionalComponents
 
 		public static LoadingPanel Instance { get; private set; }
 
+		public Action DestroyAction;
+
+		private void OnDestroy()
+		{
+			DestroyAction?.Invoke();
+		}
+
 		private LoadingService _service;
 
 

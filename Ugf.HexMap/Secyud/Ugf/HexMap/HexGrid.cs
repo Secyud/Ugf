@@ -299,7 +299,7 @@ namespace Secyud.Ugf.HexMap
 
 			if (!valid)
 			{
-				cell.EnableHighlight(Color.red);
+				cell.EnableHighlight(new Color(0f ,0f,0f,0.5f));
 			}
 			cell.Elevation = 0;
 

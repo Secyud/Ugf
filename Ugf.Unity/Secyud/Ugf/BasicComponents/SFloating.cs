@@ -36,7 +36,7 @@ namespace Secyud.Ugf.BasicComponents
 
 		public SFloating CreateOnMouse()
 		{
-			return Create(UgfUnityExtensions.GetMousePosition(), new Vector2(0, -1));
+			return Create(UgfUnityExtensions.GetMousePosition(), new Vector2(-8, -8));
 		}
 
 		public void Die()

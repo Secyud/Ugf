@@ -40,7 +40,7 @@ void GetFragmentDataRiver_float (
 	const float river = River(RiverUV, NoiseTexture);
 	float4 c = saturate(Color + river);
 	BaseColor = c.rgb;
-	Alpha = river;
+	Alpha = 1;
 }
 
 void GetFragmentDataWater_float (

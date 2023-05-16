@@ -7,6 +7,8 @@ using Secyud.Ugf.Localization;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
+using UnityEditor;
 
 #endregion
 
@@ -35,7 +37,7 @@ namespace Secyud.Ugf.Modularity
 			_dependencyManager.AddTypes(
 				typeof(DependencyManager),
 				typeof(LoadingService),
-				typeof(ArchivingContext),
+				typeof(IArchivingContext),
 				typeof(DefaultLocalizerFactory),
 				typeof(InputService)
 			);
@@ -163,6 +165,20 @@ namespace Secyud.Ugf.Modularity
 			using var scope = CreateDependencyScope();
 
 			using SavingContext context = new(scope.DependencyProvider);
+
+			var slot = context.Get<IArchivingContext>().CurrentSlot;
+
+			var path = Og.ArchivingPath;
+
+			var inPath = Path.Combine(path, slot.Id.ToString());
+			if (Directory.Exists(inPath))
+			{
+				string outPath = inPath + "_backup";
+				if (Directory.Exists(outPath))
+					Directory.Delete(outPath,true);
+				FileUtil.CopyFileOrDirectory(inPath, outPath);
+			}
+			slot.PrepareSlotSaving(context);
 
 			var loading = Og.LoadingService;
 

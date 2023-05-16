@@ -31,10 +31,6 @@ namespace Secyud.Ugf.Modularity
 			_inputService.Update();
 		}
 
-		public static void Initialize()
-		{
-			_factory.StartCoroutine(_factory.Application.GameCreate());
-		}
 
 		public static void GameCreate()
 		{
@@ -49,6 +45,10 @@ namespace Secyud.Ugf.Modularity
 		public static void GameSaving()
 		{
 			_factory.StartCoroutine(_factory.Application.GameSave());
+		}
+		public static void GameShutdown()
+		{
+			_factory.StartCoroutine(_factory.Application.Shutdown());
 		}
 
 		private IUgfApplication Create(

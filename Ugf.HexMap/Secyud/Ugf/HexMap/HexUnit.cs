@@ -1,6 +1,8 @@
 ﻿#region
 
+using Secyud.Ugf.AssetLoading;
 using Secyud.Ugf.HexMap.Utilities;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -19,7 +21,6 @@ namespace Secyud.Ugf.HexMap
 		private const float TravelSpeed = 4f;
 		public PlayableDirector PlayableDirector;
 
-		[SerializeField] private SpriteRenderer SpriteRenderer;
 		[SerializeField] private SpriteRenderer Border;
 
 		private HexCell _location, _currentTravelLocation;
@@ -74,12 +75,12 @@ namespace Secyud.Ugf.HexMap
 		}
 
 		public int Id { get; set; }
-
-
-		public void SetSprite(Sprite sprite)
-		{
-			SpriteRenderer.sprite = sprite;
-		}
+		//
+		//
+		// public void SetSprite(Sprite sprite)
+		// {
+		// 	SpriteRenderer.sprite = sprite;
+		// }
 
 		public void SetHighlight(Color? color)
 		{
@@ -106,17 +107,18 @@ namespace Secyud.Ugf.HexMap
 		///     Travel along a path.
 		/// </summary>
 		/// <param name="path">List of cells that describe a valid path.</param>
-		public void Travel(List<HexCell> path)
+		/// <param name="travelEndAction"></param>
+		public void Travel(List<HexCell> path,Action travelEndAction)
 		{
 			_location.Unit = null;
 			_location = path[^1];
 			_location.Unit = this;
 			_pathToTravel = path;
 			StopAllCoroutines();
-			StartCoroutine(TravelPath());
+			StartCoroutine(TravelPath(travelEndAction));
 		}
 
-		private IEnumerator TravelPath()
+		private IEnumerator TravelPath(Action travelEndAction)
 		{
 			Vector3 a, b, c = _pathToTravel[0].Position;
 			yield return LookAt(_pathToTravel[1].Position);
@@ -163,6 +165,7 @@ namespace Secyud.Ugf.HexMap
 			_orientation = trans.localRotation.eulerAngles.y;
 			ListPool<HexCell>.Add(_pathToTravel);
 			_pathToTravel = null;
+			travelEndAction?.Invoke();
 		}
 
 		private IEnumerator LookAt(Vector3 point)

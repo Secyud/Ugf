@@ -14,12 +14,12 @@ namespace Secyud.Ugf.Modularity
 	public class SavingContext : IReadOnlyDictionary<string, BinaryWriter>, IDisposable
 	{
 		private readonly Dictionary<string, BinaryWriter> _writers = new();
-		private readonly ArchivingContext _context;
+		private readonly IArchivingContext _context;
 
 		public SavingContext(IDependencyProvider dependencyProvider)
 		{
 			Thrower.IfNull(dependencyProvider);
-			_context = dependencyProvider.Get<ArchivingContext>();
+			_context = dependencyProvider.Get<IArchivingContext>();
 			DependencyProvider = dependencyProvider;
 		}
 
@@ -65,9 +65,14 @@ namespace Secyud.Ugf.Modularity
 
 		public BinaryWriter GetWriter(string name)
 		{
+			var directory = Path.Combine(Og.ArchivingPath, _context.CurrentSlot.Id.ToString());
+			if (!Directory.Exists(directory))
+				Directory.CreateDirectory(directory);
+			
 			if (!_writers.TryGetValue(name, out var writer))
 			{
-				string path = Path.Combine(Og.AppPath, $"Archiving/{_context.CurrentSlot.Name}", name);
+				string path = Path.Combine(directory, name);
+				
 				writer = new BinaryWriter(File.Open(path, FileMode.Create));
 				_writers[name] = writer;
 			}

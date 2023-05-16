@@ -76,7 +76,7 @@ namespace Secyud.Ugf.HexMap
 			data.r = 1;
 			data.g = 1;
 			data.b = GetCellVisibility(cell);
-			data.a = (byte)cell.TerrainTypeIndex;
+			data.a = cell.TerrainTypeIndex;
 			_cellTextureData[cell.TmpIndex] = data;
 			enabled = true;
 		}

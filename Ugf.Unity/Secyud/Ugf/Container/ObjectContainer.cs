@@ -1,8 +1,9 @@
-﻿using System;
+﻿using InfinityWorldChess.GlobalDomain;
+using System;
 
 namespace Secyud.Ugf.Container
 {
-	public abstract class ObjectContainer<TObject> : IObjectAccessor<TObject>
+	public abstract class ObjectContainer<TObject> : IObjectAccessor<TObject>, IReleasable
 	{
 		protected TObject CurrentInstance;
 

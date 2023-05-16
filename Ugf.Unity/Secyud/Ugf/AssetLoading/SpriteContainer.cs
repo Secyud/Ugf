@@ -17,7 +17,7 @@ namespace Secyud.Ugf.AssetLoading
 	// ReSharper restore InconsistentNaming
 	public enum SpritePrefix
 	{
-		Icons
+		Icons,Art
 	}
 
 	public class SpriteContainer : AssetContainer<Sprite>

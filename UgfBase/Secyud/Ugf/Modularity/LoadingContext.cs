@@ -14,12 +14,12 @@ namespace Secyud.Ugf.Modularity
 	public class LoadingContext : IReadOnlyDictionary<string, BinaryReader>, IDisposable
 	{
 		private readonly Dictionary<string, BinaryReader> _readers = new();
-		private readonly ArchivingContext _context;
+		private readonly IArchivingContext _context;
 
 		public LoadingContext(IDependencyProvider dependencyProvider)
 		{
 			Thrower.IfNull(dependencyProvider);
-			_context = dependencyProvider.Get<ArchivingContext>();
+			_context = dependencyProvider.Get<IArchivingContext>();
 			DependencyProvider = dependencyProvider;
 		}
 
@@ -68,7 +68,7 @@ namespace Secyud.Ugf.Modularity
 		{
 			if (!_readers.TryGetValue(name, out var reader))
 			{
-				string path = Path.Combine(Og.AppPath, $"Archiving/{_context.CurrentSlot.Name}", name);
+				string path = Path.Combine(Og.ArchivingPath, _context.CurrentSlot.Id.ToString(), name);
 				reader = new BinaryReader(File.Open(path, FileMode.Open));
 				_readers[name] = reader;
 			}

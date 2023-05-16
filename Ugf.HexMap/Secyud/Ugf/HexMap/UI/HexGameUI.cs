@@ -74,7 +74,7 @@ namespace Secyud.Ugf.HexMap.UI
 		{
 			if (Grid.HasPath)
 			{
-				_selectedUnit.Travel(Grid.GetPath());
+				_selectedUnit.Travel(Grid.GetPath(),null);
 				Grid.ClearPath();
 			}
 		}

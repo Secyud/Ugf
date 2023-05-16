@@ -12,7 +12,7 @@ namespace Secyud.Ugf.HexMap
 		public Camera Camera;
 		public HexMapCamera MapCamera;
 
-		protected HexCell GetCellUnderCursor()
+		public HexCell GetCellUnderCursor()
 		{
 			return Grid.GetCell(Camera.ScreenPointToRay(Input.mousePosition));
 		}

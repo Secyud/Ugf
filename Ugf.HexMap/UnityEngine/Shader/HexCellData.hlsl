@@ -13,6 +13,8 @@ float4 GetCellData (const float3 uv2, int index) {
 	uv.x -= row;
 	uv.y = (row + 0.5) * _HexCellData_TexelSize.y;
 	float4 data = SAMPLE_TEXTURE2D_LOD(_HexCellData, sampler_HexCellData, uv, 0);
+	data.x = uv.x;
+	data.y = uv.y - floor(uv.y );	
 	data.w *= 255;
 	return data;
 }

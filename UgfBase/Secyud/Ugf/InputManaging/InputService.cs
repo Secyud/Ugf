@@ -16,13 +16,7 @@ namespace Secyud.Ugf.InputManaging
 
 		public void AddEvent(KeyCode key, RectTransform uiLayer, UnityEvent @event)
 		{
-			InputLayer layer = null;
-			if (_list.Any())
-			{
-				InputLayer last = _list.Last();
-				if (last.Layer == uiLayer)
-					layer = last;
-			}
+			InputLayer layer = _list.FirstOrDefault(u => u.Layer == uiLayer);
 
 			if (layer is null)
 			{
@@ -33,7 +27,7 @@ namespace Secyud.Ugf.InputManaging
 			layer.Inputs[key] = new InputUnit(key, @event);
 		}
 
-		public void RemoveEvent(KeyCode key, RectTransform uiLayer, UnityEvent @event)
+		public void RemoveEvent(KeyCode key, RectTransform uiLayer)
 		{
 			for (int i = _list.Count - 1; i >= 0; i--)
 			{
@@ -42,12 +36,12 @@ namespace Secyud.Ugf.InputManaging
 				{
 					input.Inputs.Remove(key);
 					if (!input.Inputs.Any())
-						_list.RemoveAt(_list.Count - 1);
+						_list.RemoveAt(i);
 					return;
 				}
 			}
 
-			throw new UgfException($"Cannot find layer {uiLayer} for key {key}.");
+			Debug.LogWarning( ($"Cannot find layer {uiLayer} for key {key}. Maybe conflicted key!"));;
 		}
 
 		public void Update()
