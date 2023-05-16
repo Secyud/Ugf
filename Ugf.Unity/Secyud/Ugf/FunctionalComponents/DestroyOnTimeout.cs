@@ -1,5 +1,6 @@
 #region
 
+using System;
 using UnityEngine;
 
 #endregion
@@ -8,15 +9,12 @@ namespace Secyud.Ugf.FunctionalComponents
 {
 	public class DestroyOnTimeout : MonoBehaviour
 	{
-		private static DestroyOnTimeout _instance;
 		[SerializeField] private float OutTime;
 		private float _timeRecord;
 
 		private void Awake()
 		{
-			if (_instance)
-				Destroy(_instance.gameObject);
-			_instance = this;
+			_timeRecord = 0;
 		}
 
 		private void Update()
