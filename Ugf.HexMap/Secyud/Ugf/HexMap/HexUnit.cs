@@ -23,6 +23,8 @@ namespace Secyud.Ugf.HexMap
 
 		[SerializeField] private SpriteRenderer Border;
 
+		public event Action DeadAction;
+
 		private HexCell _location, _currentTravelLocation;
 
 		private float _orientation;
@@ -202,6 +204,7 @@ namespace Secyud.Ugf.HexMap
 		/// </summary>
 		public void Die()
 		{
+			DeadAction?.Invoke();
 			_location.Unit = null;
 			Destroy(this);
 		}
