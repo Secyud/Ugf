@@ -1,6 +1,5 @@
 ﻿#region
 
-using Secyud.Ugf.AssetLoading;
 using Secyud.Ugf.HexMap.Utilities;
 using System;
 using System.Collections;
@@ -19,11 +18,8 @@ namespace Secyud.Ugf.HexMap
 	{
 		private const float RotationSpeed = 180f;
 		private const float TravelSpeed = 4f;
-		public PlayableDirector PlayableDirector;
-
+		[SerializeField] private PlayableDirector PlayableDirector;
 		[SerializeField] private SpriteRenderer Border;
-
-		public event Action DeadAction;
 
 		private HexCell _location, _currentTravelLocation;
 
@@ -32,6 +28,10 @@ namespace Secyud.Ugf.HexMap
 		private List<HexCell> _pathToTravel;
 
 		public HexGrid Grid { get; set; }
+
+
+		public event Action DeadAction;
+		public event Action StopPlayableAction;
 
 		/// <summary>
 		///     Cell that the unit occupies.
@@ -66,6 +66,11 @@ namespace Secyud.Ugf.HexMap
 		///     Vision range of the unit, in cells.
 		/// </summary>
 		public int VisionRange => 3;
+
+		private void Awake()
+		{
+			PlayableDirector.stopped+= OnStopPlayableAction;
+		}
 
 		private void OnEnable()
 		{
@@ -207,6 +212,22 @@ namespace Secyud.Ugf.HexMap
 			DeadAction?.Invoke();
 			_location.Unit = null;
 			Destroy(this);
+		}
+
+
+		private void OnDestroy()
+		{
+			PlayableDirector.stopped -= OnStopPlayableAction;
+		}
+
+		protected virtual void OnStopPlayableAction(PlayableDirector playable)
+		{
+			StopPlayableAction?.Invoke();
+		}
+
+		public void Play(PlayableAsset asset,DirectorWrapMode mode = DirectorWrapMode.Loop)
+		{
+			PlayableDirector.Play(asset,mode);
 		}
 	}
 }

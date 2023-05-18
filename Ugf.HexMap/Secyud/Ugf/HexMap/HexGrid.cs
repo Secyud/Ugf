@@ -248,17 +248,11 @@ namespace Secyud.Ugf.HexMap
 
 		private void CreateCell(int x, int z, int iTmp)
 		{
-			Vector3 position;
-			position.x = (x + z * 0.5f - HexCoordinates.Dx(z)) * HexMetrics.InnerDiameter;
-			position.y = 0f;
-			position.z = z * (HexMetrics.OuterRadius * 1.5f);
-
-
 			int tmpIndex = (z + _dz) * (CellCountX + _dx * 2) + x + _dx;
 
 			HexCell cell = _tmpCells[tmpIndex] = Instantiate(CellPrefab);
-			cell.transform.localPosition = position;
 			cell.Coordinates = HexCoordinates.FromOffsetCoordinates(x, z);
+			cell.transform.localPosition = cell.Coordinates.Position3D();
 			cell.Index = -1;
 			cell.TmpIndex = tmpIndex;
 			cell.ShaderData = _cellShaderData;
@@ -293,8 +287,7 @@ namespace Secyud.Ugf.HexMap
 
 
 			Text label = Instantiate(CellLabelPrefab);
-			label.rectTransform.anchoredPosition =
-				new Vector2(position.x, position.z);
+			label.rectTransform.anchoredPosition = cell.Coordinates.Position2D();
 			cell.UIRect = label.rectTransform;
 
 			if (!valid)

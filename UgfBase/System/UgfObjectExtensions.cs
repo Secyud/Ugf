@@ -112,41 +112,39 @@ namespace System
 			return new Guid(reader.ReadBytes(16));
 		}
 
-		public static void WriteArchiving(this BinaryWriter writer, object obj)
+		public static void WriteNullableArchiving(this BinaryWriter writer, object obj)
 		{
 			if (obj is null)
 				writer.Write(false);
 			else
 			{
 				writer.Write(true);
-				Guid typeId = obj.GetTypeId();
-				if (typeId == Guid.Empty)
-					throw new UgfInitializationException($"Type {obj.GetType()} need id but not!");
-
-				writer.Write(typeId);
-				if (obj is IArchivable archivable)
-					archivable.Save(writer);
+				writer.WriteArchiving(obj);
 			}
 		}
-
-		public static object ReadArchiving(this BinaryReader reader)
+		public static void WriteArchiving(this BinaryWriter writer, object obj)
 		{
-			if (reader.ReadBoolean())
-			{
-				object obj = Og.TypeManager.Construct(reader);
-				if (obj is IArchivable archivable)
-					archivable.Load(reader);
-				return obj;
-			}
-			else
-			{
-				return null;
-			}
+			Guid typeId = obj.GetTypeId();
+			if (typeId == Guid.Empty)
+				throw new UgfInitializationException($"Type {obj.GetType()} need id but not!");
+
+			writer.Write(typeId);
+			if (obj is IArchivable archivable)
+				archivable.Save(writer);
 		}
+
 
 		public static TResult ReadArchiving<TResult>(this BinaryReader reader) where TResult : class
 		{
-			return ReadArchiving(reader) as TResult;
+			object obj = Og.TypeManager.Construct(reader);
+			if (obj is IArchivable archivable)
+				archivable.Load(reader);
+			return obj as TResult;
+		}
+		
+		public static TResult ReadNullableArchiving<TResult>(this BinaryReader reader) where TResult : class
+		{
+			return reader.ReadBoolean() ? reader.ReadArchiving<TResult>() : null;
 		}
 
 

@@ -199,6 +199,22 @@ namespace Secyud.Ugf.HexMap.Utilities
 			};
 		}
 
+		private float XPosition => (x + z * 0.5f) * HexMetrics.InnerDiameter;
+
+
+		private float ZPosition => z * (HexMetrics.OuterRadius * 1.5f);
+
+
+		public Vector2 Position2D()
+		{
+			return new Vector2(XPosition, ZPosition);
+		}
+
+		public Vector3 Position3D()
+		{
+			return new Vector3(XPosition, 0, ZPosition);
+		}
+
 		/// <summary>
 		/// 
 		/// </summary>
@@ -206,22 +222,22 @@ namespace Secyud.Ugf.HexMap.Utilities
 		/// <returns></returns>
 		public HexDirection DirectionTo(HexCoordinates coordinates)
 		{
-			var c = this - coordinates;
-			float cY = c.z;
-			var cX = 2f * c.x + HexMetrics.Srt * c.z;
+			Vector2 c = (this - coordinates).Position2D();
 
 			uint record = 0;
-			if (cY > -cX / HexMetrics.Srt) record += 0b001;
-			if (cY > cX / HexMetrics.Srt) record += 0b010;
-			if (cX < 0) record += 0b100;
+			if (c.y > -c.x / HexMetrics.Srt) record += 0b001;
+			if (c.y > c.x / HexMetrics.Srt) record += 0b010;
+			if (c.x < 0) record += 0b100;
+
+			Debug.Log(record);
 
 			return record switch
 			{
 				0 => HexDirection.Se,
-				1 => HexDirection.SW,
-				3 => HexDirection.W,
-				4 => HexDirection.E,
-				6 => HexDirection.Ne,
+				1 => HexDirection.E,
+				3 => HexDirection.Ne,
+				4 => HexDirection.SW,
+				6 => HexDirection.W,
 				7 => HexDirection.Nw,
 				_ => HexDirection.Ne
 			};
