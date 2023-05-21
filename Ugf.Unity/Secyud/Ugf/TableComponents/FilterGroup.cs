@@ -34,10 +34,9 @@ namespace Secyud.Ugf.TableComponents
 				{
 					foreach (var group in FunctionalTable.FilterGroups)
 						group.IsDropped = false;
+					Filters.Clear();
 
 					_floatingExist = FloatingTemplate.CreateOnMouse();
-
-					Filters.Clear();
 
 					RectTransform content = _floatingExist.PrepareLayout();
 

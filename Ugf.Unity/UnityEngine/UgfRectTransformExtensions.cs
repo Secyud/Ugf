@@ -14,7 +14,7 @@ namespace UnityEngine
 			Vector2 lb = transform.GetLeftBottomBias();
 			Rect rect = transform.rect;
 			transform.anchoredPosition = position - lb +
-				new Vector2(bias.x, bias.y);
+				new Vector2(bias.x*rect.width, bias.y*rect.height);
 		}
 
 

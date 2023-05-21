@@ -12,7 +12,6 @@ namespace Secyud.Ugf.BasicComponents
 	{
 		[SerializeField] private LayoutGroupTrigger SubLayoutGroupTrigger;
 
-
 		public void OnInitialize(Vector2 position, Vector2 bias)
 		{
 			RectTransform.SetRectPosition(position, bias);
@@ -36,7 +35,9 @@ namespace Secyud.Ugf.BasicComponents
 
 		public SFloating CreateOnMouse()
 		{
-			return Create(UgfUnityExtensions.GetMousePosition(), new Vector2(-8, -8));
+			return Create(
+				UgfUnityExtensions.GetMousePosition() - new Vector2(8,8), 
+				Vector2.zero);
 		}
 
 		public void Die()
@@ -53,10 +54,19 @@ namespace Secyud.Ugf.BasicComponents
 			enabled = true;
 		}
 
+		protected override void OnEnable()
+		{
+			base.OnEnable();
+			Record = 2;
+		}
+
 		public override RectTransform PrepareLayout()
 		{
 			enabled = true;
-			return SubLayoutGroupTrigger == this ? base.PrepareLayout() : SubLayoutGroupTrigger.PrepareLayout();
+			RectTransform trans = SubLayoutGroupTrigger == this 
+				? base.PrepareLayout() 
+				: SubLayoutGroupTrigger.PrepareLayout();
+			return trans;
 		}
 	}
 }

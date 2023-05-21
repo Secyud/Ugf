@@ -31,15 +31,15 @@ namespace Secyud.Ugf.AssetLoading
 		}
 
 		public static AssetContainer<TAsset> Create(
-			[NotNull] IAssetLoader container,
-			[NotNull] string assetName)
+			 [NotNull] IAssetLoader container,
+			 string assetName)
 		{
-			return new AssetContainer<TAsset>(container, assetName);
+			return assetName is null? null: new AssetContainer<TAsset>(container, assetName);
 		}
 
 		public static AssetContainer<TAsset> Create(
-			[NotNull] Type loaderType,
-			[NotNull] string assetName)
+			 Type loaderType,
+			 string assetName)
 		{
 			return Create(
 				Og.GetAssetLoader(loaderType),
@@ -48,7 +48,7 @@ namespace Secyud.Ugf.AssetLoading
 		}
 
 		public static AssetContainer<TAsset> Create<TAbBase>(
-			[NotNull] string assetName)
+			 string assetName)
 			where TAbBase : IAssetLoader
 		{
 			return Create(typeof(TAbBase), assetName);

@@ -61,7 +61,8 @@ namespace Secyud.Ugf.Archiving
 			}
 			if (c.Constructor is null)
 				Debug.LogError($"As type with guid, {type} should have a non-parameter constructor but not!");
-			return c.Construct();
+			object o = c.Construct();
+			return o;
 		}
 
 		public void TryAddType(Type type)

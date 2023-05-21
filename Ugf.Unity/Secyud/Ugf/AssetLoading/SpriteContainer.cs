@@ -15,9 +15,10 @@ namespace Secyud.Ugf.AssetLoading
 	}
 
 	// ReSharper restore InconsistentNaming
+
 	public enum SpritePrefix
 	{
-		Icons,Art
+		Icons, Art
 	}
 
 	public class SpriteContainer : AssetContainer<Sprite>
@@ -28,18 +29,20 @@ namespace Secyud.Ugf.AssetLoading
 
 		protected SpriteContainer(
 			[NotNull] IAssetLoader loader,
-			[NotNull] string assetName)
-			: base(loader,  assetName)
+			 string assetName)
+			: base(loader, assetName)
 		{
 		}
 
 		public static SpriteContainer Create(
 			[NotNull] IAssetLoader container,
-			[NotNull] string assetName,
+			string assetName,
 			SpritePrefix prefix = SpritePrefix.Icons,
 			SpriteSuffix suffix = SpriteSuffix.png)
 		{
-			return new SpriteContainer(container, $"Images/{prefix}/{assetName}.{suffix}");
+			return assetName is null ? null : new SpriteContainer(
+				container, $"Images/{prefix}/{assetName}.{suffix}"
+			);
 		}
 
 		public static SpriteContainer Create(
@@ -48,7 +51,7 @@ namespace Secyud.Ugf.AssetLoading
 			SpritePrefix prefix = SpritePrefix.Icons,
 			SpriteSuffix suffix = SpriteSuffix.png)
 		{
-			return Create(Og.GetAssetLoader(type), assetName,prefix, suffix);
+			return Create(Og.GetAssetLoader(type), assetName, prefix, suffix);
 		}
 
 		public static SpriteContainer Create<TAbBase>(
@@ -57,7 +60,7 @@ namespace Secyud.Ugf.AssetLoading
 			SpriteSuffix suffix = SpriteSuffix.png)
 			where TAbBase : IAssetLoader
 		{
-			return Create(typeof(TAbBase), spriteName,prefix, suffix);
+			return Create(typeof(TAbBase), spriteName, prefix, suffix);
 		}
 	}
 }

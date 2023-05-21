@@ -80,6 +80,7 @@ namespace Secyud.Ugf.HexMap
 		public void ValidatePosition()
 		{
 			AdjustPosition(0.1f, 0.1f);
+			AdjustZoom(-999);
 		}
 
 		private void AdjustZoom(float delta)

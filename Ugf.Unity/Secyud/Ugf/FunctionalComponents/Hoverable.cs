@@ -72,6 +72,7 @@ namespace Secyud.Ugf.FunctionalComponents
 
 		public void Bind(UnityAction action)
 		{
+			OnHover.RemoveAllListeners();
 			OnHoverEvent.AddListener(action);
 		}
 	}
