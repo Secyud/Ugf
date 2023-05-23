@@ -1,6 +1,5 @@
 #region
 
-using Secyud.Ugf.AssetLoading;
 using Secyud.Ugf.Modularity;
 
 #endregion

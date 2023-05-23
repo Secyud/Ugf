@@ -1,6 +1,5 @@
 ﻿#region
 
-using InfinityWorldChess.GlobalDomain;
 using UnityEngine;
 
 #endregion

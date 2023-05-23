@@ -75,7 +75,11 @@ namespace Secyud.Ugf
 
 		public static string TypeToPath(Type type)
 		{
-			return type.FullName!.Replace('.', '/');
+			return DotToPath(type.FullName);
+		}
+		public static string DotToPath(string name)
+		{
+			return name.Replace('.', '/');
 		}
 	}
 }

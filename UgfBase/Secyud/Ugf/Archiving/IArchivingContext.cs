@@ -1,7 +1,6 @@
 ﻿#region
 
 using Secyud.Ugf.DependencyInjection;
-using System.Collections.Generic;
 
 #endregion
 

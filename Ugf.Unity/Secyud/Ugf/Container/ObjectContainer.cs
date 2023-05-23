@@ -1,5 +1,4 @@
 ﻿using InfinityWorldChess.GlobalDomain;
-using System;
 
 namespace Secyud.Ugf.Container
 {

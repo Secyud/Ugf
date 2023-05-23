@@ -66,8 +66,10 @@ namespace Secyud.Ugf.TableComponents
 			enabled = false;
 			if (TableProperty is null) return;
 
-			if (_refreshLevel > 2) TableProperty.ApplyFilter();
-			if (_refreshLevel > 1) TableProperty.ApplySorter();
+			if (_refreshLevel > 2) 
+				TableProperty.ApplyFilter();
+			if (_refreshLevel > 1) 
+				TableProperty.ApplySorter();
 			OnInitialize();
 			_refreshLevel = 0;
 		}
@@ -94,20 +96,20 @@ namespace Secyud.Ugf.TableComponents
 
 		public void RefreshFilter()
 		{
-			enabled = true;
 			_refreshLevel = 3;
+			enabled = true;
 		}
 
 		public void RefreshSorter()
 		{
-			enabled = true;
 			_refreshLevel = 2;
+			enabled = true;
 		}
 
 		public void RefreshPage()
 		{
-			enabled = true;
 			_refreshLevel = 1;
+			enabled = true;
 		}
 
 

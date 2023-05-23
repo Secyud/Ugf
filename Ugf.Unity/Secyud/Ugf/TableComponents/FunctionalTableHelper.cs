@@ -60,7 +60,11 @@ namespace Secyud.Ugf.TableComponents
 
 		public override void ApplyFilter()
 		{
-			if (FilterGroups is null) return;
+			if (FilterGroups is null)
+			{
+				FilteredItems = TotalItems;
+				return;
+			}
 
 			IEnumerable<IEnumerable<FilterRegistration<TItem>>> filterGroups =
 				FilterGroups
@@ -75,7 +79,11 @@ namespace Secyud.Ugf.TableComponents
 
 		public override void ApplySorter()
 		{
-			if (Sorters is null) return;
+			if (Sorters is null)
+			{
+				Items = FilteredItems;
+				return;
+			}
 
 			IEnumerable<Tuple<ISorterRegistration<TItem>, bool>> sorters =
 				Sorters

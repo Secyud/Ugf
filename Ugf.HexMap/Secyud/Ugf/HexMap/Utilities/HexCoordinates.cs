@@ -161,6 +161,16 @@ namespace Secyud.Ugf.HexMap.Utilities
 			return c;
 		}
 
+		public static bool operator ==(HexCoordinates lft, HexCoordinates rht)
+		{
+			return lft.x == rht.x && lft.z == rht.z;
+		}
+
+		public static bool operator !=(HexCoordinates lft, HexCoordinates rht)
+		{
+			return !(lft == rht);
+		}
+
 		public static HexCoordinates operator +(HexCoordinates lft, HexCoordinates rht)
 		{
 			return new HexCoordinates(lft.x + rht.x, lft.z + rht.z);
