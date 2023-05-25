@@ -27,7 +27,7 @@ namespace Secyud.Ugf
 		public static readonly string StreamingAssetPath = Application.streamingAssetsPath;
 
 #if UNITY_EDITOR
-		public static readonly string AppPath = DataPath;
+		public static readonly string AppPath = DataPath[..^6];
 #else
 		public static readonly string AppPath = Application.dataPath[..Application.dataPath.LastIndexOf("/", StringComparison.Ordinal)];
 #endif

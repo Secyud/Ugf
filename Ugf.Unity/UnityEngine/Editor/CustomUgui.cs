@@ -93,5 +93,29 @@ namespace UnityEngine.Editor
 			serializedObject.ApplyModifiedProperties();
 		}
 	}
+
+	[CustomEditor(typeof(SCircleImage))]
+	public class SCircleImageEditor : ImageEditor
+	{
+		private SerializedProperty _triangleNum;
+		private SerializedProperty _radius;
+
+		protected override void OnEnable()
+		{
+			base.OnEnable();
+			_triangleNum = serializedObject.FindProperty("TriangleNum");
+			_radius = serializedObject.FindProperty("Radius");
+		}
+
+		public override void OnInspectorGUI()
+		{
+			base.OnInspectorGUI();
+			EditorGUILayout.Space();
+			serializedObject.Update();
+			EditorGUILayout.PropertyField(_triangleNum);
+			EditorGUILayout.PropertyField(_radius);
+			serializedObject.ApplyModifiedProperties();
+		}
+	}
 }
 #endif

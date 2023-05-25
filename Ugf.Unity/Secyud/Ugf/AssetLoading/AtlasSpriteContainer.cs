@@ -34,8 +34,7 @@ namespace Secyud.Ugf.AssetLoading
 			string assetName)
 		{
 			return assetName is null ? null : new AtlasSpriteContainer(
-				assetLoader,
-				atlasName, assetName
+				assetLoader, atlasName, assetName
 			);
 		}
 

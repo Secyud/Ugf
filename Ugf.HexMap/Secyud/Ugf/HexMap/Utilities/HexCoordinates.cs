@@ -60,7 +60,6 @@ namespace Secyud.Ugf.HexMap.Utilities
 
 		/// <summary>
 		///     Determine distance between this and another set of coordinates.
-		///     Takes <see cref="HexMetrics.Wrapping" /> into account.
 		/// </summary>
 		/// <param name="other">Coordinate to determine distance to.</param>
 		/// <returns>Distance in cells.</returns>
@@ -170,6 +169,16 @@ namespace Secyud.Ugf.HexMap.Utilities
 		{
 			return !(lft == rht);
 		}
+
+		public override int GetHashCode()
+		{
+			return x * 32768 + z;
+		}
+		
+		public bool Equals(HexCoordinates other) => x == other.x && z == other.z;
+
+		public override bool Equals(object obj) => obj is HexCoordinates other && Equals(other);
+
 
 		public static HexCoordinates operator +(HexCoordinates lft, HexCoordinates rht)
 		{

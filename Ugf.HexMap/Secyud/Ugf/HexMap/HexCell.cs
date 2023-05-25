@@ -24,7 +24,6 @@ namespace Secyud.Ugf.HexMap
 		private int _elevation = int.MinValue;
 
 		private Image _highlight;
-
 		private byte _terrainTypeIndex;
 
 		private bool _walled;
@@ -556,7 +555,11 @@ namespace Secyud.Ugf.HexMap
 		public void DisableHighlight()
 		{
 			if (!_highlight)
-				_highlight = UIRect.GetChild(0).GetComponent<SImage>();
+				if (!UIRect)
+					return;
+				else
+					_highlight = UIRect.GetChild(0).GetComponent<SImage>();
+
 			_highlight.enabled = false;
 		}
 
@@ -567,7 +570,11 @@ namespace Secyud.Ugf.HexMap
 		public void EnableHighlight(Color color)
 		{
 			if (!_highlight)
-				_highlight = UIRect.GetChild(0).GetComponent<SImage>();
+				if (!UIRect)
+					return;
+				else
+					_highlight = UIRect.GetChild(0).GetComponent<SImage>();
+
 			_highlight.color = color;
 			_highlight.enabled = true;
 		}

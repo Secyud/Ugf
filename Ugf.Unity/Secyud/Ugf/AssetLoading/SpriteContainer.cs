@@ -29,17 +29,19 @@ namespace Secyud.Ugf.AssetLoading
 
 		protected SpriteContainer(
 			[NotNull] IAssetLoader loader,
-			 string assetName)
+			[NotNull] string assetName)
 			: base(loader, assetName)
 		{
 		}
 
 		public static SpriteContainer Create(
 			[NotNull] IAssetLoader container,
-			string assetName,
+			[CanBeNull]string assetName,
 			SpritePrefix prefix = SpritePrefix.Icons,
 			SpriteSuffix suffix = SpriteSuffix.png)
 		{
+			if (assetName.IsNullOrEmpty())
+				return null;
 			return assetName is null ? null : new SpriteContainer(
 				container, $"Images/{prefix}/{assetName}.{suffix}"
 			);

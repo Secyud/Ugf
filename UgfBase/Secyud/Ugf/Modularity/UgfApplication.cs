@@ -4,6 +4,7 @@ using Secyud.Ugf.Archiving;
 using Secyud.Ugf.DependencyInjection;
 using Secyud.Ugf.InputManaging;
 using Secyud.Ugf.Localization;
+using Secyud.Ugf.ResourceDomain;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -39,7 +40,8 @@ namespace Secyud.Ugf.Modularity
 				typeof(LoadingService),
 				typeof(IArchivingContext),
 				typeof(DefaultLocalizerFactory),
-				typeof(InputService)
+				typeof(InputService),
+				typeof(ResourceManager)
 			);
 
 			Modules = LoadModules(_dependencyManager, plugInSources);
