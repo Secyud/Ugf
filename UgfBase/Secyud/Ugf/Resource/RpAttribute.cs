@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Secyud.Ugf.ResourceDomain
+namespace Secyud.Ugf.Resource
 {
 	[AttributeUsage(AttributeTargets.Property)]
 	public class RpAttribute:Attribute

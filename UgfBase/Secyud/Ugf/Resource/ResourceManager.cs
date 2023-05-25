@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 
-namespace Secyud.Ugf.ResourceDomain
+namespace Secyud.Ugf.Resource
 {
 	public sealed class ResourceManager : ISingleton
 	{
@@ -23,8 +23,8 @@ namespace Secyud.Ugf.ResourceDomain
 			{
 				descriptor = new ResourceDescriptor();
 				_resource[name] = descriptor;
+				descriptor.SConfigs[-1] = CreateOrGetPathNode(name);
 			}
-			
 			return descriptor;
 		}
 		public ResourceProperty GetResourceProperty(Type type)

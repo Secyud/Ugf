@@ -3,12 +3,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 
-namespace Secyud.Ugf.ResourceDomain
+namespace Secyud.Ugf.Resource
 {
 	public class ResourceProperty
 	{
 		private readonly List<Property> _properties;
-
 		private class Property
 		{
 			public readonly PropertyInfo Info;
@@ -22,7 +21,6 @@ namespace Secyud.Ugf.ResourceDomain
 				Type = type;
 			}
 		}
-
 		public ResourceProperty(Type type)
 		{
 			PropertyInfo[] infos = type.GetProperties();
@@ -31,20 +29,17 @@ namespace Secyud.Ugf.ResourceDomain
 			{
 				RpAttribute attribute = info.GetCustomAttribute<RpAttribute>();
 				if (attribute is null) continue;
-
 				short id = attribute.ID ;
-
-				var pType = info.PropertyType;
-				
 				short t = -1;
-				if (info.PropertyType == typeof(byte)) t = 0;
-				else if (info.PropertyType == typeof(short)) t = 1;
-				else if (info.PropertyType == typeof(int)) t = 2;
-				else if (info.PropertyType == typeof(long)) t = 3;
-				else if (info.PropertyType == typeof(float)) t = 4;
-				else if (info.PropertyType == typeof(double)) t = 5;
-				if (t < 0)
-					continue;
+				Type pType = info.PropertyType;
+				if (pType == typeof(byte)) t = 0;
+				else if (pType == typeof(short)) t = 1;
+				else if (pType == typeof(int)) t = 2;
+				else if (pType == typeof(long)) t = 3;
+				else if (pType == typeof(float)) t = 4;
+				else if (pType == typeof(double)) t = 5;
+				else if (pType == typeof(string)) t = 6;
+				if (t < 0) continue;
 
 				_properties.Add(new Property(info, id, t));
 			}
@@ -54,7 +49,6 @@ namespace Secyud.Ugf.ResourceDomain
 					l.ID - r.ID + (l.Type - r.Type) * 0x10000
 			);
 		}
-
 		public void Write(object o, BinaryWriter writer)
 		{
 			foreach (Property property in _properties)
@@ -80,10 +74,12 @@ namespace Secyud.Ugf.ResourceDomain
 				case 5:
 					writer.Write((double)v);
 					break;
+				case 6:
+					writer.Write((string)v);
+					break;
 				}
 			}
 		}
-
 		public void Read(object o, BinaryReader reader)
 		{
 			foreach (Property property in _properties)
@@ -108,10 +104,12 @@ namespace Secyud.Ugf.ResourceDomain
 				case 5:
 					property.Info.SetValue(o, reader.ReadDouble());
 					break;
+				case 6:
+					property.Info.SetValue(o, reader.ReadString());
+					break;
 				}
 			}
 		}
-
 		public void Init(object o, ResourceDescriptor descriptor)
 		{
 			foreach (Property property in _properties)
@@ -125,21 +123,21 @@ namespace Secyud.Ugf.ResourceDomain
 						property.Info.SetValue(o, (short)descriptor.D(property.ID));
 						break;
 					case 2:
-						property.Info.SetValue(o, (int)descriptor.D(property.ID));
+						property.Info.SetValue(o, descriptor.D(property.ID));
 						break;
 					case 3:
 						property.Info.SetValue(o, (long)descriptor.D(property.ID));
 						break;
 					case 4:
-						property.Info.SetValue(o, (float)descriptor.F(property.ID));
+						property.Info.SetValue(o, descriptor.F(property.ID));
 						break;
 					case 5:
 						property.Info.SetValue(o, (double)descriptor.F(property.ID));
 						break;
-					default:
+					case 6:
+						property.Info.SetValue(o, descriptor.S(property.ID));
 						break;
 				}
-				
 			}
 		}
 	}

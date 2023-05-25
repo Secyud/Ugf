@@ -10,7 +10,7 @@ namespace Secyud.Ugf.BasicComponents
 	[RequireComponent(typeof(RectTransform))]
 	public class SFloating : LayoutGroupTrigger
 	{
-		[SerializeField] private LayoutGroupTrigger SubLayoutGroupTrigger;
+		[SerializeField] public LayoutGroupTrigger SubLayoutGroupTrigger;
 
 		public void OnInitialize(Vector2 position, Vector2 bias)
 		{

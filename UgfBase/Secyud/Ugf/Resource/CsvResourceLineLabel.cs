@@ -1,4 +1,4 @@
-﻿namespace Secyud.Ugf.ResourceDomain
+﻿namespace Secyud.Ugf.Resource
 {
 	public struct CsvResourceLineLabel
 	{

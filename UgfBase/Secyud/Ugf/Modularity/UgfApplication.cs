@@ -4,7 +4,7 @@ using Secyud.Ugf.Archiving;
 using Secyud.Ugf.DependencyInjection;
 using Secyud.Ugf.InputManaging;
 using Secyud.Ugf.Localization;
-using Secyud.Ugf.ResourceDomain;
+using Secyud.Ugf.Resource;
 using System;
 using System.Collections;
 using System.Collections.Generic;

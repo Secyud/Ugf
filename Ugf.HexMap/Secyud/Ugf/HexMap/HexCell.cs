@@ -595,5 +595,10 @@ namespace Secyud.Ugf.HexMap
 				dHeight += 3;
 			return dHeight * 32;
 		}
+
+		public HexDirection DirectionTo(HexCell other)
+		{
+			return Coordinates.DirectionTo(other.Coordinates);
+		}
 	}
 }
