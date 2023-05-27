@@ -140,5 +140,14 @@ namespace Secyud.Ugf.Resource
 				}
 			}
 		}
+
+		public void CopyTo(object from,object to)
+		{
+			foreach (Property property in _properties)
+			{
+				object obj = property.Info.GetValue(from);
+				property.Info.SetValue(to, obj);
+			}
+		}
 	}
 }

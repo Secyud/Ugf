@@ -24,10 +24,10 @@ namespace Secyud.Ugf.DependencyInjection
 
 		public IEnumerable<Type> GetExposedServiceTypes(Type targetType)
 		{
-			var serviceList = ServiceTypes.ToList();
+			List<Type> serviceList = ServiceTypes.ToList();
 
 			if (IncludeDefaults)
-				foreach (var type in GetDefaultServices(targetType))
+				foreach (Type type in GetDefaultServices(targetType))
 					serviceList.AddIfNotContains(type);
 
 			if (IncludeSelf)
@@ -38,9 +38,9 @@ namespace Secyud.Ugf.DependencyInjection
 
 		private static List<Type> GetDefaultServices(Type type)
 		{
-			var serviceTypes = new List<Type>();
+			List<Type> serviceTypes = new List<Type>();
 
-			foreach (var interfaceType in type.GetTypeInfo().GetInterfaces())
+			foreach (Type interfaceType in type.GetTypeInfo().GetInterfaces())
 			{
 				string interfaceName = interfaceType.Name;
 

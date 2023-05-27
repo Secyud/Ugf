@@ -25,37 +25,37 @@ namespace Secyud.Ugf.Animation
 
 		public AnimDataSequence(AnimationClip clip, Animator animator)
 		{
-			var playableGraph = PlayableGraph.Create("ConvertHumanoidAnimation");
+			PlayableGraph playableGraph = PlayableGraph.Create("ConvertHumanoidAnimation");
 			playableGraph.SetTimeUpdateMode(DirectorUpdateMode.Manual);
-			var animPlayableOutput =
+			AnimationPlayableOutput animPlayableOutput =
 				AnimationPlayableOutput.Create(playableGraph, "AnimationOutput", animator);
-			var animClipPlayable = AnimationClipPlayable.Create(playableGraph, clip);
+			AnimationClipPlayable animClipPlayable = AnimationClipPlayable.Create(playableGraph, clip);
 			animPlayableOutput.SetSourcePlayable(animClipPlayable);
 
 			Length = clip.length;
 			Name = clip.name;
 			FrameRate = clip.frameRate;
 
-			var root = animator.transform;
+			Transform root = animator.transform;
 			List<Transform> bones = new();
 
-			for (var i = 0; i < (int)HumanBodyBones.LastBone; i++)
+			for (int i = 0; i < (int)HumanBodyBones.LastBone; i++)
 			{
-				var boneTransform = animator.GetBoneTransform((HumanBodyBones)i);
+				Transform boneTransform = animator.GetBoneTransform((HumanBodyBones)i);
 
 				if (boneTransform == null) continue;
 
 				bones.Add(boneTransform);
 
-				var pathSequence = new AnimPathSequence
+				AnimPathSequence pathSequence = new AnimPathSequence
 				{
 					Path = boneTransform.RelativePathTo(root)
 				};
 				AnimPathSequences.Add(pathSequence);
 			}
 
-			var time = 0f;
-			var frameDuration = 1f / FrameRate;
+			float time = 0f;
+			float frameDuration = 1f / FrameRate;
 
 			_frames = 0;
 
@@ -64,17 +64,17 @@ namespace Secyud.Ugf.Animation
 				animClipPlayable.SetTime(time);
 				playableGraph.Evaluate();
 
-				for (var i = 0; i < bones.Count; i++)
+				for (int i = 0; i < bones.Count; i++)
 				{
-					var bone = bones[i];
-					var pathSequence = AnimPathSequences[i];
+					Transform bone = bones[i];
+					AnimPathSequence pathSequence = AnimPathSequences[i];
 
-					var localPosition = bone.localPosition;
+					Vector3 localPosition = bone.localPosition;
 					pathSequence.LocalPosition.X.AddKey(time, localPosition.x);
 					pathSequence.LocalPosition.Y.AddKey(time, localPosition.y);
 					pathSequence.LocalPosition.Z.AddKey(time, localPosition.z);
 
-					var localRotation = bone.localRotation;
+					Quaternion localRotation = bone.localRotation;
 					pathSequence.LocalRotation.X.AddKey(time, localRotation.x);
 					pathSequence.LocalRotation.Y.AddKey(time, localRotation.y);
 					pathSequence.LocalRotation.Z.AddKey(time, localRotation.z);
@@ -108,9 +108,9 @@ namespace Secyud.Ugf.Animation
 		public List<AnimSequenceFrame> GetFrame(float time)
 		{
 			List<AnimSequenceFrame> sequenceFrames = new(AnimPathSequences.Count);
-			foreach (var sequence in AnimPathSequences)
+			foreach (AnimPathSequence sequence in AnimPathSequences)
 			{
-				var frame = new AnimSequenceFrame
+				AnimSequenceFrame frame = new AnimSequenceFrame
 				{
 					Path = sequence.Path,
 					LocalPosition = new Vector3(
@@ -140,7 +140,7 @@ namespace Secyud.Ugf.Animation
 			writer.Write(Name);
 			writer.Write(AnimPathSequences.Count);
 			writer.Write(_frames);
-			foreach (var animPathSequence in AnimPathSequences) animPathSequence.Save(writer, _frames);
+			foreach (AnimPathSequence animPathSequence in AnimPathSequences) animPathSequence.Save(writer, _frames);
 		}
 
 		public void Load(BinaryReader reader)
@@ -149,9 +149,9 @@ namespace Secyud.Ugf.Animation
 			Length = reader.ReadSingle();
 			FrameRate = reader.ReadSingle();
 			Name = reader.ReadString();
-			var count = reader.ReadInt32();
-			var frames = reader.ReadInt32();
-			for (var i = 0; i < count; i++)
+			int count = reader.ReadInt32();
+			int frames = reader.ReadInt32();
+			for (int i = 0; i < count; i++)
 			{
 				AnimPathSequence sequence = new();
 				sequence.Load(reader, _frames, _delta);

@@ -27,7 +27,7 @@ namespace Secyud.Ugf.Modularity
 
 		public void Dispose()
 		{
-			foreach (var writer in _writers.Values) writer.Dispose();
+			foreach (BinaryWriter writer in _writers.Values) writer.Dispose();
 		}
 
 		public IEnumerator<KeyValuePair<string, BinaryWriter>> GetEnumerator()
@@ -65,11 +65,11 @@ namespace Secyud.Ugf.Modularity
 
 		public BinaryWriter GetWriter(string name)
 		{
-			var directory = Path.Combine(Og.ArchivingPath, _context.CurrentSlot.Id.ToString());
+			string directory = Path.Combine(Og.ArchivingPath, _context.CurrentSlot.Id.ToString());
 			if (!Directory.Exists(directory))
 				Directory.CreateDirectory(directory);
 			
-			if (!_writers.TryGetValue(name, out var writer))
+			if (!_writers.TryGetValue(name, out BinaryWriter writer))
 			{
 				string path = Path.Combine(directory, name);
 				

@@ -18,7 +18,7 @@ namespace Secyud.Ugf.Modularity
 			Thrower.IfNull(registrar);
 			Thrower.IfNull(startupModuleType);
 
-			var modules =
+			List<IUgfModuleDescriptor> modules =
 				GetDescriptors(registrar, startupModuleType, plugInSources);
 
 			modules = SortByDependency(modules, startupModuleType);
@@ -32,7 +32,7 @@ namespace Secyud.Ugf.Modularity
 			Type startupModuleType,
 			PlugInSourceList plugInSources)
 		{
-			var modules = new List<UgfModuleDescriptor>();
+			List<UgfModuleDescriptor> modules = new List<UgfModuleDescriptor>();
 
 			FillModules(modules, registrar, startupModuleType, plugInSources);
 			SetDependencies(modules);
@@ -54,7 +54,7 @@ namespace Secyud.Ugf.Modularity
 			//Plugin modules
 			if (plugInSources.IsNullOrEmpty()) return;
 
-			foreach (var moduleType in plugInSources
+			foreach (Type moduleType in plugInSources
 				.GetAllModules()
 				.Where(moduleType => modules.All(m => m.Type != moduleType)))
 				modules.Add(CreateModuleDescriptor(registrar, moduleType, true));
@@ -62,14 +62,14 @@ namespace Secyud.Ugf.Modularity
 
 		protected virtual void SetDependencies(List<UgfModuleDescriptor> modules)
 		{
-			foreach (var module in modules)
+			foreach (UgfModuleDescriptor module in modules)
 				SetDependencies(modules, module);
 		}
 
 		protected virtual List<IUgfModuleDescriptor> SortByDependency(List<IUgfModuleDescriptor> modules,
 			Type startupModuleType)
 		{
-			var sortedModules = modules.SortByDependencies(m => m.Dependencies);
+			List<IUgfModuleDescriptor> sortedModules = modules.SortByDependencies(m => m.Dependencies);
 			sortedModules.MoveItem(m => m.Type == startupModuleType, modules.Count - 1);
 			return sortedModules;
 		}
@@ -86,16 +86,16 @@ namespace Secyud.Ugf.Modularity
 
 		protected virtual IUgfModule CreateAndRegisterModule(IDependencyRegistrar registrar, Type moduleType)
 		{
-			var module = (IUgfModule)Activator.CreateInstance(moduleType);
+			IUgfModule module = (IUgfModule)Activator.CreateInstance(moduleType);
 			registrar.AddSingleton(moduleType, module);
 			return module;
 		}
 
 		protected virtual void SetDependencies(List<UgfModuleDescriptor> modules, UgfModuleDescriptor module)
 		{
-			foreach (var dependedModuleType in UgfModuleHelper.FindDependedModuleTypes(module.Type))
+			foreach (Type dependedModuleType in UgfModuleHelper.FindDependedModuleTypes(module.Type))
 			{
-				var dependedModule = modules.FirstOrDefault(m => m.Type == dependedModuleType);
+				UgfModuleDescriptor dependedModule = modules.FirstOrDefault(m => m.Type == dependedModuleType);
 				if (dependedModule == null)
 					throw new UgfException(
 						"Could not find a depended module " +

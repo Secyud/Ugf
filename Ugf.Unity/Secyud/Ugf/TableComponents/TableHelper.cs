@@ -71,12 +71,12 @@ namespace Secyud.Ugf.TableComponents
 		public void CopyTo(TItem[] array, int arrayIndex)
 		{
 			Items.CopyTo(array, arrayIndex);
-			for (var i = arrayIndex; i < array.Length + arrayIndex; i++) Table.ReplaceAt(i);
+			for (int i = arrayIndex; i < array.Length + arrayIndex; i++) Table.ReplaceAt(i);
 		}
 
 		public bool Remove(TItem item)
 		{
-			var index = Items.IndexOf(item);
+			int index = Items.IndexOf(item);
 			if (index < 0) return false;
 
 			RemoveAt(index);
@@ -90,7 +90,7 @@ namespace Secyud.Ugf.TableComponents
 			if (index >= Count)
 				return null;
 
-			var cell = Object.Instantiate(CellTemplate, content);
+			TCell cell = Object.Instantiate(CellTemplate, content);
 			_prepareCellAction?.Invoke(cell, index);
 			SetCell(cell, Items[index]);
 			return cell.transform;
@@ -98,7 +98,7 @@ namespace Secyud.Ugf.TableComponents
 
 		public virtual void ResetCell(Transform cell, int index)
 		{
-			var c = cell.GetComponent<TCell>();
+			TCell c = cell.GetComponent<TCell>();
 			_prepareCellAction?.Invoke(c, index);
 			SetCell(c, Items[index]);
 		}

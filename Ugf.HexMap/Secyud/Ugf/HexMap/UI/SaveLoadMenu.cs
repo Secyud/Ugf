@@ -50,7 +50,7 @@ namespace Secyud.Ugf.HexMap.UI
 
 		public void Action()
 		{
-			var path = GetSelectedPath();
+			string path = GetSelectedPath();
 			if (path == null) return;
 
 			if (_saveMode)
@@ -68,7 +68,7 @@ namespace Secyud.Ugf.HexMap.UI
 
 		public void Delete()
 		{
-			var path = GetSelectedPath();
+			string path = GetSelectedPath();
 			if (path == null) return;
 
 			if (File.Exists(path)) File.Delete(path);
@@ -79,14 +79,14 @@ namespace Secyud.Ugf.HexMap.UI
 
 		private void FillList()
 		{
-			for (var i = 0; i < ListContent.childCount; i++) Destroy(ListContent.GetChild(i).gameObject);
+			for (int i = 0; i < ListContent.childCount; i++) Destroy(ListContent.GetChild(i).gameObject);
 
-			var paths =
+			string[] paths =
 				Directory.GetFiles(Application.persistentDataPath, "*.map");
 			Array.Sort(paths);
-			foreach (var path in paths)
+			foreach (string path in paths)
 			{
-				var item = Instantiate(ItemPrefab, ListContent, false);
+				SaveLoadItem item = Instantiate(ItemPrefab, ListContent, false);
 				item.Menu = this;
 				item.MapName = Path.GetFileNameWithoutExtension(path);
 			}
@@ -94,7 +94,7 @@ namespace Secyud.Ugf.HexMap.UI
 
 		private string GetSelectedPath()
 		{
-			var mapName = NameInput.text;
+			string mapName = NameInput.text;
 			if (mapName.Length == 0) return null;
 
 			return Path.Combine(Application.persistentDataPath, mapName + ".map");
@@ -103,7 +103,7 @@ namespace Secyud.Ugf.HexMap.UI
 		private void Save(string path)
 		{
 			using (
-				var writer =
+				BinaryWriter writer =
 				new BinaryWriter(File.Open(path, FileMode.Create))
 			)
 			{
@@ -120,8 +120,8 @@ namespace Secyud.Ugf.HexMap.UI
 				return;
 			}
 
-			using var reader = new BinaryReader(File.OpenRead(path));
-			var header = reader.ReadInt32();
+			using BinaryReader reader = new BinaryReader(File.OpenRead(path));
+			int header = reader.ReadInt32();
 			if (header <= MapFileVersion)
 				HexGrid.Load(reader);
 			else

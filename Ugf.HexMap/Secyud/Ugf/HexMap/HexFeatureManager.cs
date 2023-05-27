@@ -69,10 +69,10 @@ namespace Secyud.Ugf.HexMap
 		{
 			roadCenter1 = HexMetrics.Perturb(roadCenter1);
 			roadCenter2 = HexMetrics.Perturb(roadCenter2);
-			var instance = Instantiate(Bridge, _container, false);
+			Transform instance = Instantiate(Bridge, _container, false);
 			instance.localPosition = (roadCenter1 + roadCenter2) * 0.5f;
 			instance.forward = roadCenter2 - roadCenter1;
-			var length = Vector3.Distance(roadCenter1, roadCenter2);
+			float length = Vector3.Distance(roadCenter1, roadCenter2);
 			instance.localScale = new Vector3(
 				1f, 1f, length * (1f / HexMetrics.BridgeDesignLength)
 			);
@@ -102,8 +102,8 @@ namespace Secyud.Ugf.HexMap
 		{
 			if (!prefab) return;
 
-			var hash = HexMetrics.SampleHashGrid(position);
-			var instance = Instantiate(prefab, _container, false);
+			HexHash hash = HexMetrics.SampleHashGrid(position);
+			Transform instance = Instantiate(prefab, _container, false);
 			instance.localPosition = HexMetrics.Perturb(position);
 			instance.localRotation = Quaternion.Euler(0f, 360f * hash.E, 0f);
 		}
@@ -194,20 +194,20 @@ namespace Secyud.Ugf.HexMap
 			nearRight = HexMetrics.Perturb(nearRight);
 			farRight = HexMetrics.Perturb(farRight);
 
-			var left = HexMetrics.WallLerp(nearLeft, farLeft);
-			var right = HexMetrics.WallLerp(nearRight, farRight);
+			Vector3 left = HexMetrics.WallLerp(nearLeft, farLeft);
+			Vector3 right = HexMetrics.WallLerp(nearRight, farRight);
 
-			var leftThicknessOffset =
+			Vector3 leftThicknessOffset =
 				HexMetrics.WallThicknessOffset(nearLeft, farLeft);
-			var rightThicknessOffset =
+			Vector3 rightThicknessOffset =
 				HexMetrics.WallThicknessOffset(nearRight, farRight);
 
-			var leftTop = left.y + HexMetrics.WallHeight;
-			var rightTop = right.y + HexMetrics.WallHeight;
+			float leftTop = left.y + HexMetrics.WallHeight;
+			float rightTop = right.y + HexMetrics.WallHeight;
 
 			Vector3 v3, v4;
-			var v1 = v3 = left - leftThicknessOffset;
-			var v2 = v4 = right - rightThicknessOffset;
+			Vector3 v1 = v3 = left - leftThicknessOffset;
+			Vector3 v2 = v4 = right - rightThicknessOffset;
 			v3.y = leftTop;
 			v4.y = rightTop;
 			Walls.AddQuadUnperturbed(v1, v2, v3, v4);
@@ -224,10 +224,10 @@ namespace Secyud.Ugf.HexMap
 
 			if (addTower)
 			{
-				var towerInstance = Instantiate(WallTower, _container, false);
-				var towerTransform = towerInstance.transform;
+				Transform towerInstance = Instantiate(WallTower, _container, false);
+				Transform towerTransform = towerInstance.transform;
 				towerTransform.localPosition = (left + right) * 0.5f;
-				var rightDirection = right - left;
+				Vector3 rightDirection = right - left;
 				rightDirection.y = 0f;
 				towerTransform.right = rightDirection;
 			}
@@ -240,19 +240,19 @@ namespace Secyud.Ugf.HexMap
 		{
 			if (pivotCell.IsUnderwater) return;
 
-			var hasLeftWall = !leftCell.IsUnderwater &&
+			bool hasLeftWall = !leftCell.IsUnderwater &&
 				pivotCell.GetEdgeType(leftCell) != HexEdgeType.Cliff;
-			var hasRightWall = !rightCell.IsUnderwater &&
+			bool hasRightWall = !rightCell.IsUnderwater &&
 				pivotCell.GetEdgeType(rightCell) != HexEdgeType.Cliff;
 
 			if (hasLeftWall)
 			{
 				if (hasRightWall)
 				{
-					var hasTower = false;
+					bool hasTower = false;
 					if (leftCell.Elevation == rightCell.Elevation)
 					{
-						var hash = HexMetrics.SampleHashGrid(
+						HexHash hash = HexMetrics.SampleHashGrid(
 							(pivot + left + right) * (1f / 3f)
 						);
 						hasTower = hash.E < HexMetrics.WallTowerThreshold;
@@ -283,13 +283,13 @@ namespace Secyud.Ugf.HexMap
 			near = HexMetrics.Perturb(near);
 			far = HexMetrics.Perturb(far);
 
-			var center = HexMetrics.WallLerp(near, far);
-			var thickness = HexMetrics.WallThicknessOffset(near, far);
+			Vector3 center = HexMetrics.WallLerp(near, far);
+			Vector3 thickness = HexMetrics.WallThicknessOffset(near, far);
 
 			Vector3 v3, v4;
 
-			var v1 = v3 = center - thickness;
-			var v2 = v4 = center + thickness;
+			Vector3 v1 = v3 = center - thickness;
+			Vector3 v2 = v4 = center + thickness;
 			v3.y = v4.y = center.y + HexMetrics.WallHeight;
 			Walls.AddQuadUnperturbed(v1, v2, v3, v4);
 		}
@@ -300,15 +300,15 @@ namespace Secyud.Ugf.HexMap
 			far = HexMetrics.Perturb(far);
 			point = HexMetrics.Perturb(point);
 
-			var center = HexMetrics.WallLerp(near, far);
-			var thickness = HexMetrics.WallThicknessOffset(near, far);
+			Vector3 center = HexMetrics.WallLerp(near, far);
+			Vector3 thickness = HexMetrics.WallThicknessOffset(near, far);
 
 			Vector3 v3, v4;
-			var pointTop = point;
+			Vector3 pointTop = point;
 			point.y = center.y;
 
-			var v1 = v3 = center - thickness;
-			var v2 = v4 = center + thickness;
+			Vector3 v1 = v3 = center - thickness;
+			Vector3 v2 = v4 = center + thickness;
 			v3.y = v4.y = pointTop.y = center.y + HexMetrics.WallHeight;
 
 			Walls.AddQuadUnperturbed(v1, point, v3, pointTop);

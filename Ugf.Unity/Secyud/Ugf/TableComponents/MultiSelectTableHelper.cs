@@ -1,5 +1,6 @@
 ﻿#region
 
+using Secyud.Ugf.BasicComponents;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -31,19 +32,19 @@ namespace Secyud.Ugf.TableComponents
 
 		protected virtual void PrepareSelectedCell(TCell cell, int index)
 		{
-			var button = cell.gameObject.GetOrAddButton(() => OnSelectedCellClick(index));
+			SButton button = cell.gameObject.GetOrAddButton(() => OnSelectedCellClick(index));
 		}
 
 		protected virtual void OnAllItemsCellClick(int index)
 		{
-			var item = AllItemsTableHelper[index];
+			TItem item = AllItemsTableHelper[index];
 			SelectedTableHelper.Add(item);
 			AllItemsTableHelper.RemoveAt(index);
 		}
 
 		protected virtual void OnSelectedCellClick(int index)
 		{
-			var item = SelectedTableHelper[index];
+			TItem item = SelectedTableHelper[index];
 			AllItemsTableHelper.Add(item);
 			SelectedTableHelper.RemoveAt(index);
 		}

@@ -65,15 +65,15 @@ namespace UnityEngine.Editor
 		{
 			path = $"{RootPath}/UnityEngine/Prefabs/{path}/{name}.prefab";
 
-			var obj = AssetDatabase
+			GameObject obj = AssetDatabase
 				.LoadAssetAtPath<GameObject>(path);
 			obj = Object.Instantiate(obj);
 
 			obj.name = name;
 
-			var transform = obj.GetComponent<RectTransform>();
+			RectTransform transform = obj.GetComponent<RectTransform>();
 
-			var sel = Selection.activeTransform;
+			Transform sel = Selection.activeTransform;
 			if (sel is not null)
 				transform.SetParent(sel);
 		}

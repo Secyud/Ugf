@@ -27,7 +27,7 @@ namespace Secyud.Ugf.HexMap.Utilities
 		public void Enqueue(HexCell cell)
 		{
 			Count += 1;
-			var priority = cell.SearchPriority;
+			int priority = cell.SearchPriority;
 			if (priority < _minimum) _minimum = priority;
 
 			while (priority >= _list.Count) _list.Add(null);
@@ -45,7 +45,7 @@ namespace Secyud.Ugf.HexMap.Utilities
 			Count -= 1;
 			for (; _minimum < _list.Count; _minimum++)
 			{
-				var cell = _list[_minimum];
+				HexCell cell = _list[_minimum];
 				if (cell != null)
 				{
 					_list[_minimum] = cell.NextWithSamePriority;
@@ -63,8 +63,8 @@ namespace Secyud.Ugf.HexMap.Utilities
 		/// <param name="oldPriority">Priority of the cell before it was changed.</param>
 		public void Change(HexCell cell, int oldPriority)
 		{
-			var current = _list[oldPriority];
-			var next = current.NextWithSamePriority;
+			HexCell current = _list[oldPriority];
+			HexCell next = current.NextWithSamePriority;
 			if (current == cell)
 			{
 				_list[oldPriority] = next;

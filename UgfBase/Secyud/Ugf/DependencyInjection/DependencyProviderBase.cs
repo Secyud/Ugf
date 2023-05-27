@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Linq;
+using System.Reflection;
 using UnityEngine;
 
 #endregion
@@ -37,12 +38,12 @@ namespace Secyud.Ugf.DependencyInjection
 
 		protected object CreateInstance(Type implementationType)
 		{
-			var constructor = implementationType.GetConstructors(Og.ConstructFlag).FirstOrDefault();
+			ConstructorInfo constructor = implementationType.GetConstructors(Og.ConstructFlag).FirstOrDefault();
 
 			if (constructor is null)
 				throw new UgfException($"Can not find constructor for type {implementationType}.");
 
-			var parameters = constructor
+			object[] parameters = constructor
 				.GetParameters()
 				.Select(u => Get(u.ParameterType)).ToArray();
 

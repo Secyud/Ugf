@@ -11,7 +11,7 @@ namespace Secyud.Ugf.BasicComponents
 	{
 		public SText Create(Transform parent, string label)
 		{
-			var sText = Instantiate(this, parent);
+			SText sText = Instantiate(this, parent);
 			sText.text = label;
 			return sText;
 		}

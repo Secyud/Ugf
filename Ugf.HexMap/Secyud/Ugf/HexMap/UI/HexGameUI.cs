@@ -81,7 +81,7 @@ namespace Secyud.Ugf.HexMap.UI
 
 		private bool UpdateCurrentCell()
 		{
-			var cell =
+			HexCell cell =
 				Grid.GetCell(Camera.ScreenPointToRay(Input.mousePosition));
 			if (cell != _currentCell)
 			{

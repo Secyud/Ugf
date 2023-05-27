@@ -23,9 +23,9 @@ namespace Secyud.Ugf.TableComponents
 
 		public void OnRightClick()
 		{
-			var value = _filterGroup.Filters.All(u => (this == u) ^ u.Toggle.IsOn);
+			bool value = _filterGroup.Filters.All(u => (this == u) ^ u.Toggle.IsOn);
 
-			foreach (var filter in _filterGroup.Filters)
+			foreach (Filter filter in _filterGroup.Filters)
 			{
 				filter.Toggle.IsOn = (this == filter) ^ !value;
 				filter.Refresh();
@@ -47,7 +47,7 @@ namespace Secyud.Ugf.TableComponents
 
 		public Filter Create(Transform parent, FilterGroup filterGroup, ICanBeEnabled canBeEnabled)
 		{
-			var ret = Instantiate(this, parent);
+			Filter ret = Instantiate(this, parent);
 
 			ret.OnInitialize(filterGroup, canBeEnabled);
 

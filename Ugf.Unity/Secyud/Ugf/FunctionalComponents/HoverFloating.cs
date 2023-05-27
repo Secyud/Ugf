@@ -56,7 +56,7 @@ namespace Secyud.Ugf.FunctionalComponents
 		{
 			value = Mathf.Clamp(value, -_biasRecord, Bias - _biasRecord);
 
-			var realValue = value * (Reverse ? -1 : 1);
+			float realValue = value * (Reverse ? -1 : 1);
 			_rectTransform.anchoredPosition += Horizontal
 				? new Vector2(realValue, 0f)
 				: new Vector2(0f, realValue);

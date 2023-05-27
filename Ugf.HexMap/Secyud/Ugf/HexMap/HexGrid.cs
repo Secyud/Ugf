@@ -136,8 +136,8 @@ namespace Secyud.Ugf.HexMap
 
 		private void CreateChunks()
 		{
-			var chunkCountX = _chunkCountX + 2 * BorderWidth;
-			var chunkCountZ = _chunkCountZ + 2 * BorderWidth;
+			int chunkCountX = _chunkCountX + 2 * BorderWidth;
+			int chunkCountZ = _chunkCountZ + 2 * BorderWidth;
 
 			_chunks = new HexGridChunk[chunkCountX * chunkCountZ];
 			for (int z = 0, i = 0; z < chunkCountZ; z++)

@@ -132,8 +132,8 @@ namespace Secyud.Ugf.HexMap
 
 			if (!_currentTravelLocation) _currentTravelLocation = _pathToTravel[0];
 
-			var t = Time.deltaTime * TravelSpeed;
-			for (var i = 1; i < _pathToTravel.Count; i++)
+			float t = Time.deltaTime * TravelSpeed;
+			for (int i = 1; i < _pathToTravel.Count; i++)
 			{
 				_currentTravelLocation = _pathToTravel[i];
 				a = c;
@@ -144,7 +144,7 @@ namespace Secyud.Ugf.HexMap
 				for (; t < 1f; t += Time.deltaTime * TravelSpeed)
 				{
 					transform.localPosition = Bezier.GetPoint(a, b, c, t);
-					var d = Bezier.GetDerivative(a, b, c, t);
+					Vector3 d = Bezier.GetDerivative(a, b, c, t);
 					d.y = 0f;
 					transform.localRotation = Quaternion.LookRotation(d);
 					yield return null;
@@ -161,13 +161,13 @@ namespace Secyud.Ugf.HexMap
 			for (; t < 1f; t += Time.deltaTime * TravelSpeed)
 			{
 				transform.localPosition = Bezier.GetPoint(a, b, c, t);
-				var d = Bezier.GetDerivative(a, b, c, t);
+				Vector3 d = Bezier.GetDerivative(a, b, c, t);
 				d.y = 0f;
 				transform.localRotation = Quaternion.LookRotation(d);
 				yield return null;
 			}
 
-			var trans = transform;
+			Transform trans = transform;
 			trans.localPosition = _location.Position;
 			_orientation = trans.localRotation.eulerAngles.y;
 			ListPool<HexCell>.Add(_pathToTravel);
@@ -177,18 +177,18 @@ namespace Secyud.Ugf.HexMap
 
 		private IEnumerator LookAt(Vector3 point)
 		{
-			var trans = transform;
-			var localPosition = trans.localPosition;
+			Transform trans = transform;
+			Vector3 localPosition = trans.localPosition;
 			point.y = localPosition.y;
-			var fromRotation = trans.localRotation;
-			var toRotation = Quaternion.LookRotation(point - localPosition);
-			var angle = Quaternion.Angle(fromRotation, toRotation);
+			Quaternion fromRotation = trans.localRotation;
+			Quaternion toRotation = Quaternion.LookRotation(point - localPosition);
+			float angle = Quaternion.Angle(fromRotation, toRotation);
 
 			if (angle > 0f)
 			{
-				var speed = RotationSpeed / angle;
+				float speed = RotationSpeed / angle;
 				for (
-					var t = Time.deltaTime * speed;
+					float t = Time.deltaTime * speed;
 					t < 1f;
 					t += Time.deltaTime * speed
 				)

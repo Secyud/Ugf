@@ -10,7 +10,7 @@ namespace System.Collections.Generic
 	{
 		internal static bool TryGetValue<T>(this IDictionary<string, object> dictionary, string key, out T value)
 		{
-			if (dictionary.TryGetValue(key, out var obj) && obj is T valueT)
+			if (dictionary.TryGetValue(key, out object obj) && obj is T valueT)
 			{
 				value = valueT;
 				return true;
@@ -22,24 +22,24 @@ namespace System.Collections.Generic
 
 		public static TValue GetOrDefault<TKey, TValue>(this Dictionary<TKey, TValue> dictionary, TKey key)
 		{
-			return dictionary.TryGetValue(key, out var obj) ? obj : default;
+			return dictionary.TryGetValue(key, out TValue obj) ? obj : default;
 		}
 
 		public static TValue GetOrDefault<TKey, TValue>(this IDictionary<TKey, TValue> dictionary, TKey key)
 		{
-			return dictionary.TryGetValue(key, out var obj) ? obj : default;
+			return dictionary.TryGetValue(key, out TValue obj) ? obj : default;
 		}
 
 		public static TValue GetOrDefault<TKey, TValue>(this IReadOnlyDictionary<TKey, TValue> dictionary,
 			TKey key)
 		{
-			return dictionary.TryGetValue(key, out var obj) ? obj : default;
+			return dictionary.TryGetValue(key, out TValue obj) ? obj : default;
 		}
 
 		public static TValue GetOrAdd<TKey, TValue>(this IDictionary<TKey, TValue> dictionary, TKey key,
 			Func<TKey, TValue> factory)
 		{
-			if (dictionary.TryGetValue(key, out var obj))
+			if (dictionary.TryGetValue(key, out TValue obj))
 				return obj;
 
 			return dictionary[key] = factory(key);
@@ -53,11 +53,11 @@ namespace System.Collections.Generic
 
 		public static dynamic ConvertToDynamicObject(this Dictionary<string, object> dictionary)
 		{
-			var expandoObject = new ExpandoObject();
+			ExpandoObject expandoObject = new ExpandoObject();
 			ICollection<KeyValuePair<string, object>> expendObjectCollection =
 				expandoObject;
 
-			foreach (var keyValuePair in dictionary)
+			foreach (KeyValuePair<string, object> keyValuePair in dictionary)
 				expendObjectCollection.Add(keyValuePair);
 
 			return expandoObject;

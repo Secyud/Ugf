@@ -49,7 +49,7 @@ namespace Secyud.Ugf.Modularity
 			Manager.AddCustom<Option<TOption>, IOption<TOption>>(
 				() =>
 				{
-					var config = new Option<TOption>(new TOption());
+					Option<TOption> config = new Option<TOption>(new TOption());
 					option(config.Value);
 					return config;
 				}

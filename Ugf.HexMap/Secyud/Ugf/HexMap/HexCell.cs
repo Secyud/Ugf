@@ -190,8 +190,8 @@ namespace Secyud.Ugf.HexMap
 			else
 				writer.Write((byte)0);
 
-			var roadFlags = 0;
-			for (var i = 0; i < Roads.Length; i++)
+			int roadFlags = 0;
+			for (int i = 0; i < Roads.Length; i++)
 				if (Roads[i])
 					roadFlags |= 1 << i;
 
@@ -212,7 +212,7 @@ namespace Secyud.Ugf.HexMap
 
 			IsSpecial = reader.ReadBoolean();
 			_walled = reader.ReadBoolean();
-			var riverData = reader.ReadByte();
+			byte riverData = reader.ReadByte();
 			if (riverData >= 128)
 			{
 				HasIncomingRiver = true;
@@ -235,7 +235,7 @@ namespace Secyud.Ugf.HexMap
 			}
 
 			int roadFlags = reader.ReadByte();
-			for (var i = 0; i < Roads.Length; i++)
+			for (int i = 0; i < Roads.Length; i++)
 				Roads[i] = (roadFlags & (1 << i)) != 0;
 
 			ShaderData.RefreshTerrain(this);
@@ -265,7 +265,7 @@ namespace Secyud.Ugf.HexMap
 				RefreshPosition();
 				ValidateRivers();
 
-				for (var i = 0; i < Roads.Length; i++)
+				for (int i = 0; i < Roads.Length; i++)
 					if (Roads[i] && GetElevationDifference((HexDirection)i) > 1)
 						SetRoad(i, false);
 
@@ -383,7 +383,7 @@ namespace Secyud.Ugf.HexMap
 			HasIncomingRiver = false;
 			RefreshSelfOnly();
 
-			var neighbor = GetNeighbor(IncomingRiver);
+			HexCell neighbor = GetNeighbor(IncomingRiver);
 			neighbor.HasOutgoingRiver = false;
 			neighbor.RefreshSelfOnly();
 		}
@@ -398,7 +398,7 @@ namespace Secyud.Ugf.HexMap
 			HasOutgoingRiver = false;
 			RefreshSelfOnly();
 
-			var neighbor = GetNeighbor(OutgoingRiver);
+			HexCell neighbor = GetNeighbor(OutgoingRiver);
 			neighbor.HasIncomingRiver = false;
 			neighbor.RefreshSelfOnly();
 		}
@@ -420,7 +420,7 @@ namespace Secyud.Ugf.HexMap
 		{
 			if (HasOutgoingRiver && OutgoingRiver == direction) return;
 
-			var neighbor = GetNeighbor(direction);
+			HexCell neighbor = GetNeighbor(direction);
 			if (!IsValidRiverDestination(neighbor)) return;
 
 			RemoveOutgoingRiver();
@@ -462,7 +462,7 @@ namespace Secyud.Ugf.HexMap
 		/// </summary>
 		public void RemoveRoads()
 		{
-			for (var i = 0; i < Neighbors.Length; i++)
+			for (int i = 0; i < Neighbors.Length; i++)
 				if (Roads[i])
 					SetRoad(i, false);
 		}
@@ -474,7 +474,7 @@ namespace Secyud.Ugf.HexMap
 		/// <returns>Absolute elevation difference.</returns>
 		public int GetElevationDifference(HexDirection direction)
 		{
-			var difference = _elevation - GetNeighbor(direction)._elevation;
+			int difference = _elevation - GetNeighbor(direction)._elevation;
 			return difference >= 0 ? difference : -difference;
 		}
 
@@ -508,14 +508,14 @@ namespace Secyud.Ugf.HexMap
 
 		private void RefreshPosition()
 		{
-			var position = transform.localPosition;
+			Vector3 position = transform.localPosition;
 			position.y = _elevation * HexMetrics.ElevationStep;
 			position.y +=
 				(HexMetrics.SampleNoise(position).y * 2f - 1f) *
 				HexMetrics.ElevationPerturbStrength;
 			transform.localPosition = position;
 
-			var uiPosition = UIRect.localPosition;
+			Vector3 uiPosition = UIRect.localPosition;
 			uiPosition.z = -position.y;
 			UIRect.localPosition = uiPosition;
 		}
@@ -525,7 +525,7 @@ namespace Secyud.Ugf.HexMap
 			if (Chunk)
 			{
 				Chunk.Refresh();
-				foreach (var neighbor in Neighbors)
+				foreach (HexCell neighbor in Neighbors)
 					if (neighbor != null && neighbor.Chunk != Chunk)
 						neighbor.Chunk.Refresh();
 
@@ -545,7 +545,7 @@ namespace Secyud.Ugf.HexMap
 		/// <param name="text">Label text.</param>
 		public void SetLabel(string text)
 		{
-			var label = UIRect.GetComponent<Text>();
+			Text label = UIRect.GetComponent<Text>();
 			label.text = text;
 		}
 

@@ -18,7 +18,7 @@ namespace Secyud.Ugf.Animation
 		{
 			writer.Write(Path);
 
-			for (var i = 0; i < frames; i++)
+			for (int i = 0; i < frames; i++)
 			{
 				writer.Write(LocalPosition.X.keys[i].value);
 				writer.Write(LocalPosition.Y.keys[i].value);
@@ -33,8 +33,8 @@ namespace Secyud.Ugf.Animation
 		public void Load(BinaryReader reader, int frames, float delta)
 		{
 			reader.ReadString();
-			var time = 0f;
-			for (var i = 0; i < frames; i++)
+			float time = 0f;
+			for (int i = 0; i < frames; i++)
 			{
 				LocalPosition.X.AddKey(time, reader.ReadSingle());
 				LocalPosition.Y.AddKey(time, reader.ReadSingle());

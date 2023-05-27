@@ -21,7 +21,7 @@ namespace Secyud.Ugf.BasicComponents
             Vector4 v = GetDrawingDimensions(false);
             Vector4 uv = overrideSprite != null ? DataUtility.GetOuterUV(overrideSprite) : Vector4.zero;
  
-            var color32 = color;
+            Color color32 = color;
             vh.Clear();
             //对radius的值做限制，必须在0-较小的边的1/2的范围内
             float radius = Radius;
@@ -114,9 +114,9 @@ namespace Secyud.Ugf.BasicComponents
  
         private Vector4 GetDrawingDimensions(bool shouldPreserveAspect)
         {
-            var padding = overrideSprite == null ? Vector4.zero : DataUtility.GetPadding(overrideSprite);
+            Vector4 padding = overrideSprite == null ? Vector4.zero : DataUtility.GetPadding(overrideSprite);
             Rect r = GetPixelAdjustedRect();
-            var size = overrideSprite == null ? new Vector2(r.width, r.height) : new Vector2(overrideSprite.rect.width, overrideSprite.rect.height);
+            Vector2 size = overrideSprite == null ? new Vector2(r.width, r.height) : new Vector2(overrideSprite.rect.width, overrideSprite.rect.height);
             //Debug.Log(string.Format("r:{2}, size:{0}, padding:{1}", size, padding, r));
  
             int spriteW = Mathf.RoundToInt(size.x);
@@ -124,24 +124,24 @@ namespace Secyud.Ugf.BasicComponents
  
             if (shouldPreserveAspect && size.sqrMagnitude > 0.0f)
             {
-                var spriteRatio = size.x / size.y;
-                var rectRatio = r.width / r.height;
+                float spriteRatio = size.x / size.y;
+                float rectRatio = r.width / r.height;
  
                 if (spriteRatio > rectRatio)
                 {
-                    var oldHeight = r.height;
+                    float oldHeight = r.height;
                     r.height = r.width * (1.0f / spriteRatio);
                     r.y += (oldHeight - r.height) * rectTransform.pivot.y;
                 }
                 else
                 {
-                    var oldWidth = r.width;
+                    float oldWidth = r.width;
                     r.width = r.height * spriteRatio;
                     r.x += (oldWidth - r.width) * rectTransform.pivot.x;
                 }
             }
  
-            var v = new Vector4(
+            Vector4 v = new Vector4(
                     padding.x / spriteW,
                     padding.y / spriteH,
                     (spriteW - padding.z) / spriteW,

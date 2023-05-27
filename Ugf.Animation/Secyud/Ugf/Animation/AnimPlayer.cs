@@ -1,5 +1,6 @@
 ﻿#region
 
+using System.Collections.Generic;
 using UnityEngine;
 
 #endregion
@@ -60,11 +61,11 @@ namespace Secyud.Ugf.Animation
 			if (_time > AnimDataSequence.Length) return;
 
 			// 获取指定时间的序列数据
-			var frame = AnimDataSequence.GetFrame(_time);
+			List<AnimSequenceFrame> frame = AnimDataSequence.GetFrame(_time);
 			// 将获取到的数据赋值给对应的骨骼
-			foreach (var frameOnePath in frame)
+			foreach (AnimSequenceFrame frameOnePath in frame)
 			{
-				var boneTransform = _character.Find(frameOnePath.Path);
+				Transform boneTransform = _character.Find(frameOnePath.Path);
 				if (boneTransform != null)
 				{
 					boneTransform.localPosition = frameOnePath.LocalPosition;

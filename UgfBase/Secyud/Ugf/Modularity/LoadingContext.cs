@@ -27,7 +27,7 @@ namespace Secyud.Ugf.Modularity
 
 		public void Dispose()
 		{
-			foreach (var reader in _readers.Values) reader.Dispose();
+			foreach (BinaryReader reader in _readers.Values) reader.Dispose();
 		}
 
 
@@ -66,7 +66,7 @@ namespace Secyud.Ugf.Modularity
 
 		public BinaryReader GetReader(string name)
 		{
-			if (!_readers.TryGetValue(name, out var reader))
+			if (!_readers.TryGetValue(name, out BinaryReader reader))
 			{
 				string path = Path.Combine(Og.ArchivingPath, _context.CurrentSlot.Id.ToString(), name);
 				reader = new BinaryReader(File.Open(path, FileMode.Open));

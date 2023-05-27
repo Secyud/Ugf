@@ -11,10 +11,10 @@ namespace Secyud.Ugf.BasicComponents
 	{
 		public void SetPosition(RectTransform position)
 		{
-			var rect = content.rect;
-			var anchoredPosition = position.anchoredPosition;
-			var viewPortRect = viewRect.rect;
-			var positionRect = position.rect;
+			Rect rect = content.rect;
+			Vector2 anchoredPosition = position.anchoredPosition;
+			Rect viewPortRect = viewRect.rect;
+			Rect positionRect = position.rect;
 			float x = Mathf.Abs(rect.width - viewPortRect.width) < 48 ?
 				0.5f : (anchoredPosition.x - 48) / (rect.width - viewPortRect.width);
 			float y = Mathf.Abs(rect.height - viewPortRect.height) < 48 ?

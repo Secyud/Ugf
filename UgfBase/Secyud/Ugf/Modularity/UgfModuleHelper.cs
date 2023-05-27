@@ -13,7 +13,7 @@ namespace Secyud.Ugf.Modularity
 	{
 		public static List<Type> FindAllModuleTypes(Type startupModuleType)
 		{
-			var moduleTypes = new List<Type>();
+			List<Type> moduleTypes = new List<Type>();
 			AddModuleAndDependenciesRecursively(moduleTypes, startupModuleType);
 			return moduleTypes;
 		}
@@ -28,7 +28,7 @@ namespace Secyud.Ugf.Modularity
 
 			moduleTypes.Add(moduleType);
 
-			foreach (var dependedModuleType in FindDependedModuleTypes(moduleType))
+			foreach (Type dependedModuleType in FindDependedModuleTypes(moduleType))
 				AddModuleAndDependenciesRecursively(moduleTypes, dependedModuleType);
 		}
 
@@ -36,10 +36,10 @@ namespace Secyud.Ugf.Modularity
 		{
 			UgfExtensions.CheckUgfModuleType(moduleType);
 
-			var depends =
+			DependsOnAttribute depends =
 				moduleType.GetCustomAttribute<DependsOnAttribute>() ?? new DependsOnAttribute();
 
-			var dependencies = depends.DependedTypes.Distinct().ToList();
+			List<Type> dependencies = depends.DependedTypes.Distinct().ToList();
 
 			return dependencies;
 		}

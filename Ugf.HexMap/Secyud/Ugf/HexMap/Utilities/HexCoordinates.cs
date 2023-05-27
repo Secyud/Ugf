@@ -65,7 +65,7 @@ namespace Secyud.Ugf.HexMap.Utilities
 		/// <returns>Distance in cells.</returns>
 		public int DistanceTo(HexCoordinates other)
 		{
-			var xy =
+			int xy =
 				(x < other.x ? other.x - x : x - other.x) +
 				(Y < other.Y ? other.Y - Y : Y - other.Y);
 			return (xy + (z < other.z ? other.z - z : z - other.z)) / 2;
@@ -94,22 +94,22 @@ namespace Secyud.Ugf.HexMap.Utilities
 		/// <returns>Hex coordinates.</returns>
 		public static HexCoordinates FromPosition(Vector3 position)
 		{
-			var x = position.x / HexMetrics.InnerDiameter;
-			var y = -x;
+			float x = position.x / HexMetrics.InnerDiameter;
+			float y = -x;
 
-			var offset = position.z / (HexMetrics.OuterRadius * 3f);
+			float offset = position.z / (HexMetrics.OuterRadius * 3f);
 			x -= offset;
 			y -= offset;
 
-			var iX = Mathf.RoundToInt(x);
-			var iY = Mathf.RoundToInt(y);
-			var iZ = Mathf.RoundToInt(-x - y);
+			int iX = Mathf.RoundToInt(x);
+			int iY = Mathf.RoundToInt(y);
+			int iZ = Mathf.RoundToInt(-x - y);
 
 			if (iX + iY + iZ != 0)
 			{
-				var dX = Mathf.Abs(x - iX);
-				var dY = Mathf.Abs(y - iY);
-				var dZ = Mathf.Abs(-x - y - iZ);
+				float dX = Mathf.Abs(x - iX);
+				float dY = Mathf.Abs(y - iY);
+				float dZ = Mathf.Abs(-x - y - iZ);
 
 				if (dX > dY && dX > dZ)
 					iX = -iY - iZ;

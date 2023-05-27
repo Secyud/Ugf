@@ -12,7 +12,7 @@ namespace UnityEngine
 	{
 		public static void Translate(this SText[] texts, params string[] origins)
 		{
-			for (var i = 0; i < origins.Length; i++)
+			for (int i = 0; i < origins.Length; i++)
 				texts[i].Translate(origins[i]);
 		}
 
@@ -23,7 +23,7 @@ namespace UnityEngine
 
 		public static void Set(this SText[] texts, params string[] origins)
 		{
-			for (var i = 0; i < origins.Length; i++)
+			for (int i = 0; i < origins.Length; i++)
 				texts[i].Set(origins[i]);
 		}
 
@@ -34,31 +34,31 @@ namespace UnityEngine
 
 		public static void Bind(this SInputField[] controls, params UnityAction<string>[] actions)
 		{
-			for (var i = 0; i < actions.Length; i++)
+			for (int i = 0; i < actions.Length; i++)
 				controls[i].Bind(actions[i]);
 		}
 
 		public static void Bind(this SSlider[] controls, params UnityAction<float>[] actions)
 		{
-			for (var i = 0; i < actions.Length; i++)
+			for (int i = 0; i < actions.Length; i++)
 				controls[i].Bind(actions[i]);
 		}
 
 		public static void Bind(this SToggle[] controls, params UnityAction<bool>[] actions)
 		{
-			for (var i = 0; i < actions.Length; i++)
+			for (int i = 0; i < actions.Length; i++)
 				controls[i].Bind(actions[i]);
 		}
 
 		public static void Bind(this SDropdown[] controls, params UnityAction<int>[] actions)
 		{
-			for (var i = 0; i < actions.Length; i++)
+			for (int i = 0; i < actions.Length; i++)
 				controls[i].Bind(actions[i]);
 		}
 
 		public static void Bind(this SButton[] controls, params UnityAction[] actions)
 		{
-			for (var i = 0; i < actions.Length; i++)
+			for (int i = 0; i < actions.Length; i++)
 				controls[i].Bind(actions[i]);
 		}
 

@@ -33,13 +33,13 @@ namespace System.Collections.Generic
 
 		public static void InsertRange<T>(this IList<T> source, int index, IEnumerable<T> items)
 		{
-			foreach (var item in items)
+			foreach (T item in items)
 				source.Insert(index++, item);
 		}
 
 		public static int FindIndex<T>(this IList<T> source, Predicate<T> selector)
 		{
-			for (var i = 0; i < source.Count; ++i)
+			for (int i = 0; i < source.Count; ++i)
 				if (selector(source[i]))
 					return i;
 
@@ -58,7 +58,7 @@ namespace System.Collections.Generic
 
 		public static void InsertAfter<T>(this IList<T> source, T existingItem, T item)
 		{
-			var index = source.IndexOf(existingItem);
+			int index = source.IndexOf(existingItem);
 			if (index < 0)
 			{
 				source.AddFirst(item);
@@ -70,7 +70,7 @@ namespace System.Collections.Generic
 
 		public static void InsertAfter<T>(this IList<T> source, Predicate<T> selector, T item)
 		{
-			var index = source.FindIndex(selector);
+			int index = source.FindIndex(selector);
 			if (index < 0)
 			{
 				source.AddFirst(item);
@@ -82,7 +82,7 @@ namespace System.Collections.Generic
 
 		public static void InsertBefore<T>(this IList<T> source, T existingItem, T item)
 		{
-			var index = source.IndexOf(existingItem);
+			int index = source.IndexOf(existingItem);
 			if (index < 0)
 			{
 				source.AddLast(item);
@@ -94,7 +94,7 @@ namespace System.Collections.Generic
 
 		public static void InsertBefore<T>(this IList<T> source, Predicate<T> selector, T item)
 		{
-			var index = source.FindIndex(selector);
+			int index = source.FindIndex(selector);
 			if (index < 0)
 			{
 				source.AddLast(item);
@@ -106,16 +106,16 @@ namespace System.Collections.Generic
 
 		public static void ReplaceWhile<T>(this IList<T> source, Predicate<T> selector, T item)
 		{
-			for (var i = 0; i < source.Count; i++)
+			for (int i = 0; i < source.Count; i++)
 				if (selector(source[i]))
 					source[i] = item;
 		}
 
 		public static void ReplaceWhile<T>(this IList<T> source, Predicate<T> selector, Func<T, T> itemFactory)
 		{
-			for (var i = 0; i < source.Count; i++)
+			for (int i = 0; i < source.Count; i++)
 			{
-				var item = source[i];
+				T item = source[i];
 				if (selector(item))
 					source[i] = itemFactory(item);
 			}
@@ -123,7 +123,7 @@ namespace System.Collections.Generic
 
 		public static void ReplaceOne<T>(this IList<T> source, Predicate<T> selector, T item)
 		{
-			for (var i = 0; i < source.Count; i++)
+			for (int i = 0; i < source.Count; i++)
 				if (selector(source[i]))
 				{
 					source[i] = item;
@@ -133,9 +133,9 @@ namespace System.Collections.Generic
 
 		public static void ReplaceOne<T>(this IList<T> source, Predicate<T> selector, Func<T, T> itemFactory)
 		{
-			for (var i = 0; i < source.Count; i++)
+			for (int i = 0; i < source.Count; i++)
 			{
-				var item = source[i];
+				T item = source[i];
 				if (selector(item))
 				{
 					source[i] = itemFactory(item);
@@ -146,7 +146,7 @@ namespace System.Collections.Generic
 
 		public static void ReplaceOne<T>(this IList<T> source, T item, T replaceWith)
 		{
-			for (var i = 0; i < source.Count; i++)
+			for (int i = 0; i < source.Count; i++)
 				if (Comparer<T>.Default.Compare(source[i], item) == 0)
 				{
 					source[i] = replaceWith;
@@ -159,10 +159,10 @@ namespace System.Collections.Generic
 			if (!targetIndex.IsInRange(0, source.Count))
 				throw new IndexOutOfRangeException("targetIndex should be between 0 and " + (source.Count - 1));
 
-			var currentIndex = source.FindIndex(0, selector);
+			int currentIndex = source.FindIndex(0, selector);
 			if (currentIndex == targetIndex) return;
 
-			var item = source[currentIndex];
+			T item = source[currentIndex];
 			source.RemoveAt(currentIndex);
 			source.Insert(targetIndex, item);
 		}
@@ -171,7 +171,7 @@ namespace System.Collections.Generic
 		{
 			Thrower.IfNull(source);
 
-			var item = source.FirstOrDefault(selector);
+			T item = source.FirstOrDefault(selector);
 
 			if (item == null)
 			{
@@ -201,10 +201,10 @@ namespace System.Collections.Generic
 			// See: http://www.codeproject.com/Articles/869059/Topological-sorting-in-Csharp
 			//      http://en.wikipedia.org/wiki/Topological_sorting
 
-			var sorted = new List<T>();
-			var visited = new Dictionary<T, bool>(comparer);
+			List<T> sorted = new List<T>();
+			Dictionary<T, bool> visited = new Dictionary<T, bool>(comparer);
 
-			foreach (var item in source)
+			foreach (T item in source)
 				SortByDependenciesVisit(item, getDependencies, sorted, visited);
 
 			return sorted;
@@ -223,7 +223,7 @@ namespace System.Collections.Generic
 			ICollection<T> sorted,
 			IDictionary<T, bool> visited)
 		{
-			var alreadyVisited = visited.TryGetValue(item, out var inProcess);
+			bool alreadyVisited = visited.TryGetValue(item, out bool inProcess);
 
 			if (alreadyVisited)
 			{
@@ -234,9 +234,9 @@ namespace System.Collections.Generic
 			{
 				visited[item] = true;
 
-				var dependencies = getDependencies(item);
+				IEnumerable<T> dependencies = getDependencies(item);
 				if (dependencies != null)
-					foreach (var dependency in dependencies)
+					foreach (T dependency in dependencies)
 						SortByDependenciesVisit(dependency, getDependencies, sorted, visited);
 
 				visited[item] = false;

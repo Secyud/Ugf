@@ -62,16 +62,16 @@ namespace Secyud.Ugf.Modularity
 		{
 			CheckMultipleConfigureServices();
 
-			var context = new ConfigurationContext(_dependencyManager);
+			ConfigurationContext context = new ConfigurationContext(_dependencyManager);
 
-			foreach (var m in Modules)
+			foreach (IUgfModuleDescriptor m in Modules)
 				if (m.Instance is IPreConfigure module)
 					module.PreConfigureGame(context);
 
-			foreach (var module in Modules)
+			foreach (IUgfModuleDescriptor module in Modules)
 				module.Instance.ConfigureGame(context);
 
-			foreach (var m in Modules)
+			foreach (IUgfModuleDescriptor m in Modules)
 				if (m.Instance is IPostConfigure module)
 					module.PostConfigureGame(context);
 
@@ -80,17 +80,17 @@ namespace Secyud.Ugf.Modularity
 
 		public IEnumerator GameCreate()
 		{
-			using var scope = CreateDependencyScope();
+			using IDependencyScope scope = CreateDependencyScope();
 
 			InitializationContext context = new(scope.DependencyProvider);
 
 			CreationContext creationContext = new(scope.DependencyProvider);
 
-			var loading = Og.LoadingService;
+			LoadingService loading = Og.LoadingService;
 
 			loading.MaxValue = Modules.Count * 3;
 
-			foreach (var m in Modules)
+			foreach (IUgfModuleDescriptor m in Modules)
 			{
 				loading.Value++;
 				yield return null;
@@ -99,7 +99,7 @@ namespace Secyud.Ugf.Modularity
 					module.OnGamePreInitialization(context);
 			}
 
-			foreach (var m in Modules)
+			foreach (IUgfModuleDescriptor m in Modules)
 			{
 				loading.Value++;
 				yield return null;
@@ -108,7 +108,7 @@ namespace Secyud.Ugf.Modularity
 					module.OnGameCreation(creationContext);
 			}
 
-			foreach (var m in Modules)
+			foreach (IUgfModuleDescriptor m in Modules)
 			{
 				loading.Value++;
 				yield return null;
@@ -122,17 +122,17 @@ namespace Secyud.Ugf.Modularity
 
 		public IEnumerator GameLoad()
 		{
-			using var scope = CreateDependencyScope();
+			using IDependencyScope scope = CreateDependencyScope();
 
 			InitializationContext context = new(scope.DependencyProvider);
 
 			using LoadingContext loadingContext = new(scope.DependencyProvider);
 
-			var loading = Og.LoadingService;
+			LoadingService loading = Og.LoadingService;
 
 			loading.MaxValue = Modules.Count * 3;
 
-			foreach (var m in Modules)
+			foreach (IUgfModuleDescriptor m in Modules)
 			{
 				loading.Value++;
 				yield return null;
@@ -141,7 +141,7 @@ namespace Secyud.Ugf.Modularity
 					module.OnGamePreInitialization(context);
 			}
 
-			foreach (var m in Modules)
+			foreach (IUgfModuleDescriptor m in Modules)
 			{
 				loading.Value++;
 				yield return null;
@@ -150,7 +150,7 @@ namespace Secyud.Ugf.Modularity
 					module.OnGameLoading(loadingContext);
 			}
 
-			foreach (var m in Modules)
+			foreach (IUgfModuleDescriptor m in Modules)
 			{
 				loading.Value++;
 				yield return null;
@@ -164,15 +164,15 @@ namespace Secyud.Ugf.Modularity
 
 		public IEnumerator GameSave()
 		{
-			using var scope = CreateDependencyScope();
+			using IDependencyScope scope = CreateDependencyScope();
 
 			using SavingContext context = new(scope.DependencyProvider);
 
-			var slot = context.Get<IArchivingContext>().CurrentSlot;
+			ISlot slot = context.Get<IArchivingContext>().CurrentSlot;
 
-			var path = Og.ArchivingPath;
+			string path = Og.ArchivingPath;
 
-			var inPath = Path.Combine(path, slot.Id.ToString());
+			string inPath = Path.Combine(path, slot.Id.ToString());
 			if (Directory.Exists(inPath))
 			{
 				string outPath = inPath + "_backup";
@@ -182,11 +182,11 @@ namespace Secyud.Ugf.Modularity
 			}
 			slot.PrepareSlotSaving(context);
 
-			var loading = Og.LoadingService;
+			LoadingService loading = Og.LoadingService;
 
 			loading.MaxValue = Modules.Count;
 
-			foreach (var m in Modules)
+			foreach (IUgfModuleDescriptor m in Modules)
 			{
 				loading.Value++;
 				yield return null;
@@ -200,15 +200,15 @@ namespace Secyud.Ugf.Modularity
 
 		public IEnumerator Shutdown()
 		{
-			using var scope = CreateDependencyScope();
+			using IDependencyScope scope = CreateDependencyScope();
 
-			var context = new ShutdownContext(scope.DependencyProvider);
+			ShutdownContext context = new ShutdownContext(scope.DependencyProvider);
 
-			var loading = Og.LoadingService;
+			LoadingService loading = Og.LoadingService;
 
 			loading.MaxValue = Modules.Count;
 
-			for (var i = Modules.Count - 1; i >= 0; i--)
+			for (int i = Modules.Count - 1; i >= 0; i--)
 			{
 				loading.Value++;
 				yield return null;

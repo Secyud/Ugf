@@ -19,7 +19,7 @@ namespace UnityEngine.Editor
 			Rect position, SerializedProperty property, GUIContent label
 		)
 		{
-			var coordinates = new HexCoordinates(
+			HexCoordinates coordinates = new HexCoordinates(
 				property.FindPropertyRelative("x").intValue,
 				property.FindPropertyRelative("z").intValue
 			);

@@ -21,12 +21,12 @@ namespace Secyud.Ugf.Collections
 
 		public void RegisterList(params TItem[] items)
 		{
-			foreach (var item in items) Register(item);
+			foreach (TItem item in items) Register(item);
 		}
 
 		public TItem Get(TKey key)
 		{
-			_items.TryGetValue(key, out var value);
+			_items.TryGetValue(key, out TItem value);
 			return value;
 		}
 

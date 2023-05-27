@@ -61,7 +61,7 @@ namespace Secyud.Ugf.AssetLoading
 
 		protected override TComponent GetObject()
 		{
-			var obj = Loader.LoadAsset<GameObject>(AssetName);
+			GameObject obj = Loader.LoadAsset<GameObject>(AssetName);
 			return obj ? obj.GetComponent<TComponent>() : null;
 		}
 

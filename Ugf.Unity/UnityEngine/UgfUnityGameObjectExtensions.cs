@@ -25,7 +25,7 @@ namespace UnityEngine
 		public static TComponent InstantiateAndAdd<TComponent>(this GameObject ui, Transform parent)
 			where TComponent : Component
 		{
-			var obj = Object.Instantiate(ui, parent);
+			GameObject obj = Object.Instantiate(ui, parent);
 			return obj.AddComponent<TComponent>();
 		}
 
@@ -45,7 +45,7 @@ namespace UnityEngine
 
 		public static SButton GetOrAddButton(this GameObject obj, UnityAction action)
 		{
-			var button = obj.GetOrAddComponent<SButton>();
+			SButton button = obj.GetOrAddComponent<SButton>();
 			button.Bind(action);
 			return button;
 		}

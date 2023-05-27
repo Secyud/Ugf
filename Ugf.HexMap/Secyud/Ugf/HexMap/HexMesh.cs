@@ -97,7 +97,7 @@ namespace Secyud.Ugf.HexMap
 		/// <param name="v3">Third vertex position.</param>
 		public void AddTriangle(Vector3 v1, Vector3 v2, Vector3 v3)
 		{
-			var vertexIndex = _vertices.Count;
+			int vertexIndex = _vertices.Count;
 			_vertices.Add(HexMetrics.Perturb(v1));
 			_vertices.Add(HexMetrics.Perturb(v2));
 			_vertices.Add(HexMetrics.Perturb(v3));
@@ -114,7 +114,7 @@ namespace Secyud.Ugf.HexMap
 		/// <param name="v3">Third vertex position.</param>
 		public void AddTriangleUnperturbed(Vector3 v1, Vector3 v2, Vector3 v3)
 		{
-			var vertexIndex = _vertices.Count;
+			int vertexIndex = _vertices.Count;
 			_vertices.Add(v1);
 			_vertices.Add(v2);
 			_vertices.Add(v3);
@@ -187,7 +187,7 @@ namespace Secyud.Ugf.HexMap
 		/// <param name="v4">Fourth vertex position.</param>
 		public void AddQuad(Vector3 v1, Vector3 v2, Vector3 v3, Vector3 v4)
 		{
-			var vertexIndex = _vertices.Count;
+			int vertexIndex = _vertices.Count;
 			_vertices.Add(HexMetrics.Perturb(v1));
 			_vertices.Add(HexMetrics.Perturb(v2));
 			_vertices.Add(HexMetrics.Perturb(v3));
@@ -209,7 +209,7 @@ namespace Secyud.Ugf.HexMap
 		/// <param name="v4">Fourth vertex position.</param>
 		public void AddQuadUnperturbed(Vector3 v1, Vector3 v2, Vector3 v3, Vector3 v4)
 		{
-			var vertexIndex = _vertices.Count;
+			int vertexIndex = _vertices.Count;
 			_vertices.Add(v1);
 			_vertices.Add(v2);
 			_vertices.Add(v3);

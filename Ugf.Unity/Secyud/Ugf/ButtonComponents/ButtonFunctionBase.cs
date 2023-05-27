@@ -20,7 +20,7 @@ namespace Secyud.Ugf.ButtonComponents
 
 		public void RegisterList(params ButtonRegistration<TItem>[] buttons)
 		{
-			foreach (var button in buttons) Register(button);
+			foreach (ButtonRegistration<TItem> button in buttons) Register(button);
 		}
 	}
 }

@@ -24,7 +24,7 @@ namespace UnityEngine.Editor
 		[MenuItem("Secyud/ConvertAnimation")]
 		private static void ConvertAnimation()
 		{
-			var animator = Selection.activeGameObject.GetComponent<Animator>();
+			Animator animator = Selection.activeGameObject.GetComponent<Animator>();
 
 			if (!animator)
 			{
@@ -33,11 +33,11 @@ namespace UnityEngine.Editor
 				return;
 			}
 
-			foreach (var o in Selection.objects)
+			foreach (Object o in Selection.objects)
 			{
 				if (o is not AnimationClip clip) return;
 
-				var path = Path.Combine(
+				string path = Path.Combine(
 					Og.DataPath, AssetDatabase.GetAssetPath(o.GetInstanceID())[7..] + "ation"
 				);
 
@@ -57,7 +57,7 @@ namespace UnityEngine.Editor
 		{
 			AnimDataSequence sequence = new(clip, animator);
 
-			var directoryName = Path.GetDirectoryName(filePath);
+			string directoryName = Path.GetDirectoryName(filePath);
 
 			if (!Directory.Exists(directoryName))
 				Directory.CreateDirectory(directoryName);

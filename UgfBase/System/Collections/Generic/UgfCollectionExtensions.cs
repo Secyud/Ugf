@@ -27,8 +27,8 @@ namespace System.Collections.Generic
 		public static IEnumerable<T> AddIfNotContains<T>(this ICollection<T> source, IEnumerable<T> items)
 		{
 			Thrower.IfNull(source);
-			var addedItems = new List<T>();
-			foreach (var item in items)
+			List<T> addedItems = new List<T>();
+			foreach (T item in items)
 				if (!source.Contains(item))
 				{
 					source.Add(item);
@@ -54,9 +54,9 @@ namespace System.Collections.Generic
 
 		public static IList<T> RemoveAll<T>(this ICollection<T> source, Func<T, bool> predicate)
 		{
-			var items = source.Where(predicate).ToList();
+			List<T> items = source.Where(predicate).ToList();
 
-			foreach (var item in items)
+			foreach (T item in items)
 				source.Remove(item);
 
 			return items;
@@ -64,7 +64,7 @@ namespace System.Collections.Generic
 
 		public static void RemoveAll<T>(this ICollection<T> source, IEnumerable<T> items)
 		{
-			foreach (var item in items)
+			foreach (T item in items)
 				source.Remove(item);
 		}
 	}

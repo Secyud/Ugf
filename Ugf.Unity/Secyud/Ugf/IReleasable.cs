@@ -1,4 +1,4 @@
-﻿namespace InfinityWorldChess.GlobalDomain
+﻿namespace Secyud.Ugf
 {
 	public interface IReleasable
 	{

@@ -27,6 +27,7 @@ namespace Secyud.Ugf.Resource
 			}
 			return descriptor;
 		}
+
 		public ResourceProperty GetResourceProperty(Type type)
 		{
 			if (!_resourceProperty.TryGetValue(type, out ResourceProperty property))
@@ -48,7 +49,7 @@ namespace Secyud.Ugf.Resource
 
 		public void ConfigResource(string name, Action<ResourceDescriptor> action)
 		{
-			var descriptor = GetResourceDescriptor(name);
+			ResourceDescriptor descriptor = GetResourceDescriptor(name);
 			action(descriptor);
 		}
 
@@ -76,14 +77,14 @@ namespace Secyud.Ugf.Resource
 			descriptor.SConfigs[id] = CreateOrGetPathNode(path);
 		}
 
-		public void RegisterFromCsv(string path)
+		public List<string> RegisterFromCsv(string path)
 		{
 			if (!File.Exists(path))
 			{
 				Debug.LogWarning(
 					$"{nameof(ResourceManager)}_{nameof(RegisterFromCsv)}: file doesn't exist: {path}!"
 				);
-				return;
+				return null;
 			}
 
 			using FileStream file = File.OpenRead(path);
@@ -91,7 +92,7 @@ namespace Secyud.Ugf.Resource
 
 			CsvRow row = new();
 			if (!reader.ReadRow(row))
-				return;
+				return null;
 
 			List<CsvResourceLineLabel> labels = new();
 			int titleCol = -1;
@@ -137,6 +138,7 @@ namespace Secyud.Ugf.Resource
 				);
 			}
 
+			List<string> names = new();
 			while (reader.ReadRow(row))
 			{
 				string title = row[titleCol].Trim();
@@ -151,6 +153,7 @@ namespace Secyud.Ugf.Resource
 					{
 						string value = row[label.Col].Trim();
 						if (value.IsNullOrEmpty()) continue;
+
 						switch (label.Label)
 						{
 						case 0:
@@ -167,7 +170,9 @@ namespace Secyud.Ugf.Resource
 						}
 					}
 				}
+				names.Add(title);
 			}
+			return names;
 		}
 	}
 }

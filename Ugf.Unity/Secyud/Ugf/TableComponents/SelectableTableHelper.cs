@@ -49,7 +49,7 @@ namespace Secyud.Ugf.TableComponents
 
 		public override Transform CreateCell(Transform content, int index)
 		{
-			var transform = base.CreateCell(content, index);
+			Transform transform = base.CreateCell(content, index);
 			if (transform) transform.gameObject.GetOrAddButton(() => SelectedItem = Items[index]);
 			return transform;
 		}

@@ -3,6 +3,7 @@
 #region
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using UnityEditor;
@@ -29,7 +30,7 @@ namespace UnityEngine.Editor
 							if (!s.EndsWith(".png")) 
 								return;
 
-							var setting = new TextureImporterSettings();
+							TextureImporterSettings setting = new TextureImporterSettings();
 							if (AssetImporter.GetAtPath(s) is TextureImporter textureImporter)
 							{
 								textureImporter.ReadTextureSettings(setting);
@@ -83,20 +84,20 @@ namespace UnityEngine.Editor
 			if (!Directory.Exists(path))
 				return;
 
-			foreach (var filePath in Directory.GetFiles(path))
+			foreach (string filePath in Directory.GetFiles(path))
 				action(filePath);
 
-			foreach (var subPath in Directory.GetDirectories(path))
+			foreach (string subPath in Directory.GetDirectories(path))
 				FindAllSubPath(subPath, action);
 		}
 
 		[MenuItem("脚本处理/查找有missing脚本的物体")]
 		static void FindMissingScriptObject()
 		{
-			var objs = Selection.gameObjects;
+			GameObject[] objs = Selection.gameObjects;
 			Debug.Log($"选中的物体数量为：{objs.Length}");
 
-			var allObjs = objs
+			List<GameObject> allObjs = objs
 				.SelectMany(obj => obj.GetComponentsInChildren<Transform>().Select(x => x.gameObject)).ToList();
 			Debug.Log($"选中的物体及其子物体的数量为：{allObjs.Count()}");
 
@@ -104,7 +105,7 @@ namespace UnityEngine.Editor
 				obj =>
 				{
 					//1、该物体是否有null的脚本
-					var hasNullScript =
+					bool hasNullScript =
 						obj.GetComponents<MonoBehaviour>()
 							.Any(mono => mono == null); //注意:用【MonoBehaviour】而不是用【MonoScript】
 					//Debug.Log($"是否有空脚本：{hasNullScript}，物体名字：【{obj.name}】");

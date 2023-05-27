@@ -3,6 +3,7 @@
 using Secyud.Ugf.Archiving;
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
@@ -34,7 +35,7 @@ namespace Secyud.Ugf.DependencyInjection
 
 		public override object Get(Type type)
 		{
-			var descriptor = GetDescriptor(type);
+			DependencyDescriptor descriptor = GetDescriptor(type);
 			return descriptor?.InstanceAccessor();
 		}
 
@@ -61,7 +62,7 @@ namespace Secyud.Ugf.DependencyInjection
 
 		public void AddTypes(params Type[] types)
 		{
-			foreach (var type in types)
+			foreach (Type type in types)
 				AddType(type);
 		}
 
@@ -72,14 +73,14 @@ namespace Secyud.Ugf.DependencyInjection
 			if (IsConventionalRegistrationDisabled(type))
 				return;
 
-			var lifeTime = type.GetLifeTimeOrNull();
+			DependencyLifeTime? lifeTime = type.GetLifeTimeOrNull();
 
 			if (lifeTime == null)
 				return;
 
-			var exposedServiceTypes = ExposedServiceExplorer.GetExposedServices(type);
+			List<Type> exposedServiceTypes = ExposedServiceExplorer.GetExposedServices(type);
 
-			foreach (var exposedServiceType in exposedServiceTypes)
+			foreach (Type exposedServiceType in exposedServiceTypes)
 				CreateDependencyDescriptor(
 					type,
 					exposedServiceType,

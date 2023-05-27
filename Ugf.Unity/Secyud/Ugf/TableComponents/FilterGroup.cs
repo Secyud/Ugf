@@ -32,7 +32,7 @@ namespace Secyud.Ugf.TableComponents
 			{
 				if (value)
 				{
-					foreach (var group in FunctionalTable.FilterGroups)
+					foreach (FilterGroup group in FunctionalTable.FilterGroups)
 						group.IsDropped = false;
 					Filters.Clear();
 
@@ -64,9 +64,9 @@ namespace Secyud.Ugf.TableComponents
 
 		public void OnRightClick()
 		{
-			var value = FunctionalTable.FilterGroups.All(u => (this == u) ^ u.Toggle.IsOn);
+			bool value = FunctionalTable.FilterGroups.All(u => (this == u) ^ u.Toggle.IsOn);
 
-			foreach (var filterGroup in FunctionalTable.FilterGroups)
+			foreach (FilterGroup filterGroup in FunctionalTable.FilterGroups)
 			{
 				filterGroup.Toggle.IsOn = (this == filterGroup) ^ !value;
 				filterGroup.Refresh();
@@ -100,7 +100,7 @@ namespace Secyud.Ugf.TableComponents
 
 		public FilterGroup Create(Transform parent, FunctionalTable functionalTable, ICanBeEnabled canBeEnabled)
 		{
-			var ret = Instantiate(this, parent);
+			FilterGroup ret = Instantiate(this, parent);
 
 			ret.OnInitialize(functionalTable, canBeEnabled);
 

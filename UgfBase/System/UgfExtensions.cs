@@ -11,7 +11,7 @@ namespace System
 	{
 		public static bool IsUgfModule(Type type)
 		{
-			var typeInfo = type.GetTypeInfo();
+			TypeInfo typeInfo = type.GetTypeInfo();
 
 			return
 				typeInfo.IsClass &&

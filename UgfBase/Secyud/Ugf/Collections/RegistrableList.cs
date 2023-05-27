@@ -18,7 +18,7 @@ namespace Secyud.Ugf.Collections
 
 		public void RegisterList(params TItem[] items)
 		{
-			foreach (var item in items) Register(item);
+			foreach (TItem item in items) Register(item);
 		}
 
 		public List<TItem> Get()

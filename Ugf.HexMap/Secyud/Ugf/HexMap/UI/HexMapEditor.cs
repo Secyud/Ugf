@@ -164,7 +164,7 @@ namespace Secyud.Ugf.HexMap.UI
 
 		private void CreateUnit()
 		{
-			var cell = GetCellUnderCursor();
+			HexCell cell = GetCellUnderCursor();
 			if (cell && !cell.Unit)
 			{
 				// HexGrid.AddUnit(
@@ -175,13 +175,13 @@ namespace Secyud.Ugf.HexMap.UI
 
 		private void DestroyUnit()
 		{
-			var cell = GetCellUnderCursor();
+			HexCell cell = GetCellUnderCursor();
 			if (cell && cell.Unit) HexGrid.RemoveUnit(cell.Unit);
 		}
 
 		private void HandleInput()
 		{
-			var currentCell = GetCellUnderCursor();
+			HexCell currentCell = GetCellUnderCursor();
 			if (currentCell)
 			{
 				if (_previousCell && _previousCell != currentCell)
@@ -247,15 +247,15 @@ namespace Secyud.Ugf.HexMap.UI
 
 		private void EditCells(HexCell center)
 		{
-			var centerX = center.Coordinates.X;
-			var centerZ = center.Coordinates.Z;
+			int centerX = center.Coordinates.X;
+			int centerZ = center.Coordinates.Z;
 
 			for (int r = 0, z = centerZ - _brushSize; z <= centerZ; z++, r++)
-			for (var x = centerX - r; x <= centerX + _brushSize; x++)
+			for (int x = centerX - r; x <= centerX + _brushSize; x++)
 				EditCell(HexGrid.GetCell(new HexCoordinates(x, z)));
 
 			for (int r = 0, z = centerZ + _brushSize; z > centerZ; z--, r++)
-			for (var x = centerX - _brushSize; x <= centerX + r; x++)
+			for (int x = centerX - _brushSize; x <= centerX + r; x++)
 				EditCell(HexGrid.GetCell(new HexCoordinates(x, z)));
 		}
 

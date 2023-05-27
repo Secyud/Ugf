@@ -31,7 +31,7 @@ namespace Secyud.Ugf.Archiving
 			using FileStream fs = new(path, FileMode.Open, FileAccess.Read);
 			using StreamReader sr = new(fs, Encoding.UTF8);
 
-			var jsonStr = sr.ReadToEnd();
+			string jsonStr = sr.ReadToEnd();
 
 			_idDictionary = JsonConvert.DeserializeObject<Dictionary<string, Dictionary<string, Guid>>>(jsonStr);
 		}
@@ -40,21 +40,15 @@ namespace Secyud.Ugf.Archiving
 
 		public object Construct(BinaryReader reader) => this[reader.ReadGuid()].Construct();
 
-		public T CloneInit<T>(T obj) where T : class
+		public object ConstructSame(object obj) 
 		{
-			object ret =
-				obj is ICloneable cloneable
-					? cloneable.Clone()
-					: Construct(obj.GetType());
-			if (obj is ICopyable copyable)
-				copyable.CopyTo(ret);
-			return ret as T;
+			return Construct(obj.GetType());
 		}
 
 		public object Construct(Type type)
 		{
 			Guid id = GetId(type);
-			if (!TryGetValue(id, out var c))
+			if (!TryGetValue(id, out TypeContainer c))
 			{
 				c = new TypeContainer(type);
 				this[id] = c;

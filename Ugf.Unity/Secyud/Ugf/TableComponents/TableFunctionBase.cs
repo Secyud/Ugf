@@ -23,7 +23,7 @@ namespace Secyud.Ugf.TableComponents
 
 		public void RegisterFilterGroups(params FilterRegistrationGroup<TItem>[] filterGroups)
 		{
-			foreach (var filterGroup in filterGroups)
+			foreach (FilterRegistrationGroup<TItem> filterGroup in filterGroups)
 				RegisterFilterGroup(filterGroup);
 		}
 
@@ -34,7 +34,7 @@ namespace Secyud.Ugf.TableComponents
 
 		public void RegisterSorters(params ISorterRegistration<TItem>[] sorters)
 		{
-			foreach (var sorter in sorters)
+			foreach (ISorterRegistration<TItem> sorter in sorters)
 				RegisterSorter(sorter);
 		}
 	}

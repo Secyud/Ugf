@@ -202,9 +202,9 @@ namespace Secyud.Ugf.HexMap.Utilities
 		public static void InitializeHashGrid(int seed)
 		{
 			_hashGrid = new HexHash[HashGridSize * HashGridSize];
-			var currentState = Random.state;
+			Random.State currentState = Random.state;
 			Random.InitState(seed);
-			for (var i = 0; i < _hashGrid.Length; i++) _hashGrid[i] = HexHash.Create();
+			for (int i = 0; i < _hashGrid.Length; i++) _hashGrid[i] = HexHash.Create();
 
 			Random.state = currentState;
 		}
@@ -216,10 +216,10 @@ namespace Secyud.Ugf.HexMap.Utilities
 		/// <returns>Sampled <see cref="HexHash" />.</returns>
 		public static HexHash SampleHashGrid(Vector3 position)
 		{
-			var x = (int)(position.x * HashGridScale) % HashGridSize;
+			int x = (int)(position.x * HashGridScale) % HashGridSize;
 			if (x < 0) x += HashGridSize;
 
-			var z = (int)(position.z * HashGridScale) % HashGridSize;
+			int z = (int)(position.z * HashGridScale) % HashGridSize;
 			if (z < 0) z += HashGridSize;
 
 			return _hashGrid[x + z * HashGridSize];
@@ -335,11 +335,11 @@ namespace Secyud.Ugf.HexMap.Utilities
 		/// <returns>The position found by applying terrace interpolation.</returns>
 		public static Vector3 TerraceLerp(Vector3 a, Vector3 b, int step)
 		{
-			var h = step * HorizontalTerraceStepSize;
+			float h = step * HorizontalTerraceStepSize;
 			a.x += (b.x - a.x) * h;
 			a.z += (b.z - a.z) * h;
 			// ReSharper disable once PossibleLossOfFraction
-			var v = (step + 1) / 2 * VerticalTerraceStepSize;
+			float v = (step + 1) / 2 * VerticalTerraceStepSize;
 			a.y += (b.y - a.y) * v;
 			return a;
 		}
@@ -353,7 +353,7 @@ namespace Secyud.Ugf.HexMap.Utilities
 		/// <returns>The color found by applying terrace interpolation.</returns>
 		public static Color TerraceLerp(Color a, Color b, int step)
 		{
-			var h = step * HorizontalTerraceStepSize;
+			float h = step * HorizontalTerraceStepSize;
 			return Color.Lerp(a, b, h);
 		}
 
@@ -367,7 +367,7 @@ namespace Secyud.Ugf.HexMap.Utilities
 		{
 			near.x += (far.x - near.x) * 0.5f;
 			near.z += (far.z - near.z) * 0.5f;
-			var v =
+			float v =
 				near.y < far.y ? WallElevationOffset : 1f - WallElevationOffset;
 			near.y += (far.y - near.y) * v + WallYOffset;
 			return near;
@@ -398,7 +398,7 @@ namespace Secyud.Ugf.HexMap.Utilities
 		{
 			if (elevation1 == elevation2) return HexEdgeType.Flat;
 
-			var delta = elevation2 - elevation1;
+			int delta = elevation2 - elevation1;
 			if (delta == 1 || delta == -1) return HexEdgeType.Slope;
 
 			return HexEdgeType.Cliff;
@@ -411,7 +411,7 @@ namespace Secyud.Ugf.HexMap.Utilities
 		/// <returns>The positions with noise applied to its XZ components.</returns>
 		public static Vector3 Perturb(Vector3 position)
 		{
-			var sample = SampleNoise(position);
+			Vector4 sample = SampleNoise(position);
 			position.x += (sample.x * 2f - 1f) * CellPerturbStrength;
 			position.z += (sample.z * 2f - 1f) * CellPerturbStrength;
 			return position;

@@ -54,7 +54,7 @@ namespace Secyud.Ugf.Localization
 
 		private void AddResource([NotNull] Type resourceType)
 		{
-			var toResource =
+			Type toResource =
 				resourceType
 					.GetCustomAttribute<ResourceNameAttribute>()?
 					.ToResource ?? resourceType;
@@ -74,9 +74,9 @@ namespace Secyud.Ugf.Localization
 
 				_localizationStrings[resource] = new Dictionary<string, string>();
 
-				var resources = _registeredResource[resource];
+				List<Type> resources = _registeredResource[resource];
 
-				foreach (var addedResource in resources)
+				foreach (Type addedResource in resources)
 					CreateLocalizationStrings(addedResource, _localizationStrings[resource]);
 			}
 
@@ -93,11 +93,11 @@ namespace Secyud.Ugf.Localization
 			using FileStream fs = new(path, FileMode.Open, FileAccess.Read);
 			using StreamReader sr = new(fs, Encoding.UTF8);
 
-			var jsonStr = sr.ReadToEnd();
+			string jsonStr = sr.ReadToEnd();
 
-			var addedWords = JsonConvert.DeserializeObject<Dictionary<string, string>>(jsonStr);
+			Dictionary<string, string> addedWords = JsonConvert.DeserializeObject<Dictionary<string, string>>(jsonStr);
 
-			foreach (var word in addedWords)
+			foreach (KeyValuePair<string, string> word in addedWords)
 				localizer[word.Key] = word.Value;
 		}
 	}

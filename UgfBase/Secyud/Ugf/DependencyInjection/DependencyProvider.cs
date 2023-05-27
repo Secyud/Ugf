@@ -24,11 +24,11 @@ namespace Secyud.Ugf.DependencyInjection
 
 		public override object Get(Type type)
 		{
-			var descriptor = GetDescriptor(type);
+			DependencyDescriptor descriptor = GetDescriptor(type);
 
 			if (descriptor is null)
 			{
-				var originDescriptor = _dependencyProvider.GetDescriptor(type);
+				DependencyDescriptor originDescriptor = _dependencyProvider.GetDescriptor(type);
 
 				descriptor = CreateDependencyDescriptor(
 					originDescriptor.ImplementationType,
@@ -51,7 +51,7 @@ namespace Secyud.Ugf.DependencyInjection
 			Type exposedType,
 			DependencyLifeTime lifeTime)
 		{
-			var descriptor =
+			DependencyDescriptor descriptor =
 				lifeTime switch
 				{
 					DependencyLifeTime.Singleton =>

@@ -31,8 +31,8 @@ namespace UnityEngine
 
 		public static Vector2 GetMousePosition(Vector2 bias = default, bool useDefault = true)
 		{
-			var x = Input.mousePosition.x / Screen.width * Screen.currentResolution.width;
-			var y = Input.mousePosition.y / Screen.height * Screen.currentResolution.height -
+			float x = Input.mousePosition.x / Screen.width * Screen.currentResolution.width;
+			float y = Input.mousePosition.y / Screen.height * Screen.currentResolution.height -
 				Screen.currentResolution.height;
 
 			return new Vector2(x, y) + (useDefault ? new Vector2(-8, 8) : bias);
@@ -40,7 +40,7 @@ namespace UnityEngine
 
 		public static string RelativePathTo(this Transform target, Transform root)
 		{
-			var path = target.name;
+			string path = target.name;
 			try
 			{
 				while (target.parent != root)

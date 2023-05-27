@@ -115,13 +115,13 @@ namespace Secyud.Ugf.TableComponents
 
 		public void InsertAt(int index)
 		{
-			var cellIndex = Math.Max(GetIndex(index), 0);
+			int cellIndex = Math.Max(GetIndex(index), 0);
 			if (cellIndex >= PageSize) return;
 
 			if (_cells[PageSize - 1])
 				Destroy(_cells[PageSize - 1].gameObject);
 
-			for (var i = PageSize - 1; i > cellIndex; i--)
+			for (int i = PageSize - 1; i > cellIndex; i--)
 			{
 				if (!_cells[i - 1]) continue;
 
@@ -139,7 +139,7 @@ namespace Secyud.Ugf.TableComponents
 
 		public void RemoveAt(int index)
 		{
-			var cellIndex = Math.Max(GetIndex(index), 0);
+			int cellIndex = Math.Max(GetIndex(index), 0);
 			if (cellIndex >= PageSize) return;
 
 			if (_cells[cellIndex])
@@ -147,7 +147,7 @@ namespace Secyud.Ugf.TableComponents
 			else
 				return;
 
-			for (var i = cellIndex; i < PageSize - 1; i++)
+			for (int i = cellIndex; i < PageSize - 1; i++)
 			{
 				_cells[i] = _cells[i + 1];
 				if (!_cells[i]) break;
@@ -160,7 +160,7 @@ namespace Secyud.Ugf.TableComponents
 
 		public void ReplaceAt(int index)
 		{
-			var cellIndex = GetIndex(index);
+			int cellIndex = GetIndex(index);
 			if (cellIndex >= PageSize || cellIndex < 0) return;
 
 			if (_cells[cellIndex])
@@ -175,7 +175,7 @@ namespace Secyud.Ugf.TableComponents
 		public void OnInitialize()
 		{
 			Clear();
-			for (var i = 0; i < PageSize; i++)
+			for (int i = 0; i < PageSize; i++)
 			{
 				_cells[i] = TableProperty.CreateCell(TableContent.transform, i + IndexFirst);
 				if (!_cells[i])
@@ -186,7 +186,7 @@ namespace Secyud.Ugf.TableComponents
 
 		public void Clear()
 		{
-			for (var i = 0; i < PageSize; i++)
+			for (int i = 0; i < PageSize; i++)
 			{
 				if (_cells[i])
 					Destroy(_cells[i].gameObject);
