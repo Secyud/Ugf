@@ -248,8 +248,6 @@ namespace Secyud.Ugf.HexMap.Utilities
 			if (c.y > c.x / HexMetrics.Srt) record += 0b010;
 			if (c.x < 0) record += 0b100;
 
-			Debug.Log(record);
-
 			return record switch
 			{
 				0 => HexDirection.Se,
