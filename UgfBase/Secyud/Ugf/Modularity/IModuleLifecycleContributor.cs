@@ -8,12 +8,12 @@ namespace Secyud.Ugf.Modularity
 {
 	public interface IModuleLifecycleContributor
 	{
-		Task InitializeAsync(InitializationContext context, IUgfModule module);
+		Task InitializeAsync( IUgfModule module);
 
-		void Initialize(InitializationContext context, IUgfModule module);
+		void Initialize(IUgfModule module);
 
-		Task ShutdownAsync(ShutdownContext context, IUgfModule module);
+		Task ShutdownAsync( IUgfModule module);
 
-		void Shutdown(ShutdownContext context, IUgfModule module);
+		void Shutdown( IUgfModule module);
 	}
 }

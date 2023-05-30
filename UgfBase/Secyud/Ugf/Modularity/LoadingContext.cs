@@ -20,10 +20,7 @@ namespace Secyud.Ugf.Modularity
 		{
 			Thrower.IfNull(dependencyProvider);
 			_context = dependencyProvider.Get<IArchivingContext>();
-			DependencyProvider = dependencyProvider;
 		}
-
-		public IDependencyProvider DependencyProvider { get; }
 
 		public void Dispose()
 		{
@@ -58,11 +55,6 @@ namespace Secyud.Ugf.Modularity
 		public IEnumerable<string> Keys => ((IReadOnlyDictionary<string, BinaryReader>)_readers).Keys;
 
 		public IEnumerable<BinaryReader> Values => ((IReadOnlyDictionary<string, BinaryReader>)_readers).Values;
-
-		public T Get<T>() where T : class
-		{
-			return DependencyProvider.Get<T>();
-		}
 
 		public BinaryReader GetReader(string name)
 		{

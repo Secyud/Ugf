@@ -6,6 +6,6 @@ namespace Secyud.Ugf.Modularity
 
 		void OnGameSaving(SavingContext context);
 
-		void OnGameCreation(CreationContext context);
+		void OnGameCreation();
 	}
 }

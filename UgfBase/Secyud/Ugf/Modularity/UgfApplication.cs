@@ -82,10 +82,6 @@ namespace Secyud.Ugf.Modularity
 		{
 			using IDependencyScope scope = CreateDependencyScope();
 
-			InitializationContext context = new(scope.DependencyProvider);
-
-			CreationContext creationContext = new(scope.DependencyProvider);
-
 			LoadingService loading = Og.LoadingService;
 
 			loading.MaxValue = Modules.Count * 3;
@@ -96,7 +92,7 @@ namespace Secyud.Ugf.Modularity
 				yield return null;
 
 				if (m.Instance is IOnPreInitialization module)
-					module.OnGamePreInitialization(context);
+					module.OnGamePreInitialization();
 			}
 
 			foreach (IUgfModuleDescriptor m in Modules)
@@ -105,7 +101,7 @@ namespace Secyud.Ugf.Modularity
 				yield return null;
 
 				if (m.Instance is IOnGameArchiving module)
-					module.OnGameCreation(creationContext);
+					module.OnGameCreation();
 			}
 
 			foreach (IUgfModuleDescriptor m in Modules)
@@ -114,7 +110,7 @@ namespace Secyud.Ugf.Modularity
 				yield return null;
 
 				if (m.Instance is IOnPostInitialization module)
-					module.OnGamePostInitialization(context);
+					module.OnGamePostInitialization();
 			}
 
 			loading.Value = loading.MaxValue;
@@ -123,8 +119,6 @@ namespace Secyud.Ugf.Modularity
 		public IEnumerator GameLoad()
 		{
 			using IDependencyScope scope = CreateDependencyScope();
-
-			InitializationContext context = new(scope.DependencyProvider);
 
 			using LoadingContext loadingContext = new(scope.DependencyProvider);
 
@@ -138,7 +132,7 @@ namespace Secyud.Ugf.Modularity
 				yield return null;
 
 				if (m.Instance is IOnPreInitialization module)
-					module.OnGamePreInitialization(context);
+					module.OnGamePreInitialization();
 			}
 
 			foreach (IUgfModuleDescriptor m in Modules)
@@ -156,7 +150,7 @@ namespace Secyud.Ugf.Modularity
 				yield return null;
 
 				if (m.Instance is IOnPostInitialization module)
-					module.OnGamePostInitialization(context);
+					module.OnGamePostInitialization();
 			}
 
 			loading.Value = loading.MaxValue;
@@ -168,7 +162,7 @@ namespace Secyud.Ugf.Modularity
 
 			using SavingContext context = new(scope.DependencyProvider);
 
-			ISlot slot = context.Get<IArchivingContext>().CurrentSlot;
+			ISlot slot = scope.DependencyProvider.Get<IArchivingContext>().CurrentSlot;
 
 			string path = Og.ArchivingPath;
 
@@ -202,8 +196,6 @@ namespace Secyud.Ugf.Modularity
 		{
 			using IDependencyScope scope = CreateDependencyScope();
 
-			ShutdownContext context = new ShutdownContext(scope.DependencyProvider);
-
 			LoadingService loading = Og.LoadingService;
 
 			loading.MaxValue = Modules.Count;
@@ -214,7 +206,7 @@ namespace Secyud.Ugf.Modularity
 				yield return null;
 
 				if (Modules[i].Instance is IOnGameShutdown module)
-					module.OnGameShutdown(context);
+					module.OnGameShutdown();
 			}
 
 			loading.Value = loading.MaxValue;
