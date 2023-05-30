@@ -55,14 +55,14 @@ namespace Secyud.Ugf.Modularity
 
 		public IDependencyScope CreateDependencyScope()
 		{
-			return _dependencyManager.CreateScope();
+			return _dependencyManager.CreateScope<UgfApplicationScope>();
 		}
 
 		public void Configure()
 		{
 			CheckMultipleConfigureServices();
 
-			ConfigurationContext context = new ConfigurationContext(_dependencyManager);
+			ConfigurationContext context = new(_dependencyManager);
 
 			foreach (IUgfModuleDescriptor m in Modules)
 				if (m.Instance is IPreConfigure module)

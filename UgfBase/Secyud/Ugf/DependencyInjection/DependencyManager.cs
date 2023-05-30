@@ -22,11 +22,11 @@ namespace Secyud.Ugf.DependencyInjection
 		ISingleton
 	{
 		private readonly TypeManager _typeManager = new();
-
+		private readonly Dictionary<Type, IDependencyScope> _scopes = new();
 		internal DependencyManager(IDependencyCollection dependencyCollection = null)
 			: base(
 				dependencyCollection ?? new DependencyCollection(),
-				new ConcurrentDictionary<Type, object>()
+				new Dictionary<Type, object>()
 			)
 		{
 			Instances[GetType()] = this;
@@ -37,11 +37,6 @@ namespace Secyud.Ugf.DependencyInjection
 		{
 			DependencyDescriptor descriptor = GetDescriptor(type);
 			return descriptor?.InstanceAccessor();
-		}
-
-		public IDependencyScope CreateScope()
-		{
-			return new DependencyScope(new DependencyProvider(this));
 		}
 
 		public void AddAssembly(Assembly assembly)
@@ -169,6 +164,35 @@ namespace Secyud.Ugf.DependencyInjection
 						lifeTime,
 						() => GetInstance(implementationType)
 					);
+		}
+
+		public TScope CreateScope<TScope>() where TScope : class, IDependencyScope
+		{
+			return CreateScope(typeof(TScope)) as TScope;
+		}
+
+		public IDependencyScope CreateScope(Type scopeType) 
+		{
+			if (!_scopes.TryGetValue(scopeType, out IDependencyScope scope))
+			{
+				scope = CreateInstance(scopeType) as IDependencyScope;
+				_scopes[scopeType] = scope;
+			}
+
+			return scope;
+		}
+
+		public void DestroyScope<TScope>() where TScope : class, IDependencyScope
+		{
+			if (_scopes.Remove(typeof(TScope), out IDependencyScope scope))
+				scope.Dispose();
+		}
+
+		public TScope GetScope<TScope>() where TScope : class, IDependencyScope
+		{
+			if (!_scopes.TryGetValue(typeof(TScope), out IDependencyScope scope))
+				throw new UgfException($"Cannot get scope {typeof(TScope)} this time. Please ensure it is exist.");
+			return scope as TScope;
 		}
 	}
 }

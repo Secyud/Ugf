@@ -34,7 +34,7 @@ namespace Secyud.Ugf.AssetLoading
 			 [NotNull] IAssetLoader container,
 			 string assetName)
 		{
-			return assetName is null? null: new AssetContainer<TAsset>(container, assetName);
+			return assetName.IsNullOrEmpty()? null: new AssetContainer<TAsset>(container, assetName);
 		}
 
 		public static AssetContainer<TAsset> Create(

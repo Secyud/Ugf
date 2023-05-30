@@ -40,9 +40,7 @@ namespace Secyud.Ugf.AssetLoading
 			SpritePrefix prefix = SpritePrefix.Icons,
 			SpriteSuffix suffix = SpriteSuffix.png)
 		{
-			if (assetName.IsNullOrEmpty())
-				return null;
-			return assetName is null ? null : new SpriteContainer(
+			return assetName.IsNullOrEmpty() ? null : new SpriteContainer(
 				container, $"Images/{prefix}/{assetName}.{suffix}"
 			);
 		}

@@ -2,81 +2,75 @@
 
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 
 #endregion
 
 namespace Secyud.Ugf.DependencyInjection
 {
-	public class DependencyProvider : DependencyProviderBase, IDependencyProvider, IDependencyScopeFactory
-	{
-		private readonly DependencyProviderBase _dependencyProvider;
+    public class DependencyProvider : DependencyProviderBase, IDependencyProvider
+    {
+        private readonly DependencyProviderBase _dependencyProvider;
 
-		private readonly ConcurrentDictionary<Type, object> _instances;
+        private readonly ConcurrentDictionary<Type, object> _instances;
 
-		public DependencyProvider(DependencyProviderBase dependencyProvider)
-			: base(
-				new DependencyCollection(),
-				new ConcurrentDictionary<Type, object>()
-			)
-		{
-			_dependencyProvider = dependencyProvider;
-		}
+        public DependencyProvider(DependencyProviderBase dependencyProvider)
+            : base(
+                new DependencyCollection(),
+                new Dictionary<Type, object>()
+            )
+        {
+            _dependencyProvider = dependencyProvider;
+        }
+        public override object Get(Type type)
+        {
+            DependencyDescriptor descriptor = GetDescriptor(type);
 
-		public override object Get(Type type)
-		{
-			DependencyDescriptor descriptor = GetDescriptor(type);
+            if (descriptor is null)
+            {
+                DependencyDescriptor originDescriptor = _dependencyProvider.GetDescriptor(type);
 
-			if (descriptor is null)
-			{
-				DependencyDescriptor originDescriptor = _dependencyProvider.GetDescriptor(type);
+                descriptor = CreateDependencyDescriptor(
+                    originDescriptor.ImplementationType,
+                    type,
+                    originDescriptor.DependencyLifeTime
+                );
+            }
 
-				descriptor = CreateDependencyDescriptor(
-					originDescriptor.ImplementationType,
-					type,
-					originDescriptor.DependencyLifeTime
-				);
-			}
+            return descriptor.InstanceAccessor();
+        }
 
-			return descriptor.InstanceAccessor();
-		}
+        private DependencyDescriptor CreateDependencyDescriptor(
+            Type implementationType,
+            Type exposedType,
+            DependencyLifeTime lifeTime)
+        {
+            DependencyDescriptor descriptor =
+                lifeTime switch
+                {
+                    DependencyLifeTime.Singleton =>
+                        DependencyDescriptor.Describe(
+                            implementationType,
+                            lifeTime,
+                            () => _dependencyProvider.Get(implementationType)
+                        ),
+                    DependencyLifeTime.Scoped =>
+                        DependencyDescriptor.Describe(
+                            implementationType,
+                            lifeTime,
+                            () => GetInstance(implementationType)
+                        ),
+                    DependencyLifeTime.Transient =>
+                        DependencyDescriptor.Describe(
+                            implementationType,
+                            lifeTime,
+                            () => CreateInstance(implementationType)
+                        ),
+                    _ => throw new ArgumentOutOfRangeException(nameof(lifeTime), lifeTime, null)
+                };
 
-		public IDependencyScope CreateScope()
-		{
-			return new DependencyScope(new DependencyProvider(this));
-		}
-
-
-		private DependencyDescriptor CreateDependencyDescriptor(
-			Type implementationType,
-			Type exposedType,
-			DependencyLifeTime lifeTime)
-		{
-			DependencyDescriptor descriptor =
-				lifeTime switch
-				{
-					DependencyLifeTime.Singleton =>
-						DependencyDescriptor.Describe(
-							implementationType,
-							lifeTime,
-							() => _dependencyProvider.Get(implementationType)
-						),
-					DependencyLifeTime.Scoped =>
-						DependencyDescriptor.Describe(
-							implementationType,
-							lifeTime,
-							() => GetInstance(implementationType)
-						),
-					DependencyLifeTime.Transient =>
-						DependencyDescriptor.Describe(
-							implementationType,
-							lifeTime,
-							() => CreateInstance(implementationType)
-						),
-					_ => throw new ArgumentOutOfRangeException(nameof(lifeTime), lifeTime, null)
-				};
-
-			DependencyCollection[exposedType] = descriptor;
-			return descriptor;
-		}
-	}
+            DependencyCollection[exposedType] = descriptor;
+            return descriptor;
+        }
+    }
 }

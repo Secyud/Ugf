@@ -1,7 +1,7 @@
 #region
 
 using System;
-using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using UnityEngine;
@@ -13,11 +13,13 @@ namespace Secyud.Ugf.DependencyInjection
 	public abstract class DependencyProviderBase : IDependencyProvider
 	{
 		internal readonly IDependencyCollection DependencyCollection;
-		protected readonly ConcurrentDictionary<Type, object> Instances;
+		protected readonly Dictionary<Type, object> Instances;
+		private static readonly Dictionary<Type, ConstructorDescriptor> Constructors = new();
+
 
 		internal DependencyProviderBase(
 			IDependencyCollection dependencyCollection,
-			ConcurrentDictionary<Type, object> instances)
+			Dictionary<Type, object> instances)
 		{
 			DependencyCollection = dependencyCollection;
 			Instances = instances;
@@ -38,20 +40,18 @@ namespace Secyud.Ugf.DependencyInjection
 
 		protected object CreateInstance(Type implementationType)
 		{
-			ConstructorInfo constructor = implementationType.GetConstructors(Og.ConstructFlag).FirstOrDefault();
-
-			if (constructor is null)
-				throw new UgfException($"Can not find constructor for type {implementationType}.");
-
-			object[] parameters = constructor
-				.GetParameters()
-				.Select(u => Get(u.ParameterType)).ToArray();
-
+			if (!Constructors.TryGetValue(implementationType, out ConstructorDescriptor constructor))
+			{
+				ConstructorInfo ci = implementationType.GetConstructors(Og.ConstructFlag).FirstOrDefault();
+				if (ci is null)
+					throw new UgfException($"Can not find constructor for type {implementationType}.");
+				constructor = new ConstructorDescriptor(ci);
+				Constructors[implementationType] = constructor;
+			}
 #if DEBUG
 			Debug.Log($"{implementationType} is constructing!");
 #endif
-
-			return constructor.Invoke(parameters);
+			return constructor.Construct(this);
 		}
 
 		protected object GetInstance(Type implementationType)

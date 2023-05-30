@@ -33,7 +33,7 @@ namespace Secyud.Ugf.AssetLoading
 			[NotNull] string atlasName,
 			string assetName)
 		{
-			return assetName is null ? null : new AtlasSpriteContainer(
+			return assetName.IsNullOrEmpty() ? null : new AtlasSpriteContainer(
 				assetLoader, atlasName, assetName
 			);
 		}
@@ -49,7 +49,7 @@ namespace Secyud.Ugf.AssetLoading
 		protected override Sprite GetObject()
 		{
 			_atlas ??= Loader.LoadAsset<SpriteAtlas>(AtlasName);
-			return _atlas.GetSprite(AssetName);
+			return _atlas ? _atlas.GetSprite(AssetName) : null;
 		}
 
 		public override void Save(BinaryWriter writer)
