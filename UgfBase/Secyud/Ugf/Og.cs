@@ -34,7 +34,7 @@ namespace Secyud.Ugf
 
 		public static readonly string ArchivingPath = Path.Combine(AppPath, "Archiving");
 
-		public static IDependencyProvider Provider { get; private set; }
+		public static IDependencyScopeFactory ScopeFactory { get; private set; }
 
 		public static IStringLocalizer<DefaultResource> L { get; private set; }
 
@@ -46,21 +46,25 @@ namespace Secyud.Ugf
 
 		public static IAssetLoader GetAssetLoader(Type assetLoaderType)
 		{
-			return Provider.Get(assetLoaderType) as IAssetLoader;
+			return DefaultProvider.Get(assetLoaderType) as IAssetLoader;
 		}
 
+		public static IDependencyProvider DefaultProvider;
+		
 		internal static void Initialize(IDependencyProvider provider)
 		{
-			Provider = provider;
-			L = Get<IStringLocalizer<DefaultResource>>();
-			IL = Get<ISpriteLocalizer<DefaultResource>>();
-			LoadingService = Get<LoadingService>();
-			TypeManager = Get<TypeManager>();
+			DefaultProvider = provider;
+			ScopeFactory = provider.Get<IDependencyScopeFactory>();
+			
+			L = DefaultProvider.Get<IStringLocalizer<DefaultResource>>();
+			IL = DefaultProvider.Get<ISpriteLocalizer<DefaultResource>>();
+			LoadingService = DefaultProvider.Get<LoadingService>();
+			TypeManager = DefaultProvider.Get<TypeManager>();
 		}
 
-		public static T Get<T>() where T : class
+		public static T Get<TScope,T>() where T : class where TScope : class, IDependencyScope
 		{
-			return Provider.Get<T>();
+			return ScopeFactory.GetScope<TScope>().DependencyProvider.Get<T>();
 		}
 
 		public static int GetRandom(int max, int min = 0)

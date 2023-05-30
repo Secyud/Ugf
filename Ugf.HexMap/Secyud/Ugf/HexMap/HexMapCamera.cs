@@ -2,7 +2,6 @@
 
 using Secyud.Ugf.HexMap.Utilities;
 using UnityEngine;
-using UnityEngine.EventSystems;
 
 #endregion
 

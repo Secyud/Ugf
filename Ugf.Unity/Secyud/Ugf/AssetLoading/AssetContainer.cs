@@ -81,7 +81,7 @@ namespace Secyud.Ugf.AssetLoading
 
 		public virtual void Load(BinaryReader reader)
 		{
-			Loader = Og.Provider.Get(
+			Loader = Og.DefaultProvider.Get(
 				Og.TypeManager[reader.ReadGuid()].Type
 			) as IAssetLoader;
 			AssetName = reader.ReadString();

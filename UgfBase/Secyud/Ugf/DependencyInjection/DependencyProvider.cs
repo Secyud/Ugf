@@ -1,7 +1,6 @@
 #region
 
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 
 #endregion
@@ -10,15 +9,12 @@ namespace Secyud.Ugf.DependencyInjection
 {
     public class DependencyProvider : DependencyProviderBase, IDependencyProvider
     {
-        private readonly DependencyProviderBase _dependencyProvider;
+        private readonly IDependencyProviderFactory _dependencyProvider;
 
-        private readonly ConcurrentDictionary<Type, object> _instances;
+        private readonly Dictionary<Type, object> _instances;
 
-        public DependencyProvider(DependencyProviderBase dependencyProvider)
-            : base(
-                new DependencyCollection(),
-                new Dictionary<Type, object>()
-            )
+        public DependencyProvider(IDependencyProviderFactory dependencyProvider)
+            : base(new DependencyCollection(), new Dictionary<Type, object>())
         {
             _dependencyProvider = dependencyProvider;
         }

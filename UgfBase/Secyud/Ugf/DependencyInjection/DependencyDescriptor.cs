@@ -6,7 +6,7 @@ using System;
 
 namespace Secyud.Ugf.DependencyInjection
 {
-	internal class DependencyDescriptor
+	public class DependencyDescriptor
 	{
 		private DependencyDescriptor()
 		{

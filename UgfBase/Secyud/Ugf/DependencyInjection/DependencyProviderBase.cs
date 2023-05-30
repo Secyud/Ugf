@@ -32,7 +32,7 @@ namespace Secyud.Ugf.DependencyInjection
 
 		public abstract object Get(Type type);
 
-		internal DependencyDescriptor GetDescriptor(Type type)
+		public DependencyDescriptor GetDescriptor(Type type)
 		{
 			DependencyCollection.TryGetValue(type, out DependencyDescriptor provider);
 			return provider;

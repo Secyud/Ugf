@@ -55,7 +55,7 @@ namespace Secyud.Ugf.Modularity
 
 		public IDependencyScope CreateDependencyScope()
 		{
-			return _dependencyManager.CreateScope<UgfApplicationScope>();
+			return new DependencyScope(_dependencyManager);
 		}
 
 		public void Configure()

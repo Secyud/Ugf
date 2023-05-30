@@ -8,7 +8,7 @@ namespace Secyud.Ugf.Resource
 {
 	public sealed class ResourceManager : ISingleton
 	{
-		public static ResourceManager Instance => _instance ??= Og.Get<ResourceManager>();
+		public static ResourceManager Instance => _instance ??= Og.DefaultProvider.Get<ResourceManager>();
 
 		private static ResourceManager _instance;
 
@@ -19,7 +19,7 @@ namespace Secyud.Ugf.Resource
 
 		public ResourceDescriptor GetResourceDescriptor(string name)
 		{
-			if (!Instance._resource.TryGetValue(name, out ResourceDescriptor descriptor))
+			if (!_resource.TryGetValue(name, out ResourceDescriptor descriptor))
 			{
 				descriptor = new ResourceDescriptor();
 				_resource[name] = descriptor;
