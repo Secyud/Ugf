@@ -3,7 +3,7 @@
 	public static class ResourceExtension
 	{
 		public static TResourcedBase Init<TResourcedBase>(
-			this TResourcedBase resourcedBase,string name = null)
+			this TResourcedBase resourcedBase,string name)
 		where TResourcedBase:ResourcedBase
 		{
 			resourcedBase.InitSetting(name);

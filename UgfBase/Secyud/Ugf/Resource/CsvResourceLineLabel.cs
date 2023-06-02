@@ -2,8 +2,8 @@
 {
 	public struct CsvResourceLineLabel
 	{
-		public byte Label;
-		public byte Col;
-		public short Id;
+		public PropertyType Type;
+		public int Col;
+		public int Id;
 	}
 }

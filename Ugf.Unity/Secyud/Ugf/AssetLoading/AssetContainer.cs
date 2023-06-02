@@ -5,6 +5,7 @@ using Secyud.Ugf.Archiving;
 using Secyud.Ugf.Container;
 using System;
 using System.IO;
+using Secyud.Ugf.Resource;
 using Object = UnityEngine.Object;
 
 #endregion
@@ -53,6 +54,16 @@ namespace Secyud.Ugf.AssetLoading
 		{
 			return Create(typeof(TAbBase), assetName);
 		}
+		
+		public static AssetContainer<TAsset> Create(
+			[NotNull] IAssetLoader loader,
+			[NotNull] ResourceDescriptor descriptor,
+			int id)
+		{
+			string assetName = descriptor.Get<string>(id);
+
+			return Create(loader,assetName);
+		}
 
 		public override TAsset Value => CurrentInstance
 			? CurrentInstance : CurrentInstance = GetObject();
@@ -82,7 +93,7 @@ namespace Secyud.Ugf.AssetLoading
 		public virtual void Load(BinaryReader reader)
 		{
 			Loader = Og.DefaultProvider.Get(
-				Og.TypeManager[reader.ReadGuid()].Type
+				Og.ClassManager[reader.ReadGuid()].Type
 			) as IAssetLoader;
 			AssetName = reader.ReadString();
 		}

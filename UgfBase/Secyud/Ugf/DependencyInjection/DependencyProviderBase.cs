@@ -38,7 +38,7 @@ namespace Secyud.Ugf.DependencyInjection
 			return provider;
 		}
 
-		protected object CreateInstance(Type implementationType)
+		internal object CreateInstance(Type implementationType)
 		{
 			if (!Constructors.TryGetValue(implementationType, out ConstructorDescriptor constructor))
 			{

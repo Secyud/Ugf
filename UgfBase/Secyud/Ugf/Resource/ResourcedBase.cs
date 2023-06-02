@@ -1,57 +1,54 @@
-﻿using Secyud.Ugf.Archiving;
-using System;
+﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using UnityEngine;
-using ICloneable = System.ICloneable;
 
 namespace Secyud.Ugf.Resource
 {
-	public abstract class ResourcedBase : IArchivable,ICloneable
-	{
-		protected ResourceDescriptor Descriptor { get; private set; }
+    public abstract class ResourcedBase:ICloneable
+    {
+        private ClassDescriptor _classDescriptor;
+        private ClassDescriptor ClassDescriptor => _classDescriptor ??= Og.ClassManager[this.GetTypeId()];
+        [R(-1)] public string ResourceName { get; set; }
+        public void InitSetting([NotNull] string name)
+        {
+            ResourceDescriptor resourceDescriptor =
+                Og.InitializeManager.GetOrAddResource(name);
+            ClassDescriptor.Init(this, resourceDescriptor, false);
+            SetDefaultValue(resourceDescriptor);
+        }
 
-		private ResourceProperty _property;
-		protected ResourceProperty PropertyInfos => _property ??=
-			ResourceManager.Instance.GetResourceProperty(GetType());
+        public virtual void Save(BinaryWriter writer)
+        {
+            ClassDescriptor.Write(this, writer);
+        }
 
-		public virtual void InitSetting(string name = null)
-		{
-			if (name.IsNullOrEmpty()) name = GetType().Name;
-			Descriptor = ResourceManager.Instance.GetResourceDescriptor(name);
-			PropertyInfos.Init(this,Descriptor);
-			SetDefaultValue();
-		}
+        public virtual void Load(BinaryReader reader)
+        {
+            ClassDescriptor.Read(this, reader);
+            ResourceDescriptor resourceDescriptor =
+                Og.InitializeManager.GetOrAddResource(ResourceName);
+            ClassDescriptor.Init(this, resourceDescriptor, true);
+            SetDefaultValue(resourceDescriptor);
+        }
 
-		public virtual void Save(BinaryWriter writer)
-		{
-			PropertyInfos.Write(this, writer);
-		}
+        public object Clone()
+        {
+            if (Og.ClassManager.ConstructSame(this) is not ResourcedBase obj)
+            {
+                Debug.LogWarning("resourced base clone failed. Use MemberwiseClone Instead!");
+                return MemberwiseClone();
+            }
 
-		public virtual void Load(BinaryReader reader)
-		{
-			PropertyInfos.Read(this, reader);
-			SetDefaultValue();
-		}
+            ClassDescriptor.CopyTo(this, obj);
+            ResourceDescriptor resourceDescriptor =
+                Og.InitializeManager.GetOrAddResource(ResourceName);
+            obj.SetDefaultValue(resourceDescriptor);
+            return obj;
+        }
 
-		protected virtual void SetDefaultValue()
-		{
-		}
-
-		private void CopyTo(ResourcedBase to)
-		{
-		}
-
-		public object Clone()
-		{
-			if (Og.TypeManager.ConstructSame(this) is not ResourcedBase obj)
-			{
-				Debug.LogWarning("resourced base clone failed. Use MemberwiseClone Instead!");
-				return MemberwiseClone();
-			}
-			obj.Descriptor = Descriptor;
-			PropertyInfos.CopyTo(this,obj);
-			obj.SetDefaultValue();
-			return obj;
-		}
-	}
+        protected virtual void SetDefaultValue(ResourceDescriptor descriptor)
+        {
+        }
+    }
 }

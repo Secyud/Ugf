@@ -41,7 +41,7 @@ namespace Secyud.Ugf.Modularity
 				typeof(IArchivingContext),
 				typeof(DefaultLocalizerFactory),
 				typeof(InputService),
-				typeof(ResourceManager)
+				typeof(InitializeManager)
 			);
 
 			Modules = LoadModules(_dependencyManager, plugInSources);

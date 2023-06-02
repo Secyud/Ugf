@@ -136,7 +136,7 @@ namespace System
 
 		public static TResult ReadArchiving<TResult>(this BinaryReader reader) where TResult : class
 		{
-			object obj = Og.TypeManager.Construct(reader);
+			object obj = Og.ClassManager.Construct(reader);
 			if (obj is IArchivable archivable)
 				archivable.Load(reader);
 			return obj as TResult;
@@ -155,7 +155,7 @@ namespace System
 
 		public static Guid GetId(this Type type)
 		{
-			return Og.TypeManager.GetId(type);
+			return Og.ClassManager.GetId(type);
 		}
 	}
 }

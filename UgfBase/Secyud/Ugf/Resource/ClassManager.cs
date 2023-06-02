@@ -1,24 +1,24 @@
 ﻿#region
 
-using Newtonsoft.Json;
-using Secyud.Ugf.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
+using Newtonsoft.Json;
+using Secyud.Ugf.DependencyInjection;
 using UnityEngine;
 
 #endregion
 
-namespace Secyud.Ugf.Archiving
+namespace Secyud.Ugf.Resource
 {
-	public class TypeManager : Dictionary<Guid, TypeContainer>, ISingleton
+	public class ClassManager : Dictionary<Guid, ClassDescriptor>, ISingleton
 	{
 		private readonly MD5 _md5 = MD5.Create();
 		private readonly Dictionary<string, Dictionary<string, Guid>> _idDictionary;
 
-		public TypeManager()
+		public ClassManager()
 		{
 			string path = Path.Combine(Og.AppPath,"Data", "AssemblyInfo.json");
 
@@ -48,9 +48,9 @@ namespace Secyud.Ugf.Archiving
 		public object Construct(Type type)
 		{
 			Guid id = GetId(type);
-			if (!TryGetValue(id, out TypeContainer c))
+			if (!TryGetValue(id, out ClassDescriptor c))
 			{
-				c = new TypeContainer(type);
+				c = new ClassDescriptor(type);
 				this[id] = c;
 			}
 			if (c.Constructor is null)
@@ -58,14 +58,14 @@ namespace Secyud.Ugf.Archiving
 			object o = c.Construct();
 			return o;
 		}
-
+		
 		public void TryAddType(Type type)
 		{
 			Guid id = GetId(type);
-			if (TryGetValue(id, out TypeContainer origin))
+			if (TryGetValue(id, out ClassDescriptor origin))
 				Debug.LogWarning($"Type manager: {type} replaced {origin.Type}");
 
-			this[id] = new TypeContainer(type);
+			this[id] = new ClassDescriptor(type);
 		}
 
 		public Guid GetId(Type type)

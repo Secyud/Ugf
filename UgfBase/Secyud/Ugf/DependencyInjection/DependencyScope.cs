@@ -1,18 +1,21 @@
 namespace Secyud.Ugf.DependencyInjection
 {
-	public  class DependencyScope : IDependencyScope
-	{
-		public DependencyScope(IDependencyProviderFactory dependencyProvider)
-		{
-			DependencyProvider = new DependencyProvider(dependencyProvider);
-		}
+    public class DependencyScope : IDependencyScope
+    {
+        public IDependencyProvider DependencyProvider => Provider;
 
-		public IDependencyProvider DependencyProvider { get; }
+        internal readonly DependencyProvider Provider;
 
-		public T Get<T>() where T : class => DependencyProvider.Get<T>();
+        public T Get<T>() where T : class => DependencyProvider.Get<T>();
 
-		public virtual void Dispose()
-		{
-		}
-	}
+        public DependencyScope(IDependencyProviderFactory dependencyProvider)
+        {
+            Provider = new DependencyProvider(dependencyProvider);
+        }
+
+
+        public virtual void Dispose()
+        {
+        }
+    }
 }

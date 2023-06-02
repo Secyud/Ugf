@@ -2,17 +2,17 @@
 
 namespace Secyud.Ugf.Resource
 {
-	public class ResourceNode
+	public class PathNode
 	{
-		public readonly ResourceNode Parent;
+		public readonly PathNode Parent;
 
 		public readonly string NodeName;
 
-		public readonly SortedDictionary<string, ResourceNode> Child = new();
+		public readonly SortedDictionary<string, PathNode> Child = new();
 
 		private string _path = null;
 
-		public ResourceNode(string nodeName,ResourceNode parent)
+		public PathNode(string nodeName,PathNode parent)
 		{
 			NodeName = nodeName;
 			if (parent is not null)
