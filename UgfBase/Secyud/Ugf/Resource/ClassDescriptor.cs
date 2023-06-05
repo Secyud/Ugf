@@ -62,6 +62,7 @@ namespace Secyud.Ugf.Resource
                     else if (pType == typeof(float)) t = PropertyType.Single;
                     else if (pType == typeof(double)) t = PropertyType.Double;
                     else if (pType == typeof(string)) t = PropertyType.String;
+                    else if (pType == typeof(Guid)) t = PropertyType.Guid;
 
                     if (t == PropertyType.InValid) continue;
                     Properties[attribute.ID] = new ClassProperty(info, t, attribute.NoArchive);
@@ -110,8 +111,12 @@ namespace Secyud.Ugf.Resource
                 case PropertyType.String:
                     writer.Write((string)v);
                     break;
+                case PropertyType.Guid:
+                    writer.Write((Guid)v);
+                    break;
                 case PropertyType.InValid:
                     throw new InvalidDataException("Property type is not valid");
+              
                 default:
                     throw new ArgumentOutOfRangeException();
             }
@@ -133,6 +138,7 @@ namespace Secyud.Ugf.Resource
                 PropertyType.Single => reader.ReadSingle(),
                 PropertyType.Double => reader.ReadDouble(),
                 PropertyType.String => reader.ReadString(),
+                PropertyType.Guid => reader.ReadGuid(),
                 _ => default
             });
         }

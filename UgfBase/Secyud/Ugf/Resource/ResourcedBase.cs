@@ -5,49 +5,52 @@ using UnityEngine;
 
 namespace Secyud.Ugf.Resource
 {
-    public abstract class ResourcedBase:ICloneable
+    public abstract class ResourcedBase : ICloneable
     {
         private ClassDescriptor _classDescriptor;
         private ClassDescriptor ClassDescriptor => _classDescriptor ??= Og.ClassManager[this.GetTypeId()];
-        [R(-1)] public string ResourceName { get; set; }
-        public void InitSetting([NotNull] string name)
+
+        public ResourceDescriptor Descriptor { get; private set; }
+
+
+        public void InitSetting([NotNull] ResourceDescriptor descriptor)
         {
-            ResourceDescriptor resourceDescriptor =
-                Og.InitializeManager.GetOrAddResource(name);
-            ClassDescriptor.Init(this, resourceDescriptor, false);
-            SetDefaultValue(resourceDescriptor);
+            Descriptor = descriptor;
+            ClassDescriptor.Init(this, Descriptor, false);
+            SetDefaultValue();
         }
 
         public virtual void Save(BinaryWriter writer)
         {
+            writer.Write(Descriptor.TemplateType.GetId());
+            writer.Write(Descriptor.Name);
             ClassDescriptor.Write(this, writer);
         }
 
         public virtual void Load(BinaryReader reader)
         {
+            Type templateType = Og.ClassManager[reader.ReadGuid()].Type;
+            string name = reader.ReadString();
+            Descriptor = Og.InitializeManager.GetResource(templateType, name);
             ClassDescriptor.Read(this, reader);
-            ResourceDescriptor resourceDescriptor =
-                Og.InitializeManager.GetOrAddResource(ResourceName);
-            ClassDescriptor.Init(this, resourceDescriptor, true);
-            SetDefaultValue(resourceDescriptor);
+            ClassDescriptor.Init(this, Descriptor, true);
         }
 
         public object Clone()
         {
-            if (Og.ClassManager.ConstructSame(this) is not ResourcedBase obj)
+            if (Og.ClassManager.ConstructSame(this) is not ResourcedBase resourcedBase)
             {
                 Debug.LogWarning("resourced base clone failed. Use MemberwiseClone Instead!");
                 return MemberwiseClone();
             }
 
-            ClassDescriptor.CopyTo(this, obj);
-            ResourceDescriptor resourceDescriptor =
-                Og.InitializeManager.GetOrAddResource(ResourceName);
-            obj.SetDefaultValue(resourceDescriptor);
-            return obj;
+            resourcedBase.Descriptor = Descriptor;
+            ClassDescriptor.CopyTo(this, resourcedBase);
+            resourcedBase.SetDefaultValue();
+            return resourcedBase;
         }
 
-        protected virtual void SetDefaultValue(ResourceDescriptor descriptor)
+        protected virtual void SetDefaultValue()
         {
         }
     }

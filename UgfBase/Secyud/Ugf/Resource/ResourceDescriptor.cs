@@ -7,15 +7,23 @@ namespace Secyud.Ugf.Resource
 	{
 
 		private readonly SortedDictionary<int, object> _configs = new();
+		
+		public string Name { get; }
 
-		public string Name => Get<string>(-1);
-
-		public Guid TypeId => Get<Guid>(-2);
+		public Guid TypeId { get; }
+		
+		public Type TemplateType { get; }
 		
 		public object this[int id]
 		{
 			get => _configs.TryGetValue(id, out object value) ? value : null;
 			set => _configs[id] = value;
+		}
+		public ResourceDescriptor(string name, Guid typeId, Type templateType)
+		{
+			Name = name;
+			TypeId = typeId;
+			TemplateType = templateType;
 		}
 
 		public TValue Get<TValue>(int id)

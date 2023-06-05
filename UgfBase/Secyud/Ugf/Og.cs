@@ -91,26 +91,5 @@ namespace Secyud.Ugf
         {
             return name.Replace('.', '/');
         }
-
-        public static TTemplate ConstructTemplate<TTemplate>(string name)
-            where TTemplate : ResourcedBase
-        {
-            Guid typeId = InitializeManager.GetResource(name).TypeId;
-            if (typeId == default)
-                typeId = typeof(TTemplate).GetTypeId();
-            return ClassManager.Construct(typeId) as TTemplate;
-        }
-
-        public static TTemplate ConstructTemplateAndInit<TTemplate>(string name)
-            where TTemplate : ResourcedBase
-        {
-            return ConstructTemplate<TTemplate>(name).Init(name);
-        }
-
-        public static IEnumerable<TTemplate> ConstructPrefabTemplates<TTemplate>(IEnumerable<string> names)
-            where TTemplate : ResourcedBase
-        {
-            return names.Select(ConstructTemplateAndInit<TTemplate>);
-        }
     }
 }
