@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
-using Newtonsoft.Json;
 using Secyud.Ugf.DependencyInjection;
 using UnityEngine;
 
@@ -16,24 +15,23 @@ namespace Secyud.Ugf.Resource
     public class ClassManager : Dictionary<Guid, ClassDescriptor>, ISingleton
     {
         private readonly MD5 _md5 = MD5.Create();
-        private readonly Dictionary<string, Guid> _idDictionary;
+        private readonly Dictionary<string, Guid> _idDictionary = new();
 
         public ClassManager()
         {
-            string path = Path.Combine(Og.AppPath, "Data", "AssemblyInfo.json");
+            string path = Path.Combine(Og.AppPath, "Data", "AssemblyInfo.binary");
 
             if (File.Exists(path))
             {
                 using FileStream fs = new(path, FileMode.Open, FileAccess.Read);
                 using StreamReader sr = new(fs, Encoding.UTF8);
 
-                string jsonStr = sr.ReadToEnd();
-
-                _idDictionary = JsonConvert.DeserializeObject<Dictionary<string, Guid>>(jsonStr);
-            }
-            else
-            {
-                _idDictionary = new Dictionary<string, Guid>();
+                while (sr.ReadLine() is { } line)
+                {
+                    Guid id = new(line[..36]);
+                    string fullName = line[37..].Trim();
+                    _idDictionary[fullName] = id;
+                }
             }
         }
 
@@ -105,6 +103,14 @@ namespace Secyud.Ugf.Resource
         private Guid GenerateId(string typeFullName)
         {
             return new Guid(_md5.ComputeHash(Encoding.UTF8.GetBytes(typeFullName)));
+        }
+
+        public void WriteLoggedGuid(string path)
+        {
+            using FileStream stream = File.OpenWrite(path);
+            using StreamWriter writer = new(stream);
+            foreach ((string key,Guid value) in _idDictionary)
+                writer.WriteLine($"{value} {key}");
         }
     }
 }

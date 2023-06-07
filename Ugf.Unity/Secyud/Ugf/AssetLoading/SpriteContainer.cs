@@ -2,7 +2,6 @@
 
 using JetBrains.Annotations;
 using System;
-using Secyud.Ugf.Resource;
 using UnityEngine;
 
 #endregion

@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Secyud.Ugf.Resource
 {
@@ -16,11 +18,15 @@ namespace Secyud.Ugf.Resource
         public static TResourcedBase CreateAndInit<TResourcedBase>(
             this string name) where TResourcedBase : ResourcedBase
         {
-            var templateType = typeof(TResourcedBase);
-            ResourceDescriptor descriptor = Og.InitializeManager.GetResource(templateType, name);
+            ResourceDescriptor descriptor = Og.InitializeManager.GetResource(typeof(TResourcedBase), name);
             TResourcedBase resourcedBase = Og.ClassManager.Construct<TResourcedBase>(descriptor.TypeId);
             resourcedBase.Init(descriptor);
             return resourcedBase;
+        }
+        public static List<TResourcedBase> CreateAndInitList<TResourcedBase>(
+            this IEnumerable<string> names) where TResourcedBase : ResourcedBase
+        {
+            return names.Select(CreateAndInit<TResourcedBase>).ToList();
         }
 
         public static TResourcedBase Init<TResourcedBase>(

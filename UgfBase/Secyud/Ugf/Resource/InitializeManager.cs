@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using UnityEngine;
 
 namespace Secyud.Ugf.Resource
@@ -33,11 +34,18 @@ namespace Secyud.Ugf.Resource
             if (_resource.TryGetValue(templateType, out Dictionary<string, ResourceDescriptor> dict) &&
                 dict.TryGetValue(name, out ResourceDescriptor descriptor))
                 return descriptor;
-            throw new UgfException($"Cannot get resource for id {templateType} named {name}");
+            throw new UgfException($"Cannot get resource for template id {templateType} named {name}");
         }
         public ResourceDescriptor GetResource<TTemplate>(string name)
         {
             return GetResource(typeof(TTemplate), name);
+        } 
+        
+        public List<string> GetResourceList(Type templateType)
+        { 
+            if (_resource.TryGetValue(templateType, out Dictionary<string, ResourceDescriptor> dict))
+                return dict.Keys.ToList();
+            throw new UgfException($"Cannot get resource dict for type {templateType}");
         }
 
         public PathNode GetOrAddPathNode(string path)
@@ -163,6 +171,12 @@ namespace Secyud.Ugf.Resource
                 );
                 return;
             }
+            
+            if (!_resource.TryGetValue(templateType, out Dictionary<string, ResourceDescriptor> dict))
+            {
+                dict = new Dictionary<string, ResourceDescriptor>();
+                _resource[templateType] = dict;
+            }
 
             using FileStream file = File.OpenRead(path);
             using BinaryReader reader = new(file);
@@ -175,7 +189,11 @@ namespace Secyud.Ugf.Resource
                 string name = reader.ReadString();
                 int length = reader.ReadInt32();
 
-                ResourceDescriptor descriptor = GetOrAddResource(id, name,templateType);
+                if (!dict.TryGetValue(name, out ResourceDescriptor descriptor))
+                {
+                    descriptor = new ResourceDescriptor(name, id,templateType);
+                    dict[name] = descriptor;
+                }
 
                 for (int j = 0; j < length; j++)
                 {
