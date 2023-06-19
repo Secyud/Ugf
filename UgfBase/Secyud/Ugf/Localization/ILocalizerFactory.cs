@@ -8,14 +8,14 @@ using System.Globalization;
 
 namespace Secyud.Ugf.Localization
 {
-	public interface ILocalizerFactory
-	{
-		void AddResource<TResource>() where TResource : DefaultResource;
+    public interface ILocalizerFactory
+    {
+        void AddResource<TResource>() where TResource : DefaultResource;
 
-		void RegisterResource<TResource>() where TResource : DefaultResource;
+        void RegisterResource<TResource>() where TResource : DefaultResource;
 
-		IDictionary<string, string> GetLocalizerStringDictionary<TResource>() where TResource : DefaultResource;
+        IDictionary<string, string> GetLocalizerStringDictionary<TResource>() where TResource : DefaultResource;
 
-		void ChangeCulture(CultureInfo cultureInfo);
-	}
+        void ChangeCulture(CultureInfo cultureInfo);
+    }
 }

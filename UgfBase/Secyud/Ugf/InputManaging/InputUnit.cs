@@ -7,16 +7,16 @@ using UnityEngine.Events;
 
 namespace Secyud.Ugf.InputManaging
 {
-	public class InputUnit
-	{
-		internal InputUnit(KeyCode code, UnityEvent @event)
-		{
-			KeyCode = code;
-			Event = @event;
-		}
+    public class InputUnit
+    {
+        internal InputUnit(KeyCode code, UnityEvent @event)
+        {
+            KeyCode = code;
+            Event = @event;
+        }
 
-		public KeyCode KeyCode { get; }
+        public KeyCode KeyCode { get; }
 
-		public UnityEvent Event { get; }
-	}
+        public UnityEvent Event { get; }
+    }
 }

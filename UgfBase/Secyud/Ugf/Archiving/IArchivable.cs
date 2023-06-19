@@ -6,10 +6,10 @@ using System.IO;
 
 namespace Secyud.Ugf.Archiving
 {
-	public interface IArchivable
-	{
-		public void Save(BinaryWriter writer);
+    public interface IArchivable
+    {
+        public void Save(IArchiveWriter writer);
 
-		public void Load(BinaryReader reader);
-	}
+        public void Load(IArchiveReader reader);
+    }
 }

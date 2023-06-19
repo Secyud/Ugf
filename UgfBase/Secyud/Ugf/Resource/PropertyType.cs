@@ -1,20 +1,21 @@
 ﻿namespace Secyud.Ugf.Resource
 {
-    public enum PropertyType:byte
+    public enum PropertyType : byte
     {
-        InValid = 255,
-        Bool    = 0,
-        UInt8   = 1,
-        UInt16  = 2,
-        UInt32  = 3,
-        UInt64  = 4,
-        Int8    = 5,
-        Int16   = 6,
-        Int32   = 7,
-        Int64   = 8,
-        Single  = 9,
-        Double  = 10,
-        String  = 11,
-        Guid    = 12
+        Object = 0,
+        Bool = 1,
+        UInt8 = 2,
+        UInt16 = 3,
+        UInt32 = 4,
+        UInt64 = 5,
+        Int8 = 6,
+        Int16 = 7,
+        Int32 = 8,
+        Int64 = 9,
+        Single = 10,
+        Double = 11,
+        Decimal = 12,
+        String = 13,
+        Guid = 14
     }
 }

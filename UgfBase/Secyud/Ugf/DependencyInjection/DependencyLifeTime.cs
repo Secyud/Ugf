@@ -1,7 +1,9 @@
-namespace Secyud.Ugf.DependencyInjection
+﻿namespace Secyud.Ugf.DependencyInjection
 {
-	public enum DependencyLifeTime
-	{
-		Singleton, Scoped, Transient
-	}
+    public enum DependencyLifeTime
+    {
+        Singleton,
+        Scoped,
+        Transient
+    }
 }

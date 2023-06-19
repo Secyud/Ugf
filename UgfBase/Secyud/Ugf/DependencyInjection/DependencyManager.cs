@@ -1,58 +1,49 @@
 #region
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Secyud.Ugf.Resource;
 
 #endregion
 
 namespace Secyud.Ugf.DependencyInjection
 {
-    [ExposeType(
+    [Registry(
         typeof(IDependencyProvider),
-        typeof(IDependencyRegistrar),
-        typeof(IDependencyScopeFactory)
+        typeof(IDependencyRegistrar)
     )]
     public class DependencyManager :
         DependencyProviderBase,
-        IDependencyManager,
-        ISingleton
+        IDependencyManager
     {
-        private readonly ClassManager _classManager = new();
-        private readonly Dictionary<Type, ScopeDescriptor> _scopes = new();
+        private readonly IDependencyCollection _dependencyDescriptors;
+        private readonly ConcurrentDictionary<Type, DependencyScopeProvider> _scopes = new();
+        private readonly List<ITypeAnalyzer> _analyzers = new();
 
         internal DependencyManager(IDependencyCollection dependencyCollection = null)
-            : base(
-                dependencyCollection ?? new DependencyCollection(),
-                new Dictionary<Type, object>()
-            )
         {
-            Instances[GetType()] = this;
-            AddSingleton(_classManager);
+            _dependencyDescriptors = dependencyCollection ?? new DependencyCollection();
+            AddType<DependencyManager>();
+            RegisterInstance(this);
         }
 
-        public override object Get(Type type)
+        public override DependencyDescriptor GetDependencyDescriptor(Type exposedType)
         {
-            DependencyDescriptor descriptor = GetDescriptor(type);
-            return descriptor?.InstanceAccessor();
+            return _dependencyDescriptors[exposedType];
         }
 
         public void AddAssembly(Assembly assembly)
         {
             AddTypes(
-                assembly.GetTypes()
-                    .Where(
-                        type =>
-                            type is
-                            {
-                                IsClass: true,
-                                IsAbstract: false,
-                                IsGenericType: false
-                            }
-                    ).ToArray()
-            );
+                assembly.GetTypes().Where(type =>
+                    type is
+                    {
+                        IsClass: true,
+                        IsAbstract: false,
+                        IsGenericType: false
+                    }).ToArray());
         }
 
         public void AddTypes(params Type[] types)
@@ -61,166 +52,165 @@ namespace Secyud.Ugf.DependencyInjection
                 AddType(type);
         }
 
-        public void AddType(Type type)
-        {
-            _classManager.TryAddType(type);
-
-            if (IsConventionalRegistrationDisabled(type))
-                return;
-
-            DependencyLifeTime? lifeTime = type.GetLifeTimeOrNull();
-
-            if (lifeTime == null)
-                return;
-
-            List<Type> exposedServiceTypes = ExposedServiceExplorer.GetExposedServices(type);
-
-            foreach (Type exposedServiceType in exposedServiceTypes)
-                CreateDependencyDescriptor(
-                    type,
-                    exposedServiceType,
-                    lifeTime.Value
-                );
-        }
-
         public void AddType<T>()
         {
             AddType(typeof(T));
         }
 
-        public void AddSingleton<TExposed>(TExposed instance)
+        public void AddType(Type type)
         {
-            AddSingleton(typeof(TExposed), instance);
-        }
+            if (IsRegistryDisabled(type))
+                return;
 
-        public void AddSingleton(Type type, object instance)
-        {
-            CreateDependencyDescriptor(
-                instance.GetType(),
-                type,
-                DependencyLifeTime.Singleton
-            );
-            Instances[instance.GetType()] = instance;
-        }
+            RegistryAttribute registryAttr = type.GetCustomAttribute<RegistryAttribute>();
 
-        public void AddSingleton<T, TExposed>()
-        {
-            CreateDependencyDescriptor(
-                typeof(T),
-                typeof(TExposed),
-                DependencyLifeTime.Singleton
-            );
-        }
+            foreach (ITypeAnalyzer analyzer in _analyzers)
+                analyzer.AnalyzeType(type);
 
-        public void AddScoped<T, TExposed>()
-        {
-            CreateDependencyDescriptor(
-                typeof(T),
-                typeof(TExposed),
-                DependencyLifeTime.Scoped
-            );
-        }
-
-        public void AddTransient<T, TExposed>()
-        {
-            CreateDependencyDescriptor(
-                typeof(T),
-                typeof(TExposed),
-                DependencyLifeTime.Transient
-            );
-        }
-
-        public void AddCustom<T, TExposed>(Func<object> instanceAccessor)
-        {
-            DependencyCollection[typeof(TExposed)]
-                = DependencyDescriptor.Describe(
-                    typeof(T),
-                    DependencyLifeTime.Singleton,
-                    instanceAccessor
+            if (registryAttr is null)
+                CreateDependencyDescriptor(
+                    type,
+                    type,
+                    RegistryAttribute.Transient
                 );
+            else
+            {
+                List<Type> exposedServiceTypes = ExposedServiceExplorer.GetExposedServices(type);
+
+                foreach (Type exposedServiceType in exposedServiceTypes)
+                    CreateDependencyDescriptor(
+                        type,
+                        exposedServiceType,
+                        registryAttr
+                    );
+            }
         }
 
-        private bool IsConventionalRegistrationDisabled(Type type)
-        {
-            return type.IsDefined(typeof(DisableRegistrationAttribute), true);
-        }
-
-        private void CreateDependencyDescriptor(
+        private DependencyDescriptor CreateDependencyDescriptor(
             Type implementationType,
             Type exposedType,
-            DependencyLifeTime lifeTime)
+            RegistryAttribute registryAttribute)
         {
-            if (lifeTime == DependencyLifeTime.Transient)
-                DependencyCollection[exposedType]
-                    = DependencyDescriptor.Describe(
-                        implementationType,
-                        lifeTime,
-                        () => CreateInstance(implementationType)
-                    );
-            else
-                DependencyCollection[exposedType]
-                    = DependencyDescriptor.Describe(
-                        implementationType,
-                        lifeTime,
-                        () => GetInstance(implementationType)
-                    );
+            if (!_dependencyDescriptors.TryGetValue(implementationType,
+                    out DependencyDescriptor descriptor))
+            {
+                if (exposedType == implementationType)
+                {
+                    descriptor = DependencyDescriptor.Describe(
+                        implementationType, this,
+                        new DependencyConstructor(implementationType), registryAttribute);
+                    _dependencyDescriptors[exposedType] = descriptor;
+                }
+                else
+                {
+                    descriptor = CreateDependencyDescriptor(
+                        implementationType, implementationType, registryAttribute);
+                }
+            }
+
+            _dependencyDescriptors[exposedType] = descriptor;
+            return descriptor;
         }
 
-        public TScope CreateScope<TScope>() where TScope :  DependencyScope
+        protected override void HandleScope(DependencyDescriptor dd, InstanceDescriptor id)
+        {
+            id.ObjectAccessor = () => _scopes[dd.RegistryAttribute.DependScope].Get(dd.ImplementationType);
+        }
+
+        public void RegisterInstance<TExposed>(TExposed instance)
+        {
+            RegisterInstance(typeof(TExposed), instance);
+        }
+
+        public void RegisterInstance(Type type, object instance)
+        {
+            DependencyDescriptor descriptor = CreateDependencyDescriptor(
+                instance.GetType(),
+                type,
+                RegistryAttribute.Default
+            );
+            descriptor.Instance = instance;
+        }
+
+        public void Register<T, TExposed>(DependencyLifeTime lifeTime = DependencyLifeTime.Singleton)
+        {
+            CreateDependencyDescriptor(
+                typeof(T), typeof(TExposed),
+                new RegistryAttribute { LifeTime = lifeTime });
+        }
+
+        public void RegisterCustom<T, TExposed>(IDependencyConstructor constructor,
+            DependencyLifeTime lifeTime = DependencyLifeTime.Singleton)
+        {
+            _dependencyDescriptors[typeof(TExposed)] = DependencyDescriptor.Describe(
+                typeof(T), this, constructor,
+                new RegistryAttribute { LifeTime = lifeTime });
+        }
+
+        public IDependencyProvider CreateScopeProvider()
+        {
+            return new DependencyScopeProvider()
+            {
+                ParentProvider = this
+            };
+        }
+
+        private bool IsRegistryDisabled(Type type)
+        {
+            return type.IsDefined(typeof(RegistryDisabledAttribute));
+        }
+
+        public TScope CreateScope<TScope>() where TScope : DependencyScopeProvider
         {
             return CreateScope(typeof(TScope)) as TScope;
         }
 
-        public DependencyScope CreateScope(Type scopeType)
+        public DependencyScopeProvider CreateScope(Type scopeType)
         {
-            if (!_scopes.TryGetValue(scopeType, out ScopeDescriptor scope))
+            if (!_scopes.TryGetValue(scopeType, out DependencyScopeProvider scope))
             {
-                DependScopeAttribute attr = scopeType.GetCustomAttribute<DependScopeAttribute>();
-                ScopeDescriptor pScope = null;
-                if (attr is not null)
-                    if (!_scopes.TryGetValue(attr.DependScope, out pScope))
+                DependencyDescriptor dd = GetDependencyDescriptor(scopeType);
+                DependencyScopeProvider pScope = null;
+                Type dependScope = dd.RegistryAttribute.DependScope;
+                if (dependScope is not null)
+                    if (!_scopes.TryGetValue(dependScope, out pScope))
                         throw new UgfException("Depend scope is not available!");
-                scope = new ScopeDescriptor(pScope);
-                pScope?.SubScopes.Add(scope);
-                _scopes[scopeType] = scope;
+
+                scope = Get(scopeType) as DependencyScopeProvider;
+
+                _scopes[scopeType] = scope ?? throw new UgfException($"Cannot get scope: {scopeType}");
+
+                if (pScope is null)
+                    scope.ParentProvider = this;
+                else
+                {
+                    scope.ParentProvider = pScope;
+                    pScope.SubProviders.Add(scope);
+                }
             }
 
-            DependencyProviderBase provider = this;
-            if (scope.ParentScope is not null)
-            {
-                if (scope.ParentScope.Scope is null)
-                    throw new UgfException("Depend scope is not available this time!");
-                provider = scope.ParentScope.Scope.Provider;
-            }
-
-            scope.Scope ??= provider.CreateInstance(scopeType) as DependencyScope;
-
-            return scope.Scope;
+            return scope;
         }
 
-        public void DestroyScope<TScope>() where TScope : DependencyScope
+        public void DestroyScope<TScope>() where TScope : DependencyScopeProvider
         {
-            if (!_scopes.TryGetValue(typeof(TScope), out ScopeDescriptor scopeDescriptor))
+            if (!_scopes.TryGetValue(typeof(TScope), out DependencyScopeProvider scopeDescriptor))
                 return;
             DestroyScope(scopeDescriptor);
         }
 
-        private void DestroyScope(ScopeDescriptor scopeDescriptor)
+        private void DestroyScope(DependencyScopeProvider scopeDescriptor)
         {
-            if (scopeDescriptor.Scope is null)
-                return;
-            scopeDescriptor.Scope?.Dispose();
-            scopeDescriptor.Scope = null;
-            foreach (ScopeDescriptor scope in scopeDescriptor.SubScopes)
+            scopeDescriptor.Dispose();
+            foreach (DependencyScopeProvider scope in scopeDescriptor.SubProviders)
                 DestroyScope(scope);
         }
 
-        public TScope GetScope<TScope>() where TScope : DependencyScope
+        public TScope GetScope<TScope>() where TScope : DependencyScopeProvider
         {
-            if (!_scopes.TryGetValue(typeof(TScope), out ScopeDescriptor scope) ||
-                scope.Scope is null)
+            if (!_scopes.TryGetValue(typeof(TScope), out DependencyScopeProvider scope))
                 throw new UgfException($"Cannot get scope {typeof(TScope)} this time. Please ensure it is exist.");
-            return scope.Scope as TScope;
+            return scope as TScope;
         }
     }
 }

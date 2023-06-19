@@ -1,22 +1,25 @@
 #region
 
 using Localization;
+using Secyud.Ugf.InputManaging;
+using Secyud.Ugf.Localization;
 using Secyud.Ugf.Modularity;
+using Secyud.Ugf.Resource;
 
 #endregion
 
 namespace Secyud.Ugf
 {
-	public class UgfCoreModule : IUgfModule, IPostConfigure
-	{
-		public void PostConfigureGame(ConfigurationContext context)
-		{
-			Og.Initialize(context.Manager);
-		}
+    public class UgfCoreModule : IUgfModule
+    {
+        public void ConfigureGame(ConfigurationContext context)
+        {
+            context.Manager.AddTypes(
+                typeof(DefaultLocalizerFactory),
+                typeof(InputService),
+                typeof(InitializeManager));
 
-		public void ConfigureGame(ConfigurationContext context)
-		{
-			context.AddResource<DefaultResource>();
-		}
-	}
+            context.AddResource<DefaultResource>();
+        }
+    }
 }

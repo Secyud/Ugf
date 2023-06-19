@@ -1,64 +1,64 @@
 #region
 
+using System;
+using Localization;
 using Secyud.Ugf.DependencyInjection;
-using Secyud.Ugf.InputManaging;
+using Secyud.Ugf.Localization;
 using UnityEngine;
 
 #endregion
 
 namespace Secyud.Ugf.Modularity
 {
-	public abstract class UgfApplicationFactory<TStartupModule> : MonoBehaviour
-		where TStartupModule : IUgfModule
+    public abstract class UgfApplicationFactory : MonoBehaviour
+    {
+        public static UgfApplicationFactory Instance { get; private set; }
 
-	{
-		private static UgfApplicationFactory<TStartupModule> _factory;
-		private InputService _inputService;
+        [SerializeField] private Camera MainCamera;
+        [SerializeField] private Canvas MainCanvas;
 
-		public IUgfApplication Application { get; private set; }
+        private IUpdateService _updateService;
+        protected abstract PlugInSourceList PlugInSourceList { get; }
+        protected abstract Type StartUpModule { get; }
 
-		protected abstract PlugInSourceList PlugInSourceList { get; }
+        public IUgfApplication Application { get; private set; }
+        public IStringLocalizer<DefaultResource> T { get; private set; }
+        public ISpriteLocalizer<DefaultResource> S { get; private set; }
+        public Camera Camera => MainCamera;
+        public Canvas Canvas => MainCanvas;
 
-		protected virtual void Awake()
-		{
-			Application = Create(PlugInSourceList);
-			_factory = this;
-			_inputService = Application.DependencyProvider.Get<InputService>();
-		}
+        protected virtual void Awake()
+        {
+            Application = Create(PlugInSourceList);
+            Instance = this;
+            _updateService = Application.DependencyManager.TryGet<IUpdateService>();
+            T = Application.DependencyManager.Get<IStringLocalizer<DefaultResource>>();
+            S = Application.DependencyManager.Get<ISpriteLocalizer<DefaultResource>>();
+        }
 
-		protected virtual void Update()
-		{
-			_inputService.Update();
-		}
+        protected virtual void Update()
+        {
+            _updateService?.Update();
+        }
 
+        public void GameInitialize()
+        {
+            StartCoroutine(Application.GameInitialization());
+        }
 
-		public static void GameCreate()
-		{
-			_factory.StartCoroutine(_factory.Application.GameCreate());
-		}
+        public void GameShutdown()
+        {
+            Application.Shutdown();
+        }
 
-		public static void GameLoad()
-		{
-			_factory.StartCoroutine(_factory.Application.GameLoad());
-		}
-
-		public static void GameSaving()
-		{
-			_factory.StartCoroutine(_factory.Application.GameSave());
-		}
-		public static void GameShutdown()
-		{
-			_factory.StartCoroutine(_factory.Application.Shutdown());
-		}
-
-		private IUgfApplication Create(
-			PlugInSourceList plugInSources = null)
-		{
-			IUgfApplication app = new UgfApplication(
-				new DependencyManager(), typeof(TStartupModule), plugInSources
-			);
-			app.Configure();
-			return app;
-		}
-	}
+        private IUgfApplication Create(
+            PlugInSourceList plugInSources = null)
+        {
+            IUgfApplication app = new UgfApplication(
+                new DependencyManager(), StartUpModule, plugInSources
+            );
+            app.Configure();
+            return app;
+        }
+    }
 }

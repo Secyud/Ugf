@@ -5,55 +5,56 @@ using Secyud.Ugf.DependencyInjection;
 using Secyud.Ugf.Localization;
 using Secyud.Ugf.Option;
 using System;
-using System.Collections.Generic;
 
 #endregion
 
 namespace Secyud.Ugf.Modularity
 {
-	public class ConfigurationContext
-	{
-		public ConfigurationContext(IDependencyManager manager)
-		{
-			Thrower.IfNull(manager);
-			Manager = manager;
-			Items = new Dictionary<string, object>();
-		}
+    public class ConfigurationContext : ModuleContextBase
+    {
+        public IDependencyManager Manager { get; }
+        public override IDependencyProvider Provider => Manager;
 
-		public IDependencyManager Manager { get; }
+        private ILocalizerFactory LocalizerFactory =>
+            _localizerFactory ??= Manager.Get<ILocalizerFactory>();
 
-		private ILocalizerFactory LocalizerFactory => Manager.Get<ILocalizerFactory>();
+        private ILocalizerFactory _localizerFactory;
 
-		private IDictionary<string, object> Items { get; }
+        public ConfigurationContext(IDependencyManager manager)
+        {
+            Thrower.IfNull(manager);
+            Manager = manager;
+        }
 
-		public object this[string key]
-		{
-			get => Items.GetOrDefault(key);
-			set => Items[key] = value;
-		}
+        public void AddResource<TResource>()
+            where TResource : DefaultResource
+        {
+            LocalizerFactory.RegisterResource<TResource>();
+        }
 
-		public T Get<T>() where T : class
-		{
-			return Manager.Get<T>();
-		}
+        private class OptionConstructor<TOption> : IDependencyConstructor where TOption : new()
+        {
+            private readonly Action<TOption> _option;
 
-		public void AddResource<TResource>()
-			where TResource : DefaultResource
-		{
-			LocalizerFactory.RegisterResource<TResource>();
-		}
+            public OptionConstructor(Action<TOption> option)
+            {
+                _option = option;
+            }
 
-		public void Configure<TOption>(Action<TOption> option)
-			where TOption : new()
-		{
-			Manager.AddCustom<Option<TOption>, IOption<TOption>>(
-				() =>
-				{
-					Option<TOption> config = new Option<TOption>(new TOption());
-					option(config.Value);
-					return config;
-				}
-			);
-		}
-	}
+            public object Construct(IDependencyProvider provider)
+            {
+                Option<TOption> config = new(new TOption());
+                _option(config.Value);
+                return config;
+            }
+        }
+
+        public void Configure<TOption>(Action<TOption> option)
+            where TOption : new()
+        {
+            Manager.RegisterCustom<Option<TOption>, IOption<TOption>>(
+                new OptionConstructor<TOption>(option)
+            );
+        }
+    }
 }

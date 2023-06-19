@@ -8,24 +8,17 @@ using System.Linq;
 
 namespace Secyud.Ugf.DependencyInjection
 {
-	public static class ExposedServiceExplorer
-	{
-		private static readonly ExposeTypeAttribute DefaultExposeTypeAttribute =
-			new()
-			{
-				IncludeDefaults = true,
-				IncludeSelf = true
-			};
-
-		public static List<Type> GetExposedServices(Type type)
-		{
-			return type
-				.GetCustomAttributes(true)
-				.OfType<IExposedTypesProvider>()
-				.DefaultIfEmpty(DefaultExposeTypeAttribute)
-				.SelectMany(p => p.GetExposedServiceTypes(type))
-				.Distinct()
-				.ToList();
-		}
-	}
+    public static class ExposedServiceExplorer
+    {
+        public static List<Type> GetExposedServices(Type type)
+        {
+            return type
+                .GetCustomAttributes(true)
+                .OfType<RegistryAttribute>()
+                .DefaultIfEmpty(RegistryAttribute.Default)
+                .SelectMany(p => p.GetExposedServiceTypes(type))
+                .Distinct()
+                .ToList();
+        }
+    }
 }

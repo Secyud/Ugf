@@ -1,10 +1,6 @@
 #region
 
-using Secyud.Ugf.Archiving;
 using Secyud.Ugf.DependencyInjection;
-using Secyud.Ugf.InputManaging;
-using Secyud.Ugf.Localization;
-using Secyud.Ugf.Resource;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -15,221 +11,128 @@ using UnityEditor;
 
 namespace Secyud.Ugf.Modularity
 {
-	public class UgfApplication : IUgfApplication
-	{
-		private readonly IDependencyManager _dependencyManager;
+    [Registry(
+        typeof(IModuleContainer),
+        typeof(IModuleLoader)
+    )]
+    public class UgfApplication : IUgfApplication
+    {
+        private readonly Type _startupModuleType;
+        private bool _configuredServices;
 
-		private bool _configuredServices;
+        public int TotalStep { get; private set; }
+        public int CurrentStep { get; set; }
 
-		internal UgfApplication(
-			IDependencyManager dependencyManager,
-			Type startupModuleType,
-			PlugInSourceList plugInSources = null)
-		{
-			Thrower.IfNull(dependencyManager);
-			Thrower.IfNull(startupModuleType);
+        public IDependencyManager DependencyManager { get; }
+        public IReadOnlyList<IUgfModuleDescriptor> Modules { get; }
 
-			StartupModuleType = startupModuleType;
+        internal UgfApplication(
+            IDependencyManager dependencyManager,
+            Type startupModuleType,
+            PlugInSourceList plugInSources = null)
+        {
+            Thrower.IfNull(dependencyManager);
+            Thrower.IfNull(startupModuleType);
 
-			_dependencyManager = dependencyManager;
-			_dependencyManager.AddSingleton<IUgfApplication>(this);
-			_dependencyManager.AddSingleton<IModuleContainer>(this);
-			_dependencyManager.AddSingleton<IModuleLoader>(new ModuleLoader());
-			_dependencyManager.AddTypes(
-				typeof(DependencyManager),
-				typeof(LoadingService),
-				typeof(IArchivingContext),
-				typeof(DefaultLocalizerFactory),
-				typeof(InputService),
-				typeof(InitializeManager)
-			);
+            _startupModuleType = startupModuleType;
 
-			Modules = LoadModules(_dependencyManager, plugInSources);
-		}
+            DependencyManager = dependencyManager;
+            DependencyManager.AddTypes(
+                typeof(UgfApplication),
+                typeof(ModuleLoader)
+            );
+            DependencyManager.RegisterInstance<IUgfApplication>(this);
 
-		public Type StartupModuleType { get; }
+            Modules = LoadModules(DependencyManager, plugInSources);
+        }
 
-		public IDependencyProvider DependencyProvider => _dependencyManager;
+        public void Configure()
+        {
+            CheckMultipleConfigureServices();
 
-		public IReadOnlyList<IUgfModuleDescriptor> Modules { get; }
+            ConfigurationContext context = new(DependencyManager);
 
-		public IDependencyScope CreateDependencyScope()
-		{
-			return new DependencyScope(_dependencyManager);
-		}
+            List<IPreConfigure> onPre = new();
+            List<IPostConfigure> onPost = new();
 
-		public void Configure()
-		{
-			CheckMultipleConfigureServices();
-
-			ConfigurationContext context = new(_dependencyManager);
-
-			foreach (IUgfModuleDescriptor m in Modules)
-				if (m.Instance is IPreConfigure module)
-					module.PreConfigureGame(context);
-
-			foreach (IUgfModuleDescriptor module in Modules)
-				module.Instance.ConfigureGame(context);
-
-			foreach (IUgfModuleDescriptor m in Modules)
-				if (m.Instance is IPostConfigure module)
-					module.PostConfigureGame(context);
-
-			_configuredServices = true;
-		}
-
-		public IEnumerator GameCreate()
-		{
-			using IDependencyScope scope = CreateDependencyScope();
-
-			LoadingService loading = Og.LoadingService;
-
-			loading.MaxValue = Modules.Count * 3;
-
-			foreach (IUgfModuleDescriptor m in Modules)
-			{
-				loading.Value++;
-				yield return null;
-
-				if (m.Instance is IOnPreInitialization module)
-					module.OnGamePreInitialization();
-			}
-
-			foreach (IUgfModuleDescriptor m in Modules)
-			{
-				loading.Value++;
-				yield return null;
-
-				if (m.Instance is IOnGameArchiving module)
-					module.OnGameCreation();
-			}
-
-			foreach (IUgfModuleDescriptor m in Modules)
-			{
-				loading.Value++;
-				yield return null;
-
-				if (m.Instance is IOnPostInitialization module)
-					module.OnGamePostInitialization();
-			}
-
-			loading.Value = loading.MaxValue;
-		}
-
-		public IEnumerator GameLoad()
-		{
-			using IDependencyScope scope = CreateDependencyScope();
-
-			using LoadingContext loadingContext = new(scope.DependencyProvider);
-
-			LoadingService loading = Og.LoadingService;
-
-			loading.MaxValue = Modules.Count * 3;
-
-			foreach (IUgfModuleDescriptor m in Modules)
-			{
-				loading.Value++;
-				yield return null;
-
-				if (m.Instance is IOnPreInitialization module)
-					module.OnGamePreInitialization();
-			}
-
-			foreach (IUgfModuleDescriptor m in Modules)
-			{
-				loading.Value++;
-				yield return null;
-
-				if (m.Instance is IOnGameArchiving module)
-					module.OnGameLoading(loadingContext);
-			}
-
-			foreach (IUgfModuleDescriptor m in Modules)
-			{
-				loading.Value++;
-				yield return null;
-
-				if (m.Instance is IOnPostInitialization module)
-					module.OnGamePostInitialization();
-			}
-
-			loading.Value = loading.MaxValue;
-		}
-
-		public IEnumerator GameSave()
-		{
-			using IDependencyScope scope = CreateDependencyScope();
-
-			using SavingContext context = new(scope.DependencyProvider);
-
-			ISlot slot = scope.DependencyProvider.Get<IArchivingContext>().CurrentSlot;
-
-			string path = Og.ArchivingPath;
-
-			string inPath = Path.Combine(path, slot.Id.ToString());
-			if (Directory.Exists(inPath))
-			{
-				string outPath = inPath + "_backup";
-				if (Directory.Exists(outPath))
-					Directory.Delete(outPath,true);
-				FileUtil.CopyFileOrDirectory(inPath, outPath);
-			}
-			slot.PrepareSlotSaving(context);
-
-			LoadingService loading = Og.LoadingService;
-
-			loading.MaxValue = Modules.Count;
-
-			foreach (IUgfModuleDescriptor m in Modules)
-			{
-				loading.Value++;
-				yield return null;
-
-				if (m.Instance is IOnGameArchiving module)
-					module.OnGameSaving(context);
-			}
-
-			loading.Value = loading.MaxValue;
-		}
-
-		public IEnumerator Shutdown()
-		{
-			using IDependencyScope scope = CreateDependencyScope();
-
-			LoadingService loading = Og.LoadingService;
-
-			loading.MaxValue = Modules.Count;
-
-			for (int i = Modules.Count - 1; i >= 0; i--)
-			{
-				loading.Value++;
-				yield return null;
-
-				if (Modules[i].Instance is IOnGameShutdown module)
-					module.OnGameShutdown();
-			}
-
-			loading.Value = loading.MaxValue;
-		}
+            foreach (IUgfModuleDescriptor descriptor in Modules)
+            {
+                if (descriptor.Instance is IPreConfigure preInitialization)
+                    onPre.AddLast(preInitialization);
+                if (descriptor.Instance is IPostConfigure postInitialization)
+                    onPost.AddLast(postInitialization);
+            }
 
 
-		private IReadOnlyList<IUgfModuleDescriptor> LoadModules(
-			IDependencyManager manager,
-			PlugInSourceList plugInSources)
-		{
-			return manager
-				.Get<IModuleLoader>()
-				.LoadModules(
-					manager,
-					StartupModuleType,
-					plugInSources
-				);
-		}
+            foreach (IPreConfigure module in onPre)
+                module.PreConfigureGame(context);
 
-		private void CheckMultipleConfigureServices()
-		{
-			if (_configuredServices)
-				throw new UgfInitializationException("Services have already been configured!");
-		}
-	}
+            foreach (IUgfModuleDescriptor module in Modules)
+                module.Instance.ConfigureGame(context);
+
+            foreach (IPostConfigure module in onPost)
+                module.PostConfigureGame(context);
+
+            _configuredServices = true;
+        }
+
+        public IEnumerator GameInitialization()
+        {
+            using GameInitializeContext context = new(DependencyManager.CreateScopeProvider());
+
+            List<IOnPreInitialization> onPreInitializations = new();
+            List<IOnInitialization> onInitializations = new();
+            List<IOnPostInitialization> onPostInitializations = new();
+
+            foreach (IUgfModuleDescriptor descriptor in Modules)
+            {
+                if (descriptor.Instance is IOnPreInitialization preInitialization)
+                    onPreInitializations.AddLast(preInitialization);
+                if (descriptor.Instance is IOnInitialization initialization)
+                    onInitializations.AddLast(initialization);
+                if (descriptor.Instance is IOnPostInitialization postInitialization)
+                    onPostInitializations.AddLast(postInitialization);
+            }
+
+            foreach (IOnPreInitialization module in onPreInitializations)
+                yield return module.OnGamePreInitialization(context);
+
+            foreach (IOnInitialization module in onInitializations)
+                yield return module.OnGameInitializing(context);
+
+            foreach (IOnPostInitialization module in onPostInitializations)
+                yield return module.OnGamePostInitialization(context);
+        }
+
+        public void Shutdown()
+        {
+            using GameShutDownContext context = new(DependencyManager.CreateScopeProvider());
+
+            for (int i = Modules.Count - 1; i >= 0; i--)
+            {
+                if (Modules[i].Instance is IOnShutDown module)
+                    module.OnGameShutDown(context);
+            }
+        }
+
+
+        private IReadOnlyList<IUgfModuleDescriptor> LoadModules(
+            IDependencyManager manager,
+            PlugInSourceList plugInSources)
+        {
+            return manager
+                .Get<IModuleLoader>()
+                .LoadModules(
+                    manager,
+                    _startupModuleType,
+                    plugInSources
+                );
+        }
+
+        private void CheckMultipleConfigureServices()
+        {
+            if (_configuredServices)
+                throw new UgfInitializationException("Services have already been configured!");
+        }
+    }
 }

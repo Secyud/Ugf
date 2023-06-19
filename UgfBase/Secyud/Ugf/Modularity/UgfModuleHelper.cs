@@ -9,39 +9,39 @@ using System.Reflection;
 
 namespace Secyud.Ugf.Modularity
 {
-	internal static class UgfModuleHelper
-	{
-		public static List<Type> FindAllModuleTypes(Type startupModuleType)
-		{
-			List<Type> moduleTypes = new List<Type>();
-			AddModuleAndDependenciesRecursively(moduleTypes, startupModuleType);
-			return moduleTypes;
-		}
+    internal static class UgfModuleHelper
+    {
+        public static List<Type> FindAllModuleTypes(Type startupModuleType)
+        {
+            List<Type> moduleTypes = new List<Type>();
+            AddModuleAndDependenciesRecursively(moduleTypes, startupModuleType);
+            return moduleTypes;
+        }
 
-		private static void AddModuleAndDependenciesRecursively(
-			ICollection<Type> moduleTypes,
-			Type moduleType)
-		{
-			UgfExtensions.CheckUgfModuleType(moduleType);
+        private static void AddModuleAndDependenciesRecursively(
+            ICollection<Type> moduleTypes,
+            Type moduleType)
+        {
+            UgfExtensions.CheckUgfModuleType(moduleType);
 
-			if (moduleTypes.Contains(moduleType)) return;
+            if (moduleTypes.Contains(moduleType)) return;
 
-			moduleTypes.Add(moduleType);
+            moduleTypes.Add(moduleType);
 
-			foreach (Type dependedModuleType in FindDependedModuleTypes(moduleType))
-				AddModuleAndDependenciesRecursively(moduleTypes, dependedModuleType);
-		}
+            foreach (Type dependedModuleType in FindDependedModuleTypes(moduleType))
+                AddModuleAndDependenciesRecursively(moduleTypes, dependedModuleType);
+        }
 
-		public static List<Type> FindDependedModuleTypes(Type moduleType)
-		{
-			UgfExtensions.CheckUgfModuleType(moduleType);
+        public static List<Type> FindDependedModuleTypes(Type moduleType)
+        {
+            UgfExtensions.CheckUgfModuleType(moduleType);
 
-			DependsOnAttribute depends =
-				moduleType.GetCustomAttribute<DependsOnAttribute>() ?? new DependsOnAttribute();
+            DependsOnAttribute depends =
+                moduleType.GetCustomAttribute<DependsOnAttribute>() ?? new DependsOnAttribute();
 
-			List<Type> dependencies = depends.DependedTypes.Distinct().ToList();
+            List<Type> dependencies = depends.DependedTypes.Distinct().ToList();
 
-			return dependencies;
-		}
-	}
+            return dependencies;
+        }
+    }
 }

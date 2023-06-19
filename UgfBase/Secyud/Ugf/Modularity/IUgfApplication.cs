@@ -8,22 +8,18 @@ using System.Collections;
 
 namespace Secyud.Ugf.Modularity
 {
-	public interface IUgfApplication : IModuleContainer
-	{
-		Type StartupModuleType { get; }
+    public interface IUgfApplication : IModuleContainer
+    {
+        IDependencyManager DependencyManager { get; }
 
-		IDependencyProvider DependencyProvider { get; }
+        int TotalStep { get; }
 
-		IDependencyScope CreateDependencyScope();
+        int CurrentStep { get; set; }
 
-		void Configure();
+        void Configure();
 
-		IEnumerator GameCreate();
+        IEnumerator GameInitialization();
 
-		IEnumerator GameLoad();
-
-		IEnumerator GameSave();
-
-		IEnumerator Shutdown();
-	}
+        void Shutdown();
+    }
 }

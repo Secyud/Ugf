@@ -7,23 +7,23 @@ using System.Linq;
 
 namespace Secyud.Ugf.Collections
 {
-	public class RegistrableList<TItem>
-	{
-		private readonly List<TItem> _items = new();
+    public class RegistrableList<TItem>
+    {
+        private readonly List<TItem> _items = new();
 
-		public void Register(TItem item)
-		{
-			_items.Add(item);
-		}
+        public void Register(TItem item)
+        {
+            _items.Add(item);
+        }
 
-		public void RegisterList(params TItem[] items)
-		{
-			foreach (TItem item in items) Register(item);
-		}
+        public void RegisterList(params TItem[] items)
+        {
+            foreach (TItem item in items) Register(item);
+        }
 
-		public List<TItem> Get()
-		{
-			return _items.ToList();
-		}
-	}
+        public List<TItem> Get()
+        {
+            return _items.ToList();
+        }
+    }
 }
