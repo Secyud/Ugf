@@ -1,8 +1,4 @@
-/*
-!/UgfBase
-!/Ugf.Unity
-!/Ugf.HexMap
-!/Ugf.Animation
+/Outer
 bin
 obj
-*.csproj
+.idea

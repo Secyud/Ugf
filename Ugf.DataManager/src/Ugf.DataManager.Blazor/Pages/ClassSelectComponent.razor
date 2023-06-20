@@ -1,0 +1,95 @@
+﻿@using Ugf.DataManager.ClassManagement
+@inherits InfinityWorldChessDataComponentBase
+@inject IClassContainerAppService ClassAppService
+@inject IStringContainerAppService StringContainerAppService
+
+<Modal @ref="Modal" Closing="@CloseModal">
+    <ModalContent Centered="true" Size="ModalSize.Large">
+        <Form>
+            <ModalHeader>
+                <ModalTitle>@L["SelectClass"]</ModalTitle>
+                <CloseButton Clicked="CloseModalAsync"/>
+            </ModalHeader>
+            <ModalBody>
+                <Fields>
+                    <Autocomplete TItem="StringContainerDto" TValue="string"
+                                  Data="@NameSpaces"
+                                  TextField="@(item => item.FixedString)"
+                                  ValueField="@(item => item.FixedString)"
+                                  @bind-SelectedValue="@GetListInput.Namespace"
+                                  Filter="AutocompleteFilter.StartsWith"
+                                  Placeholder="@L["Namespace"]">
+                        <NotFoundContent> Sorry... @context was not found! :( </NotFoundContent>
+                    </Autocomplete>
+                    <Field ColumnSize="ColumnSize.Is5.OnDesktop">
+                        <TextEdit @bind-Text="@GetListInput.Name" Placeholder="@L["Name"]"/>
+                    </Field>
+                    <Field ColumnSize="ColumnSize.Is7.OnDesktop">
+                        <Addons>
+                            <Addon AddonType="AddonType.Body">
+                                <TextEdit @bind-Text="@GetListInput.Assembly" Placeholder="@L["Assembly"]"/>
+                            </Addon>
+                            <Addon AddonType="AddonType.End">
+                                <Button Clicked="GetEntitiesAsync" Color="Color.Secondary">@L["Search"]</Button>
+                            </Addon>
+                        </Addons>
+                    </Field>
+                </Fields>
+                <DataGrid TItem="ClassContainerDto"
+                          Data="@Entities"
+                          ReadData="@OnDataGridReadAsync"
+                          TotalItems="@TotalCount"
+                          ShowPager="true"
+                          CurrentPage="@CurrentPage"
+                          PageSize="@PageSize"
+                          Striped>
+                    <LoadingTemplate>
+                        <Row Class="w-100 align-items-center" Style="height: 150px;">
+                            <Column>
+                                <RadarSpinner/>
+                            </Column>
+                        </Row>
+                    </LoadingTemplate>
+                    <EmptyTemplate>
+                        <Row Class="w-100 align-items-center" Style="height: 150px;">
+                            <Column>
+                                <Heading Size="HeadingSize.Is4" Alignment="TextAlignment.Center">No data available</Heading>
+                            </Column>
+                        </Row>
+                    </EmptyTemplate>
+                    <DataGridColumns>
+                        <DataGridColumn TItem="ClassContainerDto" Field="@nameof(ClassContainerDto.Name)"
+                                        Caption="@L["*"]" Sortable="false">
+                            <DisplayTemplate>
+                                <Check TValue="bool" Checked="@(Value == context)"
+                                       CheckedChanged="b => ChangeValue(b ? context : null)"/>
+                            </DisplayTemplate>
+                        </DataGridColumn>
+                        <DataGridColumn TItem="ClassContainerDto" Field="@nameof(ClassContainerDto.Name)"
+                                        Caption="@L["Name"]" Sortable="true">
+                            <DisplayTemplate>
+                                @context.Name
+                            </DisplayTemplate>
+                        </DataGridColumn>
+                        <DataGridColumn TItem="ClassContainerDto" Field="@nameof(ClassContainerDto.Description)"
+                                        Caption="@L["Description"]" Sortable="false">
+                            <DisplayTemplate>
+                                @context.Description
+                            </DisplayTemplate>
+                        </DataGridColumn>
+                        <DataGridColumn TItem="ClassContainerDto" Field="@nameof(ClassContainerDto.Namespace)"
+                                        Caption="@L["Namespace"]" Sortable="true">
+                            <DisplayTemplate>
+                                @context.Namespace
+                            </DisplayTemplate>
+                        </DataGridColumn>
+                    </DataGridColumns>
+                </DataGrid>
+            </ModalBody>
+            <ModalFooter>
+                <Button Color="Color.Secondary" Clicked="CloseModalAsync">@L["Cancel"]</Button>
+                <SubmitButton Clicked="@UpdateAsync"/>
+            </ModalFooter>
+        </Form>
+    </ModalContent>
+</Modal>

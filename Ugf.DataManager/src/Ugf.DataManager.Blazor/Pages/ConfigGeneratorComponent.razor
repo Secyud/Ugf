@@ -1,0 +1,50 @@
+@using Ugf.DataManager.ClassManagement
+@inherits InfinityWorldChessDataComponentBase
+@inject IClassContainerAppService ClassAppService
+
+<Modal @ref="Modal" Closing="@CloseModal">
+    <ModalContent Centered="true" Size="ModalSize.Large">
+        <Form>
+            <ModalHeader>
+                <ModalTitle>@L["SelectClass"]</ModalTitle>
+                <CloseButton Clicked="CloseModalAsync"/>
+            </ModalHeader>
+            <ModalBody>
+                <Fields>
+                    <Field>
+                        <FieldLabel>
+                            @L["DisplayName:Parent"]
+                        </FieldLabel>
+                        <Addons>
+                            <Addon AddonType="AddonType.Body">
+                                <TextEdit Text="@ClassContainer?.Name"
+                                          TextColor="TextColor.Info" Readonly/>
+                            </Addon>
+                            <Addon AddonType="AddonType.End">
+                                <Button Clicked="() => ClassSelect.OpenModalAsync()"
+                                        Size="Size.Small" Color="Color.Secondary">
+                                    @L["SelectClass"]
+                                </Button>
+                            </Addon>
+                        </Addons>
+                    </Field>
+                    <Field>
+                        <FieldLabel>@L["DisplayName:Bundle"]</FieldLabel>
+                        <SelectList TItem="string"
+                                    TValue="string"
+                                    Data="@Bundles.BundleNames"
+                                    TextField="@(item => item)"
+                                    ValueField="@(item => item)"
+                                    @bind-SelectedValue="@BundleName"/>
+                    </Field>
+                </Fields>
+            </ModalBody>
+            <ModalFooter>
+                <Button Color="Color.Secondary" Clicked="CloseModalAsync">@L["Cancel"]</Button>
+                <SubmitButton Clicked="@GenerateConfig"/>
+            </ModalFooter>
+        </Form>
+    </ModalContent>
+</Modal>
+
+<ClassSelectComponent @ref="ClassSelect" OnSelect="SetClass"/>
