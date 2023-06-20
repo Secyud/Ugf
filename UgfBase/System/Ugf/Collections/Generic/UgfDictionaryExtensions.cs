@@ -1,10 +1,11 @@
 #region
 
+using System.Collections.Generic;
 using System.Dynamic;
 
 #endregion
 
-namespace System.Collections.Generic
+namespace System.Ugf.Collections.Generic
 {
     public static class UgfDictionaryExtensions
     {

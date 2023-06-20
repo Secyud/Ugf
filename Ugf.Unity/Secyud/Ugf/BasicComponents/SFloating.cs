@@ -19,7 +19,7 @@ namespace Secyud.Ugf.BasicComponents
 
 		public SFloating Create(Vector2 position, Vector2 bias)
 		{
-			SFloating floating = Instantiate(this, Og.Canvas.transform);
+			SFloating floating = Instantiate(this, U.Canvas.transform);
 			floating.OnInitialize(position, bias);
 			return floating;
 		}

@@ -1,10 +1,10 @@
 #region
 
 using Localization;
+using Secyud.Ugf.DataManager;
 using Secyud.Ugf.InputManaging;
 using Secyud.Ugf.Localization;
 using Secyud.Ugf.Modularity;
-using Secyud.Ugf.Resource;
 
 #endregion
 

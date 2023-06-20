@@ -2,6 +2,7 @@
 
 using JetBrains.Annotations;
 using System;
+using System.Ugf;
 using UnityEngine;
 
 #endregion
@@ -27,40 +28,37 @@ namespace Secyud.Ugf.AssetLoading
 		{
 		}
 
-		protected SpriteContainer(
-			[NotNull] IAssetLoader loader,
-			[NotNull] string assetName)
-			: base(loader, assetName)
-		{
-		}
-
 		public static SpriteContainer Create(
-			[NotNull] IAssetLoader container,
-			[CanBeNull]string assetName,
+			IAssetLoader loader,
+			string spriteName,
 			SpritePrefix prefix = SpritePrefix.Icons,
 			SpriteSuffix suffix = SpriteSuffix.png)
 		{
-			return assetName.IsNullOrEmpty() ? null : new SpriteContainer(
-				container, $"Images/{prefix}/{assetName}.{suffix}"
-			);
+			return spriteName.IsNullOrEmpty()
+				? null
+				: new SpriteContainer
+				{
+					Loader = loader,
+					AssetName = $"Images/{prefix}/{spriteName}.{suffix}"
+				};
 		}
 
 		public static SpriteContainer Create(
 			[NotNull] Type type,
-			[NotNull] string assetName,
-			SpritePrefix prefix = SpritePrefix.Icons,
-			SpriteSuffix suffix = SpriteSuffix.png)
-		{
-			return Create(Og.GetAssetLoader(type), assetName, prefix, suffix);
-		}
-
-		public static SpriteContainer Create<TAbBase>(
 			[NotNull] string spriteName,
 			SpritePrefix prefix = SpritePrefix.Icons,
 			SpriteSuffix suffix = SpriteSuffix.png)
-			where TAbBase : IAssetLoader
 		{
-			return Create(typeof(TAbBase), spriteName, prefix, suffix);
+			return Create(U.Get(type) as IAssetLoader, spriteName, prefix, suffix);
+		}
+
+		public static SpriteContainer Create<TAssetLoader>(
+			[NotNull] string spriteName,
+			SpritePrefix prefix = SpritePrefix.Icons,
+			SpriteSuffix suffix = SpriteSuffix.png)
+			where TAssetLoader : class, IAssetLoader
+		{
+			return Create(U.Get<TAssetLoader>(), spriteName, prefix, suffix);
 		}
 	}
 }

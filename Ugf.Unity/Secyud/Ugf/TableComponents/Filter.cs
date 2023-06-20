@@ -42,7 +42,7 @@ namespace Secyud.Ugf.TableComponents
 			_filterGroup = filterGroup;
 			Toggle.SetIsOnWithoutNotify(canBeEnabled.GetEnabled());
 			Toggle.Bind(canBeEnabled.SetEnabled);
-			Name.text = Og.L[canBeEnabled.ShowName];
+			Name.text = U.T[canBeEnabled.ShowName];
 		}
 
 		public Filter Create(Transform parent, FilterGroup filterGroup, ICanBeEnabled canBeEnabled)

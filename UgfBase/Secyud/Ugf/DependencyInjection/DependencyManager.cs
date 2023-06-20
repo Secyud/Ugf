@@ -5,6 +5,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Ugf.Collections.Generic;
 
 #endregion
 
@@ -27,6 +28,7 @@ namespace Secyud.Ugf.DependencyInjection
             _dependencyDescriptors = dependencyCollection ?? new DependencyCollection();
             AddType<DependencyManager>();
             RegisterInstance(this);
+            _analyzers.Add(new DefaultTypeAnalyser());
         }
 
         public override DependencyDescriptor GetDependencyDescriptor(Type exposedType)
@@ -153,6 +155,11 @@ namespace Secyud.Ugf.DependencyInjection
             {
                 ParentProvider = this
             };
+        }
+
+        public void AddAnalyser(ITypeAnalyzer analyzer)
+        {
+            _analyzers.AddIfNotContains(analyzer);
         }
 
         private bool IsRegistryDisabled(Type type)

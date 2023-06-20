@@ -14,28 +14,31 @@ namespace Secyud.Ugf.AssetLoading
 		protected PrefabContainer()
 		{
 		}
-
-		protected PrefabContainer(
-			[NotNull] IAssetLoader loader,
-			[CanBeNull] string assetName = null)
-			: base(loader, assetName ?? Og.TypeToPath<TComponent>()+".prefab")
+		
+		public new static PrefabContainer<TComponent> Create(
+			IAssetLoader loader,
+			string prefabName = null)
 		{
+			return new PrefabContainer<TComponent>
+			{
+				Loader = loader,
+				AssetName = prefabName ?? U.TypeToPath<TComponent>() + ".prefab"
+			};
 		}
 
 		public new static PrefabContainer<TComponent> Create(
-			[NotNull] IAssetLoader container,
-			[CanBeNull] string assetName = null)
+			Type loaderType,
+			string prefabName = null)
 		{
-			return new PrefabContainer<TComponent>(container, assetName);
+			return Create(U.Get(loaderType) as IAssetLoader, prefabName);
 		}
 
-		public new static PrefabContainer<TComponent> Create(
-			[NotNull] Type loaderType, 
-			[CanBeNull] string assetName = null)
+		public new static PrefabContainer<TComponent> Create<TAssetLoader>(string prefabName = null)
+			where TAssetLoader : class, IAssetLoader
 		{
-			return Create(Og.GetAssetLoader(loaderType), assetName);
+			return Create(U.Get<TAssetLoader>(), prefabName);
 		}
-
+		
 		protected override TComponent GetObject()
 		{
 			GameObject obj = Loader.LoadAsset<GameObject>(AssetName);

@@ -7,7 +7,8 @@ using System.Collections.Generic;
 
 namespace Secyud.Ugf.TableComponents
 {
-	public abstract class TableFunctionBase<TItem> : ISingleton, IHasFilterGroups<TItem>, IHasSorters<TItem>
+	[Registry]
+	public abstract class TableFunctionBase<TItem> :  IHasFilterGroups<TItem>, IHasSorters<TItem>
 	{
 		private readonly List<FilterRegistrationGroup<TItem>> _filterGroups = new();
 		private readonly List<ISorterRegistration<TItem>> _sorters = new();

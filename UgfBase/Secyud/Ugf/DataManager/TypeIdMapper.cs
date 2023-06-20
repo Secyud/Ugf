@@ -1,14 +1,15 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
 using UnityEngine;
 
-namespace Secyud.Ugf.Resource;
+namespace Secyud.Ugf.DataManager;
 
-public static class TypeMap
+public static class TypeIdMapper
 {
     private static readonly MD5 MD5 = MD5.Create();
     private static readonly ConcurrentDictionary<string, Guid> IDDictionary = new();
@@ -71,5 +72,10 @@ public static class TypeMap
         using StreamWriter writer = new(stream);
         foreach ((string key, Guid value) in IDDictionary)
             writer.WriteLine($"{value} {key}");
+    }
+
+    public static IEnumerable<Type> TypeList()
+    {
+        return TypeDictionary.Values;
     }
 }

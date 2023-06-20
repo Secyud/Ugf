@@ -9,10 +9,8 @@ using UnityEngine;
 
 namespace Secyud.Ugf.HexMap.Generator
 {
-	/// <summary>
-	///     Component that generates hex maps.
-	/// </summary>
-	public class HexMapGenerator : ITransient, IHexMapGenerator
+	[Registry(LifeTime = DependencyLifeTime.Transient)]
+	public class HexMapGenerator :  IHexMapGenerator
 	{
 		private static readonly float[] TemperatureBands = {0.1f, 0.3f, 0.6f};
 		private static readonly float[] MoistureBands = {0.12f, 0.28f, 0.85f};

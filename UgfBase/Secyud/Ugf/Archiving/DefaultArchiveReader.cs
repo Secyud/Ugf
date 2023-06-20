@@ -1,34 +1,25 @@
 ﻿using System;
 using System.IO;
+using System.Threading.Tasks;
+using Secyud.Ugf.DataManager;
 using Secyud.Ugf.DependencyInjection;
-using Secyud.Ugf.Resource;
 
 namespace Secyud.Ugf.Archiving;
 
 public class DefaultArchiveReader : IArchiveReader, IDisposable
 {
     private readonly IDependencyProvider _provider;
-    private readonly Stream _stream;
     private readonly BinaryReader _reader;
 
-    public DefaultArchiveReader(string path, IDependencyProvider provider)
+    public DefaultArchiveReader(Stream stream, IDependencyProvider provider)
     {
         _provider = provider;
-        _stream = File.OpenRead(path);
-        _reader = new BinaryReader(_stream);
-    }
-
-    public DefaultArchiveReader(byte[] data, IDependencyProvider provider)
-    {
-        _provider = provider;
-        _stream = new MemoryStream(data);
-        _reader = new BinaryReader(_stream);
+        _reader = new BinaryReader(stream);
     }
 
     public void Dispose()
     {
         _reader.Dispose();
-        _stream.Dispose();
     }
 
     public bool ReadBoolean()
@@ -108,7 +99,7 @@ public class DefaultArchiveReader : IArchiveReader, IDisposable
 
     public TObject Read<TObject>() where TObject : class
     {
-        Type type = TypeMap.GetType(ReadGuid());
+        Type type = TypeIdMapper.GetType(ReadGuid());
         object obj = _provider.Get(type);
         if (obj is IArchivable archivable)
             archivable.Load(this);

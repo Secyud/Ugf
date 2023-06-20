@@ -16,6 +16,8 @@ namespace Secyud.Ugf.FunctionalComponents
 		[SerializeField] private SText Text;
 		[SerializeField] private float Speed;
 
+
+		private IUgfApplication _application;
 		public static LoadingPanel Instance { get; private set; }
 
 		public Action DestroyAction;
@@ -25,10 +27,7 @@ namespace Secyud.Ugf.FunctionalComponents
 			DestroyAction?.Invoke();
 		}
 
-		private LoadingService _service;
-
-
-		private void Awake()
+		protected virtual void Awake()
 		{
 			if (Instance)
 				Destroy(Instance.gameObject);
@@ -36,18 +35,18 @@ namespace Secyud.Ugf.FunctionalComponents
 			Slider.minValue = 0;
 			Slider.maxValue = 100;
 			Slider.value = 0;
-			GetComponent<Canvas>().worldCamera = Og.MainCamera;
-			_service = Og.LoadingService;
+			GetComponent<Canvas>().worldCamera = U.Camera;
+			_application = U.Get<IUgfApplication>();
 		}
 
 		private void Update()
 		{
 			if (Slider.value >= 100)
 			{
-				_service.Value = 0;
+				_application.CurrentStep = 0;
 				Destroy(gameObject);
 			}
-			else if (Slider.value * _service.MaxValue <= _service.Value * 100)
+			else if (Slider.value * _application.TotalStep <= _application.CurrentStep * 100)
 			{
 				Slider.value += Speed / 64;
 				if (Text)

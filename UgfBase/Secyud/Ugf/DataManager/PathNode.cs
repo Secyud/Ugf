@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Secyud.Ugf.Resource
+namespace Secyud.Ugf.DataManager
 {
     public class PathNode
     {

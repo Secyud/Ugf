@@ -1,6 +1,6 @@
-﻿namespace Secyud.Ugf.Resource
+﻿namespace Secyud.Ugf.DataManager
 {
-    public enum PropertyType : byte
+    public enum FieldType : byte
     {
         Object = 0,
         Bool = 1,

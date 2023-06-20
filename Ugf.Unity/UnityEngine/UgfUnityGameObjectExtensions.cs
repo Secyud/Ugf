@@ -19,7 +19,7 @@ namespace UnityEngine
 		public static TComponent InstantiateOnCanvas<TComponent>(this TComponent component)
 			where TComponent : Component
 		{
-			return Object.Instantiate(component, Og.Canvas.transform);
+			return Object.Instantiate(component, U.Canvas.transform);
 		}
 
 		public static TComponent InstantiateAndAdd<TComponent>(this GameObject ui, Transform parent)

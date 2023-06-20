@@ -35,7 +35,7 @@ namespace Secyud.Ugf.TableComponents
 				return;
 
 			_canvasGroup.blocksRaycasts = false;
-			_rectTransform.SetParent(Og.Canvas.gameObject.transform);
+			_rectTransform.SetParent(U.Canvas.gameObject.transform);
 			_deltaRecord = _rectTransform.anchoredPosition - eventData.position;
 		}
 
@@ -91,7 +91,7 @@ namespace Secyud.Ugf.TableComponents
 		{
 			FunctionalTable = functionalTable;
 			Triggerable = triggerable;
-			Name.text = Og.L[triggerable.ShowName];
+			Name.text = U.T[triggerable.ShowName];
 		}
 
 		public Sorter Create(Transform parent, FunctionalTable functionalTable, ICanBeStated triggerable)

@@ -16,7 +16,7 @@ namespace Secyud.Ugf.HexMap
 	/// <summary>
 	///     Container component for hex cell data.
 	/// </summary>
-	public class HexCell : MonoBehaviour, IHexCell, IArchivable
+	public class HexCell : MonoBehaviour, IHexCell
 	{
 		[SerializeField] private HexCell[] Neighbors;
 		[SerializeField] private bool[] Roads;

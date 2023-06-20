@@ -1,16 +1,13 @@
 #region
 
-using Secyud.Ugf;
-using Secyud.Ugf.Archiving;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
-using System.IO;
 using System.Linq;
 
 #endregion
 
-namespace System
+namespace System.Ugf
 {
     public static class UgfObjectExtensions
     {

@@ -7,7 +7,8 @@ using System.Collections.Generic;
 
 namespace Secyud.Ugf.ButtonComponents
 {
-	public abstract class ButtonFunctionBase<TItem> : ISingleton
+	[Registry]
+	public abstract class ButtonFunctionBase<TItem> 
 	{
 		private readonly List<ButtonRegistration<TItem>> _buttons = new();
 

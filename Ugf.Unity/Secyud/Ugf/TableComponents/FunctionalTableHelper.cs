@@ -24,7 +24,7 @@ namespace Secyud.Ugf.TableComponents
 			TotalItems = showItems;
 			FilteredItems = TotalItems;
 
-			TListService service = Og.DefaultProvider.Get<TListService>();
+			TListService service = U.Get<TListService>();
 
 			FilterGroups = service.FilterGroups.ToList();
 

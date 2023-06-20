@@ -20,7 +20,7 @@ namespace Secyud.Ugf.BasicComponents
 
 		private void OnEnable()
 		{
-			_image.Sprite = Og.IL[Value];
+			_image.Sprite = U.S[Value];
 			enabled = false;
 		}
 	}

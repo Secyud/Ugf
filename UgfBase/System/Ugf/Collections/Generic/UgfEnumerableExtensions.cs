@@ -1,10 +1,11 @@
 #region
 
+using System.Collections.Generic;
 using System.Linq;
 
 #endregion
 
-namespace System.Collections.Generic
+namespace System.Ugf.Collections.Generic
 {
     public static class UgfEnumerableExtensions
     {

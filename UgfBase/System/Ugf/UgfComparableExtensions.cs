@@ -1,4 +1,4 @@
-namespace System
+namespace System.Ugf
 {
     public static class UgfComparableExtensions
     {

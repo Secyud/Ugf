@@ -1,11 +1,12 @@
 #region
 
-using Secyud.Ugf;
+using System.Collections.Generic;
 using System.Linq;
+using Secyud.Ugf;
 
 #endregion
 
-namespace System.Collections.Generic
+namespace System.Ugf.Collections.Generic
 {
     public static class UgfListExtensions
     {

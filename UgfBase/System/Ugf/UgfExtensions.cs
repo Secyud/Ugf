@@ -1,11 +1,11 @@
 #region
 
-using Secyud.Ugf.Modularity;
 using System.Reflection;
+using Secyud.Ugf.Modularity;
 
 #endregion
 
-namespace System
+namespace System.Ugf
 {
     public static class UgfExtensions
     {

@@ -1,25 +1,28 @@
 ﻿using System;
 using System.IO;
+using System.Threading.Tasks;
+using Secyud.Ugf.DataManager;
 using Secyud.Ugf.DependencyInjection;
-using Secyud.Ugf.Resource;
 
 namespace Secyud.Ugf.Archiving;
 
-public class DefaultArchiveWriter : IArchiveWriter, IDisposable
+public class DefaultArchiveWriter : IArchiveWriter, IDisposable,IAsyncDisposable
 {
     private readonly BinaryWriter _writer;
-    private readonly FileStream _file;
 
-    public DefaultArchiveWriter(string path)
+    public DefaultArchiveWriter(Stream stream)
     {
-        _file = File.OpenWrite(path);
-        _writer = new BinaryWriter(_file);
+        _writer = new BinaryWriter(stream);
     }
 
     public void Dispose()
     {
         _writer.Dispose();
-        _file.Dispose();
+    }
+
+    public ValueTask DisposeAsync()
+    {
+        return _writer.DisposeAsync();
     }
 
     public void Write(bool value)
@@ -99,7 +102,7 @@ public class DefaultArchiveWriter : IArchiveWriter, IDisposable
 
     public void Write(object value)
     {
-        Guid typeId = TypeMap.GetId(value.GetType());
+        Guid typeId = TypeIdMapper.GetId(value.GetType());
 
         if (typeId == Guid.Empty)
             throw new UgfInitializationException(

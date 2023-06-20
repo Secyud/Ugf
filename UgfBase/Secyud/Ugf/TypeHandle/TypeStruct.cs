@@ -2,11 +2,11 @@
 
 namespace Secyud.Ugf.TypeHandle
 {
-    public readonly struct TypeDescriptor : IComparable<TypeDescriptor>, IComparable
+    public readonly struct TypeStruct : IComparable<TypeStruct>, IComparable
     {
         public readonly Type Type;
 
-        public TypeDescriptor(
+        public TypeStruct(
             Type type)
         {
             Type = type;
@@ -17,7 +17,7 @@ namespace Secyud.Ugf.TypeHandle
 
         public int CompareTo(object obj) => GetHashCode() - obj.GetHashCode();
 
-        public int CompareTo(TypeDescriptor other)
+        public int CompareTo(TypeStruct other)
         {
             return GetHashCode() - other.GetHashCode();
         }
@@ -25,9 +25,9 @@ namespace Secyud.Ugf.TypeHandle
 
     public static class DescriptorExtension
     {
-        public static TypeDescriptor Describe(this Type type)
+        public static TypeStruct Describe(this Type type)
         {
-            return new TypeDescriptor(type);
+            return new TypeStruct(type);
         }
     }
 }

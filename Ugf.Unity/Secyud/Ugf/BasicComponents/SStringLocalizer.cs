@@ -21,7 +21,7 @@ namespace Secyud.Ugf.BasicComponents
 
 		private void OnEnable()
 		{
-			_text.text = Translate ? Og.L.Translate(Value) : Og.L[Value];
+			_text.text = Translate ? U.T.Translate(Value) : U.T[Value];
 			enabled = false;
 		}
 	}

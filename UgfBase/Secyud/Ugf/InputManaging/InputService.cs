@@ -3,6 +3,7 @@
 using Secyud.Ugf.DependencyInjection;
 using System.Collections.Generic;
 using System.Linq;
+using System.Ugf.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -10,7 +11,7 @@ using UnityEngine.Events;
 
 namespace Secyud.Ugf.InputManaging
 {
-    [Registry()]
+    [Registry]
     public class InputService
     {
         private readonly List<InputLayer> _list = new();

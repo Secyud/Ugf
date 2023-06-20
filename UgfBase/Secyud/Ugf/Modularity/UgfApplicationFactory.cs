@@ -2,6 +2,7 @@
 
 using System;
 using Localization;
+using Secyud.Ugf.DataManager;
 using Secyud.Ugf.DependencyInjection;
 using Secyud.Ugf.Localization;
 using UnityEngine;
@@ -24,6 +25,7 @@ namespace Secyud.Ugf.Modularity
         public IUgfApplication Application { get; private set; }
         public IStringLocalizer<DefaultResource> T { get; private set; }
         public ISpriteLocalizer<DefaultResource> S { get; private set; }
+        public InitializeManager InitializeManager { get; private set; }
         public Camera Camera => MainCamera;
         public Canvas Canvas => MainCanvas;
 
@@ -31,9 +33,11 @@ namespace Secyud.Ugf.Modularity
         {
             Application = Create(PlugInSourceList);
             Instance = this;
-            _updateService = Application.DependencyManager.TryGet<IUpdateService>();
-            T = Application.DependencyManager.Get<IStringLocalizer<DefaultResource>>();
-            S = Application.DependencyManager.Get<ISpriteLocalizer<DefaultResource>>();
+            IDependencyManager provider = Application.DependencyManager;
+            _updateService = provider.TryGet<IUpdateService>();
+            T = provider.Get<IStringLocalizer<DefaultResource>>();
+            S = provider.Get<ISpriteLocalizer<DefaultResource>>();
+            InitializeManager = provider.Get<InitializeManager>();
         }
 
         protected virtual void Update()

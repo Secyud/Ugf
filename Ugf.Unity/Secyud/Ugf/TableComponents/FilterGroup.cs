@@ -95,7 +95,7 @@ namespace Secyud.Ugf.TableComponents
 			FunctionalTable = functionalManager;
 			Toggle.SetIsOnWithoutNotify(canBeEnabled.GetEnabled());
 			Toggle.Bind(canBeEnabled.SetEnabled);
-			Name.text = Og.L[canBeEnabled.ShowName];
+			Name.text = U.T[canBeEnabled.ShowName];
 		}
 
 		public FilterGroup Create(Transform parent, FunctionalTable functionalTable, ICanBeEnabled canBeEnabled)
