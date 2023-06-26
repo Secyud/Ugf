@@ -1,4 +1,5 @@
 ﻿using System;
+using Secyud.Ugf.DataManager;
 
 namespace Secyud.Ugf.Archiving;
 
@@ -21,4 +22,7 @@ public interface IArchiveWriter
     void Write(Guid value);
     void Write(object value);
     void WriteNullable(object value);
+    void Write(object value, FieldType type);
+    void WriteChangeable(object value,FieldType fieldType);
+    void SaveProperties(SAttribute[] attributes, object value);
 }

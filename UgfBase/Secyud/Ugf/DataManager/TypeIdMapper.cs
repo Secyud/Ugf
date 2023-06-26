@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
+using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using UnityEngine;
@@ -74,8 +75,15 @@ public static class TypeIdMapper
             writer.WriteLine($"{value} {key}");
     }
 
-    public static IEnumerable<Type> TypeList()
+    public static IDictionary<Guid,Type> Types()
     {
-        return TypeDictionary.Values;
+        return TypeDictionary;
     }
+    public static List<Tuple<Guid,string>> SubTypes(Type type)
+    {
+        return TypeDictionary.Where(u=> type.IsAssignableFrom( u.Value))
+            .Select(u=>new Tuple<Guid,string>(u.Key,u.Value.Name))
+            .ToList();
+    }
+    
 }

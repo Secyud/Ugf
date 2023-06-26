@@ -3,7 +3,7 @@
 namespace Ugf.DataManager.Localization;
 
 [LocalizationResourceName("DataManager")]
-public class DataManagerResource
+public class DataManagerResource:DefaultResource
 {
 
 }

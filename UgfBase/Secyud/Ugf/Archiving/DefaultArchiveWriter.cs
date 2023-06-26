@@ -2,11 +2,10 @@
 using System.IO;
 using System.Threading.Tasks;
 using Secyud.Ugf.DataManager;
-using Secyud.Ugf.DependencyInjection;
 
 namespace Secyud.Ugf.Archiving;
 
-public class DefaultArchiveWriter : IArchiveWriter, IDisposable,IAsyncDisposable
+public class DefaultArchiveWriter : IArchiveWriter, IDisposable, IAsyncDisposable
 {
     private readonly BinaryWriter _writer;
 
@@ -121,6 +120,104 @@ public class DefaultArchiveWriter : IArchiveWriter, IDisposable,IAsyncDisposable
         {
             Write(true);
             Write(value);
+        }
+    }
+
+    public void Write(object value, FieldType type)
+    {
+        switch (type)
+        {
+            case FieldType.Bool:
+                Write((bool)value);
+                break;
+            case FieldType.UInt8:
+                Write((byte)value);
+                break;
+            case FieldType.UInt16:
+                Write((ushort)value);
+                break;
+            case FieldType.UInt32:
+                Write((uint)value);
+                break;
+            case FieldType.UInt64:
+                Write((ulong)value);
+                break;
+            case FieldType.Int8:
+                Write((sbyte)value);
+                break;
+            case FieldType.Int16:
+                Write((short)value);
+                break;
+            case FieldType.Int32:
+                Write((int)value);
+                break;
+            case FieldType.Int64:
+                Write((long)value);
+                break;
+            case FieldType.Single:
+                Write((float)value);
+                break;
+            case FieldType.Double:
+                Write((double)value);
+                break;
+            case FieldType.Decimal:
+                Write((decimal)value);
+                break;
+            case FieldType.String:
+                Write((string)value ?? string.Empty);
+                break;
+            case FieldType.Guid:
+                Write((Guid)value);
+                break;
+            case FieldType.Object:
+                WriteNullable(value);
+                break;
+            default: throw new ArgumentOutOfRangeException();
+        }
+    }
+
+    public void WriteChangeable(object value, FieldType fieldType)
+    {
+        if (FieldType.Object != fieldType)
+            Write(fieldType);
+        else if (value is null)
+            Write(false);
+        else
+        {
+            Write(true);
+
+            Type type = value.GetType();
+            Write(TypeIdMapper.GetId(type));
+
+            PropertyDescriptor property = U.Factory.InitializeManager.GetProperty(type);
+
+            void SaveProperties(SAttribute[] attributes)
+            {
+                Write(attributes.Length);
+
+                foreach (SAttribute attr in attributes)
+                {
+                    Write(attr.ID);
+                    Write(attr.Type);
+                    WriteChangeable(attr.GetValue(value), attr.Type);
+                }
+            }
+
+            SaveProperties(property.ArchiveProperties);
+            SaveProperties(property.InitialedProperties);
+            SaveProperties(property.IgnoredProperties);
+        }
+    }
+        
+    public void SaveProperties(SAttribute[] attributes, object value)
+    {
+        Write(attributes.Length);
+
+        foreach (SAttribute attr in attributes)
+        {
+            Write(attr.ID);
+            Write(attr.Type);
+            WriteChangeable(attr.GetValue(value), attr.Type);
         }
     }
 }

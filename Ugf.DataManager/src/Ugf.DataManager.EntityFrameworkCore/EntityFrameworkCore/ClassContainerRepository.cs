@@ -51,7 +51,7 @@ public class ClassContainerRepository :
             Type type = TypeIdMapper.GetType(classId);
 
             results = results.Where(u =>
-                TypeIdMapper.GetType(u.ClassId).IsAssignableTo(type));
+                TypeIdMapper.GetType(u.Id).IsAssignableTo(type));
         }
 
         return Task.FromResult(results);

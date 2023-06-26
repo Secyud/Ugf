@@ -39,53 +39,77 @@ namespace Secyud.Ugf.DataManager
             len = reader.ReadInt32();
             IgnoredData = reader.ReadBytes(len);
         }
-
-        void SetProperties(object obj, SAttribute[] properties, byte[] data)
-        {
-            using MemoryStream stream = new(data);
-            using DefaultArchiveReader reader = new(stream, U.Factory.Application.DependencyManager);
-            foreach (SAttribute attribute in properties)
-                attribute.Info.SetValue(obj, attribute.Read(reader));
-        }
-
-        byte[] GetProperties(object obj, SAttribute[] properties)
-        {
-            using MemoryStream stream = new();
-            using DefaultArchiveWriter writer = new(stream);
-            foreach (SAttribute attribute in properties)
-                attribute.Write(attribute.Info.GetValue(obj), writer);
-
-            return stream.ToArray();
-        }
-
+        
         public void ReadArchived(object obj, PropertyDescriptor descriptor)
         {
-            SetProperties(obj, descriptor.ArchiveProperties, ArchivedData);
+            LoadDataFromBytes(obj, DataType.Archived,ArchivedData,descriptor);
         }
 
         public void ReadInitialed(object obj, PropertyDescriptor descriptor)
         {
-            SetProperties(obj, descriptor.InitialedProperties, InitialedData);
+            LoadDataFromBytes(obj, DataType.Initialed,InitialedData,descriptor);
         }
 
         public void ReadIgnored(object obj, PropertyDescriptor descriptor)
         {
-            SetProperties(obj, descriptor.IgnoredProperties, IgnoredData);
+            LoadDataFromBytes(obj, DataType.Ignored,IgnoredData,descriptor);
         }
 
         public void WriteArchived(object obj, PropertyDescriptor descriptor)
         {
-            ArchivedData = GetProperties(obj, descriptor.ArchiveProperties);
+            ArchivedData =  SaveDataToBytes(obj, DataType.Archived,descriptor);
         }
 
         public void WriteInitialed(object obj, PropertyDescriptor descriptor)
         {
-            InitialedData = GetProperties(obj, descriptor.InitialedProperties);
+            InitialedData = SaveDataToBytes(obj, DataType.Initialed,descriptor);
         }
 
-        public void WriteIgnored(object obj, PropertyDescriptor descriptor)
+        public void WriteIgnored(object obj,PropertyDescriptor descriptor)
         {
-            IgnoredData = GetProperties(obj, descriptor.IgnoredProperties);
+            IgnoredData = SaveDataToBytes(obj, DataType.Ignored,descriptor);
+        }
+        
+        
+        public static byte[] SaveDataToBytes(object obj,DataType dataType,PropertyDescriptor property)
+        {
+            using MemoryStream stream = new();
+            using DefaultArchiveWriter writer = new(stream);
+
+            switch (dataType)
+            {
+                case DataType.Archived:
+                    writer.SaveProperties(property.ArchiveProperties, obj);
+                    break;
+                case DataType.Initialed:
+                    writer.SaveProperties(property.InitialedProperties, obj);
+                    break;
+                case DataType.Ignored:
+                    writer.SaveProperties(property.IgnoredProperties, obj);
+                    break;
+                default: throw new ArgumentOutOfRangeException(nameof(dataType), dataType, null);
+            }
+
+            return stream.ToArray();
+        }
+        public static void LoadDataFromBytes(object obj,DataType dataType,byte[] data,PropertyDescriptor property)
+        {
+            using MemoryStream stream = new(data);
+            using DefaultArchiveReader reader = new(stream);
+            
+            switch (dataType)
+            {
+                case DataType.Archived:
+                    reader.LoadProperty(property.ArchiveProperties, obj);
+                    break;
+                case DataType.Initialed:
+                    reader.LoadProperty(property.InitialedProperties, obj);
+                    break;
+                case DataType.Ignored:
+                    reader.LoadProperty(property.IgnoredProperties, obj);
+                    break;
+                default: throw new ArgumentOutOfRangeException(nameof(dataType), dataType, null);
+            }
         }
     }
 }

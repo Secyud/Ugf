@@ -1,19 +1,15 @@
 ﻿using System;
 using System.IO;
-using System.Threading.Tasks;
 using Secyud.Ugf.DataManager;
-using Secyud.Ugf.DependencyInjection;
 
 namespace Secyud.Ugf.Archiving;
 
 public class DefaultArchiveReader : IArchiveReader, IDisposable
 {
-    private readonly IDependencyProvider _provider;
     private readonly BinaryReader _reader;
 
-    public DefaultArchiveReader(Stream stream, IDependencyProvider provider)
+    public DefaultArchiveReader(Stream stream)
     {
-        _provider = provider;
         _reader = new BinaryReader(stream);
     }
 
@@ -100,7 +96,7 @@ public class DefaultArchiveReader : IArchiveReader, IDisposable
     public TObject Read<TObject>() where TObject : class
     {
         Type type = TypeIdMapper.GetType(ReadGuid());
-        object obj = _provider.Get(type);
+        object obj = U.Get(type);
         if (obj is IArchivable archivable)
             archivable.Load(this);
         return obj as TObject;
@@ -109,5 +105,71 @@ public class DefaultArchiveReader : IArchiveReader, IDisposable
     public TObject ReadNullable<TObject>() where TObject : class
     {
         return ReadBoolean() ? Read<TObject>() : null;
+    }
+
+    public object Read(FieldType type)
+    {
+        return type switch
+        {
+            FieldType.Bool    => ReadBoolean(),
+            FieldType.UInt8   => ReadByte(),
+            FieldType.UInt16  => ReadUInt16(),
+            FieldType.UInt32  => ReadUInt32(),
+            FieldType.UInt64  => ReadUInt64(),
+            FieldType.Int8    => ReadSByte(),
+            FieldType.Int16   => ReadInt16(),
+            FieldType.Int32   => ReadInt32(),
+            FieldType.Int64   => ReadInt64(),
+            FieldType.Single  => ReadSingle(),
+            FieldType.Double  => ReadDouble(),
+            FieldType.Decimal => ReadDecimal(),
+            FieldType.String  => ReadString(),
+            FieldType.Guid    => ReadGuid(),
+            FieldType.Object  => ReadNullable<object>(),
+            _                 => new NotImplementedException("Type not support!")
+        };
+    }
+
+    public object ReadChangeable(FieldType fieldType)
+    {
+        if (FieldType.Object != fieldType)
+            return Read(fieldType);
+
+        if (!ReadBoolean())
+            return null;
+
+        Guid typeId = ReadGuid();
+        Type type = TypeIdMapper.GetType(typeId);
+        object ret = U.Get(type);
+        PropertyDescriptor property = U.Factory.InitializeManager.GetProperty(type);
+
+        LoadProperty(property.ArchiveProperties, ret);
+        LoadProperty(property.InitialedProperties, ret);
+        LoadProperty(property.IgnoredProperties, ret);
+
+        return ret;
+    }
+
+    public void LoadProperty(SAttribute[] attributes, object value)
+    {
+        int propertyCount = ReadInt32();
+        int aIndex = 0;
+        for (int i = 0; i < propertyCount; i++)
+        {
+            short id = ReadInt16();
+            while (attributes[aIndex].ID < id)
+            {
+                aIndex++;
+                if (attributes.Length <= aIndex)
+                    return;
+            }
+
+            object obj = ReadChangeable((FieldType)ReadByte());
+
+            if (attributes[aIndex].ID == id)
+            {
+                attributes[aIndex].SetValue(value, obj);
+            }
+        }
     }
 }

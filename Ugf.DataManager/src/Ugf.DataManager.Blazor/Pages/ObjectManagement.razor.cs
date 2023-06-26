@@ -2,7 +2,10 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Blazorise;
+using Secyud.Ugf;
+using Secyud.Ugf.DataManager;
 using Ugf.DataManager.ClassManagement;
+using Ugf.DataManager.Localization;
 using Volo.Abp.AspNetCore.Components.Web.Extensibility.EntityActions;
 using Volo.Abp.AspNetCore.Components.Web.Extensibility.TableColumns;
 using Volo.Abp.AspNetCore.Components.Web.Theming.PageToolbars;
@@ -11,15 +14,15 @@ namespace Ugf.DataManager.Blazor.Pages;
 
 public partial class ObjectManagement
 {
+    public object EditingObject { get; set; }
+    public ClassContainerDto ClassContainer { get; set; }
+    public Modal ObjectDataModal { get; set; }
     protected PageToolbar Toolbar { get; } = new();
-
     protected List<TableColumn> ObjectManagementTableColumns => TableColumns.Get<ObjectManagement>();
-
-    public string SearchClassName { get; set; }
 
     public ObjectManagement()
     {
-        LocalizationResource = typeof(InfinityWorldChessDataResource);
+        LocalizationResource = typeof(DataManagerResource);
     }
 
     protected override ValueTask SetBreadcrumbItemsAsync()
@@ -74,9 +77,16 @@ public partial class ObjectManagement
                 },
                 new()
                 {
+                    Title = L["Class"],
+                    Sortable = true,
+                    Data = nameof(SpecificObjectDto.ClassId),
+                    ValueConverter = o => TypeIdMapper.GetType((Guid)o).Name
+                },
+                new()
+                {
                     Title = L["Bundle"],
                     Sortable = true,
-                    Data = nameof(SpecificObjectDto.BundleName)
+                    Data = nameof(SpecificObjectDto.BundleId)
                 },
             });
 
@@ -97,100 +107,52 @@ public partial class ObjectManagement
         return base.SetToolbarItemsAsync();
     }
 
-    protected override async Task OpenCreateModalAsync()
+    public async Task CloseObjectDataModalAsync()
     {
-        await base.OpenCreateModalAsync();
-        NewEntity.BundleName = Bundles.BundleNames.First();
-    }
-
-    public SpecificObjectDto DataDto { get; set; } = new();
-    public ClassSelectComponent ClassSelect { get; set; }
-    public Modal ObjectDataModal { get; set; }
-    public Validations DataValidations { get; set; }
-
-    private async Task CloseObjectDataModalAsync()
-    {
+        EditingObject = null;
         await InvokeAsync(ObjectDataModal.Hide);
     }
+
+    public async Task OpenObjectDataModalAsync(SpecificObjectDto dto)
+    {
+        EditingEntity = await AppService.GetAsync(dto.Id);
+        Type type = TypeIdMapper.GetType(EditingEntity.ClassId);
+        EditingObject = U.Get(type);
+        PropertyDescriptor property = U.Factory.InitializeManager.GetProperty(type);
+
+        ResourceDescriptor.LoadDataFromBytes(
+            EditingObject, DataType.Archived, EditingEntity.ArchivedData, property);
+        ResourceDescriptor.LoadDataFromBytes(
+            EditingObject, DataType.Initialed, EditingEntity.InitialedData, property);
+        ResourceDescriptor.LoadDataFromBytes(
+            EditingObject, DataType.Ignored, EditingEntity.IgnoredData, property);
+
+        await ObjectDataModal.Show();
+    }
+
 
     private Task CloseObjectDataModal(ModalClosingEventArgs arg)
     {
         // cancel close if clicked outside of modal area
         arg.Cancel = arg.CloseReason == CloseReason.FocusLostClosing;
-
+        EditingObject = null;
         return Task.CompletedTask;
-    }
-
-    private async Task OpenObjectDataModalAsync(SpecificObjectDto dto)
-    {
-        DataDto = await AppService.GetWithObjectDataAsync(dto.Id);
-        await ObjectDataModal.Show();
     }
 
     private async Task UpdateObjectDataAsync()
     {
-        if (await DataValidations.ValidateAll())
-        {
-            await AppService.UpdateObjectDataAsync(DataDto);
-            await CloseObjectDataModalAsync();
-        }
-        else
-        {
-            await Message.Warn("Please check input!");
-        }
-    }
+        PropertyDescriptor property = U.Factory.InitializeManager.GetProperty(
+            EditingObject.GetType());
 
-    private void ValidateValue(ValidatorEventArgs e, ObjectPropertyDto propertyDto)
-    {
-        if (propertyDto.Value.IsNullOrEmpty())
-        {
-            e.Status = ValidationStatus.Success;
-        }
-        else
-        {
-            string v = Convert.ToString(e.Value);
+        EditingEntity.ArchivedData = ResourceDescriptor.SaveDataToBytes(
+            EditingObject, DataType.Archived, property);
+        EditingEntity.InitialedData = ResourceDescriptor.SaveDataToBytes(
+            EditingObject, DataType.Initialed, property);
+        EditingEntity.IgnoredData = ResourceDescriptor.SaveDataToBytes(
+            EditingObject, DataType.Ignored, property);
 
-            e.Status = propertyDto.ClassProperty.Type switch
-            {
-                PropertyType.Bool => bool.TryParse(v, out _), PropertyType.UInt8 => byte.TryParse(v, out _),
-                PropertyType.UInt16 => ushort.TryParse(v, out _), PropertyType.UInt32 => uint.TryParse(v, out _),
-                PropertyType.UInt64 => ulong.TryParse(v, out _), PropertyType.Int8 => sbyte.TryParse(v, out _),
-                PropertyType.Int16 => short.TryParse(v, out _), PropertyType.Int32 => int.TryParse(v, out _),
-                PropertyType.Int64 => long.TryParse(v, out _), PropertyType.Single => float.TryParse(v, out _),
-                PropertyType.Double => double.TryParse(v, out _), PropertyType.String => true,
-                PropertyType.Guid => Guid.TryParse(v, out _), _ => false
-            }
-                ? ValidationStatus.Success
-                : ValidationStatus.Error;
-        }
-    }
+        await AppService.UpdateAsync(EditingEntity.ClassId, EditingEntity);
 
-    private void SetClass(ClassContainerDto classContainerDto)
-    {
-        switch (_state)
-        {
-            case 0:
-                GetListInput.ClassId = classContainerDto?.Id ?? default;
-                SearchClassName = classContainerDto?.Namespace + '.' + classContainerDto?.Name;
-                break;
-            case 1:
-                NewEntity.ClassId = classContainerDto?.Id ?? default;
-                NewEntity.ClassContainer = classContainerDto;
-                break;
-            case 2:
-                EditingEntity.ClassId = classContainerDto?.Id ?? default;
-                EditingEntity.ClassContainer = classContainerDto;
-                break;
-        }
-
-        StateHasChanged();
-    }
-
-    private int _state;
-
-    private async void OpenClassSelect(int state)
-    {
-        _state = state;
-        await ClassSelect.OpenModalAsync();
+        await CloseObjectDataModalAsync();
     }
 }

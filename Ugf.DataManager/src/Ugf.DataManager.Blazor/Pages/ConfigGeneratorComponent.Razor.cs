@@ -1,17 +1,17 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Blazorise;
+using Microsoft.AspNetCore.Components;
 using Ugf.DataManager.ClassManagement;
 
 namespace Ugf.DataManager.Blazor.Pages;
 
 public partial class ConfigGeneratorComponent
-{ 
+{
+    [Inject] public ISpecificObjectAppService ObjectAppService { get; set; }
     public Modal Modal { get; set; }
-    public ClassContainerDto ClassContainer { get; set; }
-    public string BundleName { get; set; } = Bundles.BundleNames.First();
-    public ClassSelectComponent ClassSelect { get; set; }
-
+    private Guid ClassId { get; set; }
+    private int? BundleId { get; set; }
 
     private async Task CloseModalAsync()
     {
@@ -27,31 +27,19 @@ public partial class ConfigGeneratorComponent
 
     public async Task OpenModalAsync()
     {
-        ClassContainer = null;
-
         await Modal.Show();
     }
 
-    private async Task GenerateConfig()
+    private async Task GenerateConfigAsync()
     {
-        if (ClassContainer is null)
+        if (ClassId == default)
         {
             await Message.Error("Please select class.");
             return;
         }
 
-        if (BundleName.IsNullOrEmpty())
-        {
-            await Message.Error("Please select bundle.");
-            return;
-        }
-        await ClassAppService.GenerateConfigAsync(ClassContainer.Id,BundleName);
+        await ObjectAppService.GenerateConfigAsync(ClassId, BundleId);
         await Notify.Success("Config Generate Successfully!");
         await CloseModalAsync();
-    }
-
-    private void SetClass(ClassContainerDto containerDto)
-    {
-        ClassContainer = containerDto;
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using Secyud.Ugf.DataManager;
 
 namespace Secyud.Ugf.Archiving;
 
@@ -21,4 +22,7 @@ public interface IArchiveReader
     Guid ReadGuid();
     TObject Read<TObject>() where TObject : class;
     TObject ReadNullable<TObject>() where TObject : class;
+    public object Read(FieldType type);
+    public object ReadChangeable(FieldType fieldType);
+    void LoadProperty(SAttribute[] attributes, object value);
 }

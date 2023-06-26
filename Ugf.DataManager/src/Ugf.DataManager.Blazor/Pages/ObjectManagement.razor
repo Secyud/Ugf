@@ -1,8 +1,9 @@
 ﻿@page "/object"
 
 @using Ugf.DataManager.ClassManagement
-@inherits AbpCrudPageBase<Ugf.DataManager.ClassManagement.ISpecificObjectAppService, Ugf.DataManager.ClassManagement.SpecificObjectDto, Guid, Ugf.DataManager.ClassManagement.GetObjectListInput>
-@inject AbpBlazorMessageLocalizerHelper<InfinityWorldChessDataResource> Lh
+@using Secyud.Ugf.DataManager
+@inherits AbpCrudPageBase<ISpecificObjectAppService, SpecificObjectDto, Guid, GetObjectListInput>
+@inject AbpBlazorMessageLocalizerHelper<DataManagerResource> Lh
 <Card>
     <CardHeader>
         @* ************************* PAGE HEADER ************************* *@
@@ -13,23 +14,18 @@
     </CardHeader>
     <CardBody>
         <Fields>
-            <Field  ColumnSize="ColumnSize.Is6.OnDesktop">
+            <Field ColumnSize="ColumnSize.Is6.OnDesktop">
                 <TextEdit @bind-Text="@GetListInput.Name" Placeholder="@L["Name"]"/>
             </Field>
-            <Field  ColumnSize="ColumnSize.Is6.OnDesktop">
-                <TextEdit @bind-Text="@GetListInput.BundleName" Placeholder="@L["BundleName"]"/>
+            <Field ColumnSize="ColumnSize.Is6.OnDesktop">
+                <TextEdit @bind-Text="@GetListInput.BundleId" Placeholder="@L["BundleName"]"/>
             </Field>
-            <Field  ColumnSize="ColumnSize.Is12.OnDesktop">
+            <Field ColumnSize="ColumnSize.Is12.OnDesktop">
                 <Addons>
-                    <Addon AddonType="AddonType.Start">
-                        <Button Clicked="() => OpenClassSelect(0)" Color="Color.Secondary"
-                                Size="Size.Small">
-                            @L["SelectClass"]
-                        </Button>
-                    </Addon>
                     <Addon AddonType="AddonType.Body">
-                        <TextEdit Text="@SearchClassName"
-                                  TextColor="TextColor.Info" Readonly/>
+                        <Autocomplete TItem="KeyValuePair<Type, Guid>" TValue="Guid" Data="TypeIdMapper.Types()"
+                                      TextField="(u => u.Key.Name)" ValueField="(u => u.Value)"
+                                      @bind-SelectedValue="@GetListInput.ClassId" Placeholder="@L["BaseClass"]"/>
                     </Addon>
                     <Addon AddonType="AddonType.End">
                         <Button Clicked="GetEntitiesAsync" Color="Color.Secondary">@L["Search"]</Button>
@@ -59,9 +55,16 @@
             </ModalHeader>
             <ModalBody>
                 <Validations @ref="@CreateValidationsRef" Model="@NewEntity" ValidateOnLoad="false">
+                    <Field>
+                        <FieldLabel>@L["Class"]</FieldLabel>
+                        <Autocomplete TItem="KeyValuePair<Type, Guid>" TValue="Guid" Data="TypeIdMapper.Types()"
+                                      TextField="(u => u.Key.Name)" ValueField="(u => u.Value)"
+                                      @bind-SelectedValue="@NewEntity.ClassId" />
+
+                    </Field>
                     <Validation MessageLocalizer="@Lh.Localize">
                         <Field>
-                            <FieldLabel>@L["DisplayName:Name"] *</FieldLabel>
+                            <FieldLabel>@L["Name"] *</FieldLabel>
                             <TextEdit @bind-Text="@NewEntity.Name" Autofocus="true">
                                 <Feedback>
                                     <ValidationError/>
@@ -69,28 +72,9 @@
                             </TextEdit>
                         </Field>
                     </Validation>
-                    <SelectList TItem="string"
-                                TValue="string"
-                                Data="@Bundles.BundleNames"
-                                TextField="@(item => item)"
-                                ValueField="@(item => item)"
-                                @bind-SelectedValue="@NewEntity.BundleName"/>
                     <Field>
-                        <FieldLabel>
-                            @L["DisplayName:Class"]
-                        </FieldLabel>
-                        <Addons>
-                            <Addon AddonType="AddonType.Body">
-                                <TextEdit Text="@NewEntity.ClassContainer?.Name"
-                                          TextColor="TextColor.Info" Readonly/>
-                            </Addon>
-                            <Addon AddonType="AddonType.End">
-                                <Button Clicked="() => OpenClassSelect(1)"
-                                        Size="Size.Small" Color="Color.Secondary">
-                                    @L["SelectClass"]
-                                </Button>
-                            </Addon>
-                        </Addons>
+                        <FieldLabel>@L["BundleName"]</FieldLabel>
+                        <NumericEdit @bind-Value="@NewEntity.BundleId"/>
                     </Field>
                 </Validations>
             </ModalBody>
@@ -111,9 +95,16 @@
             </ModalHeader>
             <ModalBody>
                 <Validations @ref="@EditValidationsRef" Model="@EditingEntity" ValidateOnLoad="false">
+                    <Field>
+                        <FieldLabel>@L["Class"]</FieldLabel>
+                        <Autocomplete TItem="KeyValuePair<Type, Guid>" TValue="Guid" Data="TypeIdMapper.Types()"
+                                      TextField="(u => u.Key.Name)" ValueField="(u => u.Value)"
+                                      @bind-SelectedValue="@EditingEntity.ClassId"/>
+
+                    </Field>
                     <Validation MessageLocalizer="@Lh.Localize">
                         <Field>
-                            <FieldLabel>@L["DisplayName:Name"] *</FieldLabel>
+                            <FieldLabel>@L["Name"] *</FieldLabel>
                             <TextEdit @bind-Text="EditingEntity.Name" Autofocus="true">
                                 <Feedback>
                                     <ValidationError/>
@@ -122,30 +113,8 @@
                         </Field>
                     </Validation>
                     <Field>
-                        <FieldLabel>@L["DisplayName:Bundle"]</FieldLabel>
-                        <SelectList TItem="string"
-                                    TValue="string"
-                                    Data="@Bundles.BundleNames"
-                                    TextField="@(item => item)"
-                                    ValueField="@(item => item)"
-                                    @bind-SelectedValue="@EditingEntity.BundleName"/>
-                    </Field>
-                    <Field>
-                        <FieldLabel>
-                            @L["DisplayName:Class"]
-                        </FieldLabel>
-                        <Addons>
-                            <Addon AddonType="AddonType.Body">
-                                <TextEdit Text="@EditingEntity.ClassContainer?.Name"
-                                          TextColor="TextColor.Info" Readonly/>
-                            </Addon>
-                            <Addon AddonType="AddonType.End">
-                                <Button Clicked="() => OpenClassSelect(2)"
-                                        Size="Size.Small" Color="Color.Secondary">
-                                    @L["SelectClass"]
-                                </Button>
-                            </Addon>
-                        </Addons>
+                        <FieldLabel>@L["Bundle"]</FieldLabel>
+                        <NumericEdit @bind-Value="@EditingEntity.BundleId"/>
                     </Field>
                 </Validations>
             </ModalBody>
@@ -165,32 +134,27 @@
                 <CloseButton Clicked="CloseObjectDataModalAsync"/>
             </ModalHeader>
             <ModalBody>
-                @DataDto.ClassContainer?.Description
-                @if (DataDto?.Properties is not null)
+                @if (EditingObject is not null &&
+                     ClassContainer is not null)
                 {
-                    <Validations @ref="DataValidations" Model="@DataDto" ValidateOnLoad="false">
-                        <Fields>
-                            @foreach (ObjectPropertyDto data in DataDto.Properties)
-                            {
-                                <Validation Validator="e => ValidateValue(e, data)" MessageLocalizer="@Lh.Localize">
-                                    <Field ColumnSize="ColumnSize.Is3.OnDesktop">
-                                        <FieldLabel>
-                                            <Tooltip Text="@($"{data.ClassProperty.ClassName}: {data.ClassProperty.Description}")"
-                                                     TriggerTargetId="tooltip-custom-target" Inline>
-                                                <Badge Color="Color.Info">@data.ClassProperty.Name</Badge>
-                                            </Tooltip>
-                                            (@data.ClassProperty.Type)
-                                        </FieldLabel>
-                                        <TextEdit @bind-Text="@data.Value">
-                                            <Feedback>
-                                                <ValidationError/>
-                                            </Feedback>
-                                        </TextEdit>
-                                    </Field>
-                                </Validation>
-                            }
-                        </Fields>
-                    </Validations>
+                    <Field>
+                        <FieldLabel>@L["Name"]</FieldLabel>
+                        <TextEdit @bind-Text="EditingEntity.Name"/>
+                    </Field>
+                    <Field>
+                        <FieldLabel>@L["Class"]</FieldLabel>
+                        <TextEdit @bind-Text="ClassContainer.Name" ReadOnly/>
+                    </Field>
+                    <Field>
+                        <FieldLabel>@L["Class"]</FieldLabel>
+                        <MemoEdit @bind-Text="ClassContainer.Description" ReadOnly/>
+                    </Field>
+                    <Field>
+                        <FieldLabel>@L["Bundle"]</FieldLabel>
+                        <NumericEdit @bind-Value="@EditingEntity.BundleId"/>
+                    </Field>
+
+                    <ObjectDataComponent Object="EditingObject"/>
                 }
             </ModalBody>
             <ModalFooter>
@@ -200,5 +164,3 @@
         </Form>
     </ModalContent>
 </Modal>
-
-<ClassSelectComponent @ref="ClassSelect" OnSelect="SetClass"></ClassSelectComponent>

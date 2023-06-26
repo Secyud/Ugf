@@ -1,6 +1,6 @@
 @using Ugf.DataManager.ClassManagement
-@inherits InfinityWorldChessDataComponentBase
-@inject IClassContainerAppService ClassAppService
+@using Secyud.Ugf.DataManager
+@inherits DataManagerComponentBase
 
 <Modal @ref="Modal" Closing="@CloseModal">
     <ModalContent Centered="true" Size="ModalSize.Large">
@@ -12,39 +12,25 @@
             <ModalBody>
                 <Fields>
                     <Field>
-                        <FieldLabel>
-                            @L["DisplayName:Parent"]
-                        </FieldLabel>
-                        <Addons>
-                            <Addon AddonType="AddonType.Body">
-                                <TextEdit Text="@ClassContainer?.Name"
-                                          TextColor="TextColor.Info" Readonly/>
-                            </Addon>
-                            <Addon AddonType="AddonType.End">
-                                <Button Clicked="() => ClassSelect.OpenModalAsync()"
-                                        Size="Size.Small" Color="Color.Secondary">
-                                    @L["SelectClass"]
-                                </Button>
-                            </Addon>
-                        </Addons>
+                        <FieldLabel>@L["BundleId"]</FieldLabel>
+                        <NumericEdit TValue="int?" @bind-Value="BundleId"/>
                     </Field>
                     <Field>
-                        <FieldLabel>@L["DisplayName:Bundle"]</FieldLabel>
-                        <SelectList TItem="string"
-                                    TValue="string"
-                                    Data="@Bundles.BundleNames"
-                                    TextField="@(item => item)"
-                                    ValueField="@(item => item)"
-                                    @bind-SelectedValue="@BundleName"/>
+                        <FieldLabel>
+                            @L["BaseClass"]
+                        </FieldLabel>
+                        <Autocomplete TItem="KeyValuePair<Type, Guid>" TValue="Guid" Data="TypeIdMapper.Types()"
+                                      TextField="(u => u.Key.Name)" ValueField="(u => u.Value)"
+                                      @bind-SelectedValue="@ClassId"/>
+
+
                     </Field>
                 </Fields>
             </ModalBody>
             <ModalFooter>
                 <Button Color="Color.Secondary" Clicked="CloseModalAsync">@L["Cancel"]</Button>
-                <SubmitButton Clicked="@GenerateConfig"/>
+                <SubmitButton Clicked="@GenerateConfigAsync"/>
             </ModalFooter>
         </Form>
     </ModalContent>
 </Modal>
-
-<ClassSelectComponent @ref="ClassSelect" OnSelect="SetClass"/>

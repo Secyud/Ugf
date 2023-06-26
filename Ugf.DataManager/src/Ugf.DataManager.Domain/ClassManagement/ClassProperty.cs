@@ -10,21 +10,22 @@ public class ClassProperty : Entity
     {
     }
 
-    public ClassProperty(Guid classId, short propertyId, string propertyName, string description)
+    public ClassProperty(Guid classId, short propertyId,DataType dataType, string propertyName)
     {
         ClassId = classId;
         PropertyId = propertyId;
+        DataType = dataType;
         PropertyName = propertyName;
-        Description = description;
     }
 
     public Guid ClassId { get; set; }
     public short PropertyId { get; set; }
+    public DataType DataType { get; set; }
     public string PropertyName { get; set; }
     public string Description { get; set; }
 
     public override object[] GetKeys()
     {
-        return new object[] { ClassId, PropertyId };
+        return new object[] { ClassId, PropertyId,DataType };
     }
 }

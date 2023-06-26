@@ -1,9 +1,9 @@
 ﻿@page "/class"
 
 @using Ugf.DataManager.ClassManagement
-@inherits AbpCrudPageBase<Ugf.DataManager.ClassManagement.IClassContainerAppService, Ugf.DataManager.ClassManagement.ClassContainerDto, Guid, Ugf.DataManager.ClassManagement.GetClassListInput,Ugf.DataManager.ClassManagement.ClassContainerCreateUpdateDto>
-@inject AbpBlazorMessageLocalizerHelper<InfinityWorldChessDataResource> Lh
-@inject IStringContainerAppService StringContainerAppService
+@using Secyud.Ugf.DataManager
+@inherits AbpCrudPageBase<IClassContainerAppService, ClassContainerDto, Guid, GetClassListInput>
+@inject AbpBlazorMessageLocalizerHelper<DataManagerResource> Lh
 
 <Card>
     <CardHeader>
@@ -15,22 +15,15 @@
     </CardHeader>
     <CardBody>
         <Fields>
-            <Autocomplete TItem="StringContainerDto" TValue="string"
-                          Data="@NameSpaces"
-                          TextField="@(item => item.FixedString)"
-                          ValueField="@(item => item.FixedString)"
-                          @bind-SelectedValue="@GetListInput.Namespace"
-                          Filter="AutocompleteFilter.StartsWith"
-                          Placeholder="@L["Namespace"]">
-                <NotFoundContent> Sorry... @context was not found! :( </NotFoundContent>
-            </Autocomplete>
             <Field ColumnSize="ColumnSize.Is5.OnDesktop">
                 <TextEdit @bind-Text="@GetListInput.Name" Placeholder="@L["Name"]"/>
             </Field>
             <Field ColumnSize="ColumnSize.Is7.OnDesktop">
                 <Addons>
                     <Addon AddonType="AddonType.Body">
-                        <TextEdit @bind-Text="@GetListInput.Assembly" Placeholder="@L["Assembly"]"/>
+                        <Autocomplete TItem="KeyValuePair<Type, Guid>" TValue="Guid" Data="TypeIdMapper.Types()"
+                                      TextField="(u => u.Key.Name)" ValueField="(u => u.Value)"
+                                      @bind-SelectedValue="@GetListInput.ClassId" Placeholder="@L["BaseClass"]"/>
                     </Addon>
                     <Addon AddonType="AddonType.End">
                         <Button Clicked="GetEntitiesAsync" Color="Color.Secondary">@L["Search"]</Button>
@@ -51,224 +44,44 @@
     </CardBody>
 </Card>
 
-<Modal @ref="CreateModal" Closing="@ClosingCreateModal">
-    <ModalContent Centered="true">
-        <Form>
-            <ModalHeader>
-                <ModalTitle>@L["NewClass"]</ModalTitle>
-                <CloseButton Clicked="CloseCreateModalAsync"/>
-            </ModalHeader>
-            <ModalBody>
-                <Validations @ref="@CreateValidationsRef" Model="@NewEntity" ValidateOnLoad="false">
-                    <Validation MessageLocalizer="@Lh.Localize">
-                        <Field>
-                            <FieldLabel>@L["DisplayName:Name"] *</FieldLabel>
-                            <TextEdit @bind-Text="@NewEntity.Name" Autofocus="true">
-                                <Feedback>
-                                    <ValidationError/>
-                                </Feedback>
-                            </TextEdit>
-                        </Field>
-                    </Validation>
-                    <Field>
-                        <FieldLabel>
-                            @L["DisplayName:Parent"]
-                        </FieldLabel>
-                        <Addons>
-                            <Addon AddonType="AddonType.Body">
-                                <TextEdit Text="@ParentName"
-                                          TextColor="TextColor.Info" Readonly/>
-                            </Addon>
-                            <Addon AddonType="AddonType.End">
-                                <Button Clicked="() => OpenClassSelect(0)"
-                                        Size="Size.Small" Color="Color.Secondary">
-                                    @L["SelectClass"]
-                                </Button>
-                            </Addon>
-                        </Addons>
-                    </Field>
-                    <Field>
-                        <FieldLabel>@L["DisplayName:NameSpace"] </FieldLabel>
-                        <FieldBody>
-                            <Autocomplete TItem="StringContainerDto" TValue="string"
-                                          Data="@NameSpaces"
-                                          TextField="@(item => item.FixedString)"
-                                          ValueField="@(item => item.FixedString)"
-                                          @bind-SelectedValue="@NewEntity.Namespace"
-                                          Filter="AutocompleteFilter.StartsWith" FreeTyping>
-                                <NotFoundContent> Sorry... @context was not found! :( </NotFoundContent>
-                            </Autocomplete>
-                        </FieldBody>
-                    </Field>
-                    <Validation MessageLocalizer="@Lh.Localize">
-                        <Field>
-                            <FieldLabel>@L["DisplayName:Description"] *</FieldLabel>
-                            <MemoEdit @bind-Text="@NewEntity.Description">
-                                <Feedback>
-                                    <ValidationError/>
-                                </Feedback>
-                            </MemoEdit>
-                        </Field>
-                    </Validation>
-                    <Validation MessageLocalizer="@Lh.Localize">
-                        <Field>
-                            <FieldLabel>@L["DisplayName:Assembly"] *</FieldLabel>
-                            <TextEdit @bind-Text="@NewEntity.Assembly">
-                                <Feedback>
-                                    <ValidationError/>
-                                </Feedback>
-                            </TextEdit>
-                        </Field>
-                    </Validation>
-                    <Validation MessageLocalizer="@Lh.Localize">
-                        <Field>
-                            <FieldLabel>@L["DisplayName:InsteadGuid"] *</FieldLabel>
-                            <TextEdit @bind-Text="@NewEntity.InsteadGuid">
-                                <Feedback>
-                                    <ValidationError/>
-                                </Feedback>
-                            </TextEdit>
-                        </Field>
-                    </Validation>
-                </Validations>
-            </ModalBody>
-            <ModalFooter>
-                <Button Color="Color.Secondary" Clicked="CloseCreateModalAsync">@L["Cancel"]</Button>
-                <SubmitButton Clicked="@CreateEntityAsync"/>
-            </ModalFooter>
-        </Form>
-    </ModalContent>
-</Modal>
-
-<Modal @ref="EditModal" Closing="@ClosePropertyModal">
-    <ModalContent Centered="true">
+<Modal @ref="EditModal" Closing="@ClosingEditModal">
+    <ModalContent Size="ModalSize.Large" Centered="true">
         <Form>
             <ModalHeader>
                 <ModalTitle>@L["Edit"]</ModalTitle>
                 <CloseButton Clicked="CloseEditModalAsync"/>
             </ModalHeader>
             <ModalBody>
-                <Tabs @bind-SelectedTab="@SelectTab">
-                    <Items>
-                        <Tab Name="info">@L["Info"].Value</Tab>
-                        <Tab Name="property">@L["Property"].Value</Tab>
-                    </Items>
-                    <Content>
-                        <Validations @ref="@EditValidationsRef" Model="@EditingEntity" ValidateOnLoad="false">
-                            <TabPanel Name="info">
-                                <Validation MessageLocalizer="@Lh.Localize">
-                                    <Field>
-                                        <FieldLabel>@L["DisplayName:Name"] *</FieldLabel>
-                                        <TextEdit @bind-Text="EditingEntity.Name" Autofocus="true">
-                                            <Feedback>
-                                                <ValidationError/>
-                                            </Feedback>
-                                        </TextEdit>
-                                    </Field>
-                                </Validation>
-                                <Field>
-                                    <FieldLabel>
-                                        @L["DisplayName:Parent"]
-                                    </FieldLabel>
-                                    <Addons>
-                                        <Addon AddonType="AddonType.Body">
-                                            <TextEdit Text="@ParentName"
-                                                      TextColor="TextColor.Info" Readonly/>
-                                        </Addon>
-                                        <Addon AddonType="AddonType.End">
-                                            <Button Clicked="() => OpenClassSelect(1)"
-                                                    Size="Size.Small" Color="Color.Secondary">
-                                                @L["SelectClass"]
-                                            </Button>
-                                        </Addon>
-                                    </Addons>
-                                </Field>
-                                <Field>
-                                    <FieldLabel>@L["DisplayName:NameSpace"] </FieldLabel>
-                                    <FieldBody>
-                                        <Autocomplete TItem="StringContainerDto" TValue="string"
-                                                      Data="@NameSpaces"
-                                                      TextField="@(item => item.FixedString)"
-                                                      ValueField="@(item => item.FixedString)"
-                                                      @bind-SelectedValue="@EditingEntity.Namespace"
-                                                      Filter="AutocompleteFilter.StartsWith" FreeTyping>
-                                            <NotFoundContent> Sorry... @context was not found! :( </NotFoundContent>
-                                        </Autocomplete>
-                                    </FieldBody>
-                                </Field>
-                                <Validation MessageLocalizer="@Lh.Localize">
-                                    <Field>
-                                        <FieldLabel>@L["DisplayName:Description"] </FieldLabel>
-                                        <MemoEdit @bind-Text="@EditingEntity.Description">
-                                            <Feedback>
-                                                <ValidationError/>
-                                            </Feedback>
-                                        </MemoEdit>
-                                    </Field>
-                                </Validation>
-                                <Validation MessageLocalizer="@Lh.Localize">
-                                    <Field>
-                                        <FieldLabel>@L["DisplayName:Assembly"] </FieldLabel>
-                                        <TextEdit @bind-Text="@EditingEntity.Assembly">
-                                            <Feedback>
-                                                <ValidationError/>
-                                            </Feedback>
-                                        </TextEdit>
-                                    </Field>
-                                </Validation>
-                                <Validation MessageLocalizer="@Lh.Localize">
-                                    <Field>
-                                        <FieldLabel>@L["DisplayName:InsteadGuid"]</FieldLabel>
-                                        <TextEdit @bind-Text="@EditingEntity.InsteadGuid">
-                                            <Feedback>
-                                                <ValidationError/>
-                                            </Feedback>
-                                        </TextEdit>
-                                    </Field>
-                                </Validation>
-                            </TabPanel>
-                            <TabPanel Name="property">
-                                <Button Clicked="CreateProperty">@L["CreateNewProperty"]</Button>
-                                <DataGrid TItem="ClassPropertyDto" PageSize="4" Data="EditingEntity.Properties"
-                                          ShowPager>
-                                    <DataGridColumns>
-                                        <DataGridColumn TItem="ClassPropertyDto" Field="@nameof(ClassPropertyDto.Name)"
-                                                        Caption="@L["Name"]" Sortable="true">
-                                            <DisplayTemplate>
-                                                @context.Name
-                                            </DisplayTemplate>
-                                        </DataGridColumn>
-                                        <DataGridColumn TItem="ClassPropertyDto" Field="@nameof(ClassPropertyDto.Index)"
-                                                        Caption="@L["Index"]" Sortable="true">
-                                            <DisplayTemplate>
-                                                @context.Index
-                                            </DisplayTemplate>
-                                        </DataGridColumn>
-                                        <DataGridColumn TItem="ClassPropertyDto" Field="@nameof(ClassPropertyDto.Type)"
-                                                        Caption="@L["Type"]" Sortable="false">
-                                            <DisplayTemplate>
-                                                @context.Type.ToString()
-                                            </DisplayTemplate>
-                                        </DataGridColumn>
-                                        <DataGridColumn TItem="ClassPropertyDto" Field="@nameof(ClassPropertyDto.Name)"
-                                                        Caption="@L["Operation"]" Sortable="false">
-                                            <DisplayTemplate>
-                                                <Button Clicked="() => DeleteProperty(context)"
-                                                        Color="Color.Danger" Class="grid-button">
-                                                    @L["Delete"]
-                                                </Button>
-                                                <Button Clicked="() => EditProperty(context)"
-                                                        Color="Color.Warning" Class="grid-button">
-                                                    @L["Edit"]
-                                                </Button>
-                                            </DisplayTemplate>
-                                        </DataGridColumn>
-                                    </DataGridColumns>
-                                </DataGrid>
-                            </TabPanel>
-                        </Validations>
-                    </Content>
-                </Tabs>
+                <Validations @ref="@EditValidationsRef" Model="@EditingEntity" ValidateOnLoad="false">
+                    <Field ColumnSize="ColumnSize.Is8">
+                        <FieldLabel>@L["Name"]</FieldLabel>
+                        <TextEdit @bind-Text="EditingEntity.Name" ReadOnly/>
+                    </Field>
+                    <Field ColumnSize="ColumnSize.Is4">
+                        <Button Clicked="RefreshClassProperty">@L["RefreshProperty"]</Button>
+                    </Field>
+                    <Field ColumnSize="ColumnSize.Is12">
+                        <FieldLabel>@L["Description"] </FieldLabel>
+                        <MemoEdit @bind-Text="@EditingEntity.Description"/>
+                    </Field>
+                    <DataGrid TItem="ClassPropertyDto" PageSize="4" ShowPager
+                              Data="EditingEntity.Properties">
+                        <DataGridColumns>
+                            <DataGridColumn TItem="ClassPropertyDto" Caption="@L["Name"]" Sortable
+                                            Field="@nameof(ClassPropertyDto.PropertyName)"/>
+
+                            <DataGridColumn TItem="ClassPropertyDto" Caption="@L["PropertyId"]" Sortable
+                                            Field="@nameof(ClassPropertyDto.PropertyId)"/>
+
+                            <DataGridColumn TItem="ClassPropertyDto" Field="@nameof(ClassPropertyDto.Description)"
+                                            Caption="@L["Description"]" Sortable="false">
+                                <DisplayTemplate>
+                                    <MemoEdit @bind-Text="@context.Description"/>
+                                </DisplayTemplate>
+                            </DataGridColumn>
+                        </DataGridColumns>
+                    </DataGrid>
+                </Validations>
             </ModalBody>
             <ModalFooter>
                 <Button Color="Color.Secondary" Clicked="CloseEditModalAsync">@L["Cancel"]</Button>
@@ -277,74 +90,3 @@
         </Form>
     </ModalContent>
 </Modal>
-
-<Modal @ref="CreateClassPropertyModal">
-    <ModalContent Centered="true">
-        <Form>
-            <ModalHeader>
-                <ModalTitle>@L["CreateProperty"]</ModalTitle>
-                <CloseButton Clicked="ClosePropertyModalAsync"/>
-            </ModalHeader>
-            <ModalBody>
-                <Validations @ref="PropertyValidations" Model="@PropertyDto" ValidateOnLoad="false">
-                    <Validation MessageLocalizer="@Lh.Localize">
-                        <Field>
-                            <FieldLabel>@L["DisplayName:Name"] *</FieldLabel>
-                            <TextEdit @bind-Text="@PropertyDto.Name" Autofocus="true">
-                                <Feedback>
-                                    <ValidationError/>
-                                </Feedback>
-                            </TextEdit>
-                        </Field>
-                    </Validation>
-                    <Validation MessageLocalizer="@Lh.Localize">
-                        <Field>
-                            <FieldLabel>@L["DisplayName:Description"]</FieldLabel>
-                            <MemoEdit @bind-Text="@PropertyDto.Description">
-                                <Feedback>
-                                    <ValidationError/>
-                                </Feedback>
-                            </MemoEdit>
-                        </Field>
-                    </Validation>
-                    <Validation Validator="ValidateIndex" MessageLocalizer="@Lh.Localize">
-                        <Field>
-                            <FieldLabel>@L["DisplayName:Index"] *</FieldLabel>
-                            <NumericEdit TValue="int" @bind-Value="@PropertyDto.Index">
-                                <Feedback>
-                                    <ValidationError/>
-                                </Feedback>
-                            </NumericEdit>
-                        </Field>
-                    </Validation>
-                    <Field>
-                        <FieldLabel>@L["DisplayName:Type"] *</FieldLabel>
-                        <Select TValue="PropertyType" @bind-SelectedValue="@PropertyDto.Type">
-                            <SelectItem Value="PropertyType.Bool">Bool </SelectItem>
-                            <SelectItem Value="PropertyType.UInt8">UInt8 </SelectItem>
-                            <SelectItem Value="PropertyType.UInt16">UInt16 </SelectItem>
-                            <SelectItem Value="PropertyType.UInt32">UInt32 </SelectItem>
-                            <SelectItem Value="PropertyType.UInt64">UInt64 </SelectItem>
-                            <SelectItem Value="PropertyType.Int8">Int8 </SelectItem>
-                            <SelectItem Value="PropertyType.Int16">Int16 </SelectItem>
-                            <SelectItem Value="PropertyType.Int32">Int32 </SelectItem>
-                            <SelectItem Value="PropertyType.Int64">Int64 </SelectItem>
-                            <SelectItem Value="PropertyType.Single">Single </SelectItem>
-                            <SelectItem Value="PropertyType.Double">Double </SelectItem>
-                            <SelectItem Value="PropertyType.String">String </SelectItem>
-                            <SelectItem Value="PropertyType.Guid">Guid </SelectItem>
-                        </Select>
-                    </Field>
-                </Validations>
-            </ModalBody>
-            <ModalFooter>
-                <Button Color="Color.Secondary" Clicked="ClosePropertyModalAsync">@L["Cancel"]</Button>
-                <SubmitButton Clicked="@AddPropertyAsync"/>
-            </ModalFooter>
-        </Form>
-    </ModalContent>
-</Modal>
-
-<ClassSelectComponent @ref="ClassSelect" OnSelect="SetClassParent"/>
-
-<ConfigGeneratorComponent @ref="@ConfigGenerator"/>
