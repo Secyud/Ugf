@@ -90,6 +90,12 @@ public partial class ClassManagement
         EditingProperties = await AppService.GetPropertiesAsync(entity.Id);
     }
 
+    protected override async Task UpdateEntityAsync()
+    {
+        await base.UpdateEntityAsync();
+        await AppService.UpdatePropertiesAsync(EditingProperties);
+    }
+
     private async Task RefreshClassProperty()
     {
         await AppService.CheckPropertiesAsync(EditingEntity.Id);

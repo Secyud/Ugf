@@ -393,6 +393,23 @@ namespace Ugf.DataManager.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "ClassProperties",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ClassId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    PropertyId = table.Column<short>(type: "smallint", nullable: false),
+                    DataType = table.Column<byte>(type: "tinyint", nullable: false),
+                    PropertyName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ClassProperties", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "OpenIddictApplications",
                 columns: table => new
                 {
@@ -711,27 +728,6 @@ namespace Ugf.DataManager.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ClassProperty",
-                columns: table => new
-                {
-                    ClassId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    PropertyId = table.Column<short>(type: "smallint", nullable: false),
-                    DataType = table.Column<byte>(type: "tinyint", nullable: false),
-                    PropertyName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ClassProperty", x => new { x.ClassId, x.PropertyId, x.DataType });
-                    table.ForeignKey(
-                        name: "FK_ClassProperty_ClassContainers_ClassId",
-                        column: x => x.ClassId,
-                        principalTable: "ClassContainers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "OpenIddictAuthorizations",
                 columns: table => new
                 {
@@ -1025,6 +1021,11 @@ namespace Ugf.DataManager.Migrations
                 column: "Name");
 
             migrationBuilder.CreateIndex(
+                name: "IX_ClassProperties_ClassId",
+                table: "ClassProperties",
+                column: "ClassId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_OpenIddictApplications_ClientId",
                 table: "OpenIddictApplications",
                 column: "ClientId");
@@ -1130,7 +1131,10 @@ namespace Ugf.DataManager.Migrations
                 name: "AbpUserTokens");
 
             migrationBuilder.DropTable(
-                name: "ClassProperty");
+                name: "ClassContainers");
+
+            migrationBuilder.DropTable(
+                name: "ClassProperties");
 
             migrationBuilder.DropTable(
                 name: "OpenIddictScopes");
@@ -1155,9 +1159,6 @@ namespace Ugf.DataManager.Migrations
 
             migrationBuilder.DropTable(
                 name: "AbpUsers");
-
-            migrationBuilder.DropTable(
-                name: "ClassContainers");
 
             migrationBuilder.DropTable(
                 name: "OpenIddictAuthorizations");

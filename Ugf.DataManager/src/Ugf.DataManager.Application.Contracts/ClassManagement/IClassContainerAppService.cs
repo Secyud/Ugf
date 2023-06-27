@@ -10,5 +10,5 @@ public interface IClassContainerAppService:
 {
     Task CheckPropertiesAsync(Guid id);
     Task<List<ClassPropertyDto>> GetPropertiesAsync(Guid id);
-    Task UpdateProperties(List<ClassPropertyDto> properties);
+    Task UpdatePropertiesAsync(List<ClassPropertyDto> properties);
 }

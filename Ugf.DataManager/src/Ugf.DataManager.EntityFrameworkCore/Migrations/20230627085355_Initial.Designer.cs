@@ -13,7 +13,7 @@ using Volo.Abp.EntityFrameworkCore;
 namespace Ugf.DataManager.Migrations
 {
     [DbContext(typeof(DataManagerDbContext))]
-    [Migration("20230627075332_Initial")]
+    [Migration("20230627085355_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -88,11 +88,11 @@ namespace Ugf.DataManager.Migrations
 
             modelBuilder.Entity("Ugf.DataManager.ClassManagement.ClassProperty", b =>
                 {
-                    b.Property<Guid>("ClassId")
+                    b.Property<Guid>("Id")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<short>("PropertyId")
-                        .HasColumnType("smallint");
+                    b.Property<Guid>("ClassId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<byte>("DataType")
                         .HasColumnType("tinyint");
@@ -100,12 +100,20 @@ namespace Ugf.DataManager.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<short>("PropertyId")
+                        .HasColumnType("smallint");
+
                     b.Property<string>("PropertyName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("ClassId", "PropertyId", "DataType");
+                    b.HasKey("Id");
 
-                    b.ToTable("ClassProperty");
+                    b.HasIndex("ClassId");
+
+                    b.ToTable("ClassProperties");
                 });
 
             modelBuilder.Entity("Ugf.DataManager.ClassManagement.SpecificObject", b =>
@@ -1835,15 +1843,6 @@ namespace Ugf.DataManager.Migrations
                     b.ToTable("AbpTenantConnectionStrings", (string)null);
                 });
 
-            modelBuilder.Entity("Ugf.DataManager.ClassManagement.ClassProperty", b =>
-                {
-                    b.HasOne("Ugf.DataManager.ClassManagement.ClassContainer", null)
-                        .WithMany("Properties")
-                        .HasForeignKey("ClassId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("Volo.Abp.AuditLogging.AuditLogAction", b =>
                 {
                     b.HasOne("Volo.Abp.AuditLogging.AuditLog", null)
@@ -1984,11 +1983,6 @@ namespace Ugf.DataManager.Migrations
                         .HasForeignKey("TenantId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("Ugf.DataManager.ClassManagement.ClassContainer", b =>
-                {
-                    b.Navigation("Properties");
                 });
 
             modelBuilder.Entity("Volo.Abp.AuditLogging.AuditLog", b =>

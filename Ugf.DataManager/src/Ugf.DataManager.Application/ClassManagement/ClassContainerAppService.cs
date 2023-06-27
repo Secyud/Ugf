@@ -32,8 +32,8 @@ public class ClassContainerAppService :
 
     protected override async Task<ClassContainer> GetEntityByIdAsync(Guid id)
     {
-        ClassContainer entity = 
-            await _repository.FindAsync(id) ?? 
+        ClassContainer entity =
+            await _repository.FindAsync(id) ??
             await CreateNewAsync(id);
         return entity;
     }
@@ -43,7 +43,7 @@ public class ClassContainerAppService :
         List<ClassProperty> deleteProperties = await GetPropertiesByIdAsync(id);
         List<ClassProperty> insertProperties = new();
         List<ClassProperty> updateProperties = new();
-        
+
         Type type = TypeIdMapper.GetType(id);
         PropertyDescriptor descriptor = U.Factory.InitializeManager.GetProperty(type);
 
@@ -57,7 +57,7 @@ public class ClassContainerAppService :
 
                 if (cp is null)
                     insertProperties.Add(new ClassProperty(
-                        GuidGenerator.Create(),TypeIdMapper.GetId(attribute.Belong), 
+                        GuidGenerator.Create(), TypeIdMapper.GetId(attribute.Belong),
                         attribute.ID, attribute.DataType, attribute.Info.Name));
                 else
                 {
@@ -83,12 +83,22 @@ public class ClassContainerAppService :
             await GetPropertiesByIdAsync(id));
     }
 
-    public async Task UpdateProperties(List<ClassPropertyDto> properties)
+    public async Task UpdatePropertiesAsync(List<ClassPropertyDto> properties)
     {
-        List<ClassProperty> entities = ObjectMapper.Map<List<ClassPropertyDto>, List<ClassProperty>>(
-            properties);
+        Dictionary<Guid, ClassPropertyDto> dict = properties.ToDictionary(u => u.Id);
+        HashSet<Guid> hashSet = dict.Keys.ToHashSet();
+        List<ClassProperty> entities =
+            (await _propertyRepository.GetQueryableAsync())
+            .Where(u => hashSet.Contains(u.Id))
+            .ToList();
 
-        await _propertyRepository.UpdateManyAsync(entities);
+        foreach (ClassProperty entity in entities)
+        {
+            ClassPropertyDto dto = dict[entity.Id];
+            ObjectMapper.Map(dto, entity);
+        }
+
+        await _propertyRepository.UpdateManyAsync(entities, true);
     }
 
     private async Task<List<ClassProperty>> GetPropertiesByIdAsync(Guid id)
@@ -102,7 +112,7 @@ public class ClassContainerAppService :
             type = type.BaseType;
         }
 
-        return 
+        return
             (await _propertyRepository.GetQueryableAsync())
             .Where(u => findIds.Contains(u.ClassId))
             .ToList();
@@ -113,10 +123,10 @@ public class ClassContainerAppService :
         Type type = TypeIdMapper.GetType(classId);
 
         ClassContainer c = await _repository.InsertAsync(
-            new ClassContainer(classId,type.Name));
+            new ClassContainer(classId, type.Name));
 
         await CheckPropertiesAsync(classId);
-        
+
         return c;
     }
 }
