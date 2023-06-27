@@ -20,8 +20,7 @@ namespace Secyud.Ugf.Localization
     [Registry]
     public class DefaultLocalizerFactory : ILocalizerFactory
     {
-        // ReSharper disable once FieldCanBeMadeReadOnly.Global
-        public static string LocalizationPath = Path.Combine(Application.dataPath[..^6], "Localization");
+        public static string LocalizationPath => Path.Combine(U.Path, "Localization");
 
         private readonly IDependencyRegistrar _registrar;
         private readonly Dictionary<Type, Dictionary<string, string>> _localizationStrings = new();

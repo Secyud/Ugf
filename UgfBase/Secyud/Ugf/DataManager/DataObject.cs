@@ -3,7 +3,7 @@ using Secyud.Ugf.Archiving;
 
 namespace Secyud.Ugf.DataManager;
 
-public abstract class DataObject : IArchivable
+public abstract class DataObject : IArchivable,ICloneable
 {
     [S(ID = -1)] protected string ObjectName;
     [S(ID = -2)] protected Guid TemplateType;
@@ -37,5 +37,10 @@ public abstract class DataObject : IArchivable
             PropertyDescriptor property = manager.GetProperty(GetType());
             resource.ReadInitialed(this, property);
         }
+    }
+
+    public object Clone()
+    {
+        return MemberwiseClone();
     }
 }

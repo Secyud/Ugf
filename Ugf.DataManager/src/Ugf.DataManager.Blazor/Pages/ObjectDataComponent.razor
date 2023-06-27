@@ -24,9 +24,9 @@
             }
             else
             {
-                <Autocomplete TItem="KeyValuePair<Type, Guid>" TValue="Guid" 
+                <Autocomplete TItem="Tuple<string,  Guid>" TValue="Guid" 
                               Data="TypeIdMapper.SubTypes(p.Item2.Info.FieldType)"
-                              TextField="(u => u.Key.Name)" ValueField="(u => u.Value)"
+                              TextField="u => u.Item1" ValueField="u => u.Item2"
                               SelectedValueChanged="v => CreateAsync(v, p)"
                               Placeholder="@L["Select"]"/>
             }
@@ -84,7 +84,7 @@
                       TextChanged="v => _objectDataView.SetValue(p, v)"/>
             break;
         case FieldType.Guid:
-            <GuidEdit Value="_objectDataView.GetValue<string>(p)"
+            <GuidEdit Value="_objectDataView.GetValue<Guid>(p)"
                       ValueChanged="v => _objectDataView.SetValue(p, v)"/>
             break;
         default:

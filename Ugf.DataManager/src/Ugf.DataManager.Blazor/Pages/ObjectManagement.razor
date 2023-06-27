@@ -18,13 +18,13 @@
                 <TextEdit @bind-Text="@GetListInput.Name" Placeholder="@L["Name"]"/>
             </Field>
             <Field ColumnSize="ColumnSize.Is6.OnDesktop">
-                <TextEdit @bind-Text="@GetListInput.BundleId" Placeholder="@L["BundleName"]"/>
+                <NumericEdit @bind-Value="@GetListInput.BundleId" Placeholder="@L["BundleName"]"/>
             </Field>
             <Field ColumnSize="ColumnSize.Is12.OnDesktop">
                 <Addons>
                     <Addon AddonType="AddonType.Body">
-                        <Autocomplete TItem="KeyValuePair<Type, Guid>" TValue="Guid" Data="TypeIdMapper.Types()"
-                                      TextField="(u => u.Key.Name)" ValueField="(u => u.Value)"
+                        <Autocomplete TItem="Tuple<string, Guid>" TValue="Guid" Data="TypeIdMapper.SubTypes()"
+                                      TextField="u => u.Item1" ValueField="u => u.Item2"
                                       @bind-SelectedValue="@GetListInput.ClassId" Placeholder="@L["BaseClass"]"/>
                     </Addon>
                     <Addon AddonType="AddonType.End">
@@ -57,8 +57,8 @@
                 <Validations @ref="@CreateValidationsRef" Model="@NewEntity" ValidateOnLoad="false">
                     <Field>
                         <FieldLabel>@L["Class"]</FieldLabel>
-                        <Autocomplete TItem="KeyValuePair<Type, Guid>" TValue="Guid" Data="TypeIdMapper.Types()"
-                                      TextField="(u => u.Key.Name)" ValueField="(u => u.Value)"
+                        <Autocomplete TItem="Tuple<string, Guid>" TValue="Guid" Data="TypeIdMapper.SubTypes()"
+                                      TextField="u => u.Item1" ValueField="u => u.Item2"
                                       @bind-SelectedValue="@NewEntity.ClassId" />
 
                     </Field>
@@ -97,8 +97,8 @@
                 <Validations @ref="@EditValidationsRef" Model="@EditingEntity" ValidateOnLoad="false">
                     <Field>
                         <FieldLabel>@L["Class"]</FieldLabel>
-                        <Autocomplete TItem="KeyValuePair<Type, Guid>" TValue="Guid" Data="TypeIdMapper.Types()"
-                                      TextField="(u => u.Key.Name)" ValueField="(u => u.Value)"
+                        <Autocomplete TItem="Tuple<string,  Guid>" TValue="Guid" Data="TypeIdMapper.SubTypes()"
+                                      TextField="u => u.Item1" ValueField="u => u.Item2"
                                       @bind-SelectedValue="@EditingEntity.ClassId"/>
 
                     </Field>

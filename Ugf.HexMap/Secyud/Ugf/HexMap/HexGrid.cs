@@ -4,6 +4,7 @@ using Secyud.Ugf.HexMap.Generator;
 using Secyud.Ugf.HexMap.Utilities;
 using System.Collections.Generic;
 using System.IO;
+using Secyud.Ugf.Archiving;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -329,7 +330,7 @@ namespace Secyud.Ugf.HexMap
 		///     Save the map.
 		/// </summary>
 		/// <param name="writer"><see cref="BinaryWriter" /> to use.</param>
-		public void Save(BinaryWriter writer)
+		public void Save(IArchiveWriter writer)
 		{
 			writer.Write(CellCountX);
 			writer.Write(CellCountZ);
@@ -342,7 +343,7 @@ namespace Secyud.Ugf.HexMap
 		///    
 		/// </summary>
 		/// <param name="reader"><see cref="BinaryReader" /> to use.</param>
-		public void Load(BinaryReader reader)
+		public void Load(IArchiveReader reader)
 		{
 			ClearPath();
 			ClearUnits();

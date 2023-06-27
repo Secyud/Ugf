@@ -21,8 +21,8 @@
             <Field ColumnSize="ColumnSize.Is7.OnDesktop">
                 <Addons>
                     <Addon AddonType="AddonType.Body">
-                        <Autocomplete TItem="KeyValuePair<Type, Guid>" TValue="Guid" Data="TypeIdMapper.Types()"
-                                      TextField="(u => u.Key.Name)" ValueField="(u => u.Value)"
+                        <Autocomplete TItem="Tuple<string,  Guid>" TValue="Guid" Data="TypeIdMapper.SubTypes()"
+                                      TextField="u => u.Item1" ValueField="u => u.Item2"
                                       @bind-SelectedValue="@GetListInput.ClassId" Placeholder="@L["BaseClass"]"/>
                     </Addon>
                     <Addon AddonType="AddonType.End">

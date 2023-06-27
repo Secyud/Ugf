@@ -75,15 +75,14 @@ public static class TypeIdMapper
             writer.WriteLine($"{value} {key}");
     }
 
-    public static IDictionary<Guid,Type> Types()
+    public static List<Tuple<string, Guid>> SubTypes(Type type = null)
     {
-        return TypeDictionary;
+        IEnumerable<KeyValuePair<Guid, Type>> types = TypeDictionary;
+        if (type is not null)
+            types = types.Where(u => type.IsAssignableFrom(u.Value));
+
+        return
+            types.Select(u => new Tuple<string, Guid>(u.Value.Name, u.Key))
+                .ToList();
     }
-    public static List<Tuple<Guid,string>> SubTypes(Type type)
-    {
-        return TypeDictionary.Where(u=> type.IsAssignableFrom( u.Value))
-            .Select(u=>new Tuple<Guid,string>(u.Key,u.Value.Name))
-            .ToList();
-    }
-    
 }

@@ -16,9 +16,9 @@ namespace Secyud.Ugf
 	{
 		public void ConfigureGame(ConfigurationContext context)
 		{
-			HexMetrics.NoiseSource = Resources.Load<Texture2D>("Noise");
-			HexMetrics.InitializeHashGrid(1238);
-			context.Manager.AddType<HexMapGenerator>();
+			// HexMetrics.NoiseSource = Resources.Load<Texture2D>("Noise");
+			// HexMetrics.InitializeHashGrid(1238);
+			// context.Manager.AddType<HexMapGenerator>();
 		}
 	}
 }

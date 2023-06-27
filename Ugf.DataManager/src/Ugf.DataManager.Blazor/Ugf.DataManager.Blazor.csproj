@@ -25,6 +25,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Outer\Core.csproj" />
     <ProjectReference Include="..\Ugf.DataManager.Application\Ugf.DataManager.Application.csproj" />
     <ProjectReference Include="..\Ugf.DataManager.HttpApi\Ugf.DataManager.HttpApi.csproj" />
     <ProjectReference Include="..\Ugf.DataManager.EntityFrameworkCore\Ugf.DataManager.EntityFrameworkCore.csproj" />
@@ -51,6 +52,12 @@
     <None Update="Pages\**\*.css">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="UnityEngine.CoreModule">
+      <HintPath>C:\Environment\unity\2021.3.25f1c1\Editor\Data\Managed\UnityEngine\UnityEngine.CoreModule.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>

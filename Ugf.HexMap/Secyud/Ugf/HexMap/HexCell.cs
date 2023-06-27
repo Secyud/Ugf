@@ -170,7 +170,7 @@ namespace Secyud.Ugf.HexMap
 		///     Save the cell data.
 		/// </summary>
 		/// <param name="writer"><see cref="BinaryWriter" /> to use.</param>
-		public void Save(BinaryWriter writer)
+		public void Save(IArchiveWriter writer)
 		{
 			writer.Write((byte)_terrainTypeIndex);
 			writer.Write((byte)(_elevation + 127));
@@ -202,7 +202,7 @@ namespace Secyud.Ugf.HexMap
 		///     Load the cell data.
 		/// </summary>
 		/// <param name="reader"><see cref="BinaryReader" /> to use.</param>
-		public void Load(BinaryReader reader)
+		public void Load(IArchiveReader reader)
 		{
 			_terrainTypeIndex = reader.ReadByte();
 			_elevation = reader.ReadByte() - 127;

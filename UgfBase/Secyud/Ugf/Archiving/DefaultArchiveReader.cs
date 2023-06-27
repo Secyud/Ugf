@@ -126,7 +126,7 @@ public class DefaultArchiveReader : IArchiveReader, IDisposable
             FieldType.String  => ReadString(),
             FieldType.Guid    => ReadGuid(),
             FieldType.Object  => ReadNullable<object>(),
-            _                 => new NotImplementedException("Type not support!")
+            _                 => new NotSupportedException("Type not support!")
         };
     }
 

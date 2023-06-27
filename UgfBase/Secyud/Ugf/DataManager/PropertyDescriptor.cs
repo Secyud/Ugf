@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Reflection;
 using System.Ugf.Collections.Generic;
 using Secyud.Ugf.Archiving;
@@ -52,12 +51,28 @@ public class PropertyDescriptor
     public void Write(object o, IArchiveWriter writer)
     {
         foreach (SAttribute property in ArchiveProperties)
-            property.Write(property.GetValue(o), writer);
+        {
+            object value = property.GetValue(o);
+            if (property.Info.IsInitOnly)
+            {
+                PropertyDescriptor subDescriptor = U.Factory.InitializeManager.GetProperty(value.GetType());
+                writer.SaveProperties(subDescriptor.ArchiveProperties, value);
+            }
+            else
+                property.Write(property.GetValue(o), writer);
+        }
     }
 
     public void Read(object obj, IArchiveReader reader)
     {
         foreach (SAttribute property in ArchiveProperties)
-            property.SetValue(obj, property.Read(reader));
+            if (property.Info.IsInitOnly)
+            {
+                object value = property.GetValue(obj);
+                PropertyDescriptor subDescriptor = U.Factory.InitializeManager.GetProperty(value.GetType());
+                reader.LoadProperty(subDescriptor.ArchiveProperties, obj);
+            }
+            else
+                property.SetValue(obj, property.Read(reader));
     }
 }

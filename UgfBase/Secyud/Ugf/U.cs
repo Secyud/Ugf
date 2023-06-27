@@ -2,11 +2,8 @@
 
 using System;
 using Localization;
-using Secyud.Ugf.AssetLoading;
-using Secyud.Ugf.DependencyInjection;
 using Secyud.Ugf.Localization;
 using Secyud.Ugf.Modularity;
-using System.Reflection;
 using Secyud.Ugf.Archiving;
 using Secyud.Ugf.DataManager;
 using UnityEngine;
@@ -20,10 +17,21 @@ namespace Secyud.Ugf
     {
         public static IStringLocalizer<DefaultResource> T => UgfApplicationFactory.Instance.T;
         public static ISpriteLocalizer<DefaultResource> S => UgfApplicationFactory.Instance.S;
-        public static Camera Camera => UgfApplicationFactory.Instance.Camera;
-        public static Canvas Canvas => UgfApplicationFactory.Instance.Canvas;
+        public static InitializeManager I => UgfApplicationFactory.Instance.InitializeManager;
+        public static Camera Camera => UgfApplicationFactory.Instance.Manager.Camera;
+        public static Canvas Canvas => UgfApplicationFactory.Instance.Manager.Canvas;
         public static UgfApplicationFactory Factory => UgfApplicationFactory.Instance;
-
+        public static string Path
+        {
+            get
+            {
+#if UNITY
+                return Application.dataPath;
+#else
+                return System.IO.Directory.GetCurrentDirectory();
+#endif
+            }
+        }
 
         public static T Get<T>() where T : class
         {
@@ -57,18 +65,30 @@ namespace Secyud.Ugf
 
         public static void AutoSaveObject(object o, IArchiveWriter writer)
         {
-            PropertyDescriptor property = UgfApplicationFactory.Instance
-                .InitializeManager.GetProperty(o.GetType());
+            PropertyDescriptor property = I.GetProperty(o.GetType());
             
             property.Write(o,writer);
         }
         
         public static void AutoLoadObject(object o, IArchiveReader reader)
         {
-            PropertyDescriptor property = UgfApplicationFactory.Instance
-                .InitializeManager.GetProperty(o.GetType());
+            PropertyDescriptor property = I.GetProperty(o.GetType());
             
             property.Read(o,reader);
+        }
+
+        private static int _step;
+        public static bool AddStep(int value = 1)
+        {
+            if (_step > 1024)
+            {
+                Factory.Application.CurrentStep+=value;
+                _step = 0;
+                return true;
+            }
+
+            _step++;
+            return false;
         }
     }
 }

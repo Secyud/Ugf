@@ -4,17 +4,15 @@ using Secyud.Ugf.DependencyInjection;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.IO;
 using System.Ugf.Collections.Generic;
-using UnityEditor;
+using Secyud.Ugf.Archiving;
 
 #endregion
 
 namespace Secyud.Ugf.Modularity
 {
     [Registry(
-        typeof(IModuleContainer),
-        typeof(IModuleLoader)
+        typeof(IModuleContainer)
     )]
     public class UgfApplication : IUgfApplication
     {
@@ -103,6 +101,13 @@ namespace Secyud.Ugf.Modularity
 
             foreach (IOnPostInitialization module in onPostInitializations)
                 yield return module.OnGamePostInitialization(context);
+        }
+
+        public IEnumerator GameSaving()
+        {
+            foreach (IUgfModuleDescriptor descriptor in Modules)
+                if (descriptor.Instance is IOnArchiving archiving)
+                   yield return archiving.SaveGame();
         }
 
         public void Shutdown()

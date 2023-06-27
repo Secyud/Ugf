@@ -1,8 +1,10 @@
 using System;
 using System.Threading.Tasks;
+using InfinityWorldChess;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Secyud.Ugf.Modularity;
 using Serilog;
 using Serilog.Events;
 
@@ -25,6 +27,8 @@ public class Program
             .WriteTo.Async(c => c.Console())
             .CreateLogger();
 
+        UgfApplicationFactory factory = new();
+        factory.Create(null,typeof(InfinityWorldChessDomainModule));
         try
         {
             Log.Information("Starting web host.");

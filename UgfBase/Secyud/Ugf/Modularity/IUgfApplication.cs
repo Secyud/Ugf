@@ -19,6 +19,8 @@ namespace Secyud.Ugf.Modularity
         void Configure();
 
         IEnumerator GameInitialization();
+        
+        IEnumerator GameSaving();
 
         void Shutdown();
     }

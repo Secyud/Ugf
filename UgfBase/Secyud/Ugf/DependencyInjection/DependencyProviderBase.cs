@@ -29,7 +29,7 @@ namespace Secyud.Ugf.DependencyInjection
         public object TryGet(Type type)
         {
             InstanceDescriptor descriptor = GetInstanceDescriptor(type);
-            return descriptor?.ObjectAccessor;
+            return descriptor?.ObjectAccessor();
         }
 
         public virtual object Get(Type type)
@@ -39,7 +39,7 @@ namespace Secyud.Ugf.DependencyInjection
             if (descriptor is null)
                 throw new UgfException($"Can't find dependency for exposed type {type}");
 
-            return descriptor.ObjectAccessor;
+            return descriptor.ObjectAccessor();
         }
 
         protected virtual void HandleScope(DependencyDescriptor dd, InstanceDescriptor id)
