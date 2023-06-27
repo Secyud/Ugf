@@ -13,23 +13,22 @@ public class ObjectDataView
     public PropertyDescriptor Descriptor { get; }
     public object Obj { get; }
 
-    public ObjectDataView(object obj, ClassContainerDto containerDto)
+    public ObjectDataView(object obj, List<ClassPropertyDto> properties)
     {
-        Type type = TypeIdMapper.GetType(containerDto.Id);
-        Descriptor = U.Factory.InitializeManager.GetProperty(type);
+        Descriptor = U.Factory.InitializeManager.GetProperty(obj.GetType());
 
-        AddProperty(Descriptor.ArchiveProperties, containerDto);
-        AddProperty(Descriptor.InitialedProperties, containerDto);
-        AddProperty(Descriptor.IgnoredProperties, containerDto);
+        AddProperty(Descriptor.ArchiveProperties, properties);
+        AddProperty(Descriptor.InitialedProperties, properties);
+        AddProperty(Descriptor.IgnoredProperties, properties);
 
         Obj = obj;
     }
 
-    private void AddProperty(SAttribute[] attributes, ClassContainerDto containerDto)
+    private void AddProperty(SAttribute[] attributes, List<ClassPropertyDto> properties)
     {
         foreach (SAttribute attribute in attributes)
         {
-            ClassPropertyDto p = containerDto.Properties.FirstOrDefault(u =>
+            ClassPropertyDto p = properties.FirstOrDefault(u =>
                 u.PropertyId == attribute.ID && u.DataType == (int)attribute.DataType);
             Properties.Add(new Tuple<ClassPropertyDto, SAttribute>(p, attribute));
         }

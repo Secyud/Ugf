@@ -24,7 +24,7 @@ public class DataManagerDbContextFactory : IDesignTimeDbContextFactory<DataManag
     private static IConfigurationRoot BuildConfiguration()
     {
         IConfigurationBuilder builder = new ConfigurationBuilder()
-            .SetBasePath(Path.Combine(Directory.GetCurrentDirectory(), "../InfinityWorldChessData.DbMigrator/"))
+            .SetBasePath(Path.Combine(Directory.GetCurrentDirectory(), "../Ugf.DataManager.DbMigrator/"))
             .AddJsonFile("appsettings.json", optional: false);
 
         return builder.Build();

@@ -44,13 +44,6 @@ public class DataManagerEntityFrameworkCoreModule : AbpModule
             options.AddRepository<SpecificObject, SpecificObjectRepository>();
 
             options.AddDefaultRepositories(includeAllEntities: true);
-
-
-            options.Entity<ClassContainer>(o =>
-            {
-                o.DefaultWithDetailsFunc = q => q
-                    .Include(u => u.Properties);
-            });
         });
 
         Configure<AbpDbContextOptions>(options =>

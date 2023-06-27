@@ -14,13 +14,13 @@
     </CardHeader>
     <CardBody>
         <Fields>
-            <Field ColumnSize="ColumnSize.Is6.OnDesktop">
+            <Field ColumnSize="ColumnSize.Is6">
                 <TextEdit @bind-Text="@GetListInput.Name" Placeholder="@L["Name"]"/>
             </Field>
-            <Field ColumnSize="ColumnSize.Is6.OnDesktop">
+            <Field ColumnSize="ColumnSize.Is6">
                 <NumericEdit @bind-Value="@GetListInput.BundleId" Placeholder="@L["BundleName"]"/>
             </Field>
-            <Field ColumnSize="ColumnSize.Is12.OnDesktop">
+            <Field ColumnSize="ColumnSize.Is12">
                 <Addons>
                     <Addon AddonType="AddonType.Body">
                         <Autocomplete TItem="Tuple<string, Guid>" TValue="Guid" Data="TypeIdMapper.SubTypes()"
@@ -59,7 +59,7 @@
                         <FieldLabel>@L["Class"]</FieldLabel>
                         <Autocomplete TItem="Tuple<string, Guid>" TValue="Guid" Data="TypeIdMapper.SubTypes()"
                                       TextField="u => u.Item1" ValueField="u => u.Item2"
-                                      @bind-SelectedValue="@NewEntity.ClassId" />
+                                      @bind-SelectedValue="@NewEntity.ClassId"/>
 
                     </Field>
                     <Validation MessageLocalizer="@Lh.Localize">
@@ -97,7 +97,7 @@
                 <Validations @ref="@EditValidationsRef" Model="@EditingEntity" ValidateOnLoad="false">
                     <Field>
                         <FieldLabel>@L["Class"]</FieldLabel>
-                        <Autocomplete TItem="Tuple<string,  Guid>" TValue="Guid" Data="TypeIdMapper.SubTypes()"
+                        <Autocomplete TItem="Tuple<string, Guid>" TValue="Guid" Data="TypeIdMapper.SubTypes()"
                                       TextField="u => u.Item1" ValueField="u => u.Item2"
                                       @bind-SelectedValue="@EditingEntity.ClassId"/>
 
@@ -127,7 +127,7 @@
 </Modal>
 
 <Modal @ref="ObjectDataModal" Closing="@CloseObjectDataModal">
-    <ModalContent Size="ModalSize.Fullscreen" Centered="true">
+    <ModalContent Size="ModalSize.Large" Centered="true">
         <Form>
             <ModalHeader>
                 <ModalTitle>@L["SetData"]</ModalTitle>
@@ -137,24 +137,26 @@
                 @if (EditingObject is not null &&
                      ClassContainer is not null)
                 {
-                    <Field>
-                        <FieldLabel>@L["Name"]</FieldLabel>
-                        <TextEdit @bind-Text="EditingEntity.Name"/>
-                    </Field>
-                    <Field>
-                        <FieldLabel>@L["Class"]</FieldLabel>
-                        <TextEdit @bind-Text="ClassContainer.Name" ReadOnly/>
-                    </Field>
-                    <Field>
-                        <FieldLabel>@L["Class"]</FieldLabel>
-                        <MemoEdit @bind-Text="ClassContainer.Description" ReadOnly/>
-                    </Field>
-                    <Field>
-                        <FieldLabel>@L["Bundle"]</FieldLabel>
-                        <NumericEdit @bind-Value="@EditingEntity.BundleId"/>
-                    </Field>
+                    <Fields>
+                        <Field ColumnSize="ColumnSize.Is12">
+                            <FieldLabel>@L["Name"]</FieldLabel>
+                            <TextEdit @bind-Text="EditingEntity.Name"/>
+                        </Field>
+                        <Field ColumnSize="ColumnSize.Is12">
+                            <FieldLabel>@L["Class"]</FieldLabel>
+                            <TextEdit @bind-Text="ClassContainer.Name" ReadOnly/>
+                        </Field>
+                        <Field ColumnSize="ColumnSize.Is12">
+                            <FieldLabel>@L["Class"]</FieldLabel>
+                            <MemoEdit @bind-Text="ClassContainer.Description" ReadOnly/>
+                        </Field>
+                        <Field ColumnSize="ColumnSize.Is12">
+                            <FieldLabel>@L["Bundle"]</FieldLabel>
+                            <NumericEdit @bind-Value="@EditingEntity.BundleId"/>
+                        </Field>
 
-                    <ObjectDataComponent Object="EditingObject"/>
+                        <ObjectDataComponent Object="EditingObject"/>
+                    </Fields>
                 }
             </ModalBody>
             <ModalFooter>

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Ugf.Collections.Generic;
 using Secyud.Ugf.Archiving;
 
 namespace Secyud.Ugf.DataManager
@@ -94,6 +95,9 @@ namespace Secyud.Ugf.DataManager
         }
         public static void LoadDataFromBytes(object obj,DataType dataType,byte[] data,PropertyDescriptor property)
         {
+            if (data.IsNullOrEmpty())
+                return;
+            
             using MemoryStream stream = new(data);
             using DefaultArchiveReader reader = new(stream);
             

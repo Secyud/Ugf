@@ -55,6 +55,7 @@ public class DataManagerDbContext :
 
     public DbSet<ClassContainer> ClassContainers { get; set; }
     public DbSet<SpecificObject> SpecificObjects { get; set; }
+    public DbSet<ClassProperty> ClassProperties { get; set; }
 
     #endregion
 
@@ -82,11 +83,6 @@ public class DataManagerDbContext :
         {
             b.ConfigureByConvention();
 
-            b.HasMany(u => u.Properties)
-                .WithOne()
-                .HasForeignKey(v => v.ClassId)
-                .OnDelete(DeleteBehavior.Cascade);
-
             b.Property(t => t.Name).IsRequired();
             b.HasIndex(u => u.Name);
         });
@@ -102,8 +98,8 @@ public class DataManagerDbContext :
         builder.Entity<ClassProperty>(b =>
         {
             b.ConfigureByConvention();
-            b.HasKey(x => new { x.ClassId, x.PropertyId });
             b.Property(cs => cs.ClassId).IsRequired();
+            b.HasIndex(u => u.ClassId);
         });
     }
 }

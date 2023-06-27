@@ -2,18 +2,19 @@
 @using Secyud.Ugf.DataManager
 @inherits DataManagerComponentBase
 
+@if (_objectDataView is not null)
+{
 @foreach (Tuple<ClassPropertyDto, SAttribute> p in _objectDataView.Properties)
 {
-    <Field>
+    <Field ColumnSize="ColumnSize.Is6">
         <FieldLabel>
             <Tooltip Text="@p.Item1?.Description"
                      TriggerTargetId="tooltip-custom-target" Inline>
-                <Badge Color="Color.Info">@p.Item2.Info.Name</Badge>
+                <Badge Color="Color.Info">@(p.Item1?.Name??p.Item2.Info.Name)</Badge>
             </Tooltip>
         </FieldLabel>
-    </Field>
 
-    switch (p.Item2.Type)
+    @switch (p.Item2.Type)
     {
         case FieldType.Object:
             object obj = _objectDataView.GetValue<object>(p);
@@ -24,11 +25,7 @@
             }
             else
             {
-                <Autocomplete TItem="Tuple<string,  Guid>" TValue="Guid" 
-                              Data="TypeIdMapper.SubTypes(p.Item2.Info.FieldType)"
-                              TextField="u => u.Item1" ValueField="u => u.Item2"
-                              SelectedValueChanged="v => CreateAsync(v, p)"
-                              Placeholder="@L["Select"]"/>
+                <ClassSelector BaseClass="p.Item2.Info.FieldType" EnsureAction="id=>CreateAsync(id,p)"/>
             }
             break;
         case FieldType.Bool:
@@ -90,31 +87,6 @@
         default:
             throw new ArgumentOutOfRangeException();
     }
+    </Field>
 }
-@* *@
-@* @if (DataDto?.Properties is not null) *@
-@* { *@
-@*     <Validations @ref="DataValidations" Model="@DataDto" ValidateOnLoad="false"> *@
-@*         <Fields> *@
-@*             @foreach (ObjectPropertyDto data in DataDto.Properties) *@
-@*             { *@
-@*                 <Validation Validator="e => ValidateValue(e, data)" MessageLocalizer="@Lh.Localize"> *@
-@*                     <Field ColumnSize="ColumnSize.Is3.OnDesktop"> *@
-@*                         <FieldLabel> *@
-@*                             <Tooltip Text="@($"{data.ClassProperty.ClassName}: {data.ClassProperty.Description}")" *@
-@*                                      TriggerTargetId="tooltip-custom-target" Inline> *@
-@*                                 <Badge Color="Color.Info">@data.ClassProperty.Name</Badge> *@
-@*                             </Tooltip> *@
-@*                             (@data.ClassProperty.Type) *@
-@*                         </FieldLabel> *@
-@*                         <TextEdit @bind-Text="@data.Value"> *@
-@*                             <Feedback> *@
-@*                                 <ValidationError/> *@
-@*                             </Feedback> *@
-@*                         </TextEdit> *@
-@*                     </Field> *@
-@*                 </Validation> *@
-@*             } *@
-@*         </Fields> *@
-@*     </Validations> *@
-@* } *@
+}

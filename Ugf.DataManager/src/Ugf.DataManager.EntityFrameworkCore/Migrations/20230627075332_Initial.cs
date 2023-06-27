@@ -371,6 +371,28 @@ namespace Ugf.DataManager.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "ClassContainers",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ExtraProperties = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ConcurrencyStamp = table.Column<string>(type: "nvarchar(40)", maxLength: 40, nullable: true),
+                    CreationTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CreatorId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    LastModificationTime = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    LastModifierId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
+                    DeleterId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    DeletionTime = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ClassContainers", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "OpenIddictApplications",
                 columns: table => new
                 {
@@ -428,6 +450,32 @@ namespace Ugf.DataManager.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_OpenIddictScopes", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "SpecificObjects",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ClassId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    BundleId = table.Column<int>(type: "int", nullable: false),
+                    ArchivedData = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
+                    InitialedData = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
+                    IgnoredData = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
+                    ExtraProperties = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ConcurrencyStamp = table.Column<string>(type: "nvarchar(40)", maxLength: 40, nullable: true),
+                    CreationTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CreatorId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    LastModificationTime = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    LastModifierId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
+                    DeleterId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    DeletionTime = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SpecificObjects", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -658,6 +706,27 @@ namespace Ugf.DataManager.Migrations
                         name: "FK_AbpUserTokens_AbpUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AbpUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ClassProperty",
+                columns: table => new
+                {
+                    ClassId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    PropertyId = table.Column<short>(type: "smallint", nullable: false),
+                    DataType = table.Column<byte>(type: "tinyint", nullable: false),
+                    PropertyName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ClassProperty", x => new { x.ClassId, x.PropertyId, x.DataType });
+                    table.ForeignKey(
+                        name: "FK_ClassProperty_ClassContainers_ClassId",
+                        column: x => x.ClassId,
+                        principalTable: "ClassContainers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -951,6 +1020,11 @@ namespace Ugf.DataManager.Migrations
                 column: "UserName");
 
             migrationBuilder.CreateIndex(
+                name: "IX_ClassContainers_Name",
+                table: "ClassContainers",
+                column: "Name");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_OpenIddictApplications_ClientId",
                 table: "OpenIddictApplications",
                 column: "ClientId");
@@ -979,6 +1053,11 @@ namespace Ugf.DataManager.Migrations
                 name: "IX_OpenIddictTokens_ReferenceId",
                 table: "OpenIddictTokens",
                 column: "ReferenceId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_SpecificObjects_Name",
+                table: "SpecificObjects",
+                column: "Name");
         }
 
         /// <inheritdoc />
@@ -1051,10 +1130,16 @@ namespace Ugf.DataManager.Migrations
                 name: "AbpUserTokens");
 
             migrationBuilder.DropTable(
+                name: "ClassProperty");
+
+            migrationBuilder.DropTable(
                 name: "OpenIddictScopes");
 
             migrationBuilder.DropTable(
                 name: "OpenIddictTokens");
+
+            migrationBuilder.DropTable(
+                name: "SpecificObjects");
 
             migrationBuilder.DropTable(
                 name: "AbpEntityChanges");
@@ -1070,6 +1155,9 @@ namespace Ugf.DataManager.Migrations
 
             migrationBuilder.DropTable(
                 name: "AbpUsers");
+
+            migrationBuilder.DropTable(
+                name: "ClassContainers");
 
             migrationBuilder.DropTable(
                 name: "OpenIddictAuthorizations");

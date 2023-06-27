@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Ugf.Collections.Generic;
 using Secyud.Ugf.Archiving;
@@ -14,18 +15,34 @@ public class PropertyDescriptor
 
     public PropertyDescriptor(Type type)
     {
-        FieldInfo[] infos = type.GetFields(
-            BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public);
-        List<SAttribute> initialed = new();
-        List<SAttribute> archive = new();
-        List<SAttribute> ignored = new();
+        FieldInfo[] infos = type.GetFields(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
+
+
+        List<SAttribute> initialed;
+        List<SAttribute> archive;
+        List<SAttribute> ignored;
+
+        if (type.BaseType != typeof(object))
+        {
+            PropertyDescriptor baseDescriptor = U.I.GetProperty(type.BaseType);
+            initialed = baseDescriptor.InitialedProperties.ToList();
+            archive = baseDescriptor.ArchiveProperties.ToList();
+            ignored = baseDescriptor.IgnoredProperties.ToList();
+        }
+        else
+        {
+            initialed = new List<SAttribute>();
+            archive = new List<SAttribute>();
+            ignored = new List<SAttribute>();
+        }
+        
         foreach (FieldInfo info in infos)
         {
             SAttribute attribute = info.GetCustomAttribute<SAttribute>();
 
             if (attribute is null) continue;
 
-            attribute.SetPropertyType(info);
+            attribute.SetPropertyType(info,type);
 
             switch (attribute.DataType)
             {

@@ -5,11 +5,8 @@ namespace Ugf.DataManager.ClassManagement;
 
 public class SpecificObject:FullAuditedAggregateRoot<Guid>
 {
-    private SpecificObject(byte[] archivedData, byte[] initialedData, byte[] ignoredData)
+    private SpecificObject()
     {
-        ArchivedData = archivedData;
-        InitialedData = initialedData;
-        IgnoredData = ignoredData;
     }
     
     public SpecificObject(Guid id, 

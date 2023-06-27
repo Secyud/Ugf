@@ -10,5 +10,4 @@ public class ClassContainerDto:EntityDto<Guid>
     [Required]
     public string Name { get;  set; }
     public string Description { get; set; }
-    public List<ClassPropertyDto> Properties { get; set; }
 }

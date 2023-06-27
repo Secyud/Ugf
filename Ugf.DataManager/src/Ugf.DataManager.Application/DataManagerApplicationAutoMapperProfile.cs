@@ -10,5 +10,8 @@ public class DataManagerApplicationAutoMapperProfile : Profile
         CreateMap<ClassProperty, ClassPropertyDto>();
         CreateMap<ClassContainer, ClassContainerDto>();
         CreateMap<SpecificObject, SpecificObjectDto>();
+        CreateMap<ClassPropertyDto, ClassProperty>();
+        CreateMap<ClassContainerDto, ClassContainer>();
+        CreateMap<SpecificObjectDto, SpecificObject>();
     }
 }

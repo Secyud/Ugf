@@ -1,6 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Ugf.DataManager.Localization;
-using Ugf.DataManager.MultiTenancy;
 using Volo.Abp.Identity.Blazor;
 using Volo.Abp.SettingManagement.Blazor.Menus;
 using Volo.Abp.TenantManagement.Blazor.Navigation;
@@ -19,8 +19,7 @@ public class DataManagerMenuContributor : IMenuContributor
     }
 
     private Task ConfigureMainMenuAsync(MenuConfigurationContext context)
-    {
-        var administration = context.Menu.GetAdministration();
+    {var administration = context.Menu.GetAdministration();
         var l = context.GetLocalizer<DataManagerResource>();
 
         context.Menu.Items.Insert(
@@ -31,14 +30,35 @@ public class DataManagerMenuContributor : IMenuContributor
                 "/",
                 icon: "fas fa-home",
                 order: 0
-            )
-        );
-
-        if (MultiTenancyConsts.IsEnabled)
+            ));
+        context.Menu.AddGroup(new ApplicationMenuGroup(
+            DataManagerMenus.Class,
+            l["Menu:Class"]));
+        context.Menu.Items.InsertRange(1,new List<ApplicationMenuItem>
         {
-            administration.SetSubItemOrder(TenantManagementMenuNames.GroupName, 1);
-        }
-        else
+            new(
+                DataManagerMenus.ClassManagement,
+                l["Menu:Class"],
+                "/class",
+                groupName:DataManagerMenus.Class,
+                icon: "fas fa-home",
+                order: 0
+            ),
+            new(
+                DataManagerMenus.ObjectManagement,
+                l["Menu:Object"],
+                "/object",
+                groupName:DataManagerMenus.Class,
+                icon: "fas fa-home",
+                order: 0
+            ),
+        });
+
+        // if (MultiTenancyConsts.IsEnabled)
+        // {
+        //     administration.SetSubItemOrder(TenantManagementMenuNames.GroupName, 1);
+        // }
+        // else
         {
             administration.TryRemoveMenuItem(TenantManagementMenuNames.GroupName);
         }

@@ -31,13 +31,15 @@ namespace Secyud.Ugf.DataManager
         public EditStyle Style { get; set; }
         public FieldInfo Info { get; private set; }
         public FieldType Type { get; private set; }
+        public Type Belong { get; private set; }
 
-        public void SetPropertyType(FieldInfo info)
+        public void SetPropertyType(FieldInfo info,Type belong)
         {
             if (Info is not null) return;
             Info = info;
             Map.TryGetValue(info.FieldType, out FieldType type);
             Type = type;
+            Belong = belong;
         }
 
         public object GetValue(object obj)

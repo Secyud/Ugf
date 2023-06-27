@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Blazorise;
+using Microsoft.AspNetCore.Components;
 using Secyud.Ugf;
 using Secyud.Ugf.DataManager;
 using Ugf.DataManager.ClassManagement;
@@ -14,6 +15,7 @@ namespace Ugf.DataManager.Blazor.Pages;
 
 public partial class ObjectManagement
 {
+    [Inject] public IClassContainerAppService ContainerAppService { get; set; }
     public object EditingObject { get; set; }
     public ClassContainerDto ClassContainer { get; set; }
     public Modal ObjectDataModal { get; set; }
@@ -80,7 +82,7 @@ public partial class ObjectManagement
                     Title = L["Class"],
                     Sortable = true,
                     Data = nameof(SpecificObjectDto.ClassId),
-                    ValueConverter = o => TypeIdMapper.GetType((Guid)o).Name
+                    ValueConverter = o => TypeIdMapper.GetType(((SpecificObjectDto)o).ClassId).Name
                 },
                 new()
                 {
@@ -110,6 +112,7 @@ public partial class ObjectManagement
     public async Task CloseObjectDataModalAsync()
     {
         EditingObject = null;
+        ClassContainer = null;
         await InvokeAsync(ObjectDataModal.Hide);
     }
 
@@ -127,6 +130,8 @@ public partial class ObjectManagement
         ResourceDescriptor.LoadDataFromBytes(
             EditingObject, DataType.Ignored, EditingEntity.IgnoredData, property);
 
+        ClassContainer = await ContainerAppService.GetAsync(EditingEntity.ClassId);
+        
         await ObjectDataModal.Show();
     }
 
@@ -136,6 +141,7 @@ public partial class ObjectManagement
         // cancel close if clicked outside of modal area
         arg.Cancel = arg.CloseReason == CloseReason.FocusLostClosing;
         EditingObject = null;
+        ClassContainer = null;
         return Task.CompletedTask;
     }
 

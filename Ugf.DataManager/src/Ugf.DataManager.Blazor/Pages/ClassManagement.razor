@@ -15,13 +15,13 @@
     </CardHeader>
     <CardBody>
         <Fields>
-            <Field ColumnSize="ColumnSize.Is5.OnDesktop">
+            <Field ColumnSize="ColumnSize.Is5">
                 <TextEdit @bind-Text="@GetListInput.Name" Placeholder="@L["Name"]"/>
             </Field>
-            <Field ColumnSize="ColumnSize.Is7.OnDesktop">
+            <Field ColumnSize="ColumnSize.Is7">
                 <Addons>
                     <Addon AddonType="AddonType.Body">
-                        <Autocomplete TItem="Tuple<string,  Guid>" TValue="Guid" Data="TypeIdMapper.SubTypes()"
+                        <Autocomplete TItem="Tuple<string, Guid>" TValue="Guid" Data="TypeIdMapper.SubTypes()"
                                       TextField="u => u.Item1" ValueField="u => u.Item2"
                                       @bind-SelectedValue="@GetListInput.ClassId" Placeholder="@L["BaseClass"]"/>
                     </Addon>
@@ -45,7 +45,7 @@
 </Card>
 
 <Modal @ref="EditModal" Closing="@ClosingEditModal">
-    <ModalContent Size="ModalSize.Large" Centered="true">
+    <ModalContent Size="ModalSize.ExtraLarge" Centered="true">
         <Form>
             <ModalHeader>
                 <ModalTitle>@L["Edit"]</ModalTitle>
@@ -65,10 +65,17 @@
                         <MemoEdit @bind-Text="@EditingEntity.Description"/>
                     </Field>
                     <DataGrid TItem="ClassPropertyDto" PageSize="4" ShowPager
-                              Data="EditingEntity.Properties">
+                              Data="EditingProperties">
                         <DataGridColumns>
-                            <DataGridColumn TItem="ClassPropertyDto" Caption="@L["Name"]" Sortable
+                            <DataGridColumn TItem="ClassPropertyDto" Caption="@L["PropertyName"]" Sortable
                                             Field="@nameof(ClassPropertyDto.PropertyName)"/>
+                            
+                            <DataGridColumn TItem="ClassPropertyDto" Caption="@L["Name"]" Sortable
+                                            Field="@nameof(ClassPropertyDto.Name)">
+                                <DisplayTemplate>
+                                    <TextEdit @bind-Text="@context.Name"/>
+                                </DisplayTemplate>
+                            </DataGridColumn>
 
                             <DataGridColumn TItem="ClassPropertyDto" Caption="@L["PropertyId"]" Sortable
                                             Field="@nameof(ClassPropertyDto.PropertyId)"/>
@@ -76,7 +83,7 @@
                             <DataGridColumn TItem="ClassPropertyDto" Field="@nameof(ClassPropertyDto.Description)"
                                             Caption="@L["Description"]" Sortable="false">
                                 <DisplayTemplate>
-                                    <MemoEdit @bind-Text="@context.Description"/>
+                                    <MemoEdit @bind-Text="@context.Description" Rows="1"/>
                                 </DisplayTemplate>
                             </DataGridColumn>
                         </DataGridColumns>

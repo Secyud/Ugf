@@ -5,8 +5,8 @@ namespace Secyud.Ugf.DataManager;
 
 public abstract class DataObject : IArchivable,ICloneable
 {
-    [S(ID = -1)] protected string ObjectName;
-    [S(ID = -2)] protected Guid TemplateType;
+    protected string ObjectName;
+    protected Guid TemplateType;
 
     public static TTemplate Create<TTemplate>(string name) where TTemplate : DataObject
     {
@@ -17,16 +17,25 @@ public abstract class DataObject : IArchivable,ICloneable
         PropertyDescriptor property = manager.GetProperty(type);
         resource.ReadArchived(obj, property);
         resource.ReadInitialed(obj, property);
-        return obj as TTemplate;
+        if (obj is not TTemplate ret) return null;
+        ret.ObjectName = name;
+        ret.TemplateType = resource.TypeId;
+        return ret;
     }
 
     public virtual void Save(IArchiveWriter writer)
     {
+        writer.Write(ObjectName);
+        writer.Write(TemplateType);
+        
         U.AutoSaveObject(this, writer);
     }
 
     public virtual void Load(IArchiveReader reader)
     {
+        ObjectName=reader.ReadString();
+        TemplateType=reader.ReadGuid();
+        
         U.AutoLoadObject(this, reader);
 
         InitializeManager manager = U.Factory.InitializeManager;

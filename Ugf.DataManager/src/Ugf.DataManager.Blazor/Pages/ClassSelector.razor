@@ -1,0 +1,25 @@
+﻿@using Secyud.Ugf.DataManager
+
+<Autocomplete TItem="Tuple<string, Guid>" TValue="Guid"
+              Data="TypeIdMapper.SubTypes(BaseClass)"
+              TextField="u => u.Item1"
+              ValueField="u => u.Item2"
+              SelectedValueChanged="v => _selectClassId = v"/>
+<Button Clicked="EnsureSelect">Ensure</Button>
+
+@code {
+
+    [Parameter]
+    public Type BaseClass { get; set; }
+
+    [Parameter]
+    public EventCallback<Guid> EnsureAction { get; set; }
+
+    private Guid _selectClassId;
+
+    private async Task EnsureSelect()
+    {
+        await EnsureAction.InvokeAsync(_selectClassId);
+    }
+
+}

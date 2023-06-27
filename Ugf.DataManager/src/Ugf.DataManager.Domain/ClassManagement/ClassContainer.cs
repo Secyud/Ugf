@@ -15,10 +15,8 @@ public class ClassContainer : FullAuditedAggregateRoot<Guid>
         : base(id)
     {
         Name = name;
-        Properties = new List<ClassProperty>();
     }
 
     public string Name { get; set; }
     public string Description { get; set; }
-    public List<ClassProperty> Properties { get; set; }
 }

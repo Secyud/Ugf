@@ -10,5 +10,6 @@ public class ClassPropertyDto : EntityDto
     
     public byte DataType { get; set; }
     public string PropertyName { get; set; }
+    public string Name { get; set; }
     public string Description { get; set; }
 }

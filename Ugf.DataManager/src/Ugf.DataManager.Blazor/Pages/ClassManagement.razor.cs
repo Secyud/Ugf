@@ -13,6 +13,8 @@ public partial class ClassManagement
 {
     public string SelectTab { get; set; } = "info";
     protected PageToolbar Toolbar { get; } = new();
+
+    protected List<ClassPropertyDto> EditingProperties { get; set; } = new();
     protected List<TableColumn> ClassManagementTableColumns => TableColumns.Get<ClassManagement>();
 
     public ClassManagement()
@@ -82,11 +84,16 @@ public partial class ClassManagement
         return string.Format(L["ClassDeletionConfirmationMessage"], entity.Name);
     }
 
+    protected override async Task OpenEditModalAsync(ClassContainerDto entity)
+    {
+        await base.OpenEditModalAsync(entity);
+        EditingProperties = await AppService.GetPropertiesAsync(entity.Id);
+    }
+
     private async Task RefreshClassProperty()
     {
-        EditingEntity.Properties = 
-            (await AppService.CheckPropertiesAsync(EditingEntity.Id))
-            .Properties;
+        await AppService.CheckPropertiesAsync(EditingEntity.Id);
+        EditingProperties = await AppService.GetPropertiesAsync(EditingEntity.Id);
         await InvokeAsync(StateHasChanged);
     }
 

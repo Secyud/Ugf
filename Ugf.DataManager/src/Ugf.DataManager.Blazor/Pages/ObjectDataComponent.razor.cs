@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
 using Secyud.Ugf;
@@ -10,7 +11,7 @@ namespace Ugf.DataManager.Blazor.Pages;
 
 public partial class ObjectDataComponent
 {
-    [Inject] public IClassContainerAppService ContainerAppService { get; set; }
+    [Inject] public IClassContainerAppService AppService { get; set; }
     [Parameter] public object Object { get; set; }
 
     private ObjectDataView _objectDataView;
@@ -18,13 +19,15 @@ public partial class ObjectDataComponent
     protected override async Task OnInitializedAsync()
     {
         Guid id = TypeIdMapper.GetId(Object.GetType());
-        ClassContainerDto classContainerDto = await ContainerAppService.GetAsync(id);
-        _objectDataView = new ObjectDataView(Object, classContainerDto);
+        List<ClassPropertyDto> properties = await AppService.GetPropertiesAsync(id);
+        _objectDataView = new ObjectDataView(Object, properties);
     }
 
 
     public async Task CreateAsync(Guid classId,Tuple<ClassPropertyDto, SAttribute> p)
     {
+        if (classId == default)
+            return;
         _objectDataView.SetValue(p, U.Get(TypeIdMapper.GetType(classId)));
         await InvokeAsync(StateHasChanged);
     }

@@ -8,5 +8,7 @@ namespace Ugf.DataManager.ClassManagement;
 public interface IClassContainerAppService:
     ICrudAppService<ClassContainerDto,Guid,GetClassListInput>
 {
-    Task<ClassContainerDto> CheckPropertiesAsync(Guid id);
+    Task CheckPropertiesAsync(Guid id);
+    Task<List<ClassPropertyDto>> GetPropertiesAsync(Guid id);
+    Task UpdateProperties(List<ClassPropertyDto> properties);
 }
