@@ -1,12 +1,13 @@
 ﻿using System;
 using Secyud.Ugf.DataManager;
 
-namespace Secyud.Ugf.DependencyInjection;
-
-public class DefaultTypeAnalyser:ITypeAnalyzer
+namespace Secyud.Ugf.DependencyInjection
 {
-    public void AnalyzeType(Type type)
+    public class DefaultTypeAnalyser:ITypeAnalyzer
     {
-        TypeIdMapper.SetType(type,TypeIdMapper.GetId(type));
+        public void AnalyzeType(Type type)
+        {
+            TypeIdMapper.SetType(type,TypeIdMapper.GetId(type));
+        }
     }
 }

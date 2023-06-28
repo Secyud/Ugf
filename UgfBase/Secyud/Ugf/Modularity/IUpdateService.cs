@@ -1,6 +1,7 @@
-﻿namespace Secyud.Ugf.Modularity;
-
-public interface IUpdateService
+﻿namespace Secyud.Ugf.Modularity
 {
-    void Update();
+    public interface IUpdateService
+    {
+        void Update();
+    }
 }

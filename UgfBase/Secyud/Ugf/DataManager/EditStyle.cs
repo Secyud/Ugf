@@ -1,7 +1,8 @@
-﻿namespace Secyud.Ugf.DataManager;
-
-public enum EditStyle : byte
+﻿namespace Secyud.Ugf.DataManager
 {
-    Default,
-    FlagOrMemo
+    public enum EditStyle : byte
+    {
+        Default,
+        FlagOrMemo
+    }
 }

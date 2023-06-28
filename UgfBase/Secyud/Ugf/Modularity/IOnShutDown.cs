@@ -1,6 +1,7 @@
-﻿namespace Secyud.Ugf.Modularity;
-
-public interface IOnShutDown
+﻿namespace Secyud.Ugf.Modularity
 {
-    void OnGameShutDown(GameShutDownContext context);
+    public interface IOnShutDown
+    {
+        void OnGameShutDown(GameShutDownContext context);
+    }
 }

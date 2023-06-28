@@ -3,221 +3,222 @@ using System.IO;
 using System.Threading.Tasks;
 using Secyud.Ugf.DataManager;
 
-namespace Secyud.Ugf.Archiving;
-
-public class DefaultArchiveWriter : IArchiveWriter, IDisposable, IAsyncDisposable
+namespace Secyud.Ugf.Archiving
 {
-    private readonly BinaryWriter _writer;
-
-    public DefaultArchiveWriter(Stream stream)
+    public class DefaultArchiveWriter : IArchiveWriter, IDisposable, IAsyncDisposable
     {
-        _writer = new BinaryWriter(stream);
-    }
+        private readonly BinaryWriter _writer;
 
-    public void Dispose()
-    {
-        _writer.Dispose();
-    }
-
-    public ValueTask DisposeAsync()
-    {
-        return _writer.DisposeAsync();
-    }
-
-    public void Write(bool value)
-    {
-        _writer.Write(value);
-    }
-
-    public void Write(byte value)
-    {
-        _writer.Write(value);
-    }
-
-    public void Write(ushort value)
-    {
-        _writer.Write(value);
-    }
-
-    public void Write(uint value)
-    {
-        _writer.Write(value);
-    }
-
-    public void Write(ulong value)
-    {
-        _writer.Write(value);
-    }
-
-    public void Write(sbyte value)
-    {
-        _writer.Write(value);
-    }
-
-    public void Write(short value)
-    {
-        _writer.Write(value);
-    }
-
-    public void Write(int value)
-    {
-        _writer.Write(value);
-    }
-
-    public void Write(long value)
-    {
-        _writer.Write(value);
-    }
-
-    public void Write(float value)
-    {
-        _writer.Write(value);
-    }
-
-    public void Write(double value)
-    {
-        _writer.Write(value);
-    }
-
-    public void Write(decimal value)
-    {
-        _writer.Write(value);
-    }
-
-    public void Write(string value)
-    {
-        _writer.Write(value);
-    }
-
-    public void Write(byte[] value)
-    {
-        _writer.Write(value);
-    }
-
-    public void Write(Guid id)
-    {
-        Write(id.ToByteArray());
-    }
-
-    public void Write(object value)
-    {
-        Guid typeId = TypeIdMapper.GetId(value.GetType());
-
-        if (typeId == Guid.Empty)
-            throw new UgfInitializationException(
-                $"Type {value.GetType()} doesn't have id!");
-
-        Write(typeId);
-        if (value is IArchivable archivable)
-            archivable.Save(this);
-    }
-
-    public void WriteNullable(object value)
-    {
-        if (value is null)
-            Write(false);
-        else
+        public DefaultArchiveWriter(Stream stream)
         {
-            Write(true);
-            Write(value);
+            _writer = new BinaryWriter(stream);
         }
-    }
 
-    public void Write(object value, FieldType type)
-    {
-        switch (type)
+        public void Dispose()
         {
-            case FieldType.Bool:
-                Write((bool)value);
-                break;
-            case FieldType.UInt8:
-                Write((byte)value);
-                break;
-            case FieldType.UInt16:
-                Write((ushort)value);
-                break;
-            case FieldType.UInt32:
-                Write((uint)value);
-                break;
-            case FieldType.UInt64:
-                Write((ulong)value);
-                break;
-            case FieldType.Int8:
-                Write((sbyte)value);
-                break;
-            case FieldType.Int16:
-                Write((short)value);
-                break;
-            case FieldType.Int32:
-                Write((int)value);
-                break;
-            case FieldType.Int64:
-                Write((long)value);
-                break;
-            case FieldType.Single:
-                Write((float)value);
-                break;
-            case FieldType.Double:
-                Write((double)value);
-                break;
-            case FieldType.Decimal:
-                Write((decimal)value);
-                break;
-            case FieldType.String:
-                Write((string)value ?? string.Empty);
-                break;
-            case FieldType.Guid:
-                Write((Guid)value);
-                break;
-            case FieldType.Object:
-                WriteNullable(value);
-                break;
-            default: throw new ArgumentOutOfRangeException();
+            _writer.Dispose();
         }
-    }
 
-    public void WriteChangeable(object value, FieldType fieldType)
-    {
-        if (FieldType.Object != fieldType)
-            Write(fieldType);
-        else if (value is null)
-            Write(false);
-        else
+        public ValueTask DisposeAsync()
         {
-            Write(true);
+            return _writer.DisposeAsync();
+        }
 
-            Type type = value.GetType();
-            Write(TypeIdMapper.GetId(type));
+        public void Write(bool value)
+        {
+            _writer.Write(value);
+        }
 
-            PropertyDescriptor property = U.Factory.InitializeManager.GetProperty(type);
+        public void Write(byte value)
+        {
+            _writer.Write(value);
+        }
 
-            void SaveProperties(SAttribute[] attributes)
+        public void Write(ushort value)
+        {
+            _writer.Write(value);
+        }
+
+        public void Write(uint value)
+        {
+            _writer.Write(value);
+        }
+
+        public void Write(ulong value)
+        {
+            _writer.Write(value);
+        }
+
+        public void Write(sbyte value)
+        {
+            _writer.Write(value);
+        }
+
+        public void Write(short value)
+        {
+            _writer.Write(value);
+        }
+
+        public void Write(int value)
+        {
+            _writer.Write(value);
+        }
+
+        public void Write(long value)
+        {
+            _writer.Write(value);
+        }
+
+        public void Write(float value)
+        {
+            _writer.Write(value);
+        }
+
+        public void Write(double value)
+        {
+            _writer.Write(value);
+        }
+
+        public void Write(decimal value)
+        {
+            _writer.Write(value);
+        }
+
+        public void Write(string value)
+        {
+            _writer.Write(value);
+        }
+
+        public void Write(byte[] value)
+        {
+            _writer.Write(value);
+        }
+
+        public void Write(Guid id)
+        {
+            Write(id.ToByteArray());
+        }
+
+        public void Write(object value)
+        {
+            Guid typeId = TypeIdMapper.GetId(value.GetType());
+
+            if (typeId == Guid.Empty)
+                throw new UgfInitializationException(
+                    $"Type {value.GetType()} doesn't have id!");
+
+            Write(typeId);
+            if (value is IArchivable archivable)
+                archivable.Save(this);
+        }
+
+        public void WriteNullable(object value)
+        {
+            if (value is null)
+                Write(false);
+            else
             {
-                Write(attributes.Length);
-
-                foreach (SAttribute attr in attributes)
-                {
-                    Write(attr.ID);
-                    Write(attr.Type);
-                    WriteChangeable(attr.GetValue(value), attr.Type);
-                }
+                Write(true);
+                Write(value);
             }
-
-            SaveProperties(property.ArchiveProperties);
-            SaveProperties(property.InitialedProperties);
-            SaveProperties(property.IgnoredProperties);
         }
-    }
-        
-    public void SaveProperties(SAttribute[] attributes, object value)
-    {
-        Write(attributes.Length);
 
-        foreach (SAttribute attr in attributes)
+        public void Write(object value, FieldType type)
         {
-            Write(attr.ID);
-            Write(attr.Type);
-            WriteChangeable(attr.GetValue(value), attr.Type);
+            switch (type)
+            {
+                case FieldType.Bool:
+                    Write((bool)value);
+                    break;
+                case FieldType.UInt8:
+                    Write((byte)value);
+                    break;
+                case FieldType.UInt16:
+                    Write((ushort)value);
+                    break;
+                case FieldType.UInt32:
+                    Write((uint)value);
+                    break;
+                case FieldType.UInt64:
+                    Write((ulong)value);
+                    break;
+                case FieldType.Int8:
+                    Write((sbyte)value);
+                    break;
+                case FieldType.Int16:
+                    Write((short)value);
+                    break;
+                case FieldType.Int32:
+                    Write((int)value);
+                    break;
+                case FieldType.Int64:
+                    Write((long)value);
+                    break;
+                case FieldType.Single:
+                    Write((float)value);
+                    break;
+                case FieldType.Double:
+                    Write((double)value);
+                    break;
+                case FieldType.Decimal:
+                    Write((decimal)value);
+                    break;
+                case FieldType.String:
+                    Write((string)value ?? string.Empty);
+                    break;
+                case FieldType.Guid:
+                    Write((Guid)value);
+                    break;
+                case FieldType.Object:
+                    WriteNullable(value);
+                    break;
+                default: throw new ArgumentOutOfRangeException();
+            }
+        }
+
+        public void WriteChangeable(object value, FieldType fieldType)
+        {
+            if (FieldType.Object != fieldType)
+                Write(fieldType);
+            else if (value is null)
+                Write(false);
+            else
+            {
+                Write(true);
+
+                Type type = value.GetType();
+                Write(TypeIdMapper.GetId(type));
+
+                PropertyDescriptor property = U.Factory.InitializeManager.GetProperty(type);
+
+                void SaveProperties(SAttribute[] attributes)
+                {
+                    Write(attributes.Length);
+
+                    foreach (SAttribute attr in attributes)
+                    {
+                        Write(attr.ID);
+                        Write(attr.Type);
+                        WriteChangeable(attr.GetValue(value), attr.Type);
+                    }
+                }
+
+                SaveProperties(property.ArchiveProperties);
+                SaveProperties(property.InitialedProperties);
+                SaveProperties(property.IgnoredProperties);
+            }
+        }
+        
+        public void SaveProperties(SAttribute[] attributes, object value)
+        {
+            Write(attributes.Length);
+
+            foreach (SAttribute attr in attributes)
+            {
+                Write(attr.ID);
+                Write(attr.Type);
+                WriteChangeable(attr.GetValue(value), attr.Type);
+            }
         }
     }
 }

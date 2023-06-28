@@ -1,8 +1,9 @@
 ﻿using System;
 
-namespace Secyud.Ugf.DependencyInjection;
-
-public interface ITypeAnalyzer
+namespace Secyud.Ugf.DependencyInjection
 {
-    public void AnalyzeType(Type type);
+    public interface ITypeAnalyzer
+    {
+        public void AnalyzeType(Type type);
+    }
 }

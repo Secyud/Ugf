@@ -1,14 +1,15 @@
 ﻿using Secyud.Ugf.DependencyInjection;
 
-namespace Secyud.Ugf.Modularity;
-
-public class GameShutDownContext : ModuleContextBase
+namespace Secyud.Ugf.Modularity
 {
-    public override IDependencyProvider Provider { get; }
-
-    public GameShutDownContext(IDependencyProvider dependencyProvider)
+    public class GameShutDownContext : ModuleContextBase
     {
-        Thrower.IfNull(dependencyProvider);
-        Provider = dependencyProvider;
+        public override IDependencyProvider Provider { get; }
+
+        public GameShutDownContext(IDependencyProvider dependencyProvider)
+        {
+            Thrower.IfNull(dependencyProvider);
+            Provider = dependencyProvider;
+        }
     }
 }

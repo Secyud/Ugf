@@ -1,8 +1,9 @@
-﻿namespace Secyud.Ugf.DataManager;
-
-public enum DataType : byte
+﻿namespace Secyud.Ugf.DataManager
 {
-    Archived,
-    Initialed,
-    Ignored
+    public enum DataType : byte
+    {
+        Archived,
+        Initialed,
+        Ignored
+    }
 }

@@ -1,6 +1,7 @@
-namespace Secyud.Ugf.DependencyInjection;
-
-public interface IDependencyConstructor
+namespace Secyud.Ugf.DependencyInjection
 {
-    object Construct(IDependencyProvider provider);
+    public interface IDependencyConstructor
+    {
+        object Construct(IDependencyProvider provider);
+    }
 }
