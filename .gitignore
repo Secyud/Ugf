@@ -5,3 +5,7 @@ obj
 node_modules
 libs
 Logs
+*.sln
+*.csproj
+*.sln.*
+*.csproj.*
