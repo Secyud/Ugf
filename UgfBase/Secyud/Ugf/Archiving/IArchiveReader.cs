@@ -24,6 +24,6 @@ namespace Secyud.Ugf.Archiving
         TObject ReadNullable<TObject>() where TObject : class;
         public object Read(FieldType type);
         public object ReadChangeable(FieldType fieldType);
-        void LoadProperty(SAttribute[] attributes, object value);
+        void LoadProperties(SAttribute[] attributes, object value);
     }
 }

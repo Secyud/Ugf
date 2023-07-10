@@ -15,7 +15,9 @@ namespace Secyud.Ugf.DataManager
 
         public PropertyDescriptor(Type type)
         {
-            FieldInfo[] infos = type.GetFields(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
+            FieldInfo[] infos = type.GetFields(
+                BindingFlags.Instance | BindingFlags.NonPublic |
+                BindingFlags.Public|BindingFlags.DeclaredOnly);
 
 
             List<SAttribute> initialed;
@@ -87,7 +89,7 @@ namespace Secyud.Ugf.DataManager
                 {
                     object value = property.GetValue(obj);
                     PropertyDescriptor subDescriptor = U.Factory.InitializeManager.GetProperty(value.GetType());
-                    reader.LoadProperty(subDescriptor.ArchiveProperties, obj);
+                    reader.LoadProperties(subDescriptor.ArchiveProperties, obj);
                 }
                 else
                     property.SetValue(obj, property.Read(reader));

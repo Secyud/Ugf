@@ -13,6 +13,7 @@ namespace Secyud.Ugf
 	{
 		public void ConfigureGame(ConfigurationContext context)
 		{
+			context.Manager.AddAssembly(typeof(UgfUnityModule).Assembly);
 		}
 	}
 }

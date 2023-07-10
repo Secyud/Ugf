@@ -50,6 +50,10 @@ namespace Secyud.Ugf.DataManager
         {
             string fullName = type.FullName!;
 
+            if (fullName == "Microsoft.CodeAnalysis.EmbeddedAttribute" ||
+                fullName == "System.Runtime.CompilerServices.RefSafetyRulesAttribute")
+                return;
+
             if (id == default)
                 id = GenerateId(fullName);
 
@@ -79,7 +83,13 @@ namespace Secyud.Ugf.DataManager
         {
             IEnumerable<KeyValuePair<Guid, Type>> types = TypeDictionary;
             if (type is not null)
-                types = types.Where(u => type.IsAssignableFrom(u.Value));
+            {
+                    types = types
+                        .Where(u => 
+                            type.IsAssignableFrom(u.Value)&&
+                            !u.Value.IsAbstract && u.Value.IsClass);
+             
+            }
 
             return
                 types.Select(u => new Tuple<string, Guid>(u.Value.Name, u.Key))
