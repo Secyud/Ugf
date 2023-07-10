@@ -143,14 +143,14 @@ namespace Secyud.Ugf.Archiving
             object ret = U.Get(type);
             PropertyDescriptor property = U.Factory.InitializeManager.GetProperty(type);
 
-            LoadProperty(property.ArchiveProperties, ret);
-            LoadProperty(property.InitialedProperties, ret);
-            LoadProperty(property.IgnoredProperties, ret);
+            LoadProperties(property.ArchiveProperties, ret);
+            LoadProperties(property.InitialedProperties, ret);
+            LoadProperties(property.IgnoredProperties, ret);
 
             return ret;
         }
 
-        public void LoadProperty(SAttribute[] attributes, object value)
+        public void LoadProperties(SAttribute[] attributes, object value)
         {
             int propertyCount = ReadInt32();
             int aIndex = 0;
@@ -170,6 +170,7 @@ namespace Secyud.Ugf.Archiving
                 {
                     attributes[aIndex].SetValue(value, obj);
                 }
+                aIndex++;
             }
         }
     }

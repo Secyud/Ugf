@@ -179,7 +179,7 @@ namespace Secyud.Ugf.Archiving
         public void WriteChangeable(object value, FieldType fieldType)
         {
             if (FieldType.Object != fieldType)
-                Write(fieldType);
+                Write(value,fieldType);
             else if (value is null)
                 Write(false);
             else
@@ -190,22 +190,10 @@ namespace Secyud.Ugf.Archiving
                 Write(TypeIdMapper.GetId(type));
 
                 PropertyDescriptor property = U.Factory.InitializeManager.GetProperty(type);
-
-                void SaveProperties(SAttribute[] attributes)
-                {
-                    Write(attributes.Length);
-
-                    foreach (SAttribute attr in attributes)
-                    {
-                        Write(attr.ID);
-                        Write(attr.Type);
-                        WriteChangeable(attr.GetValue(value), attr.Type);
-                    }
-                }
-
-                SaveProperties(property.ArchiveProperties);
-                SaveProperties(property.InitialedProperties);
-                SaveProperties(property.IgnoredProperties);
+              
+                SaveProperties(property.ArchiveProperties,value);
+                SaveProperties(property.InitialedProperties,value);
+                SaveProperties(property.IgnoredProperties,value);
             }
         }
         
@@ -216,7 +204,7 @@ namespace Secyud.Ugf.Archiving
             foreach (SAttribute attr in attributes)
             {
                 Write(attr.ID);
-                Write(attr.Type);
+                Write((byte)attr.Type);
                 WriteChangeable(attr.GetValue(value), attr.Type);
             }
         }

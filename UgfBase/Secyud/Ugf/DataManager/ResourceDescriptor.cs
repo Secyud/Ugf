@@ -43,77 +43,49 @@ namespace Secyud.Ugf.DataManager
         
         public void ReadArchived(object obj, PropertyDescriptor descriptor)
         {
-            LoadDataFromBytes(obj, DataType.Archived,ArchivedData,descriptor);
+            LoadDataFromBytes(obj, descriptor.ArchiveProperties,ArchivedData);
         }
 
         public void ReadInitialed(object obj, PropertyDescriptor descriptor)
         {
-            LoadDataFromBytes(obj, DataType.Initialed,InitialedData,descriptor);
+            LoadDataFromBytes(obj, descriptor.InitialedProperties,InitialedData);
         }
 
         public void ReadIgnored(object obj, PropertyDescriptor descriptor)
         {
-            LoadDataFromBytes(obj, DataType.Ignored,IgnoredData,descriptor);
+            LoadDataFromBytes(obj, descriptor.IgnoredProperties,IgnoredData);
         }
 
         public void WriteArchived(object obj, PropertyDescriptor descriptor)
         {
-            ArchivedData =  SaveDataToBytes(obj, DataType.Archived,descriptor);
+            ArchivedData =  SaveDataToBytes(obj, descriptor.ArchiveProperties);
         }
 
         public void WriteInitialed(object obj, PropertyDescriptor descriptor)
         {
-            InitialedData = SaveDataToBytes(obj, DataType.Initialed,descriptor);
+            InitialedData = SaveDataToBytes(obj, descriptor.InitialedProperties);
         }
 
         public void WriteIgnored(object obj,PropertyDescriptor descriptor)
         {
-            IgnoredData = SaveDataToBytes(obj, DataType.Ignored,descriptor);
+            IgnoredData = SaveDataToBytes(obj, descriptor.IgnoredProperties);
         }
         
         
-        public static byte[] SaveDataToBytes(object obj,DataType dataType,PropertyDescriptor property)
+        public static byte[] SaveDataToBytes(object obj,SAttribute[] attributes)
         {
             using MemoryStream stream = new();
             using DefaultArchiveWriter writer = new(stream);
-
-            switch (dataType)
-            {
-                case DataType.Archived:
-                    writer.SaveProperties(property.ArchiveProperties, obj);
-                    break;
-                case DataType.Initialed:
-                    writer.SaveProperties(property.InitialedProperties, obj);
-                    break;
-                case DataType.Ignored:
-                    writer.SaveProperties(property.IgnoredProperties, obj);
-                    break;
-                default: throw new ArgumentOutOfRangeException(nameof(dataType), dataType, null);
-            }
-
+            writer.SaveProperties(attributes, obj);
             return stream.ToArray();
         }
-        public static void LoadDataFromBytes(object obj,DataType dataType,byte[] data,PropertyDescriptor property)
+        public static void LoadDataFromBytes(object obj,SAttribute[] attributes,byte[] data)
         {
             if (data.IsNullOrEmpty())
                 return;
-            
             using MemoryStream stream = new(data);
             using DefaultArchiveReader reader = new(stream);
-            
-            switch (dataType)
-            {
-                case DataType.Archived:
-                    reader.LoadProperty(property.ArchiveProperties, obj);
-                    break;
-                case DataType.Initialed:
-                    reader.LoadProperty(property.InitialedProperties, obj);
-                    break;
-                case DataType.Ignored:
-                    reader.LoadProperty(property.IgnoredProperties, obj);
-                    break;
-                default: throw new ArgumentOutOfRangeException(nameof(dataType), dataType, null);
-            }
+            reader.LoadProperties(attributes, obj);
         }
     }
 }
