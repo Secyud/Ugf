@@ -6,7 +6,7 @@ using System.Ugf.Collections.Generic;
 
 namespace Secyud.Ugf.DependencyInjection
 {
-    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Interface)]
+    [AttributeUsage(AttributeTargets.Class)]
     public class RegistryAttribute : Attribute
     {
         internal static readonly RegistryAttribute Default =
@@ -55,7 +55,7 @@ namespace Secyud.Ugf.DependencyInjection
 
         private static List<Type> GetDefaultServices(Type type)
         {
-            List<Type> serviceTypes = new List<Type>();
+            List<Type> serviceTypes = new();
 
             foreach (Type interfaceType in type.GetTypeInfo().GetInterfaces())
             {

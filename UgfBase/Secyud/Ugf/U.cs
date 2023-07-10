@@ -25,8 +25,8 @@ namespace Secyud.Ugf
         {
             get
             {
-#if UNITY
-                return Application.dataPath;
+#if UNITY_//EDITOR
+                return Application.dataPath[..^6];
 #else
                 return System.IO.Directory.GetCurrentDirectory();
 #endif

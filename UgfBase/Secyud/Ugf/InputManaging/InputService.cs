@@ -4,6 +4,7 @@ using Secyud.Ugf.DependencyInjection;
 using System.Collections.Generic;
 using System.Linq;
 using System.Ugf.Collections.Generic;
+using Secyud.Ugf.Modularity;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -11,8 +12,8 @@ using UnityEngine.Events;
 
 namespace Secyud.Ugf.InputManaging
 {
-    [Registry]
-    public class InputService
+    [Registry(typeof(IUpdateService))]
+    public class InputService:IUpdateService
     {
         private readonly List<InputLayer> _list = new();
 

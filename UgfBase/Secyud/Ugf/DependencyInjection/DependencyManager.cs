@@ -64,7 +64,7 @@ namespace Secyud.Ugf.DependencyInjection
             if (IsRegistryDisabled(type))
                 return;
 
-            RegistryAttribute registryAttr = type.GetCustomAttribute<RegistryAttribute>();
+            RegistryAttribute registryAttr = type.GetCustomAttribute<RegistryAttribute>(true);
 
             foreach (ITypeAnalyzer analyzer in _analyzers)
                 analyzer.AnalyzeType(type);

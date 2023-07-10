@@ -3,7 +3,6 @@ using Object = UnityEngine.Object;
 
 namespace Secyud.Ugf.AssetLoading
 {
-    [Registry]
     public interface IAssetLoader
     {
         public TAsset LoadAsset<TAsset>(string name)

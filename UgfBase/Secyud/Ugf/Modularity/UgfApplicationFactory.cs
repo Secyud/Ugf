@@ -35,11 +35,11 @@ namespace Secyud.Ugf.Modularity
             PlugInSourceList plugInSources = null)
         {
             Manager = manager;
+            Instance = this;
             IUgfApplication app = new UgfApplication(
                 new DependencyManager(), startUpModule, plugInSources
             );
             app.Configure();
-            Instance = this;
             Application = app;
             IDependencyManager provider = Application.DependencyManager;
             T = provider.Get<IStringLocalizer<DefaultResource>>();
