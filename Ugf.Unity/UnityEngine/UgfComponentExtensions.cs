@@ -2,6 +2,7 @@
 
 using Secyud.Ugf;
 using Secyud.Ugf.BasicComponents;
+using Secyud.Ugf.FunctionalComponents;
 using UnityEngine.Events;
 
 #endregion

@@ -6,8 +6,7 @@ using Secyud.Ugf.DependencyInjection;
 
 namespace Secyud.Ugf.DataManager
 {
-    [Registry]
-    public sealed class InitializeManager
+    public sealed class InitializeManager:IRegistry
     {
         private readonly Dictionary<Type, Dictionary<string, ResourceDescriptor>> _resource = new();
         private readonly Dictionary<Type, PropertyDescriptor> _properties = new();

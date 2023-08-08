@@ -6,10 +6,10 @@ using System.Ugf.Collections.Generic;
 
 namespace Secyud.Ugf.DependencyInjection
 {
-    [AttributeUsage(AttributeTargets.Class)]
+    [AttributeUsage(AttributeTargets.Class|AttributeTargets.Interface)]
     public class RegistryAttribute : Attribute
     {
-        internal static readonly RegistryAttribute Default =
+        internal static readonly RegistryAttribute Singleton =
             new()
             {
                 IncludeDefaults = true,
@@ -25,7 +25,17 @@ namespace Secyud.Ugf.DependencyInjection
                 LifeTime = DependencyLifeTime.Transient
             };
 
-        public Type DependScope { get; set; }
+        private Type _dependScope;
+
+        public Type DependScope
+        {
+            get => _dependScope;
+            set
+            {
+                _dependScope = value;
+                LifeTime = value is null ? DependencyLifeTime.Singleton : DependencyLifeTime.Scoped;
+            }
+        }
 
         public DependencyLifeTime LifeTime { get; set; } = DependencyLifeTime.Singleton;
 

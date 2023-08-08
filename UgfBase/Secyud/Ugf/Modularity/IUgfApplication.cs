@@ -8,7 +8,7 @@ using System.Collections;
 
 namespace Secyud.Ugf.Modularity
 {
-    public interface IUgfApplication : IModuleContainer
+    public interface IUgfApplication : IModuleContainer,IRegistry
     {
         IDependencyManager DependencyManager { get; }
 

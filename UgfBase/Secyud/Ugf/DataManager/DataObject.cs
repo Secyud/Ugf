@@ -3,7 +3,7 @@ using Secyud.Ugf.Archiving;
 
 namespace Secyud.Ugf.DataManager
 {
-    public abstract class DataObject : IArchivable,ICloneable
+    public abstract class DataObject : AutoArchiving
     {
         protected string ObjectName;
         protected Guid TemplateType;
@@ -23,20 +23,20 @@ namespace Secyud.Ugf.DataManager
             return ret;
         }
 
-        public virtual void Save(IArchiveWriter writer)
+        public override void Save(IArchiveWriter writer)
         {
             writer.Write(ObjectName);
             writer.Write(TemplateType);
         
-            U.AutoSaveObject(this, writer);
+            base.Save(writer);
         }
 
-        public virtual void Load(IArchiveReader reader)
+        public override void Load(IArchiveReader reader)
         {
             ObjectName=reader.ReadString();
             TemplateType=reader.ReadGuid();
         
-            U.AutoLoadObject(this, reader);
+            base.Load(reader);
 
             InitializeManager manager = U.Factory.InitializeManager;
             ResourceDescriptor resource = manager.TryGetDescriptor(
@@ -46,11 +46,6 @@ namespace Secyud.Ugf.DataManager
                 PropertyDescriptor property = manager.GetProperty(GetType());
                 resource.ReadInitialed(this, property);
             }
-        }
-
-        public object Clone()
-        {
-            return MemberwiseClone();
         }
     }
 }

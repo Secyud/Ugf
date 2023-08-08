@@ -1,11 +1,6 @@
 #region
 
 using System;
-using Localization;
-using Secyud.Ugf.DataManager;
-using Secyud.Ugf.DependencyInjection;
-using Secyud.Ugf.Localization;
-using Secyud.Ugf.Modularity.Plugins;
 using UnityEngine;
 
 #endregion

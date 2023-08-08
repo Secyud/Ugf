@@ -14,18 +14,17 @@ namespace Secyud.Ugf.BasicComponents
 			Clear();
 			onClick.AddListener(action);
 		}
-
-		public void SetSelect(bool isSelect)
-		{
-			if (isSelect)
-				OnSelect(null);
-			else
-				OnDeselect(null);
-		}
-
+		
 		public void Clear()
 		{
 			onClick.RemoveAllListeners();
+		}
+
+		// ReSharper disable once InconsistentNaming
+		public bool disabled
+		{
+			get => !enabled;
+			set => enabled = !value;
 		}
 	}
 }

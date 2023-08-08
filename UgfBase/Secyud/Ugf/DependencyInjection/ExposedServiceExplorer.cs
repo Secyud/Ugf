@@ -15,7 +15,7 @@ namespace Secyud.Ugf.DependencyInjection
             return type
                 .GetCustomAttributes(true)
                 .OfType<RegistryAttribute>()
-                .DefaultIfEmpty(RegistryAttribute.Default)
+                .DefaultIfEmpty(RegistryAttribute.Singleton)
                 .SelectMany(p => p.GetExposedServiceTypes(type))
                 .Distinct()
                 .ToList();

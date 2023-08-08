@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using Secyud.Ugf.DataManager;
 
@@ -93,6 +95,16 @@ namespace Secyud.Ugf.Archiving
             return new Guid(ReadBytes(16));
         }
 
+        public void ReadList<T>(IList<T> value) where T : class
+        {
+            int count = ReadInt32();
+
+            for (int i = 0; i < count; i++)
+            {
+                value.Add(Read<T>());
+            }
+        }
+
         public TObject Read<TObject>() where TObject : class
         {
             Type type = TypeIdMapper.GetType(ReadGuid());
@@ -164,12 +176,37 @@ namespace Secyud.Ugf.Archiving
                         return;
                 }
 
-                object obj = ReadChangeable((FieldType)ReadByte());
+                SAttribute attr = attributes[aIndex];
 
-                if (attributes[aIndex].ID == id)
+                if (attr.ID == id)
                 {
-                    attributes[aIndex].SetValue(value, obj);
+                    if (attr.ReadOnly)
+                    {
+                        object obj = attr.GetValue(value);
+
+                        if (obj is IList list)
+                        {
+                            list.Clear();
+                            int count = ReadInt32();
+                            for (int j = 0; j < count; j++)
+                                list.Add(Read<object>());
+                        }
+                        else
+                        {
+                            PropertyDescriptor property =
+                                U.Factory.InitializeManager.GetProperty(obj.GetType());
+
+                            LoadProperties(property.ArchiveProperties, obj);
+                        }
+                    }
+                    else
+                    {
+                        object obj = ReadChangeable((FieldType)ReadByte());
+
+                        attr.SetValue(value, obj);
+                    }
                 }
+
                 aIndex++;
             }
         }

@@ -3,12 +3,13 @@
 using Localization;
 using System.Collections.Generic;
 using System.Globalization;
+using Secyud.Ugf.DependencyInjection;
 
 #endregion
 
 namespace Secyud.Ugf.Localization
 {
-    public interface ILocalizerFactory
+    public interface ILocalizerFactory:IRegistry
     {
         void AddResource<TResource>() where TResource : DefaultResource;
 

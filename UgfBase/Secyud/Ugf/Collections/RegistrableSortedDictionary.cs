@@ -30,6 +30,11 @@ namespace Secyud.Ugf.Collections
             _items.TryGetValue(key, out TItem value);
             return value;
         }
+        
+        public TItem GetByIndex(int index)
+        {
+            return _items[_keys[index]];
+        }
 
         public TKey GetRandomKey()
         {

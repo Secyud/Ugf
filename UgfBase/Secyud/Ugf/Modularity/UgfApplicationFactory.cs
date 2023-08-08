@@ -16,7 +16,7 @@ namespace Secyud.Ugf.Modularity
         public InitializeManager InitializeManager { get; private set; }
         public static UgfApplicationFactory Instance { get; private set; }
 
-        public void GameInitialize()
+        public void InitializeGame()
         {
             Manager.StartCoroutine(Application.GameInitialization());
         }

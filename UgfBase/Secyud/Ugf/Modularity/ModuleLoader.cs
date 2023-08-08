@@ -10,7 +10,6 @@ using System.Ugf.Collections.Generic;
 
 namespace Secyud.Ugf.Modularity
 {
-    [Registry]
     public class ModuleLoader : IModuleLoader
     {
         public IUgfModuleDescriptor[] LoadModules(IDependencyRegistrar registrar,

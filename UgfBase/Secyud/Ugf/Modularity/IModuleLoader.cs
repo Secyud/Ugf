@@ -7,7 +7,7 @@ using System;
 
 namespace Secyud.Ugf.Modularity
 {
-    public interface IModuleLoader
+    public interface IModuleLoader:IRegistry
     {
         IUgfModuleDescriptor[] LoadModules(IDependencyRegistrar registrar,
             Type startupModuleType,

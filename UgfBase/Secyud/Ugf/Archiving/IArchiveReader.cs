@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Secyud.Ugf.DataManager;
 
 namespace Secyud.Ugf.Archiving
@@ -20,6 +21,7 @@ namespace Secyud.Ugf.Archiving
         string ReadString();
         byte[] ReadBytes(int length);
         Guid ReadGuid();
+        void ReadList<T>(IList<T> value)where T : class;
         TObject Read<TObject>() where TObject : class;
         TObject ReadNullable<TObject>() where TObject : class;
         public object Read(FieldType type);

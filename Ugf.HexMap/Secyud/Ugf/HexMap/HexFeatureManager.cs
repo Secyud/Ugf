@@ -95,7 +95,7 @@ namespace Secyud.Ugf.HexMap
 		/// <param name="position">Feature position.</param>
 		public void AddSpecialFeature(HexCell cell, Vector3 position)
 		{
-			TryAddFeature(Grid.HexMapManager.GetSpecialFeature(cell), position);
+			TryAddFeature(Grid.HexMapManager.GetSpecial(cell), position);
 		}
 
 		private void TryAddFeature(Transform prefab, Vector3 position)

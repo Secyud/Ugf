@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using Secyud.Ugf.DataManager;
 
 namespace Secyud.Ugf.Archiving
@@ -21,6 +23,7 @@ namespace Secyud.Ugf.Archiving
         void Write(byte[] value);
         void Write(Guid value);
         void Write(object value);
+        void WriteList<T>(IList<T> value)where T : class;
         void WriteNullable(object value);
         void Write(object value, FieldType type);
         void WriteChangeable(object value,FieldType fieldType);

@@ -17,7 +17,7 @@ namespace Secyud.Ugf.HexMap
 			return Grid.GetCell(Camera.ScreenPointToRay(Input.mousePosition));
 		}
 
-		public void Hide()
+		public virtual void Hide()
 		{
 			transform.position = new Vector3(65535, 65535, 65535);
 			Grid.enabled = false;
@@ -25,7 +25,7 @@ namespace Secyud.Ugf.HexMap
 			Camera.enabled = false;
 		}
 
-		public void Show()
+		public virtual void Show()
 		{
 			transform.position = new Vector3(0, 0, 0);
 			Grid.enabled = true;

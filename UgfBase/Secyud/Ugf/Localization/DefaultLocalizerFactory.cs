@@ -17,7 +17,6 @@ using UnityEngine;
 
 namespace Secyud.Ugf.Localization
 {
-    [Registry]
     public class DefaultLocalizerFactory : ILocalizerFactory
     {
         public static string LocalizationPath => Path.Combine(U.Path, "Localization");

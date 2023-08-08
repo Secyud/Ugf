@@ -9,21 +9,16 @@ namespace Secyud.Ugf.Collections
 {
     public class RegistrableList<TItem>
     {
-        private readonly List<TItem> _items = new();
+        public readonly List<TItem> Items = new();
 
         public void Register(TItem item)
         {
-            _items.Add(item);
+            Items.Add(item);
         }
 
         public void RegisterList(params TItem[] items)
         {
             foreach (TItem item in items) Register(item);
-        }
-
-        public List<TItem> Get()
-        {
-            return _items.ToList();
         }
     }
 }

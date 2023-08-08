@@ -94,7 +94,7 @@ namespace UnityEngine.Editor
 		}
 	}
 
-	[CustomEditor(typeof(SCircleImage))]
+	[CustomEditor(typeof(SImage))]
 	public class SCircleImageEditor : ImageEditor
 	{
 		private SerializedProperty _triangleNum;

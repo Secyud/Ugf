@@ -7,7 +7,7 @@ using System.Collections.Concurrent;
 
 namespace Secyud.Ugf.DependencyInjection
 {
-    public abstract class DependencyProviderBase : IDependencyProvider
+    public abstract class DependencyProviderBase : IDependencyProvider,IRegistry
     {
         protected readonly ConcurrentDictionary<Type, InstanceDescriptor> InstanceDescriptor = new();
 

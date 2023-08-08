@@ -3,6 +3,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Secyud.Ugf.TableComponents.FilterComponents;
+using Secyud.Ugf.TableComponents.SorterComponents;
 
 #endregion
 
@@ -11,7 +13,7 @@ namespace Secyud.Ugf.TableComponents
 	public static class RegistrationExtension
 	{
 		private static IEnumerable<TTarget> OrFilterBy<TTarget>(this IEnumerable<TTarget> targets,
-			IEnumerable<FilterRegistration<TTarget>> filters)
+			IEnumerable<FilterToggleDescriptor<TTarget>> filters)
 		{
 			return targets.Where(
 				u =>
@@ -20,13 +22,13 @@ namespace Secyud.Ugf.TableComponents
 		}
 
 		public static IEnumerable<TTarget> AndFilterBy<TTarget>(this IEnumerable<TTarget> targets,
-			IEnumerable<FilterRegistration<TTarget>> filters)
+			IEnumerable<FilterToggleDescriptor<TTarget>> filters)
 		{
 			return targets.Where(u => filters.All(v => v.Filter(u)));
 		}
 
 		public static IEnumerable<TTarget> AndOrFilterBy<TTarget>(this IEnumerable<TTarget> targets,
-			IEnumerable<IEnumerable<FilterRegistration<TTarget>>> filterLists)
+			IEnumerable<IEnumerable<FilterToggleDescriptor<TTarget>>> filterLists)
 		{
 			return filterLists.Aggregate(
 				targets,
@@ -42,14 +44,14 @@ namespace Secyud.Ugf.TableComponents
 		/// <typeparam name="TTarget"></typeparam>
 		/// <returns></returns>
 		public static IEnumerable<TTarget> SortBy<TTarget>(this IEnumerable<TTarget> targets,
-			IEnumerable<Tuple<ISorterRegistration<TTarget>, bool>> sorters)
+			IEnumerable<SorterToggleDescriptor<TTarget>> sorters)
 		{
 			return sorters.Reverse().Aggregate(
 				targets,
 				(current, sorter) =>
-					sorter.Item2
-						? current.OrderByDescending(sorter.Item1.SortValue)
-						: current.OrderBy(sorter.Item1.SortValue)
+					sorter.Enabled == true
+						? current.OrderByDescending(sorter.SortValue)
+						: current.OrderBy(sorter.SortValue)
 			);
 		}
 	}

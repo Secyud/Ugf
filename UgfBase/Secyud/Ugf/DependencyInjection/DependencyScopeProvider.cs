@@ -12,7 +12,6 @@ namespace Secyud.Ugf.DependencyInjection
         public List<DependencyScopeProvider> SubProviders { get; } = new();
         public DependencyProviderBase ParentProvider { get; set; }
 
-
         public override DependencyDescriptor GetDependencyDescriptor(Type exposedType)
         {
             return ParentProvider.GetDependencyDescriptor(exposedType);

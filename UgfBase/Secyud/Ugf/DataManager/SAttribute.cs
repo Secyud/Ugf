@@ -42,6 +42,8 @@ namespace Secyud.Ugf.DataManager
             Belong = belong;
         }
 
+        public bool ReadOnly => Info.IsInitOnly;
+
         public object GetValue(object obj)
         {
             return Info.GetValue(obj);
@@ -54,7 +56,8 @@ namespace Secyud.Ugf.DataManager
 
         private object GetDefault()
         {
-            return Info.FieldType.IsValueType ? Activator.CreateInstance(Info.FieldType) : null;
+            return Info.FieldType.IsValueType ? 
+                Activator.CreateInstance(Info.FieldType) : null;
         }
 
         public void Write(object value, IArchiveWriter writer)

@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using Secyud.Ugf.DataManager;
@@ -112,6 +114,15 @@ namespace Secyud.Ugf.Archiving
                 archivable.Save(this);
         }
 
+        public void WriteList<T>(IList<T> value) where T : class
+        {
+            Write(value.Count);
+            foreach (T t in value)
+            {
+                Write(t);
+            }
+        }
+
         public void WriteNullable(object value)
         {
             if (value is null)
@@ -179,7 +190,7 @@ namespace Secyud.Ugf.Archiving
         public void WriteChangeable(object value, FieldType fieldType)
         {
             if (FieldType.Object != fieldType)
-                Write(value,fieldType);
+                Write(value, fieldType);
             else if (value is null)
                 Write(false);
             else
@@ -190,13 +201,13 @@ namespace Secyud.Ugf.Archiving
                 Write(TypeIdMapper.GetId(type));
 
                 PropertyDescriptor property = U.Factory.InitializeManager.GetProperty(type);
-              
-                SaveProperties(property.ArchiveProperties,value);
-                SaveProperties(property.InitialedProperties,value);
-                SaveProperties(property.IgnoredProperties,value);
+
+                SaveProperties(property.ArchiveProperties, value);
+                SaveProperties(property.InitialedProperties, value);
+                SaveProperties(property.IgnoredProperties, value);
             }
         }
-        
+
         public void SaveProperties(SAttribute[] attributes, object value)
         {
             Write(attributes.Length);
@@ -204,8 +215,29 @@ namespace Secyud.Ugf.Archiving
             foreach (SAttribute attr in attributes)
             {
                 Write(attr.ID);
-                Write((byte)attr.Type);
-                WriteChangeable(attr.GetValue(value), attr.Type);
+                if (attr.ReadOnly)
+                {
+                    object obj = attr.GetValue(value);
+
+                    if (obj is IList list)
+                    {
+                        Write(list.Count);
+                        foreach (object o in list)
+                            Write(o);
+                    }
+                    else
+                    {
+                        PropertyDescriptor property =
+                            U.Factory.InitializeManager.GetProperty(obj.GetType());
+
+                        SaveProperties(property.ArchiveProperties, obj);
+                    }
+                }
+                else
+                {
+                    Write((byte)attr.Type);
+                    WriteChangeable(attr.GetValue(value), attr.Type);
+                }
             }
         }
     }

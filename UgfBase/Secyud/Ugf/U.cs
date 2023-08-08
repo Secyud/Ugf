@@ -38,9 +38,9 @@ namespace Secyud.Ugf
             return UgfApplicationFactory.Instance.Application.DependencyManager.Get<T>();
         }
 
-        public static object Get(Type loaderType)
+        public static object Get(Type type)
         {
-            return UgfApplicationFactory.Instance.Application.DependencyManager.Get(loaderType);
+            return UgfApplicationFactory.Instance.Application.DependencyManager.Get(type);
         }
 
         public static int GetRandom(int max, int min = 0)

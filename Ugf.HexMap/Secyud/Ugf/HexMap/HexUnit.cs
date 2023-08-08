@@ -26,9 +26,23 @@ namespace Secyud.Ugf.HexMap
         private List<HexCell> _pathToTravel;
 
         private HexUnitPlay _loopPlay;
+        private IUnitBase _unitBase;
 
-        public event Action DeadAction;
-        public event Action PlayFinishedAction;
+        public IUnitBase UnitBase
+        {
+            get => _unitBase;
+            internal set
+            {
+                _unitBase = value;
+                if (_unitBase is not null)
+                    _unitBase.Unit = this;
+            }
+        }
+
+        public TUnit Get<TUnit>() where TUnit : class
+        {
+            return _unitBase as TUnit;
+        }
 
         public HexGrid Grid { get; set; }
 
@@ -116,6 +130,7 @@ namespace Secyud.Ugf.HexMap
             _pathToTravel = path;
             StopAllCoroutines();
             StartCoroutine(TravelPath());
+            Grid.ClearPath();
         }
 
         private IEnumerator TravelPath()
@@ -206,7 +221,7 @@ namespace Secyud.Ugf.HexMap
         /// </summary>
         public void Die()
         {
-            DeadAction?.Invoke();
+            _unitBase?.OnDying();
             _location.Unit = null;
             Destroy(this);
         }
@@ -215,7 +230,7 @@ namespace Secyud.Ugf.HexMap
         {
             if (_loopPlay)
                 _loopPlay.ContinuePlay(this);
-            PlayFinishedAction?.Invoke();
+            _unitBase?.OnEndPlay();
         }
     }
 }

@@ -42,6 +42,7 @@ namespace Secyud.Ugf.DependencyInjection
                 assembly.GetTypes().Where(type =>
                     type is
                     {
+                        IsPublic:true,
                         IsClass: true,
                         IsAbstract: false,
                         IsGenericType: false
@@ -64,19 +65,14 @@ namespace Secyud.Ugf.DependencyInjection
             if (IsRegistryDisabled(type))
                 return;
 
-            RegistryAttribute registryAttr = type.GetCustomAttribute<RegistryAttribute>(true);
-
             foreach (ITypeAnalyzer analyzer in _analyzers)
                 analyzer.AnalyzeType(type);
 
-            if (registryAttr is null)
-                CreateDependencyDescriptor(
-                    type,
-                    type,
-                    RegistryAttribute.Transient
-                );
-            else
+            if (typeof(IRegistry).IsAssignableFrom(type))
             {
+                RegistryAttribute registryAttr = type.GetCustomAttribute<RegistryAttribute>(true)
+                                                 ?? RegistryAttribute.Singleton;
+
                 List<Type> exposedServiceTypes = ExposedServiceExplorer.GetExposedServices(type);
 
                 foreach (Type exposedServiceType in exposedServiceTypes)
@@ -85,6 +81,14 @@ namespace Secyud.Ugf.DependencyInjection
                         exposedServiceType,
                         registryAttr
                     );
+            }
+            else
+            {
+                CreateDependencyDescriptor(
+                    type,
+                    type,
+                    RegistryAttribute.Transient
+                );
             }
         }
 
@@ -129,7 +133,7 @@ namespace Secyud.Ugf.DependencyInjection
             DependencyDescriptor descriptor = CreateDependencyDescriptor(
                 instance.GetType(),
                 type,
-                RegistryAttribute.Default
+                RegistryAttribute.Singleton
             );
             descriptor.Instance = instance;
         }
