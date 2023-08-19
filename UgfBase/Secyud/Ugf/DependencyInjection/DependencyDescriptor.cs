@@ -1,32 +1,48 @@
 #region
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 
 #endregion
 
 namespace Secyud.Ugf.DependencyInjection
 {
-	public class DependencyDescriptor
-	{
-		private DependencyDescriptor()
-		{
-		}
+    public class DependencyDescriptor
+    {
+        private readonly IDependencyManager _dependencyManager;
 
-		public Type ImplementationType { get; private set; }
+        private object _instance;
 
-		public DependencyLifeTime DependencyLifeTime { get; private set; }
+        public Type ImplementationType { get; private set; }
 
-		public Func<object> InstanceAccessor { get; set; }
+        public RegistryAttribute RegistryAttribute { get; private set; }
 
-		internal static DependencyDescriptor Describe(Type implementationType, DependencyLifeTime lifeTime,
-			Func<object> instanceAccessor)
-		{
-			return new DependencyDescriptor
-			{
-				ImplementationType = implementationType,
-				DependencyLifeTime = lifeTime,
-				InstanceAccessor = instanceAccessor
-			};
-		}
-	}
+        public IDependencyConstructor Constructor { get; private set; }
+
+
+        public object Instance
+        {
+            get { return _instance ??= Constructor.Construct(_dependencyManager); }
+            set => _instance = value;
+        }
+
+        private DependencyDescriptor(IDependencyManager dependencyManager)
+        {
+            _dependencyManager = dependencyManager;
+        }
+
+        internal static DependencyDescriptor Describe(
+            [NotNull] Type implementationType,
+            [NotNull] IDependencyManager manager,
+            [NotNull] IDependencyConstructor constructor,
+            [NotNull] RegistryAttribute registryAttribute)
+        {
+            return new DependencyDescriptor(manager)
+            {
+                ImplementationType = implementationType,
+                RegistryAttribute = registryAttribute,
+                Constructor = constructor
+            };
+        }
+    }
 }

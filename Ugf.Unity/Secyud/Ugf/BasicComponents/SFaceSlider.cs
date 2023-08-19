@@ -28,7 +28,17 @@ namespace Secyud.Ugf.BasicComponents
 			get => SValue;
 			set => Set(value);
 		}
-
+		
+		public Vector2 MaxValue
+		{
+			get => SMaxValue;
+			set => SMaxValue = value;
+		}
+		public Vector2 MinValue
+		{
+			get => SMinValue;
+			set => SMinValue = value;
+		}
 		public Vector2 NormalizedValue
 		{
 			get => new(

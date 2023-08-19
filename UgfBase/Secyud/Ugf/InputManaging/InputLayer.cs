@@ -7,15 +7,15 @@ using UnityEngine;
 
 namespace Secyud.Ugf.InputManaging
 {
-	public class InputLayer
-	{
-		internal InputLayer(RectTransform layer)
-		{
-			Layer = layer;
-		}
+    public class InputLayer
+    {
+        internal InputLayer(RectTransform layer)
+        {
+            Layer = layer;
+        }
 
-		public RectTransform Layer { get; }
+        public RectTransform Layer { get; }
 
-		public Dictionary<KeyCode, InputUnit> Inputs { get; } = new();
-	}
+        public Dictionary<KeyCode, InputUnit> Inputs { get; } = new();
+    }
 }

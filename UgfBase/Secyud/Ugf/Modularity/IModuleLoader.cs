@@ -7,10 +7,10 @@ using System;
 
 namespace Secyud.Ugf.Modularity
 {
-	public interface IModuleLoader
-	{
-		IUgfModuleDescriptor[] LoadModules(IDependencyRegistrar registrar,
-			Type startupModuleType,
-			PlugInSourceList plugInSources);
-	}
+    public interface IModuleLoader:IRegistry
+    {
+        IUgfModuleDescriptor[] LoadModules(IDependencyRegistrar registrar,
+            Type startupModuleType,
+            PlugInSourceList plugInSources);
+    }
 }

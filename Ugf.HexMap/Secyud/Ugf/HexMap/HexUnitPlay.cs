@@ -6,25 +6,31 @@ namespace Secyud.Ugf.HexMap
     {
         [SerializeField] private float PlayTime;
         [SerializeField] public bool Loop;
-        private HexUnit _unit;
-        private float _lastTime;
+        protected HexUnit Unit;
+        protected float LastTime;
+        protected HexCell TargetCell;
 
         protected virtual void Awake()
         {
             enabled = false;
-            _lastTime = PlayTime;
+            LastTime = PlayTime;
         }
 
-        protected virtual  void Update()
+        protected virtual void Update()
         {
-            _lastTime -= PlayTime;
-            if (_lastTime < 0)
+            LastTime -= Time.deltaTime;
+            if (LastTime < 0)
                 EndPlay();
+            else
+                OnUpdate();
         }
 
-        public virtual void Play(HexUnit unit)
+        protected abstract void OnUpdate();
+
+        public virtual void Play(HexUnit unit,HexCell targetCell)
         {
-            _unit = unit;
+            Unit = unit;
+            TargetCell = targetCell;
             Transform trans = transform;
             trans.parent = unit.transform;
             trans.localPosition = Vector3.zero;
@@ -32,11 +38,14 @@ namespace Secyud.Ugf.HexMap
             ContinuePlay(unit);
         }
 
-        public abstract void ContinuePlay(HexUnit unit);
+        public virtual void ContinuePlay(HexUnit unit)
+        {
+            
+        }
 
         protected virtual void EndPlay()
         {
-            _unit.OnPlayFinished();
+            Unit.OnPlayFinished();
             Destroy(this);
         }
     }

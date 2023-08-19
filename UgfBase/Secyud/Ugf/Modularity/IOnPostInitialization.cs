@@ -1,7 +1,9 @@
+using System.Collections;
+
 namespace Secyud.Ugf.Modularity
 {
-	public interface IOnPostInitialization
-	{
-		void OnGamePostInitialization();
-	}
+    public interface IOnPostInitialization
+    {
+        IEnumerator OnGamePostInitialization(GameInitializeContext context);
+    }
 }

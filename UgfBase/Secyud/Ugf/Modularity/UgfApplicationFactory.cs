@@ -1,64 +1,52 @@
-#region
-
+﻿using System;
+using Localization;
+using Secyud.Ugf.DataManager;
 using Secyud.Ugf.DependencyInjection;
-using Secyud.Ugf.InputManaging;
+using Secyud.Ugf.Localization;
 using UnityEngine;
-
-#endregion
 
 namespace Secyud.Ugf.Modularity
 {
-	public abstract class UgfApplicationFactory<TStartupModule> : MonoBehaviour
-		where TStartupModule : IUgfModule
+    public class UgfApplicationFactory
+    {
+        public  UgfGameManager Manager { get; private set; }
+        public IUgfApplication Application { get; private set; }
+        public IStringLocalizer<DefaultResource> T { get; private set; }
+        public ISpriteLocalizer<DefaultResource> S { get; private set; }
+        public InitializeManager InitializeManager { get; private set; }
+        public static UgfApplicationFactory Instance { get; private set; }
 
-	{
-		private static UgfApplicationFactory<TStartupModule> _factory;
-		private InputService _inputService;
+        public void InitializeGame()
+        {
+            Manager.StartCoroutine(Application.GameInitialization());
+        }
 
-		public IUgfApplication Application { get; private set; }
+        public void SaveGame()
+        {
+            Manager.StartCoroutine(Application.GameSaving());
+        }
 
-		protected abstract PlugInSourceList PlugInSourceList { get; }
-
-		protected virtual void Awake()
-		{
-			Application = Create(PlugInSourceList);
-			_factory = this;
-			_inputService = Application.DependencyProvider.Get<InputService>();
-		}
-
-		protected virtual void Update()
-		{
-			_inputService.Update();
-		}
-
-
-		public static void GameCreate()
-		{
-			_factory.StartCoroutine(_factory.Application.GameCreate());
-		}
-
-		public static void GameLoad()
-		{
-			_factory.StartCoroutine(_factory.Application.GameLoad());
-		}
-
-		public static void GameSaving()
-		{
-			_factory.StartCoroutine(_factory.Application.GameSave());
-		}
-		public static void GameShutdown()
-		{
-			_factory.StartCoroutine(_factory.Application.Shutdown());
-		}
-
-		private IUgfApplication Create(
-			PlugInSourceList plugInSources = null)
-		{
-			IUgfApplication app = new UgfApplication(
-				new DependencyManager(), typeof(TStartupModule), plugInSources
-			);
-			app.Configure();
-			return app;
-		}
-	}
+        public void GameShutdown()
+        {
+            Application.Shutdown();
+        }
+    
+        public IUgfApplication Create(UgfGameManager manager,Type startUpModule,
+            PlugInSourceList plugInSources = null)
+        {
+            Manager = manager;
+            Instance = this;
+            IUgfApplication app = new UgfApplication(
+                new DependencyManager(), startUpModule, plugInSources
+            );
+            app.Configure();
+            Application = app;
+            IDependencyManager provider = Application.DependencyManager;
+            T = provider.Get<IStringLocalizer<DefaultResource>>();
+            //S = provider.Get<ISpriteLocalizer<DefaultResource>>();
+            InitializeManager = provider.Get<InitializeManager>();
+        
+            return app;
+        }
+    }
 }

@@ -1,67 +1,90 @@
 #region
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using UnityEngine;
+using System.Collections.Concurrent;
 
 #endregion
 
 namespace Secyud.Ugf.DependencyInjection
 {
-	public abstract class DependencyProviderBase : IDependencyProvider
-	{
-		internal readonly IDependencyCollection DependencyCollection;
-		protected readonly Dictionary<Type, object> Instances;
-		private static readonly Dictionary<Type, ConstructorDescriptor> Constructors = new();
+    public abstract class DependencyProviderBase : IDependencyProvider,IRegistry
+    {
+        internal readonly ConcurrentDictionary<Type, InstanceDescriptor> InstanceDescriptor = new();
 
+        internal DependencyProviderBase()
+        {
+            InstanceDescriptor[typeof(IDependencyProvider)] = new InstanceDescriptor(() => this);
+        }
 
-		internal DependencyProviderBase(
-			IDependencyCollection dependencyCollection,
-			Dictionary<Type, object> instances)
-		{
-			DependencyCollection = dependencyCollection;
-			Instances = instances;
-		}
+        public virtual T Get<T>() where T : class
+        {
+            return Get(typeof(T)) as T;
+        }
 
-		public virtual T Get<T>() where T : class
-		{
-			return Get(typeof(T)) as T;
-		}
+        public T TryGet<T>() where T : class
+        {
+            return TryGet(typeof(T)) as T;
+        }
 
-		public abstract object Get(Type type);
+        public object TryGet(Type type)
+        {
+            InstanceDescriptor descriptor = GetInstanceDescriptor(type);
+            return descriptor?.ObjectAccessor();
+        }
 
-		public DependencyDescriptor GetDescriptor(Type type)
-		{
-			DependencyCollection.TryGetValue(type, out DependencyDescriptor provider);
-			return provider;
-		}
+        public virtual object Get(Type type)
+        {
+            InstanceDescriptor descriptor = GetInstanceDescriptor(type);
 
-		internal object CreateInstance(Type implementationType)
-		{
-			if (!Constructors.TryGetValue(implementationType, out ConstructorDescriptor constructor))
-			{
-				ConstructorInfo ci = implementationType.GetConstructors(Og.ConstructFlag).FirstOrDefault();
-				if (ci is null)
-					throw new UgfException($"Can not find constructor for type {implementationType}.");
-				constructor = new ConstructorDescriptor(ci);
-				Constructors[implementationType] = constructor;
-			}
-#if DEBUG
-			Debug.Log($"{implementationType} is constructing!");
-#endif
-			return constructor.Construct(this);
-		}
+            if (descriptor is null)
+                throw new UgfException($"Can't find dependency for exposed type {type}");
 
-		protected object GetInstance(Type implementationType)
-		{
-			if (!Instances.TryGetValue(implementationType, out object instance))
-			{
-				instance = CreateInstance(implementationType);
-				Instances[implementationType] = instance;
-			}
-			return instance;
-		}
-	}
+            return descriptor.ObjectAccessor();
+        }
+
+        protected virtual void HandleScope(DependencyDescriptor dd, InstanceDescriptor id)
+        {
+            id.Instance = dd.Constructor.Construct(this);
+            id.ObjectAccessor = () => dd.Instance;
+        }
+
+        public abstract DependencyDescriptor GetDependencyDescriptor(Type exposedType);
+
+        private InstanceDescriptor GetInstanceDescriptor(Type type)
+        {
+            if (!InstanceDescriptor.TryGetValue(type, out InstanceDescriptor descriptor))
+            {
+                DependencyDescriptor dd = GetDependencyDescriptor(type);
+
+                if (dd is null)
+                    return null;
+
+                if (!InstanceDescriptor.TryGetValue(dd.ImplementationType, out descriptor))
+                {
+                    descriptor = new InstanceDescriptor();
+
+                    switch (dd.RegistryAttribute.LifeTime)
+                    {
+                        case DependencyLifeTime.Singleton:
+                            descriptor.ObjectAccessor = () => dd.Instance;
+                            break;
+                        case DependencyLifeTime.Scoped:
+                            HandleScope(dd, descriptor);
+                            break;
+                        case DependencyLifeTime.Transient:
+                            descriptor.ObjectAccessor = () => dd.Constructor.Construct(this);
+                            break;
+                        default:
+                            return null;
+                    }
+
+                    InstanceDescriptor[dd.ImplementationType] = descriptor;
+                }
+
+                InstanceDescriptor[type] = descriptor;
+            }
+
+            return descriptor;
+        }
+    }
 }

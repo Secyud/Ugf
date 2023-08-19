@@ -8,16 +8,16 @@ using System.Reflection;
 
 namespace Secyud.Ugf.Modularity
 {
-	public interface IUgfModuleDescriptor
-	{
-		Type Type { get; }
+    public interface IUgfModuleDescriptor
+    {
+        Type Type { get; }
 
-		Assembly Assembly { get; }
+        Assembly Assembly { get; }
 
-		IUgfModule Instance { get; }
+        IUgfModule Instance { get; }
 
-		bool IsLoadedAsPlugIn { get; }
+        bool IsLoadedAsPlugIn { get; }
 
-		IReadOnlyList<IUgfModuleDescriptor> Dependencies { get; }
-	}
+        IReadOnlyList<IUgfModuleDescriptor> Dependencies { get; }
+    }
 }

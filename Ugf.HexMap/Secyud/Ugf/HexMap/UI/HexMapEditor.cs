@@ -17,7 +17,6 @@ namespace Secyud.Ugf.HexMap.UI
 		private static readonly int CellHighlightingId = Shader.PropertyToID("_CellHighlighting");
 
 		[SerializeField] private HexGrid HexGrid;
-		[SerializeField] private Material TerrainMaterial;
 
 		private int _activeElevation;
 

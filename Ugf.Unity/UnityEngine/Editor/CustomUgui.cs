@@ -3,6 +3,7 @@
 #region
 
 using Secyud.Ugf.BasicComponents;
+using Secyud.Ugf.TableComponents.FilterComponents;
 using UnityEditor;
 using UnityEditor.UI;
 
@@ -94,17 +95,15 @@ namespace UnityEngine.Editor
 		}
 	}
 
-	[CustomEditor(typeof(SCircleImage))]
-	public class SCircleImageEditor : ImageEditor
+	[CustomEditor(typeof(SImage))]
+	public class SImageEditor : ImageEditor
 	{
-		private SerializedProperty _triangleNum;
-		private SerializedProperty _radius;
+		private SerializedProperty _circle;
 
 		protected override void OnEnable()
 		{
 			base.OnEnable();
-			_triangleNum = serializedObject.FindProperty("TriangleNum");
-			_radius = serializedObject.FindProperty("Radius");
+			_circle = serializedObject.FindProperty("Circle");
 		}
 
 		public override void OnInspectorGUI()
@@ -112,8 +111,50 @@ namespace UnityEngine.Editor
 			base.OnInspectorGUI();
 			EditorGUILayout.Space();
 			serializedObject.Update();
-			EditorGUILayout.PropertyField(_triangleNum);
-			EditorGUILayout.PropertyField(_radius);
+			EditorGUILayout.PropertyField(_circle);
+			serializedObject.ApplyModifiedProperties();
+		}
+	}
+	[CustomEditor(typeof(SLabelButton))]
+	public class SLabelButtonEditor : ButtonEditor
+	{
+		private SerializedProperty _label;
+
+		protected override void OnEnable()
+		{
+			base.OnEnable();
+			_label = serializedObject.FindProperty("Label");
+		}
+
+		public override void OnInspectorGUI()
+		{
+			base.OnInspectorGUI();
+			EditorGUILayout.Space();
+			serializedObject.Update();
+			EditorGUILayout.PropertyField(_label);
+			serializedObject.ApplyModifiedProperties();
+		}
+	}
+	[CustomEditor(typeof(FilterTrigger))]
+	public class FilterTriggerEditor : ToggleEditor
+	{
+		private SerializedProperty _filterTemplate;
+		private SerializedProperty _popupTemplate;
+
+		protected override void OnEnable()
+		{
+			base.OnEnable();
+			_filterTemplate = serializedObject.FindProperty("FilterTemplate");
+			_popupTemplate = serializedObject.FindProperty("PopupTemplate");
+		}
+
+		public override void OnInspectorGUI()
+		{
+			base.OnInspectorGUI();
+			EditorGUILayout.Space();
+			serializedObject.Update();
+			EditorGUILayout.PropertyField(_filterTemplate);
+			EditorGUILayout.PropertyField(_popupTemplate);
 			serializedObject.ApplyModifiedProperties();
 		}
 	}

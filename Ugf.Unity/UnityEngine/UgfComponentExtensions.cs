@@ -2,6 +2,7 @@
 
 using Secyud.Ugf;
 using Secyud.Ugf.BasicComponents;
+using Secyud.Ugf.FunctionalComponents;
 using UnityEngine.Events;
 
 #endregion
@@ -18,7 +19,7 @@ namespace UnityEngine
 
 		public static void Translate(this SText text, string origin)
 		{
-			text.text = Og.L[origin];
+			text.text = U.T[origin];
 		}
 
 		public static void Set(this SText[] texts, params string[] origins)

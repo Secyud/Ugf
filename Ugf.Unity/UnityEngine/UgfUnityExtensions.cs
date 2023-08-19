@@ -1,10 +1,10 @@
 #region
 
-using Secyud.Ugf.ButtonComponents;
 using Secyud.Ugf.Localization;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Secyud.Ugf.TableComponents.ButtonComponents;
 using TMPro;
 
 #endregion
@@ -15,7 +15,7 @@ namespace UnityEngine
 	{
 		public static IEnumerable<TButton> SelectVisibleFor<TButton, TItem>(this IEnumerable<TButton> buttons,
 			TItem item)
-			where TButton : ButtonRegistration<TItem>
+			where TButton : ButtonDescriptor<TItem>
 		{
 			return buttons.Where(u => u.Visible(item));
 		}

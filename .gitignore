@@ -1,1 +1,11 @@
+/Outer
+bin
+obj
 .idea
+node_modules
+libs
+Logs
+*.sln
+*.csproj
+*.sln.*
+*.csproj.*

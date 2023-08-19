@@ -6,8 +6,8 @@ using Secyud.Ugf.Localization;
 
 namespace Localization
 {
-	[ResourceName(typeof(DefaultResource))]
-	public class DefaultResource
-	{
-	}
+    [ResourceName(typeof(DefaultResource))]
+    public class DefaultResource
+    {
+    }
 }
