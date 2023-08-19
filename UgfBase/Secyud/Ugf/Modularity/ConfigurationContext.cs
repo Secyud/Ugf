@@ -22,7 +22,7 @@ namespace Secyud.Ugf.Modularity
 
         public ConfigurationContext(IDependencyManager manager)
         {
-            Thrower.IfNull(manager);
+            Throw.IfNull(manager);
             Manager = manager;
         }
 

@@ -18,8 +18,8 @@ namespace Secyud.Ugf.Modularity
             IUgfModule instance,
             bool isLoadedAsPlugIn)
         {
-            Thrower.IfNull(type);
-            Thrower.IfNull(instance);
+            Throw.IfNull(type);
+            Throw.IfNull(instance);
 
             if (!type.GetTypeInfo().IsInstanceOfType(instance))
                 throw new ArgumentException(

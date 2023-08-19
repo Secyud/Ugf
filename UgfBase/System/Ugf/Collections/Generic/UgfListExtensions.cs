@@ -170,7 +170,7 @@ namespace System.Ugf.Collections.Generic
 
         public static T GetOrAdd<T>(this IList<T> source, Func<T, bool> selector, Func<T> factory)
         {
-            Thrower.IfNull(source);
+            Throw.IfNull(source);
 
             T item = source.FirstOrDefault(selector);
 

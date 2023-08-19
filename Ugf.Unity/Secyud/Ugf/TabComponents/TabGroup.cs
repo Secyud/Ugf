@@ -1,4 +1,5 @@
-﻿using Secyud.Ugf.BasicComponents;
+﻿using System.Linq;
+using Secyud.Ugf.BasicComponents;
 using Secyud.Ugf.LayoutComponents;
 using UnityEngine;
 
@@ -26,14 +27,16 @@ namespace Secyud.Ugf.TabComponents
                 SLabelButton button = Instantiate(ButtonTemplate, TabLabelContent.RectTransform);
                 button.Text = U.T[label];
                 button.Bind(() => SelectTab(item));
+                item.GameObject.SetActive(false);
             }
-
+            
             TabLabelContent.enabled = true;
+            SelectTab(Service.RefreshItems.Values.First());
         }
 
         protected virtual void SelectTab(TItem tab)
         {
-            if (CurrentTab.GameObject)
+            if (CurrentTab?.GameObject)
                 CurrentTab.GameObject.SetActive(false);
             CurrentTab = tab;
             if (CurrentTab?.GameObject)

@@ -9,7 +9,7 @@ namespace Secyud.Ugf.DependencyInjection
 {
     public abstract class DependencyProviderBase : IDependencyProvider,IRegistry
     {
-        protected readonly ConcurrentDictionary<Type, InstanceDescriptor> InstanceDescriptor = new();
+        internal readonly ConcurrentDictionary<Type, InstanceDescriptor> InstanceDescriptor = new();
 
         internal DependencyProviderBase()
         {

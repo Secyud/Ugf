@@ -8,41 +8,40 @@ using UnityEngine.UI;
 
 namespace Secyud.Ugf.LayoutComponents
 {
-	public class LayoutTrigger : MonoBehaviour
-	{
+    public class LayoutTrigger : MonoBehaviour
+    {
+        private const int RecordMax = 1;
+        protected ContentSizeFitter ContentSizeFitter;
 
-		private const int RecordMax = 1;
-		protected ContentSizeFitter ContentSizeFitter;
+        private RectTransform _rectTransform;
+        public RectTransform RectTransform => _rectTransform ??= GetComponent<RectTransform>();
 
-		public RectTransform RectTransform { get; private set; }
+        public int Record { get; set; } = 1;
 
-		public int Record { get; set; } = 1;
+        protected virtual void Awake()
+        {
+            TryGetComponent(out ContentSizeFitter);
+        }
 
-		protected virtual void Awake()
-		{
-			TryGetComponent(out ContentSizeFitter);
-			RectTransform = GetComponent<RectTransform>();
-		}
+        public virtual void LateUpdate()
+        {
+            if (Record < 0)
+                enabled = false;
+            else
+                Record--;
+        }
 
-		public virtual void LateUpdate()
-		{
-			if (Record < 0)
-				enabled = false;
-			else
-				Record--;
-		}
+        protected virtual void OnDisable()
+        {
+            if (ContentSizeFitter)
+                ContentSizeFitter.enabled = false;
+        }
 
-		protected virtual void OnDisable()
-		{
-			if (ContentSizeFitter)
-				ContentSizeFitter.enabled = false;
-		}
-
-		protected virtual void OnEnable()
-		{
-			if (ContentSizeFitter)
-				ContentSizeFitter.enabled = true;
-			Record = Math.Max(1, Record);
-		}
-	}
+        protected virtual void OnEnable()
+        {
+            if (ContentSizeFitter)
+                ContentSizeFitter.enabled = true;
+            Record = Math.Max(1, Record);
+        }
+    }
 }

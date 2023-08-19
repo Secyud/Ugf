@@ -21,7 +21,7 @@ namespace Secyud.Ugf.TableComponents.PagerComponents
 
         public void RefreshPage()
         {
-            Table.EnableRefresh();
+            Table.Refresh();
         }
 
         public int Page
@@ -61,20 +61,6 @@ namespace Secyud.Ugf.TableComponents.PagerComponents
         public void TurnToLastPage()
         {
             Page = MaxPage;
-        }
-
-        public static void CheckComponent(Table table)
-        {
-            Pager pager = (Pager)table[nameof(Pager)];
-
-            if (pager is null)
-            {
-                table.EnableRefresh();
-            }
-            else
-            {
-                pager.Page = pager._page;
-            }
         }
     }
 }

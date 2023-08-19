@@ -4,7 +4,7 @@ namespace Secyud.Ugf.EditorComponents
 {
     public abstract class EditorBase<TProperty> :MonoBehaviour
     {
-        public TProperty Property;
+        public TProperty Property { get; private set; }
         
         public virtual void Bind(TProperty property)
         {

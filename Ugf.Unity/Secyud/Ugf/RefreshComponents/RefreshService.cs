@@ -9,7 +9,7 @@ namespace Secyud.Ugf.RefreshComponents
     {
         public virtual Dictionary<string, TItem> RefreshItems { get; } = new();
 
-        public void Refresh()
+        public virtual void Refresh()
         {
             foreach (TItem item in RefreshItems.Values)
                 item.Refresh();

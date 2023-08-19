@@ -7,7 +7,7 @@ using UnityEngine;
 namespace Secyud.Ugf.AssetComponents
 {
 	public interface IMonoContainer<out TComponent> : IObjectAccessor<TComponent>
-		where TComponent : MonoBehaviour
+		where TComponent : Component
 	{
 		TComponent Create();
 

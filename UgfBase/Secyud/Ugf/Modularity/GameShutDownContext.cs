@@ -8,7 +8,7 @@ namespace Secyud.Ugf.Modularity
 
         public GameShutDownContext(IDependencyProvider dependencyProvider)
         {
-            Thrower.IfNull(dependencyProvider);
+            Throw.IfNull(dependencyProvider);
             Provider = dependencyProvider;
         }
     }

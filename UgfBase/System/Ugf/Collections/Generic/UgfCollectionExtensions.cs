@@ -17,7 +17,7 @@ namespace System.Ugf.Collections.Generic
 
         public static bool AddIfNotContains<T>(this ICollection<T> source, T item)
         {
-            Thrower.IfNull(source);
+            Throw.IfNull(source);
             if (source.Contains(item))
                 return false;
 
@@ -27,7 +27,7 @@ namespace System.Ugf.Collections.Generic
 
         public static IEnumerable<T> AddIfNotContains<T>(this ICollection<T> source, IEnumerable<T> items)
         {
-            Thrower.IfNull(source);
+            Throw.IfNull(source);
             List<T> addedItems = new List<T>();
             foreach (T item in items)
                 if (!source.Contains(item))
@@ -42,9 +42,9 @@ namespace System.Ugf.Collections.Generic
         public static bool AddIfNotContains<T>(this ICollection<T> source, Func<T, bool> predicate,
             Func<T> itemFactory)
         {
-            Thrower.IfNull(source);
-            Thrower.IfNull(predicate);
-            Thrower.IfNull(itemFactory);
+            Throw.IfNull(source);
+            Throw.IfNull(predicate);
+            Throw.IfNull(itemFactory);
 
             if (source.Any(predicate))
                 return false;

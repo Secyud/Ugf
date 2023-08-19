@@ -11,7 +11,7 @@ namespace Secyud.Ugf.Modularity.Plugins
     {
         public static Type[] GetModulesWithAllDependencies(this IPlugInSource plugInSource)
         {
-            Thrower.IfNull(plugInSource);
+            Throw.IfNull(plugInSource);
 
             return plugInSource
                 .GetModules()

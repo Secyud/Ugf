@@ -17,6 +17,12 @@ namespace Secyud.Ugf.LayoutComponents
 
 		public LayoutGroup Element => LayoutElement;
 
+		public bool Disabled
+		{
+			get => !enabled;
+			set => enabled = !value;
+		}
+		
 		protected override void Awake()
 		{
 			base.Awake();

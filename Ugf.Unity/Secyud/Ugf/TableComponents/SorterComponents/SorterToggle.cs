@@ -63,7 +63,7 @@ namespace Secyud.Ugf.TableComponents.SorterComponents
 			_rectTransform.SetParent(layout);
 			transform.SetSiblingIndex(result);
 			_canvasGroup.blocksRaycasts = true;
-			Sorter.RefreshTable(true);
+			Sorter.RefreshTable();
 		}
 
 		public void OnClick(int state)

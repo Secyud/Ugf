@@ -12,19 +12,37 @@ namespace Secyud.Ugf.TableComponents
     public sealed class Table : TableComponentBase<Table, TableDelegate>
     {
         public override string Name => nameof(Table);
+
         [SerializeField] private LayoutGroupTrigger TableContent;
         [SerializeField] private TableComponentBase[] TableComponents;
+        [SerializeField] private TableCell CellTemplate;
 
         private Dictionary<string, TableComponentBase> _componentDict;
+        private readonly SortedDictionary<int, Action> _refreshAction = new();
+
         private TableCell[] _cells;
-        private SortedDictionary<int, Action> _refreshAction;
 
         public RectTransform Content => TableContent.RectTransform;
+        public TableCell CellPrefab => CellTemplate;
 
         public TableComponentBase this[string componentName]
         {
             get
             {
+                if (_componentDict is null)
+                {
+                    _componentDict = new Dictionary<string, TableComponentBase>();
+
+
+                    foreach (TableComponentBase component in TableComponents)
+                    {
+                        if (component is not null)
+                        {
+                            _componentDict[component.Name] = component;
+                        }
+                    }
+                }
+
                 _componentDict.TryGetValue(componentName, out TableComponentBase v);
                 return v;
             }
@@ -32,16 +50,7 @@ namespace Secyud.Ugf.TableComponents
 
         private void Awake()
         {
-            _componentDict = new Dictionary<string, TableComponentBase>();
-            foreach (TableComponentBase component in TableComponents)
-            {
-                if (component is not null)
-                {
-                    _componentDict[component.Name] = component;
-                }
-            }
-
-            _refreshAction = new SortedDictionary<int, Action>();
+            _cells = Array.Empty<TableCell>();
         }
 
         public void AddRefreshAction(int index, Action action)
@@ -50,18 +59,22 @@ namespace Secyud.Ugf.TableComponents
             _refreshAction[index] = action;
         }
 
-        public void EnableRefresh()
+        public void Refresh()
         {
             enabled = true;
         }
 
         private void LateUpdate()
         {
+            if (Delegate is not null)
+            {
+                Delegate.RefreshPrepare();
+                foreach (Action action in _refreshAction.Values)
+                    action.Invoke();
+                OnInitialize();
+            }
+
             enabled = false;
-            Delegate.RefreshPrepare();
-            foreach (Action action in _refreshAction.Values)
-                action.Invoke();
-            OnInitialize();
         }
 
 
@@ -136,6 +149,10 @@ namespace Secyud.Ugf.TableComponents
             TableContent.enabled = true;
         }
 
+        public void SetCellCount(int count)
+        {
+            _cells = new TableCell[count];
+        }
 
         public void OnInitialize()
         {

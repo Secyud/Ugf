@@ -105,7 +105,6 @@ namespace Secyud.Ugf.DependencyInjection
                     descriptor = DependencyDescriptor.Describe(
                         implementationType, this,
                         new DependencyConstructor(implementationType), registryAttribute);
-                    _dependencyDescriptors[exposedType] = descriptor;
                 }
                 else
                 {
@@ -198,6 +197,7 @@ namespace Secyud.Ugf.DependencyInjection
                     scope.ParentProvider = pScope;
                     pScope.SubProviders.Add(scope);
                 }
+                scope.OnInitialize();
             }
 
             return scope;
@@ -205,16 +205,17 @@ namespace Secyud.Ugf.DependencyInjection
 
         public void DestroyScope<TScope>() where TScope : DependencyScopeProvider
         {
-            if (!_scopes.TryGetValue(typeof(TScope), out DependencyScopeProvider scopeDescriptor))
-                return;
-            DestroyScope(scopeDescriptor);
+            DestroyScope(typeof(TScope));
         }
 
-        private void DestroyScope(DependencyScopeProvider scopeDescriptor)
+        private void DestroyScope(Type scopeType) 
         {
-            scopeDescriptor.Dispose();
+            if (!_scopes.TryRemove(scopeType, out DependencyScopeProvider scopeDescriptor))
+                return;
             foreach (DependencyScopeProvider scope in scopeDescriptor.SubProviders)
-                DestroyScope(scope);
+                DestroyScope(scope.GetType());
+            scopeDescriptor.InstanceDescriptor.Clear();
+            scopeDescriptor.Dispose();
         }
 
         public TScope GetScope<TScope>() where TScope : DependencyScopeProvider

@@ -30,8 +30,8 @@ namespace Secyud.Ugf.Modularity
             Type startupModuleType,
             PlugInSourceList plugInSources = null)
         {
-            Thrower.IfNull(dependencyManager);
-            Thrower.IfNull(startupModuleType);
+            Throw.IfNull(dependencyManager);
+            Throw.IfNull(startupModuleType);
 
             _startupModuleType = startupModuleType;
 

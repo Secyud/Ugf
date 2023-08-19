@@ -1,24 +1,19 @@
 ﻿using System.Collections.Generic;
 using Secyud.Ugf.LayoutComponents;
-using Secyud.Ugf.TableComponents.SorterComponents;
 using UnityEngine;
 
 namespace Secyud.Ugf.TableComponents.FilterComponents
 {
-    public sealed class Filter : TableComponentBase<Filter,FilterDelegate>, IFilterGroup<FilterTrigger>
+    public sealed class Filter : TableComponentBase<Filter, FilterDelegate>, IFilterGroup<FilterTrigger>
     {
         public override string Name => nameof(Filter);
-        
-        public FilterTrigger TriggerTemplate;
-        public List<FilterTrigger> Filters { get; private set; }
-        public FilterTrigger DroppedFilter { get; set; }
-        public LayoutGroupTrigger Layout { get; private set; }
 
-        private void Awake()
-        {
-            Layout = gameObject.GetOrAddComponent<LayoutGroupTrigger>();
-            Filters = new List<FilterTrigger>();
-        }
+        public FilterTrigger TriggerTemplate;
+        private LayoutGroupTrigger _layout;
+        public FilterTrigger DroppedFilter { get; set; }
+        public List<FilterTrigger> Filters { get; } = new();
+
+        public LayoutGroupTrigger Layout => _layout ??= gameObject.GetOrAddComponent<LayoutGroupTrigger>();
 
         public void LateUpdate()
         {
@@ -40,16 +35,6 @@ namespace Secyud.Ugf.TableComponents.FilterComponents
             FilterTrigger trigger = TriggerTemplate.Create(transform, this, descriptor);
             Filters.Add(trigger);
             trigger.Registrations.AddRange(descriptor.Filters);
-        }
-
-        public static void CheckComponent(Table table)
-        {
-            Filter filter = (Filter)table[nameof(Filter)];
-
-            if (filter is null)
-                Sorter.CheckComponent(table);
-            else
-                table.AddRefreshAction(48,filter.Delegate.ApplyFilter);
         }
     }
 }

@@ -12,6 +12,12 @@ namespace Secyud.Ugf.BasicComponents
 
         [SerializeField] private bool Circle;
 
+        public bool Disabled
+        {
+            get => !enabled;
+            set => enabled = !value;
+        }
+        
         protected override void OnPopulateMesh(VertexHelper vh)
         {
             if (Circle)

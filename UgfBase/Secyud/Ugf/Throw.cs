@@ -6,7 +6,7 @@ using System;
 
 namespace Secyud.Ugf
 {
-    public static class Thrower
+    public static class Throw
     {
         public static void IfNull<T>(T value)
         {

@@ -5,11 +5,11 @@ namespace Secyud.Ugf.BasicComponents
 {
     public class SPopupQueue:MonoBehaviour
     {
-        [SerializeField] private RectTransform Content;
-        [SerializeField] private float Duration = 2;
-        [SerializeField] private float MoveSpeed = 5;
+        //[SerializeField] private RectTransform Content;
+        //[SerializeField] private float Duration = 2;
+        //[SerializeField] private float MoveSpeed = 5;
         [SerializeField] private int MaxCount = 5;
-        [SerializeField] private bool Transparency;
+        //[SerializeField] private bool Transparency;
 
         private Tuple<RectTransform,float>[] _transforms;
         private RectTransform _current;

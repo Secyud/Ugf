@@ -17,6 +17,11 @@ namespace Secyud.Ugf.DependencyInjection
             return ParentProvider.GetDependencyDescriptor(exposedType);
         }
 
+        public virtual void OnInitialize()
+        {
+            
+        }
+
         public virtual void Dispose()
         {
         }

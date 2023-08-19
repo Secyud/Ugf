@@ -32,6 +32,8 @@ namespace Secyud.Ugf.TableComponents.FilterComponents
                 Component.CreateTrigger(descriptor);
 
             Component.Layout.enabled = true;
+            
+            table.AddRefreshAction(48,ApplyFilter);
         }
         
         public override void ApplyFilter()
@@ -45,8 +47,6 @@ namespace Secyud.Ugf.TableComponents.FilterComponents
                     );
 
             TableDelegate.ItemsTmp = TableDelegate.ItemsTmp.AndOrFilterBy(filterGroups).ToList();
-
-            Sorter.CheckComponent(Table);
         }
         
         public static FilterDelegate<TItem> Create<TService>(Table table)

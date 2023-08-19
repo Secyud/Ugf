@@ -22,10 +22,11 @@ namespace Secyud.Ugf
         public static Canvas Canvas => UgfApplicationFactory.Instance.Manager.Canvas;
         public static UgfApplicationFactory Factory => UgfApplicationFactory.Instance;
         public static string Path
+      
         {
             get
             {
-#if UNITY_//EDITOR
+#if UNITY_EDITOR
                 return Application.dataPath[..^6];
 #else
                 return System.IO.Directory.GetCurrentDirectory();

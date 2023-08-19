@@ -1,6 +1,7 @@
 ﻿#region
 
 using System.Collections.Generic;
+using System.Linq;
 using System.Ugf.Collections.Generic;
 
 #endregion
@@ -33,7 +34,7 @@ namespace Secyud.Ugf.Collections
         
         public TItem GetByIndex(int index)
         {
-            return _items[_keys[index]];
+            return _keys.Any() ? _items[_keys[index]] : default;
         }
 
         public TKey GetRandomKey()

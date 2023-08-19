@@ -15,7 +15,7 @@ namespace Secyud.Ugf.Modularity
 
         public GameInitializeContext(IDependencyProvider dependencyProvider)
         {
-            Thrower.IfNull(dependencyProvider);
+            Throw.IfNull(dependencyProvider);
             Provider = dependencyProvider;
         }
     }

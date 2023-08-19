@@ -16,8 +16,8 @@ namespace Secyud.Ugf.Modularity
             Type startupModuleType,
             PlugInSourceList plugInSources)
         {
-            Thrower.IfNull(registrar);
-            Thrower.IfNull(startupModuleType);
+            Throw.IfNull(registrar);
+            Throw.IfNull(startupModuleType);
 
             List<IUgfModuleDescriptor> modules =
                 GetDescriptors(registrar, startupModuleType, plugInSources);

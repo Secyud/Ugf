@@ -6,6 +6,12 @@ namespace Secyud.Ugf.ValidateComponents
         where TService :ValidateService<TService,TItem>
         where TItem : ValidateItem<TService,TItem>
     {
-        public bool Valid { get; set; }
+        public bool Valid { get;internal set; }
+
+        public override void Refresh()
+        {
+            Valid = true;
+            base.Refresh();
+        }
     }
 }

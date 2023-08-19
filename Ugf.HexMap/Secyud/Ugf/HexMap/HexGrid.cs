@@ -16,7 +16,7 @@ namespace Secyud.Ugf.HexMap
     /// <summary>
     ///     Component that represents an entire hexagon map.
     /// </summary>
-    public class HexGrid : MonoBehaviour, IEnumerable<HexCell>
+    public class HexGrid : MonoBehaviour, IEnumerable<HexCell>,IEnumerator<HexCell>
     {
         [SerializeField] private HexCell CellPrefab;
         [SerializeField] private Text CellLabelPrefab;
@@ -509,12 +509,35 @@ namespace Secyud.Ugf.HexMap
 
         IEnumerator<HexCell> IEnumerable<HexCell>.GetEnumerator()
         {
-            return (IEnumerator<HexCell>)_cells.GetEnumerator();
+            return this;
         }
 
         public IEnumerator GetEnumerator()
         {
             return _cells.GetEnumerator();
+        }
+
+
+        private int _currentIndex;
+        
+        public bool MoveNext()
+        {
+            _currentIndex++;
+            return _currentIndex < _cells.Length;
+        }
+
+        public void Reset()
+        {
+            _currentIndex = 0;
+        }
+
+        public HexCell Current => _cells[_currentIndex];
+
+        object IEnumerator.Current => Current;
+
+        public void Dispose()
+        {
+
         }
     }
 }

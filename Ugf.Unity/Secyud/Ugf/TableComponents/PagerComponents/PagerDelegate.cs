@@ -28,6 +28,7 @@ namespace Secyud.Ugf.TableComponents.PagerComponents
         private PagerDelegate(Table table)
             : base(table)
         {
+            table.SetCellCount(Component.PageSize);
         }
 
         public static PagerDelegate Create(Table table)

@@ -17,21 +17,19 @@ namespace Secyud.Ugf.TableComponents
 
     public class TableDelegate<TItem> : TableDelegate
     {
-        private readonly TableCell _cellTemplate;
         public IList<TItem> Items { get; private set; }
         public IList<TItem> ItemsTmp { get; set; }
 
-        private TableDelegate(Table table, IList<TItem> items, TableCell cellTemplate)
+        private TableDelegate(Table table, IList<TItem> items)
             : base(table)
         {
-            _cellTemplate = cellTemplate;
             Items = items ?? new List<TItem>();
             ItemsTmp = items;
         }
 
         public static TableDelegate<TItem> Create(Table table, IList<TItem> items, TableCell cellTemplate)
         {
-            return new TableDelegate<TItem>(table, items, cellTemplate);
+            return new TableDelegate<TItem>(table, items);
         }
 
         private event Action<TableCell, TItem> CellInitAction;
@@ -55,7 +53,7 @@ namespace Secyud.Ugf.TableComponents
         {
             if (index >= ItemsTmp.Count)
                 return null;
-            TableCell cell = _cellTemplate.Instantiate(Component.Content);
+            TableCell cell = Table.CellPrefab.Instantiate(Component.Content);
             cell.transform.SetSiblingIndex(index);
             index += IndexFirst;
             cell.CellIndex = index;

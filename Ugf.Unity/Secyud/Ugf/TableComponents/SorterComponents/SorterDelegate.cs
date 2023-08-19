@@ -36,6 +36,8 @@ namespace Secyud.Ugf.TableComponents.SorterComponents
                 Component.CreateToggle(sorter);
 
             Component.Layout.enabled = true;
+            
+            table.AddRefreshAction(32, ApplySorter);
         }
 
         public override void ApplySorter()
@@ -49,8 +51,6 @@ namespace Secyud.Ugf.TableComponents.SorterComponents
                     .OrderBy(u => u.Position.GetSiblingIndex());
 
             TableDelegate.ItemsTmp = TableDelegate.ItemsTmp.SortBy(sorters).ToList();
-
-            Pager.CheckComponent(Table);
         }
 
         public static SorterDelegate<TItem> Create<TService>(Table table)
