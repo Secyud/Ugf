@@ -14,8 +14,8 @@ namespace Secyud.Ugf.AssetComponents
     public class AssetContainer<TAsset> : ObjectContainer<TAsset>, IArchivable
         where TAsset : Object
     {
-        [S(ID = 0)] protected IAssetLoader Loader;
-        [S(ID = 1)] protected string AssetName;
+        [S] protected IAssetLoader Loader;
+        [S] protected string AssetName;
 
         protected AssetContainer()
         {

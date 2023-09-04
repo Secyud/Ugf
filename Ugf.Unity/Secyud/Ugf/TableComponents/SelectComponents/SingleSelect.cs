@@ -13,6 +13,12 @@ namespace Secyud.Ugf.TableComponents.SelectComponents
         public void OnEnsure()
         {
             Delegate.OnEnsure();
+            OnCancel();
+        }
+
+        public void OnCancel()
+        {
+            Destroy(gameObject);
         }
     }
 }

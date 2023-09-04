@@ -6,6 +6,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Ugf.Collections.Generic;
 using Secyud.Ugf.Archiving;
+using Secyud.Ugf.DataManager;
 
 #endregion
 
@@ -41,6 +42,7 @@ namespace Secyud.Ugf.Modularity
                 typeof(ModuleLoader)
             );
             DependencyManager.RegisterInstance<IUgfApplication>(this);
+            DependencyManager.RegisterInstance(TypeManager.Instance);
 
             Modules = LoadModules(DependencyManager, plugInSources);
         }

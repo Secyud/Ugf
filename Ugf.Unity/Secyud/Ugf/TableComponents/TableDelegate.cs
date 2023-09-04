@@ -27,7 +27,7 @@ namespace Secyud.Ugf.TableComponents
             ItemsTmp = items;
         }
 
-        public static TableDelegate<TItem> Create(Table table, IList<TItem> items, TableCell cellTemplate)
+        public static TableDelegate<TItem> Create(Table table, IList<TItem> items)
         {
             return new TableDelegate<TItem>(table, items);
         }

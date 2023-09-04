@@ -17,7 +17,7 @@ namespace Secyud.Ugf.TableComponents.PagerComponents
 
         public int PageSize => ItemPerPage;
 
-        public Table Table { private get; set; }
+        public Table Table => Delegate.Table;
 
         public void RefreshPage()
         {

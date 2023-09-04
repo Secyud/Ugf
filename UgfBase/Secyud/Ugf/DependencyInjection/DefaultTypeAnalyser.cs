@@ -7,7 +7,7 @@ namespace Secyud.Ugf.DependencyInjection
     {
         public void AnalyzeType(Type type)
         {
-            TypeIdMapper.SetType(type,TypeIdMapper.GetId(type));
+            TypeManager.Instance[type] = default;
         }
     }
 }

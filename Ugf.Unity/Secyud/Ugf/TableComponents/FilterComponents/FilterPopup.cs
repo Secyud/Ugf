@@ -5,20 +5,20 @@ namespace Secyud.Ugf.TableComponents.FilterComponents
 {
     public class FilterPopup:SPopup
     {
-        private static FilterPopup _popupExist;
+        public static FilterPopup PopupExist;
         
         public void Close()
         {
-            if(_popupExist)
-                _popupExist.Destroy();
+            if(PopupExist)
+                PopupExist.Destroy();
         }
 
         public RectTransform Open()
         {
             Close();
-            _popupExist = this.InstantiateOnCanvas();
-            _popupExist.InitializeOnMouse();
-            return _popupExist.PrepareLayout();
+            PopupExist = this.InstantiateOnCanvas();
+            PopupExist.InitializeOnMouse();
+            return PopupExist.PrepareLayout();
         }
     }
 }

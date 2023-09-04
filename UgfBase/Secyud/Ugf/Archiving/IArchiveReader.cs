@@ -22,10 +22,7 @@ namespace Secyud.Ugf.Archiving
         byte[] ReadBytes(int length);
         Guid ReadGuid();
         void ReadList<T>(IList<T> value)where T : class;
-        TObject Read<TObject>() where TObject : class;
+        TObject ReadObject<TObject>() where TObject : class;
         TObject ReadNullable<TObject>() where TObject : class;
-        public object Read(FieldType type);
-        public object ReadChangeable(FieldType fieldType);
-        void LoadProperties(SAttribute[] attributes, object value);
     }
 }

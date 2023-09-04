@@ -19,9 +19,7 @@ namespace Secyud.Ugf.TableComponents
 
         private Dictionary<string, TableComponentBase> _componentDict;
         private readonly SortedDictionary<int, Action> _refreshAction = new();
-
         private TableCell[] _cells;
-
         public RectTransform Content => TableContent.RectTransform;
         public TableCell CellPrefab => CellTemplate;
 

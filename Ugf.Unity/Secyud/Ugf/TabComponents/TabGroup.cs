@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using Secyud.Ugf.BasicComponents;
 using Secyud.Ugf.LayoutComponents;
 using UnityEngine;
@@ -15,10 +16,7 @@ namespace Secyud.Ugf.TabComponents
         protected TService Service;
         protected TItem CurrentTab;
 
-        /// <summary>
-        /// to make order correct, all tab should be put above the tabs component.
-        /// </summary>
-        protected virtual void Awake()
+        protected virtual void Start()
         {
             Service = U.Get<TService>();
 
@@ -31,6 +29,7 @@ namespace Secyud.Ugf.TabComponents
             }
             
             TabLabelContent.enabled = true;
+            Service.Refresh();
             SelectTab(Service.RefreshItems.Values.First());
         }
 

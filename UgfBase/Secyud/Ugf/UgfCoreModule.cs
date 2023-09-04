@@ -16,8 +16,7 @@ namespace Secyud.Ugf
         {
             context.Manager.AddTypes(
                 typeof(DefaultLocalizerFactory),
-                typeof(InputService),
-                typeof(InitializeManager));
+                typeof(InputService));
 
             context.AddResource<DefaultResource>();
         }

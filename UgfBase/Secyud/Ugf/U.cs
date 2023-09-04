@@ -6,6 +6,7 @@ using Secyud.Ugf.Localization;
 using Secyud.Ugf.Modularity;
 using Secyud.Ugf.Archiving;
 using Secyud.Ugf.DataManager;
+using Secyud.Ugf.DependencyInjection;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -17,12 +18,14 @@ namespace Secyud.Ugf
     {
         public static IStringLocalizer<DefaultResource> T => UgfApplicationFactory.Instance.T;
         public static ISpriteLocalizer<DefaultResource> S => UgfApplicationFactory.Instance.S;
-        public static InitializeManager I => UgfApplicationFactory.Instance.InitializeManager;
+        public static TypeManager Tm => TypeManager.Instance;
+        public static IDependencyManager M => UgfApplicationFactory.Instance.Application.DependencyManager;
         public static Camera Camera => UgfApplicationFactory.Instance.Manager.Camera;
         public static Canvas Canvas => UgfApplicationFactory.Instance.Manager.Canvas;
         public static UgfApplicationFactory Factory => UgfApplicationFactory.Instance;
+
         public static string Path
-      
+
         {
             get
             {
@@ -36,12 +39,12 @@ namespace Secyud.Ugf
 
         public static T Get<T>() where T : class
         {
-            return UgfApplicationFactory.Instance.Application.DependencyManager.Get<T>();
+            return M.Get<T>();
         }
 
         public static object Get(Type type)
         {
-            return UgfApplicationFactory.Instance.Application.DependencyManager.Get(type);
+            return M.Get(type);
         }
 
         public static int GetRandom(int max, int min = 0)
@@ -64,32 +67,33 @@ namespace Secyud.Ugf
             return name.Replace('.', '/');
         }
 
-        public static void AutoSaveObject(object o, IArchiveWriter writer)
-        {
-            PropertyDescriptor property = I.GetProperty(o.GetType());
-            
-            property.Write(o,writer);
-        }
-        
-        public static void AutoLoadObject(object o, IArchiveReader reader)
-        {
-            PropertyDescriptor property = I.GetProperty(o.GetType());
-            
-            property.Read(o,reader);
-        }
-
         private static int _step;
+
         public static bool AddStep(int value = 1)
         {
             if (_step > 1024)
             {
-                Factory.Application.CurrentStep+=value;
+                Factory.Application.CurrentStep += value;
                 _step = 0;
                 return true;
             }
 
             _step++;
             return false;
+        }
+
+        public static void AutoSaveObject(object obj, IArchiveWriter writer)
+        {
+            TypeDescriptor descriptor = Tm.GetProperty(obj.GetType());
+            foreach (SAttribute attribute in descriptor.Properties.Attributes[3])
+                writer.WriteField(attribute.GetValue(obj), attribute.Type);
+        }
+
+        public static void AutoLoadObject(object obj, IArchiveReader reader)
+        {
+            TypeDescriptor descriptor = Tm.GetProperty(obj.GetType());
+            foreach (SAttribute attribute in descriptor.Properties.Attributes[3])
+                attribute.SetValue(obj, reader.ReadField(attribute.Type));
         }
     }
 }

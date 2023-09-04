@@ -41,7 +41,10 @@ namespace Secyud.Ugf.LayoutComponents
 		{
 			base.OnDisable();
 			LayoutElement.enabled = false;
-			if (Float) RectTransform.CheckBoundary();
+			if (Float)
+			{
+				RectTransform.CheckBoundary();
+			}
 		}
 
 		public virtual void RefreshContent(IHasContent content)
