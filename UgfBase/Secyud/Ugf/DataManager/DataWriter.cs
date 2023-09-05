@@ -13,7 +13,7 @@ namespace Secyud.Ugf.DataManager
         {
         }
 
-        public void WriteDataObject(object value, FieldType fieldType, DataLevel level)
+        public void WriteDataObject(object value, FieldType fieldType)
         {
             switch (fieldType)
             {
@@ -60,13 +60,13 @@ namespace Secyud.Ugf.DataManager
                     Write((Guid)value);
                     break;
                 case FieldType.Object:
-                    WriteClassObject(value, level);
+                    WriteClassObject(value);
                     break;
                 default: throw new ArgumentOutOfRangeException();
             }
         }
 
-        private void WriteClassObject(object value, DataLevel level)
+        private void WriteClassObject(object value)
         {
             if (value is null)
             {
@@ -79,10 +79,10 @@ namespace Secyud.Ugf.DataManager
             Type type = value.GetType();
             Write(TypeManager.Instance[type]);
 
-            SaveProperties(type, value, level);
+            SaveProperties(type, value);
         }
 
-        public void SaveProperties(Type type, object value, DataLevel level)
+        public void SaveProperties(Type type, object value)
         {
             TypeDescriptor descriptor = TypeManager.Instance.GetProperty(type);
             List<SAttribute> attrs = new();
@@ -91,7 +91,7 @@ namespace Secyud.Ugf.DataManager
             PropertyDescriptor current = descriptor.Properties;
             while (current is not null)
             {
-                foreach (SAttribute attribute in current.Attributes[(int)level])
+                foreach (SAttribute attribute in current.Attributes)
                 {
                     attrs.AddIfNotContains(attribute);
                 }
@@ -111,17 +111,17 @@ namespace Secyud.Ugf.DataManager
                 {
                     if (field is IList list)
                     {
-                        WriteList(list, level);
+                        WriteList(list);
                     }
                     else
                     {
-                        SaveProperties(attr.Info.FieldType, field, level);
+                        SaveProperties(attr.Info.FieldType, field);
                     }
                 }
                 else
                 {
                     Write((byte)attr.Type);
-                    WriteDataObject(field, attr.Type, level);
+                    WriteDataObject(field, attr.Type);
                 }
 
                 int len = (int)(Writer.BaseStream.Position - pRecord);
@@ -133,14 +133,14 @@ namespace Secyud.Ugf.DataManager
             }
         }
 
-        private void WriteList(IList list, DataLevel level)
+        private void WriteList(IList list)
         {
             Write(list.Count);
 
             foreach (object obj in list)
             {
                 SAttribute.Map.TryGetValue(obj.GetType(), out FieldType fieldType);
-                WriteDataObject(obj, fieldType, level);
+                WriteDataObject(obj, fieldType);
             }
         }
     }

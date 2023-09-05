@@ -81,19 +81,5 @@ namespace Secyud.Ugf
             _step++;
             return false;
         }
-
-        public static void AutoSaveObject(object obj, IArchiveWriter writer)
-        {
-            TypeDescriptor descriptor = Tm.GetProperty(obj.GetType());
-            foreach (SAttribute attribute in descriptor.Properties.Attributes[3])
-                writer.WriteField(attribute.GetValue(obj), attribute.Type);
-        }
-
-        public static void AutoLoadObject(object obj, IArchiveReader reader)
-        {
-            TypeDescriptor descriptor = Tm.GetProperty(obj.GetType());
-            foreach (SAttribute attribute in descriptor.Properties.Attributes[3])
-                attribute.SetValue(obj, reader.ReadField(attribute.Type));
-        }
     }
 }

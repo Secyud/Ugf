@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
-using Secyud.Ugf.Archiving;
 
 namespace Secyud.Ugf.DataManager
 {
@@ -26,15 +25,13 @@ namespace Secyud.Ugf.DataManager
             [typeof(Guid)] = FieldType.Guid,
         };
 
-        public DataLevel Level { get;  }
         public EditStyle Style { get; }
         public FieldInfo Info { get; private set; }
         public FieldType Type { get; private set; }
         public Type Belong { get; private set; }
 
-        public SAttribute(DataLevel level = DataLevel.Fst,EditStyle style = EditStyle.Default)
+        public SAttribute(EditStyle style = EditStyle.Default)
         {
-            Level = level;
             Style = style;
         }
 

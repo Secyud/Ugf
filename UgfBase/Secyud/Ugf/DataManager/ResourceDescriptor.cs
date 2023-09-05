@@ -6,61 +6,54 @@ namespace Secyud.Ugf.DataManager
     public class ResourceDescriptor
     {
         public string Name { get; }
-        public byte[][] Data { get; }
+        public byte[] Data { get; private set; }
 
         public ResourceDescriptor(string name)
         {
             Name = name;
-            Data = new byte[4][];
         }
 
         public void Save(IArchiveWriter writer)
         {
-            for (int i = 0; i < 4; i++)
+            byte[] data = Data;
+            if (data is not null)
             {
-                byte[] data = Data[i];
-                if (data is not null)
-                {
-                    writer.Write(true);
-                    writer.Write(data.Length);
-                    writer.Write(data);
-                }
-                else
-                {
-                    writer.Write(false);
-                }
+                writer.Write(true);
+                writer.Write(data.Length);
+                writer.Write(data);
+            }
+            else
+            {
+                writer.Write(false);
             }
         }
 
         public void Load(IArchiveReader reader)
         {
-            for (int i = 0; i < 4; i++)
+            if (reader.ReadBoolean())
             {
-                if (reader.ReadBoolean())
-                {
-                    int len = reader.ReadInt32();
-                    Data[i] = reader.ReadBytes(len);
-                }
-                else
-                {
-                    Data[i] = null;
-                }
+                int len = reader.ReadInt32();
+                Data = reader.ReadBytes(len);
+            }
+            else
+            {
+                Data = null;
             }
         }
 
-        public void WriteToObject(object obj, DataLevel level)
+        public void WriteToObject(object obj)
         {
-            using MemoryStream stream = new(Data[(int)level]);
+            using MemoryStream stream = new(Data);
             using DataReader reader = new(stream);
-            reader.LoadProperties(obj.GetType(), obj, level);
+            reader.LoadProperties(obj.GetType(), obj);
         }
 
-        public void ReadFromObject(object obj, DataLevel level)
+        public void ReadFromObject(object obj)
         {
             using MemoryStream stream = new();
             using DataWriter writer = new(stream);
-            writer.SaveProperties(obj.GetType(), obj, level);
-            Data[(int)level] = stream.ToArray();
+            writer.SaveProperties(obj.GetType(), obj);
+            Data = stream.ToArray();
         }
     }
 }

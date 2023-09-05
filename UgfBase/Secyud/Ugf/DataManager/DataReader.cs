@@ -12,7 +12,7 @@ namespace Secyud.Ugf.DataManager
         {
         }
 
-        public object ReadDataObject(FieldType fieldType, DataLevel level)
+        public object ReadDataObject(FieldType fieldType)
         {
             return fieldType switch
             {
@@ -30,12 +30,12 @@ namespace Secyud.Ugf.DataManager
                 FieldType.Decimal => ReadDecimal(),
                 FieldType.String  => ReadString(),
                 FieldType.Guid    => ReadGuid(),
-                FieldType.Object  => ReadClassObject(level),
+                FieldType.Object  => ReadClassObject(),
                 _                 => new NotSupportedException("Type not support!")
             };
         }
 
-        private object ReadClassObject(DataLevel level)
+        private object ReadClassObject()
         {
             if (!ReadBoolean())
                 return null;
@@ -44,12 +44,12 @@ namespace Secyud.Ugf.DataManager
 
             object ret = U.Get(type);
 
-            LoadProperties(type, ret, level);
+            LoadProperties(type, ret);
 
             return ret;
         }
 
-        public void LoadProperties(Type type, object value, DataLevel level)
+        public void LoadProperties(Type type, object value)
         {
             TypeDescriptor descriptor = TypeManager.Instance.GetProperty(type);
             SortedDictionary<string, SAttribute> attrs = new();
@@ -57,7 +57,7 @@ namespace Secyud.Ugf.DataManager
             PropertyDescriptor current = descriptor.Properties;
             while (current is not null)
             {
-                foreach (SAttribute attribute in current.Attributes[(int)level])
+                foreach (SAttribute attribute in current.Attributes)
                 {
                     attrs[attribute.Info.Name] = attribute;
                 }
@@ -78,16 +78,16 @@ namespace Secyud.Ugf.DataManager
 
                         if (field is IList list)
                         {
-                            LoadList(list, level);
+                            LoadList(list);
                         }
                         else
                         {
-                            LoadProperties(attr.Info.FieldType, field, level);
+                            LoadProperties(attr.Info.FieldType, field);
                         }
                     }
                     else
                     {
-                        attr.SetValue(value, ReadDataObject((FieldType)ReadByte(), level));
+                        attr.SetValue(value, ReadDataObject((FieldType)ReadByte()));
                     }
                 }
                 else
@@ -97,14 +97,14 @@ namespace Secyud.Ugf.DataManager
             }
         }
 
-        public void LoadList(IList list, DataLevel level)
+        public void LoadList(IList list)
         {
             if (list.IsFixedSize)
             {
                 int count = list.Count;
                 for (int i = 0; i < count; i++)
                 {
-                    list[i] = ReadDataObject((FieldType)ReadByte(), level);
+                    list[i] = ReadDataObject((FieldType)ReadByte());
                 }
             }
             else
@@ -113,7 +113,7 @@ namespace Secyud.Ugf.DataManager
                 list.Clear();
                 for (int i = 0; i < count; i++)
                 {
-                    list.Add(ReadDataObject((FieldType)ReadByte(), level));
+                    list.Add(ReadDataObject((FieldType)ReadByte()));
                 }
             }
         }

@@ -66,12 +66,14 @@ namespace Secyud.Ugf.AssetComponents
 
         public virtual void Save(IArchiveWriter writer)
         {
-            U.AutoSaveObject(this, writer);
+            writer.WriteNullable(Loader);
+            writer.Write(AssetName);
         }
 
         public virtual void Load(IArchiveReader reader)
         {
-            U.AutoLoadObject(this, reader);
+            Loader = reader.ReadNullable<IAssetLoader>();
+            AssetName = reader.ReadString();
         }
     }
 }

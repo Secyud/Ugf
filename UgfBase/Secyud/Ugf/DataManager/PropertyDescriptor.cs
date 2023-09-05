@@ -13,7 +13,7 @@ namespace Secyud.Ugf.DataManager
 
         public PropertyDescriptor BaseProperty { get; }
 
-        public SAttribute[][] Attributes { get; }
+        public SAttribute[] Attributes { get; }
 
         public PropertyDescriptor(Type type)
         {
@@ -22,11 +22,7 @@ namespace Secyud.Ugf.DataManager
                 : TypeManager.Instance.GetProperty(type.BaseType).Properties;
 
             FieldInfo[] infos = type.GetFields(Flag);
-            Attributes = new SAttribute[4][];
-
-            List<SAttribute>[] data = new List<SAttribute>[4];
-            for (int i = 0; i < 4; i++)
-                data[i] = new List<SAttribute>();
+            List<SAttribute> data = new();
 
             foreach (FieldInfo info in infos)
             {
@@ -36,11 +32,10 @@ namespace Secyud.Ugf.DataManager
 
                 attribute.SetPropertyType(info, type);
 
-                data[(int)attribute.Level].AddLast(attribute);
+                data.AddLast(attribute);
             }
 
-            for (int i = 0; i < 4; i++)
-                Attributes[i] = data[i].OrderBy(u => u.Info.Name).ToArray();
+            Attributes = data.OrderBy(u => u.Info.Name).ToArray();
         }
     }
 }

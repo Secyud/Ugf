@@ -1,13 +1,9 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
-using UnityEditor;
-using UnityEngine;
 
 namespace Secyud.Ugf.DataManager
 {
@@ -87,13 +83,13 @@ namespace Secyud.Ugf.DataManager
                     .ToList();
         }
 
-        public object Create(Guid typeId, string name, DataLevel level = 0)
+        public object Create(Guid typeId, string name)
         {
             TypeDescriptor property = GetProperty(this[typeId]);
             if (property.Resources.TryGetValue(name, out ResourceDescriptor resource))
             {
                 object obj = U.Get(property.Type);
-                resource.WriteToObject(obj, level);
+                resource.WriteToObject(obj);
                 return obj;
             }
 
