@@ -38,7 +38,8 @@ namespace Secyud.Ugf.TableComponents.PagerComponents
                 int indexFirst = (_page - 1) * PageSize;
                 Table.Delegate.IndexFirst = indexFirst;
                 Table.Delegate.IndexLast = indexFirst + PageSize;
-                PageText.text = _page.ToString();
+                if (PageText)
+                    PageText.text = _page.ToString();
                 RefreshPage();
             }
         }

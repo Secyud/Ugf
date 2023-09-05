@@ -45,46 +45,46 @@ namespace Secyud.Ugf.DependencyInjection
         protected virtual void HandleScope(DependencyDescriptor dd, InstanceDescriptor id)
         {
             id.Instance = dd.Constructor.Construct(this);
-            id.ObjectAccessor = () => dd.Instance;
+            id.ObjectAccessor = () => id.Instance;
         }
 
         public abstract DependencyDescriptor GetDependencyDescriptor(Type exposedType);
 
         private InstanceDescriptor GetInstanceDescriptor(Type type)
         {
-            if (!InstanceDescriptor.TryGetValue(type, out InstanceDescriptor descriptor))
+            if (!InstanceDescriptor.TryGetValue(type, out InstanceDescriptor id))
             {
                 DependencyDescriptor dd = GetDependencyDescriptor(type);
 
                 if (dd is null)
                     return null;
 
-                if (!InstanceDescriptor.TryGetValue(dd.ImplementationType, out descriptor))
+                if (!InstanceDescriptor.TryGetValue(dd.ImplementationType, out id))
                 {
-                    descriptor = new InstanceDescriptor();
+                    id = new InstanceDescriptor();
 
                     switch (dd.RegistryAttribute.LifeTime)
                     {
                         case DependencyLifeTime.Singleton:
-                            descriptor.ObjectAccessor = () => dd.Instance;
+                            id.ObjectAccessor = () => dd.Instance;
                             break;
                         case DependencyLifeTime.Scoped:
-                            HandleScope(dd, descriptor);
+                            HandleScope(dd, id);
                             break;
                         case DependencyLifeTime.Transient:
-                            descriptor.ObjectAccessor = () => dd.Constructor.Construct(this);
+                            id.ObjectAccessor = () => dd.Constructor.Construct(this);
                             break;
                         default:
                             return null;
                     }
 
-                    InstanceDescriptor[dd.ImplementationType] = descriptor;
+                    InstanceDescriptor[dd.ImplementationType] = id;
                 }
 
-                InstanceDescriptor[type] = descriptor;
+                InstanceDescriptor[type] = id;
             }
 
-            return descriptor;
+            return id;
         }
     }
 }

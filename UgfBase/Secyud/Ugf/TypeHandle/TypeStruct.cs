@@ -12,6 +12,11 @@ namespace Secyud.Ugf.TypeHandle
             Type = type;
         }
 
+        public TypeStruct(object o)
+        {
+            Type = o.GetType();
+        }
+
         public override int GetHashCode() =>
             Type.GetHashCode();
 

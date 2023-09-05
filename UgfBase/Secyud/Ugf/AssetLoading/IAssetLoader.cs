@@ -1,5 +1,4 @@
-﻿using Secyud.Ugf.DependencyInjection;
-using Object = UnityEngine.Object;
+﻿using Object = UnityEngine.Object;
 
 namespace Secyud.Ugf.AssetLoading
 {
