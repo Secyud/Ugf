@@ -25,6 +25,33 @@ namespace Secyud.Ugf.DataManager
 
             return property;
         }
+        
+        public T ConstructFromResource<T>(string name) 
+            where T : class
+        {
+            TypeDescriptor property= U.Tm.GetProperty(typeof(T));
+            T obj = U.Get<T>();
+            property.Resources[name].WriteToObject(obj);
+            return obj;
+        }
+
+        public object ConstructFromResource(Guid typeId, string name)
+        {
+            return ConstructFromResource(this[typeId],name);
+        }
+        
+        public object ConstructFromResource(Type type, string name)
+        {
+            TypeDescriptor property = GetProperty(type);
+            if (property.Resources.TryGetValue(name, out ResourceDescriptor resource))
+            {
+                object obj = U.Get(property.Type);
+                resource.WriteToObject(obj);
+                return obj;
+            }
+
+            return null;
+        }
 
         public Type this[Guid id]
         {
@@ -81,19 +108,6 @@ namespace Secyud.Ugf.DataManager
             return
                 types.Select(u => new Tuple<string, Guid>(u.Value.Name, u.Key))
                     .ToList();
-        }
-
-        public object Create(Guid typeId, string name)
-        {
-            TypeDescriptor property = GetProperty(this[typeId]);
-            if (property.Resources.TryGetValue(name, out ResourceDescriptor resource))
-            {
-                object obj = U.Get(property.Type);
-                resource.WriteToObject(obj);
-                return obj;
-            }
-
-            return null;
         }
 
         private void CheckId(ref Guid id, string name)
