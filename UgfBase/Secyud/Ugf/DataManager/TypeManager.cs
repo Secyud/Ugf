@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
+using Secyud.Ugf.Archiving;
 
 namespace Secyud.Ugf.DataManager
 {
@@ -25,11 +27,11 @@ namespace Secyud.Ugf.DataManager
 
             return property;
         }
-        
-        public T ConstructFromResource<T>(string name) 
+
+        public T ConstructFromResource<T>(string name)
             where T : class
         {
-            TypeDescriptor property= U.Tm.GetProperty(typeof(T));
+            TypeDescriptor property = U.Tm.GetProperty(typeof(T));
             T obj = U.Get<T>();
             property.Resources[name].WriteToObject(obj);
             return obj;
@@ -37,9 +39,9 @@ namespace Secyud.Ugf.DataManager
 
         public object ConstructFromResource(Guid typeId, string name)
         {
-            return ConstructFromResource(this[typeId],name);
+            return ConstructFromResource(this[typeId], name);
         }
-        
+
         public object ConstructFromResource(Type type, string name)
         {
             TypeDescriptor property = GetProperty(type);
@@ -108,6 +110,28 @@ namespace Secyud.Ugf.DataManager
             return
                 types.Select(u => new Tuple<string, Guid>(u.Value.Name, u.Key))
                     .ToList();
+        }
+
+        public void ReadResource(string path)
+        {
+            using FileStream stream = File.OpenRead(path);
+            using DataReader reader = new(stream);
+
+            int count = reader.ReadInt32();
+
+            for (int i = 0; i < count; i++)
+            {
+                Guid id = reader.ReadGuid();
+                string name = reader.ReadString();
+                int len = reader.ReadInt32();
+                byte[] data = reader.ReadBytes(len);
+
+                TypeDescriptor descriptor = GetProperty(this[id]);
+                descriptor.Resources[name] = new ResourceDescriptor(name)
+                {
+                    Data = data
+                };
+            }
         }
 
         private void CheckId(ref Guid id, string name)

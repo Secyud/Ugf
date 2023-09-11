@@ -61,5 +61,25 @@ namespace Secyud.Ugf.LayoutComponents
 			enabled = true;
 			return RectTransform;
 		}
+		
+		
+		public void Initialize(Vector2 position, Vector2 bias)
+		{
+			RectTransform.SetRectPosition(position, bias);
+		}
+		public void InitializeOnCenter()
+		{
+			Vector2 position = new(
+				Screen.currentResolution.width / 2f,
+				-Screen.currentResolution.height / 2f
+			);
+			Initialize(position, new Vector2(-0.5f, -0.5f));
+		}
+
+		public void InitializeOnMouse()
+		{
+			Initialize(UgfUnityExtensions.GetMousePosition() - new Vector2(1,1), 
+				Vector2.zero);
+		}
 	}
 }

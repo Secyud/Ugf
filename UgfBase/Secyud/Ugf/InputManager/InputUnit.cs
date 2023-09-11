@@ -5,7 +5,7 @@ using UnityEngine.Events;
 
 #endregion
 
-namespace Secyud.Ugf.InputManaging
+namespace Secyud.Ugf.InputManager
 {
     public class InputUnit
     {

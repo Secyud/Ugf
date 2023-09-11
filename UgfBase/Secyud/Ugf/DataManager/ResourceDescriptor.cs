@@ -6,7 +6,7 @@ namespace Secyud.Ugf.DataManager
     public class ResourceDescriptor
     {
         public string Name { get; }
-        public byte[] Data { get; private set; }
+        public byte[] Data { get; set; }
 
         public ResourceDescriptor(string name)
         {

@@ -1,4 +1,7 @@
-﻿using Secyud.Ugf.BasicComponents;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using Secyud.Ugf.BasicComponents;
 using Secyud.Ugf.LayoutComponents;
 using UnityEngine;
 
@@ -26,16 +29,19 @@ namespace Secyud.Ugf.TabComponents
         {
             RectTransform rectTransform = TabLabelContent.PrepareLayout();
 
-            TabPanel last = null;
+            TabPanel first = null;
             foreach (TabPanel tab in Service.Tabs)
             {
                 SLabelButton button = Instantiate(ButtonTemplate, rectTransform);
                 button.Text = U.T[tab.Name];
                 button.Bind(() => SelectTab(tab));
                 tab.gameObject.SetActive(false);
-                last = tab;
+                if (!first)
+                {
+                    first = tab;
+                }
             }
-            SelectTab(last);
+            SelectTab(first);
         }
 
         protected virtual void SelectTab(TabPanel tab)
@@ -48,6 +54,13 @@ namespace Secyud.Ugf.TabComponents
                 CurrentTab.gameObject.SetActive(true);
                 CurrentTab.RefreshTab();
             }
+
+            ClearInstance();
+        }
+        
+        private void ClearInstance()
+        {
+            Destroy(SButtonGroup.Instance);
         }
 
         public void RefreshCurrentTab()

@@ -48,7 +48,7 @@ namespace Secyud.Ugf.TableComponents
 
         private void Awake()
         {
-            _cells = Array.Empty<TableCell>();
+            _cells ??= Array.Empty<TableCell>();
         }
 
         public void AddRefreshAction(int index, Action action)
@@ -130,11 +130,9 @@ namespace Secyud.Ugf.TableComponents
 
         public void Clear()
         {
-            for (int i = 0; i < _cells.Length; i++)
+            for (int i = 0; i < TableContent.transform.childCount; i++)
             {
-                if (!_cells[i]) continue;
-                Destroy(_cells[i].gameObject);
-                _cells[i] = null;
+                Destroy(TableContent.transform.GetChild(i).gameObject);
             }
         }
 
