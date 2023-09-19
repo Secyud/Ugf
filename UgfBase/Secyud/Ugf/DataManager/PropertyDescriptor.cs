@@ -11,12 +11,14 @@ namespace Secyud.Ugf.DataManager
         private const BindingFlags Flag = BindingFlags.Instance | BindingFlags.NonPublic |
                                           BindingFlags.Public | BindingFlags.DeclaredOnly;
 
+        public Type Type { get; }
         public PropertyDescriptor BaseProperty { get; }
 
         public SAttribute[] Attributes { get; }
 
         public PropertyDescriptor(Type type)
         {
+            Type = type;
             BaseProperty = type.BaseType == typeof(object)
                 ? null
                 : TypeManager.Instance.GetProperty(type.BaseType).Properties;
