@@ -101,15 +101,18 @@ namespace Secyud.Ugf.Modularity
             foreach (IOnInitialization module in onInitializations)
                 yield return module.OnGameInitializing(context);
 
+#if DATA_MANAGER
+#else
             foreach (IOnPostInitialization module in onPostInitializations)
                 yield return module.OnGamePostInitialization(context);
+#endif
         }
 
         public IEnumerator GameSaving()
         {
             foreach (IUgfModuleDescriptor descriptor in Modules)
                 if (descriptor.Instance is IOnArchiving archiving)
-                   yield return archiving.SaveGame();
+                    yield return archiving.SaveGame();
         }
 
         public void Shutdown()
