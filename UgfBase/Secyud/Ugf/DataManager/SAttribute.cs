@@ -25,15 +25,9 @@ namespace Secyud.Ugf.DataManager
             [typeof(Guid)] = FieldType.Guid,
         };
 
-        public EditStyle Style { get; }
         public FieldInfo Info { get; private set; }
         public FieldType Type { get; private set; }
         public Type Belong { get; private set; }
-
-        public SAttribute(EditStyle style = EditStyle.Default)
-        {
-            Style = style;
-        }
 
         public void SetPropertyType(FieldInfo info,Type belong)
         {

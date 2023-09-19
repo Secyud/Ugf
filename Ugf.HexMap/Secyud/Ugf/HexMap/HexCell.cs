@@ -617,5 +617,10 @@ namespace Secyud.Ugf.HexMap
         {
             return Coordinates.DirectionTo(other.Coordinates);
         }
+
+        public float DistanceTo(HexCell cell)
+        {
+            return Coordinates.DistanceTo(cell.Coordinates);
+        }
     }
 }

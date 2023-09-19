@@ -70,8 +70,10 @@ namespace Secyud.Ugf.HexMap
             if (_cellShaderData && _cells is not null)
             {
                 _cellShaderData.Initialize(CellCountX + _dx * 2, CellCountZ + _dz * 2);
-                foreach (HexCell c in _cells)
+                foreach (HexCell c in _tmpCells)
+                {
                     _cellShaderData.RefreshTerrain(c);
+                }
             }
         }
 

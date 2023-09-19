@@ -27,6 +27,7 @@ namespace Secyud.Ugf.HexMap
 			{
 				_cellTexture.SetPixels32(_cellTextureData);
 				_cellTexture.Apply();
+				Shader.SetGlobalTexture(HexCellData, _cellTexture);
 			}
 
 			enabled = false;
@@ -53,7 +54,6 @@ namespace Secyud.Ugf.HexMap
 					wrapModeU = TextureWrapMode.Repeat,
 					wrapModeV = TextureWrapMode.Clamp
 				};
-				Shader.SetGlobalTexture(HexCellData, _cellTexture);
 			}
 			Shader.SetGlobalVector(HexCellDataTexelSize, new Vector4(1f / x, 1f / z, x, z));
 

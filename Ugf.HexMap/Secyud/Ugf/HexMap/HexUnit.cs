@@ -67,7 +67,7 @@ namespace Secyud.Ugf.HexMap
                 if (_location) _location.Unit = null;
 
                 _location = value;
-                value.Unit = this;
+                _location.Unit = this;
                 transform.localPosition = value.Position;
             }
         }
