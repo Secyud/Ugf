@@ -5,7 +5,6 @@ using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
-using Secyud.Ugf.Archiving;
 
 namespace Secyud.Ugf.DataManager
 {
@@ -96,6 +95,14 @@ namespace Secyud.Ugf.DataManager
             }
         }
 
+        public Guid TryGetId(Type type)
+        {
+            if (type.FullName is null)
+                return default;
+            _idDict.TryGetValue(type.FullName, out Guid id);
+            return id;
+        }
+        
         public List<Tuple<string, Guid>> SubTypes(Type type = null)
         {
             IEnumerable<KeyValuePair<Guid, Type>> types = _typeDict;
