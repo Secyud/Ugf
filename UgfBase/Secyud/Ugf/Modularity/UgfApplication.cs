@@ -71,11 +71,9 @@ namespace Secyud.Ugf.Modularity
             foreach (IUgfModuleDescriptor module in Modules)
                 module.Instance.ConfigureGame(context);
 
-#if DATA_MANAGER
-#else
-            foreach (IPostConfigure module in onPost)
-                module.PostConfigureGame(context);
-#endif
+            if (!U.DataManager)
+                foreach (IPostConfigure module in onPost)
+                    module.PostConfigureGame(context);
 
             _configuredServices = true;
         }

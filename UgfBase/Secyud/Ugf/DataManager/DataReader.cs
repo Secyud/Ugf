@@ -70,9 +70,9 @@ namespace Secyud.Ugf.DataManager
             {
                 string name = ReadString();
                 int len = ReadInt32();
-#if DATA_MANAGER
+
                 long position = Reader.BaseStream.Position;
-#endif
+
                 if (attrs.TryGetValue(name, out SAttribute attr))
                 {
                     if (attr.ReadOnly)
@@ -90,19 +90,22 @@ namespace Secyud.Ugf.DataManager
                     }
                     else
                     {
-#if DATA_MANAGER
-                        try
+                        if (U.DataManager)
+                        {
+                            try
+                            {
+                                attr.SetValue(value, ReadDataObject((FieldType)ReadByte()));
+                            }
+                            catch (Exception e)
+                            {
+                                Console.WriteLine(e);
+                                Reader.BaseStream.Seek(len + position, SeekOrigin.Begin);
+                            }
+                        }
+                        else
                         {
                             attr.SetValue(value, ReadDataObject((FieldType)ReadByte()));
                         }
-                        catch (Exception e)
-                        {
-                            Console.WriteLine(e);
-                            Reader.BaseStream.Seek(len + position, SeekOrigin.Begin);
-                        }
-#else
-                        attr.SetValue(value, ReadDataObject((FieldType)ReadByte()));
-#endif
                     }
                 }
                 else

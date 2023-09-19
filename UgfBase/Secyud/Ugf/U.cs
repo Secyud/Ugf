@@ -16,6 +16,8 @@ namespace Secyud.Ugf
 {
     public static class U
     {
+        public const bool DataManager = false;
+        
         public static IStringLocalizer<DefaultResource> T => UgfApplicationFactory.Instance.T;
         public static ISpriteLocalizer<DefaultResource> S => UgfApplicationFactory.Instance.S;
         public static TypeManager Tm => TypeManager.Instance;

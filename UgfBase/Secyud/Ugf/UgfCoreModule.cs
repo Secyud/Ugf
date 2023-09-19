@@ -1,5 +1,3 @@
-//#define DATA_MANAGER
-
 #region
 
 using Localization;
