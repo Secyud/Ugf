@@ -71,8 +71,11 @@ namespace Secyud.Ugf.Modularity
             foreach (IUgfModuleDescriptor module in Modules)
                 module.Instance.ConfigureGame(context);
 
+#if DATA_MANAGER
+#else
             foreach (IPostConfigure module in onPost)
                 module.PostConfigureGame(context);
+#endif
 
             _configuredServices = true;
         }
@@ -101,11 +104,8 @@ namespace Secyud.Ugf.Modularity
             foreach (IOnInitialization module in onInitializations)
                 yield return module.OnGameInitializing(context);
 
-#if DATA_MANAGER
-#else
             foreach (IOnPostInitialization module in onPostInitializations)
                 yield return module.OnGamePostInitialization(context);
-#endif
         }
 
         public IEnumerator GameSaving()
