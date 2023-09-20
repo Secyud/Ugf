@@ -28,6 +28,7 @@ namespace Secyud.Ugf.HexMap
         private HexUnitPlay _loopPlay;
         private IUnitBase _unitBase;
 
+
         public IUnitBase UnitBase
         {
             get => _unitBase;

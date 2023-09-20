@@ -54,6 +54,16 @@ namespace Secyud.Ugf.DataManager
             return null;
         }
 
+        public bool TryWriteObject(object obj, string showName)
+        {
+            TypeDescriptor property = GetProperty(obj.GetType());
+            if (!property.Resources
+                    .TryGetValue(showName, out ResourceDescriptor resource))
+                return false;
+            resource.WriteToObject(obj);
+            return true;
+        }
+
         public Type this[Guid id]
         {
             get => _typeDict[id];
