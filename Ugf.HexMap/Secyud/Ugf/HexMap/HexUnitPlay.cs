@@ -46,7 +46,7 @@ namespace Secyud.Ugf.HexMap
         protected virtual void EndPlay()
         {
             Unit.OnPlayFinished();
-            Destroy(this);
+            Destroy(gameObject);
         }
     }
 }

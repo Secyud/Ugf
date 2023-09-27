@@ -53,7 +53,7 @@ namespace Secyud.Ugf.HexMap
 
             if (_moveToTarget)
             {
-                float speed = MoveSpeedMinZoom / 16;
+                float speed = MoveSpeedMinZoom / 128;
                 Vector3 vector = _targetPosition - transform.localPosition;
                 Vector3 tmp = vector.normalized * speed;
                 if (vector.magnitude > tmp.magnitude)
