@@ -126,7 +126,6 @@ namespace Secyud.Ugf.DataManager
 
                 int len = (int)(Writer.BaseStream.Position - pRecord);
 
-                // TODO: Test if offset can be under zero
                 Writer.BaseStream.Seek(-len - 4, SeekOrigin.Current);
                 Write(len);
                 Writer.BaseStream.Seek(len, SeekOrigin.Current);
