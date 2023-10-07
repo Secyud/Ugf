@@ -16,7 +16,7 @@ namespace Secyud.Ugf.HexMap
     /// <summary>
     ///     Component that represents an entire hexagon map.
     /// </summary>
-    public class HexGrid : MonoBehaviour, IEnumerable<HexCell>,IEnumerator<HexCell>
+    public class HexGrid : MonoBehaviour, IEnumerable<HexCell>, IEnumerator<HexCell>
     {
         [SerializeField] private HexCell CellPrefab;
         [SerializeField] private Text CellLabelPrefab;
@@ -85,7 +85,7 @@ namespace Secyud.Ugf.HexMap
         /// <param name="unit">Unit to add.</param>
         /// <param name="location">Cell in which to place the unit.</param>
         /// <param name="orientation">Orientation of the unit.</param>
-        public void AddUnit(IUnitBase unitBase,HexUnit unit, HexCell location, float orientation)
+        public void AddUnit(IUnitBase unitBase, HexUnit unit, HexCell location, float orientation)
         {
             _units.Add(unit);
             unit.UnitBase = unitBase;
@@ -270,7 +270,7 @@ namespace Secyud.Ugf.HexMap
                 int i = z * CellCountX + x;
                 _cells[i] = cell;
                 cell.Index = i;
-                cell.Message = HexMapManager.InitMessage(x, z, this);
+                HexMapManager.InitMessage(x, z, this).Bind(cell);
             }
 
             if (x > -_dx)
@@ -521,7 +521,7 @@ namespace Secyud.Ugf.HexMap
 
 
         private int _currentIndex;
-        
+
         public bool MoveNext()
         {
             _currentIndex++;
@@ -539,7 +539,6 @@ namespace Secyud.Ugf.HexMap
 
         public void Dispose()
         {
-
         }
     }
 }

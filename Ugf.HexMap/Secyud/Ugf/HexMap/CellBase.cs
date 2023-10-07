@@ -4,6 +4,12 @@
     {
         public abstract void SetHighlight();
         
-        public HexCell Cell { get; internal set; }
+        public HexCell Cell { get; set; }
+
+        public virtual void Bind(HexCell cell)
+        {
+            Cell = cell;
+            cell.Message = this;
+        }
     }
 }

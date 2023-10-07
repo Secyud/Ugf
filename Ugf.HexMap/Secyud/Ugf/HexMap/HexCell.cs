@@ -165,18 +165,7 @@ namespace Secyud.Ugf.HexMap
 
         public bool IsSpecial { get; set; }
 
-        private CellBase _message;
-
-        public CellBase Message
-        {
-            get => _message;
-            internal set
-            {
-                _message = value;
-                if (_message is not null)
-                    value.Cell = this;
-            }
-        }
+        public CellBase Message { get; set; }
 
         public TMessage Get<TMessage>() where TMessage : class
         {

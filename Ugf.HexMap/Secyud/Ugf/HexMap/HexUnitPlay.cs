@@ -4,8 +4,9 @@ namespace Secyud.Ugf.HexMap
 {
     public abstract class HexUnitPlay : MonoBehaviour
     {
-        [SerializeField] private float PlayTime;
-        [SerializeField] public bool Loop;
+        [SerializeField] protected float PlayTime;
+        [SerializeField] protected bool Loop;
+        [SerializeField] protected bool OnUnit;
         protected HexUnit Unit;
         protected float LastTime;
         protected HexCell TargetCell;
@@ -32,8 +33,12 @@ namespace Secyud.Ugf.HexMap
             Unit = unit;
             TargetCell = targetCell;
             Transform trans = transform;
-            trans.parent = unit.transform;
-            trans.localPosition = Vector3.zero;
+            if (OnUnit)
+            {
+                trans.parent = unit.transform;
+            }
+            trans.position = unit.transform.position;
+            trans.LookAt(targetCell.Position,Vector3.up);
             enabled = !Loop;
             ContinuePlay(unit);
         }
