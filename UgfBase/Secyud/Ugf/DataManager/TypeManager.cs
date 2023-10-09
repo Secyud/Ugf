@@ -66,7 +66,15 @@ namespace Secyud.Ugf.DataManager
 
         public Type this[Guid id]
         {
-            get => _typeDict[id];
+            get
+            {
+                if (U.DataManager)
+                {
+                    _typeDict.TryGetValue(id, out Type value);
+                    return value;
+                }
+                return _typeDict[id];
+            }
             set
             {
                 string name = value.FullName;
