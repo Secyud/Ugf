@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
@@ -16,7 +17,7 @@ namespace Secyud.Ugf.DataManager
         private readonly MD5 _md5 = MD5.Create();
         public static TypeManager Instance { get; } = new();
 
-        public TypeDescriptor GetProperty(Type type)
+        public TypeDescriptor GetProperty([NotNull]Type type)
         {
             if (!_propertyDict.TryGetValue(type, out TypeDescriptor property))
             {
