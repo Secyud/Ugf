@@ -31,7 +31,7 @@ namespace Secyud.Ugf.BasicComponents
             {
                 button.Target = target;
                 SLabelButton b = ButtonTemplate.Instantiate(transform);
-                b.Bind(button.Trigger);
+                b.Bind(button.Invoke);
                 if (Float)
                     b.onClick.AddListener(() => Destroy(gameObject));
                 b.Text = U.T[button.ShowName];

@@ -14,6 +14,6 @@ namespace Secyud.Ugf
 
 	public interface ITriggerable : IShowable
 	{
-		void Trigger();
+		void Invoke();
 	}
 }
