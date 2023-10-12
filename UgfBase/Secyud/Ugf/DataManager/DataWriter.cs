@@ -139,6 +139,7 @@ namespace Secyud.Ugf.DataManager
             foreach (object obj in list)
             {
                 SAttribute.Map.TryGetValue(obj.GetType(), out FieldType fieldType);
+                Write((byte)fieldType);
                 WriteDataObject(obj, fieldType);
             }
         }
