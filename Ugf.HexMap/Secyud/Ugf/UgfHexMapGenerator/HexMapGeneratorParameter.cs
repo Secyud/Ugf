@@ -2,7 +2,9 @@
 
 #endregion
 
-namespace Secyud.Ugf.HexMap.Generator
+using Secyud.Ugf.HexUtilities;
+
+namespace Secyud.Ugf.UgfHexMapGenerator
 {
 	public class HexMapGeneratorParameter
 	{

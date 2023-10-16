@@ -35,9 +35,9 @@ namespace Secyud.Ugf.UgfHexMap
             Transform trans = transform;
             if (OnUnit)
             {
-                trans.parent = unit.Unit.transform;
+                trans.parent = unit.transform;
             }
-            trans.position = unit.Unit.transform.position;
+            trans.position = unit.transform.position;
             trans.LookAt(targetCell.Position,Vector3.up);
             enabled = !Loop;
             ContinuePlay(unit);

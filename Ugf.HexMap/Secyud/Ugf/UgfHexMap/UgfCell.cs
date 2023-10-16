@@ -1,17 +1,20 @@
 using System.Linq;
+using Secyud.Ugf.Archiving;
 using Secyud.Ugf.HexMap;
+using Secyud.Ugf.HexUtilities;
 using UnityEngine;
 
 namespace Secyud.Ugf.UgfHexMap
 {
-    public class UgfCell : CellProperty
+    public class UgfCell : HexCell
     {
         private byte _terrainType;
         private bool _walled;
-        private int _elevation = int.MinValue;
-        private int _waterLevel;
-
-        public HexCoordinates Coordinates => Cell.Coordinates;
+        public HexDirection IncomingRiver { get; private set; }
+        public HexDirection OutgoingRiver { get; private set; }
+        
+        private short _elevation = short.MinValue;
+        private short _waterLevel;
         
         public Transform FeaturePrefab { get; set; }
 
@@ -23,15 +26,12 @@ namespace Secyud.Ugf.UgfHexMap
                 if (_terrainType != value)
                 {
                     _terrainType = value;
-                    Cell.Chunk.Grid.SetShaderData(Cell);
+                    Chunk.Grid.SetShaderData(this);
                 }
             }
         }
 
         #region River
-
-        public HexDirection IncomingRiver { get; private set; }
-        public HexDirection OutgoingRiver { get; private set; }
 
         public bool HasRiver =>
             HasIncomingRiver || HasOutgoingRiver;
@@ -64,12 +64,12 @@ namespace Secyud.Ugf.UgfHexMap
                 return;
             }
 
-            IncomingRiver = HexDirection.InValid;
-            Cell.RefreshSelfOnly();
+            RefreshSelfOnly();
 
             UgfCell neighbor = GetNeighbor(IncomingRiver);
+            IncomingRiver = HexDirection.InValid;
             neighbor.OutgoingRiver = HexDirection.InValid;
-            neighbor.Cell.RefreshSelfOnly();
+            neighbor.RefreshSelfOnly();
         }
 
         /// <summary>
@@ -79,12 +79,12 @@ namespace Secyud.Ugf.UgfHexMap
         {
             if (!HasOutgoingRiver) return;
 
-            OutgoingRiver = HexDirection.InValid;
-            Cell.RefreshSelfOnly();
+            RefreshSelfOnly();
 
             UgfCell neighbor = GetNeighbor(OutgoingRiver);
+            OutgoingRiver = HexDirection.InValid;
             neighbor.IncomingRiver = HexDirection.InValid;
-            neighbor.Cell.RefreshSelfOnly();
+            neighbor.RefreshSelfOnly();
         }
 
         /// <summary>
@@ -182,15 +182,15 @@ namespace Secyud.Ugf.UgfHexMap
             Roads[(int)index] = state;
             UgfCell neighbor = GetNeighbor(index);
             neighbor.Roads[(int)index.Opposite()] = state;
-            neighbor.Cell.RefreshSelfOnly();
-            Cell.RefreshSelfOnly();
+            neighbor.RefreshSelfOnly();
+            RefreshSelfOnly();
         }
 
         #endregion
 
         #region Elevation
 
-        public int Elevation
+        public short Elevation
         {
             get => _elevation;
             set
@@ -209,7 +209,7 @@ namespace Secyud.Ugf.UgfHexMap
                     }
                 }
 
-                Cell.Refresh();
+                Refresh();
             }
         }
 
@@ -243,7 +243,7 @@ namespace Secyud.Ugf.UgfHexMap
 
         #region Water
 
-        public int WaterLevel
+        public short WaterLevel
         {
             get => _waterLevel;
             set
@@ -253,7 +253,7 @@ namespace Secyud.Ugf.UgfHexMap
                 // int originalViewElevation = ViewElevation;
                 _waterLevel = value;
                 ValidateRivers();
-                Cell.Refresh();
+                Refresh();
             }
         }
 
@@ -278,14 +278,12 @@ namespace Secyud.Ugf.UgfHexMap
                 if (_walled != value)
                 {
                     _walled = value;
-                    Cell.Refresh();
+                    Refresh();
                 }
             }
         }
 
         #region Position
-
-        public Vector3 Position => Cell.Position;
 
         private void RefreshPosition()
         {
@@ -294,19 +292,18 @@ namespace Secyud.Ugf.UgfHexMap
             position.y +=
                 (HexMetrics.SampleNoise(position).y * 2f - 1f) *
                 HexMetrics.ElevationPerturbStrength;
-            Cell.transform.localPosition = position;
+            transform.localPosition = position;
 
-            Vector3 uiPosition = Cell.UiRect.localPosition;
+            Vector3 uiPosition = UiRect.localPosition;
             uiPosition.z = -position.y;
-            Cell.UiRect.localPosition = uiPosition;
+            UiRect.localPosition = uiPosition;
         }
 
         #endregion
 
-        public UgfCell GetNeighbor(HexDirection direction)
+        public new UgfCell GetNeighbor(HexDirection direction)
         {
-            HexCell cell = Cell.GetNeighbor(direction);
-            return cell ? cell.Get<UgfCell>() : null;
+            return base.GetNeighbor(direction) as UgfCell;
         }
 
         #region Path
@@ -342,5 +339,33 @@ namespace Secyud.Ugf.UgfHexMap
         public UgfCell NextWithSamePriority { get; set; }
 
         #endregion
+
+        public override void Save(IArchiveWriter writer)
+        {
+            writer.Write(_terrainType);
+            writer.Write(_walled);
+            writer.Write(_elevation);
+            writer.Write(_waterLevel);
+            writer.Write((sbyte)IncomingRiver);
+            writer.Write((sbyte)OutgoingRiver);
+            for (int i = 0; i < Roads.Length; i++)
+            {
+                writer.Write(Roads[i]);
+            }
+        }
+
+        public override void Load(IArchiveReader reader)
+        {
+            _terrainType =  reader.ReadByte();
+            _walled =  reader.ReadBoolean();
+            _elevation =  reader.ReadInt16();
+            _waterLevel =  reader.ReadInt16();
+            IncomingRiver =  (HexDirection)reader.ReadSByte();
+            OutgoingRiver =  (HexDirection)reader.ReadSByte();
+            for (int i = 0; i < Roads.Length; i++)
+            {
+                Roads[i] = reader.ReadBoolean();
+            }
+        }
     }
 }

@@ -1,4 +1,4 @@
-namespace Secyud.Ugf.HexMap.Generator
+namespace Secyud.Ugf.UgfHexMapGenerator
 {
 	public enum HemisphereMode
 	{

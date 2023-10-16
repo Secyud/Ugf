@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Secyud.Ugf.UgfHexMap
 {
-    public class UgfHexGridDrawer:IHexGridDrawer,IRegistry
+    public class UgfHexGridDrawer : IHexGridDrawer, IRegistry
     {
         public void TriangulateChunk(HexChunk chunk)
         {
@@ -12,13 +12,13 @@ namespace Secyud.Ugf.UgfHexMap
 
             foreach (HexCell cell in chunk.Cells)
             {
-                triangulation.TriangulateCell(cell.Get<UgfCell>());
+                triangulation.TriangulateCell(cell as UgfCell);
             }
         }
 
         public Color32 GetCellShaderData(HexCell cell)
         {
-            return new Color32(1,1,1,cell.Get<UgfCell>().TerrainType);
+            return new Color32(1, 1, 1, ((UgfCell)cell).TerrainType);
         }
     }
 }

@@ -4,7 +4,7 @@ using UnityEngine;
 
 #endregion
 
-namespace Secyud.Ugf.HexMap
+namespace Secyud.Ugf.HexUtilities
 {
 	/// <summary>
 	///     Constant metrics and utility methods for the hex map.

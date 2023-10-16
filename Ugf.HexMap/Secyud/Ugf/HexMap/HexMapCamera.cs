@@ -1,5 +1,6 @@
 ﻿#region
 
+using Secyud.Ugf.HexUtilities;
 using UnityEngine;
 
 #endregion
@@ -19,7 +20,6 @@ namespace Secyud.Ugf.HexMap
         [SerializeField] private float MoveSpeedMaxZoom;
         [SerializeField] private float RotationSpeed;
         [SerializeField] private HexGrid Grid;
-        [SerializeField] private Camera Camera;
         private Vector3 _targetPosition;
         private bool _moveToTarget;
         private float _rotationAngle;

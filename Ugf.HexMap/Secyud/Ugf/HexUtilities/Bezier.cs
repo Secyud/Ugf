@@ -4,7 +4,7 @@ using UnityEngine;
 
 #endregion
 
-namespace Secyud.Ugf.HexMap
+namespace Secyud.Ugf.HexUtilities
 {
 	/// <summary>
 	///     3D quadratic Bézier functionality.

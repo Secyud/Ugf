@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using Secyud.Ugf.HexUtilities;
 using UnityEngine;
 
 #endregion

@@ -3,9 +3,8 @@ using Secyud.Ugf.HexMap;
 
 namespace Secyud.Ugf.UgfHexMap
 {
-    public sealed class UgfUnit:UnitProperty
+    public class UgfUnit:HexUnit
     {
-
         public event Action PlayFinishedAction;
         
         public void OnPlayFinished()

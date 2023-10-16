@@ -1,3 +1,4 @@
+using Secyud.Ugf.HexUtilities;
 using UnityEngine;
 
 namespace Secyud.Ugf.HexMap
@@ -63,7 +64,8 @@ namespace Secyud.Ugf.HexMap
             for (int j = 0; j < HexMetrics.ChunkSizeZ; j++)
             for (int i = 0; i < HexMetrics.ChunkSizeX; i++)
             {
-                HexCell cell = Cells[j * HexMetrics.ChunkSizeX + i];
+                HexCell cell = Cells[j * HexMetrics.ChunkSizeX + i]
+                    = Instantiate(grid.CellTemplate,transform,false) ;
 
                 RectTransform uiRect
                     = Instantiate(grid.UiTemplate, Canvas.transform, false);

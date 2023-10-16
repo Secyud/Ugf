@@ -1,13 +1,15 @@
 ﻿#region
 
 using System;
+using Secyud.Ugf.HexMap;
+using Secyud.Ugf.HexUtilities;
 using Secyud.Ugf.UgfHexMap;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
 #endregion
 
-namespace Secyud.Ugf.HexMap.UI
+namespace Secyud.Ugf.UgfHexMapEditor
 {
 	/// <summary>
 	///     Component that applies UI commands to the hex map.
@@ -22,7 +24,7 @@ namespace Secyud.Ugf.HexMap.UI
 
 		private byte _activeTerrainIndex;
 
-		private int _activeLevel;
+		private short _activeLevel;
 
 		private ObjectToggle _applyObject;
 
@@ -76,7 +78,6 @@ namespace Secyud.Ugf.HexMap.UI
 			level = (int)level;
 		}
 
-
 		public void SetMode(bool mode)
 		{
 			_apply = mode;
@@ -95,7 +96,7 @@ namespace Secyud.Ugf.HexMap.UI
 
 		private UgfCell GetCellUnderCursor()
 		{
-			return HexGrid.GetCellUnderCursor()?.Get<UgfCell>();
+			return HexGrid.GetCellUnderCursor() as UgfCell;
 		}
 
 
@@ -173,11 +174,11 @@ namespace Secyud.Ugf.HexMap.UI
 
 			for (int r = 0, z = centerZ - _brushSize; z <= centerZ; z++, r++)
 			for (int x = centerX - r; x <= centerX + _brushSize; x++)
-				EditCell(HexGrid.GetCell(new HexCoordinates(x, z))?.Get<UgfCell>());
+				EditCell(HexGrid.GetCell(new HexCoordinates(x, z)) as UgfCell);
 
 			for (int r = 0, z = centerZ + _brushSize; z > centerZ; z--, r++)
 			for (int x = centerX - _brushSize; x <= centerX + r; x++)
-				EditCell(HexGrid.GetCell(new HexCoordinates(x, z))?.Get<UgfCell>());
+				EditCell(HexGrid.GetCell(new HexCoordinates(x, z)) as UgfCell);
 		}
 
 		private void EditCell(UgfCell cell)

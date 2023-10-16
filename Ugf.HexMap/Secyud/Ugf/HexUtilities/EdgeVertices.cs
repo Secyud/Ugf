@@ -4,7 +4,7 @@ using UnityEngine;
 
 #endregion
 
-namespace Secyud.Ugf.HexMap
+namespace Secyud.Ugf.HexUtilities
 {
     /// <summary>
     ///     Set of five vertex positions describing a cell edge.

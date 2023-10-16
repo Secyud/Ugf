@@ -1,4 +1,5 @@
 using Secyud.Ugf.HexMap;
+using Secyud.Ugf.HexUtilities;
 using UnityEngine;
 
 namespace Secyud.Ugf.UgfHexMap
@@ -104,7 +105,7 @@ namespace Secyud.Ugf.UgfHexMap
 
             Water.AddTriangle(center, c1, c2);
             Vector3 indices;
-            indices.x = indices.y = indices.z = cell.Cell.Index;
+            indices.x = indices.y = indices.z = cell.Index;
             Water.AddTriangleCellData(indices, Weights1);
 
             if (direction <= HexDirection.Se && neighbor != null)
@@ -114,7 +115,7 @@ namespace Secyud.Ugf.UgfHexMap
                 Vector3 e2 = c2 + bridge;
 
                 Water.AddQuad(c1, c2, e1, e2);
-                indices.y = neighbor.Cell.Index;
+                indices.y = neighbor.Index;
                 Water.AddQuadCellData(indices, Weights1, Weights2);
 
                 if (direction <= HexDirection.E)
@@ -125,7 +126,7 @@ namespace Secyud.Ugf.UgfHexMap
                     Water.AddTriangle(
                         c2, e2, c2 + HexMetrics.GetWaterBridge(direction.Next())
                     );
-                    indices.z = nextNeighbor.Cell.Index;
+                    indices.z = nextNeighbor.Index;
                     Water.AddTriangleCellData(
                         indices, Weights1, Weights2, Weights3
                     );
@@ -146,8 +147,8 @@ namespace Secyud.Ugf.UgfHexMap
             Water.AddTriangle(center, e1.V3, e1.V4);
             Water.AddTriangle(center, e1.V4, e1.V5);
             Vector3 indices;
-            indices.x = indices.z = cell.Cell.Index;
-            indices.y = neighbor.Cell.Index;
+            indices.x = indices.z = cell.Index;
+            indices.y = neighbor.Index;
             Water.AddTriangleCellData(indices, Weights1);
             Water.AddTriangleCellData(indices, Weights1);
             Water.AddTriangleCellData(indices, Weights1);
@@ -198,7 +199,7 @@ namespace Secyud.Ugf.UgfHexMap
                     new Vector2(0f, 1f),
                     new Vector2(0f, nextNeighbor.IsUnderwater ? 0f : 1f)
                 );
-                indices.z = nextNeighbor.Cell.Index;
+                indices.z = nextNeighbor.Index;
                 WaterShore.AddTriangleCellData(
                     indices, Weights1, Weights2, Weights3
                 );
@@ -279,7 +280,7 @@ namespace Secyud.Ugf.UgfHexMap
             HexDirection direction, UgfCell cell, Vector3 center, EdgeVertices e
         )
         {
-            TriangulateEdgeFan(center, e, cell.Cell.Index);
+            TriangulateEdgeFan(center, e, cell.Index);
 
             if (cell.HasRoads)
             {
@@ -288,7 +289,7 @@ namespace Secyud.Ugf.UgfHexMap
                     center,
                     Vector3.Lerp(center, e.V1, interpolators.x),
                     Vector3.Lerp(center, e.V5, interpolators.y),
-                    e, cell.HasRoadThroughEdge(direction), cell.Cell.Index
+                    e, cell.HasRoadThroughEdge(direction), cell.Index
                 );
             }
         }
@@ -341,10 +342,10 @@ namespace Secyud.Ugf.UgfHexMap
             );
 
             TriangulateEdgeStrip(
-                m, Weights1, cell.Cell.Index,
-                e, Weights1, cell.Cell.Index
+                m, Weights1, cell.Index,
+                e, Weights1, cell.Index
             );
-            TriangulateEdgeFan(center, m, cell.Cell.Index);
+            TriangulateEdgeFan(center, m, cell.Index);
         }
 
         private void TriangulateRoadAdjacentToRiver(
@@ -444,10 +445,10 @@ namespace Secyud.Ugf.UgfHexMap
 
             Vector3 mL = Vector3.Lerp(roadCenter, e.V1, interpolators.x);
             Vector3 mR = Vector3.Lerp(roadCenter, e.V5, interpolators.y);
-            TriangulateRoad(roadCenter, mL, mR, e, hasRoadThroughEdge, cell.Cell.Index);
-            if (previousHasRiver) TriangulateRoadEdge(roadCenter, center, mL, cell.Cell.Index);
+            TriangulateRoad(roadCenter, mL, mR, e, hasRoadThroughEdge, cell.Index);
+            if (previousHasRiver) TriangulateRoadEdge(roadCenter, center, mL, cell.Index);
 
-            if (nextHasRiver) TriangulateRoadEdge(roadCenter, mR, center, cell.Cell.Index);
+            if (nextHasRiver) TriangulateRoadEdge(roadCenter, mR, center, cell.Index);
         }
 
         private void TriangulateWithRiverBeginOrEnd(
@@ -462,16 +463,16 @@ namespace Secyud.Ugf.UgfHexMap
             m.V3.y = e.V3.y;
 
             TriangulateEdgeStrip(
-                m, Weights1, cell.Cell.Index,
-                e, Weights1, cell.Cell.Index
+                m, Weights1, cell.Index,
+                e, Weights1, cell.Index
             );
-            TriangulateEdgeFan(center, m, cell.Cell.Index);
+            TriangulateEdgeFan(center, m, cell.Index);
 
             if (!cell.IsUnderwater)
             {
                 bool reversed = cell.HasIncomingRiver;
                 Vector3 indices;
-                indices.x = indices.y = indices.z = cell.Cell.Index;
+                indices.x = indices.y = indices.z = cell.Index;
                 TriangulateRiverQuad(
                     m.V2, m.V4, e.V2, e.V4,
                     cell.RiverSurfaceY, 0.6f, reversed, indices
@@ -540,8 +541,8 @@ namespace Secyud.Ugf.UgfHexMap
             m.V3.y = center.y = e.V3.y;
 
             TriangulateEdgeStrip(
-                m, Weights1, cell.Cell.Index,
-                e, Weights1, cell.Cell.Index
+                m, Weights1, cell.Index,
+                e, Weights1, cell.Index
             );
 
             Terrain.AddTriangle(centerL, m.V1, m.V2);
@@ -550,7 +551,7 @@ namespace Secyud.Ugf.UgfHexMap
             Terrain.AddTriangle(centerR, m.V4, m.V5);
 
             Vector3 indices;
-            indices.x = indices.y = indices.z = cell.Cell.Index;
+            indices.x = indices.y = indices.z = cell.Index;
             Terrain.AddTriangleCellData(indices, Weights1);
             Terrain.AddQuadCellData(indices, Weights1);
             Terrain.AddQuadCellData(indices, Weights1);
@@ -591,8 +592,8 @@ namespace Secyud.Ugf.UgfHexMap
             {
                 e2.V3.y = neighbor.StreamBedY;
                 Vector3 indices;
-                indices.x = indices.z = cell.Cell.Index;
-                indices.y = neighbor.Cell.Index;
+                indices.x = indices.z = cell.Index;
+                indices.y = neighbor.Index;
 
                 if (!cell.IsUnderwater)
                 {
@@ -627,8 +628,8 @@ namespace Secyud.Ugf.UgfHexMap
                 TriangulateEdgeTerraces(e1, cell, e2, neighbor, hasRoad);
             else
                 TriangulateEdgeStrip(
-                    e1, Weights1, cell.Cell.Index,
-                    e2, Weights2, neighbor.Cell.Index, hasRoad
+                    e1, Weights1, cell.Index,
+                    e2, Weights2, neighbor.Index, hasRoad
                 );
 
             AddWall(e1, cell, e2, neighbor, hasRiver, hasRoad);
@@ -734,9 +735,9 @@ namespace Secyud.Ugf.UgfHexMap
             {
                 Terrain.AddTriangle(bottom, left, right);
                 Vector3 indices;
-                indices.x = bottomCell.Cell.Index;
-                indices.y = leftCell.Cell.Index;
-                indices.z = rightCell.Cell.Index;
+                indices.x = bottomCell.Index;
+                indices.y = leftCell.Index;
+                indices.z = rightCell.Index;
                 Terrain.AddTriangleCellData(indices, Weights1, Weights2, Weights3);
             }
 
@@ -751,8 +752,8 @@ namespace Secyud.Ugf.UgfHexMap
         {
             EdgeVertices e2 = EdgeVertices.TerraceLerp(begin, end, 1);
             Color w2 = HexMetrics.TerraceLerp(Weights1, Weights2, 1);
-            float i1 = beginCell.Cell.Index;
-            float i2 = endCell.Cell.Index;
+            float i1 = beginCell.Index;
+            float i2 = endCell.Index;
 
             TriangulateEdgeStrip(begin, Weights1, i1, e2, w2, i2, hasRoad);
 
@@ -779,9 +780,9 @@ namespace Secyud.Ugf.UgfHexMap
             Color w3 = HexMetrics.TerraceLerp(Weights1, Weights2, 1);
             Color w4 = HexMetrics.TerraceLerp(Weights1, Weights3, 1);
             Vector3 indices;
-            indices.x = beginCell.Cell.Index;
-            indices.y = leftCell.Cell.Index;
-            indices.z = rightCell.Cell.Index;
+            indices.x = beginCell.Index;
+            indices.y = leftCell.Index;
+            indices.z = rightCell.Index;
 
             Terrain.AddTriangle(begin, v3, v4);
             Terrain.AddTriangleCellData(indices, Weights1, w3, w4);
@@ -818,9 +819,9 @@ namespace Secyud.Ugf.UgfHexMap
             );
             Color boundaryWeights = Color.Lerp(Weights1, Weights3, b);
             Vector3 indices;
-            indices.x = beginCell.Cell.Index;
-            indices.y = leftCell.Cell.Index;
-            indices.z = rightCell.Cell.Index;
+            indices.x = beginCell.Index;
+            indices.y = leftCell.Index;
+            indices.z = rightCell.Index;
 
             TriangulateBoundaryTriangle(
                 begin, Weights1, left, Weights2, boundary, boundaryWeights, indices
@@ -858,9 +859,9 @@ namespace Secyud.Ugf.UgfHexMap
             );
             Color boundaryWeights = Color.Lerp(Weights1, Weights2, b);
             Vector3 indices;
-            indices.x = beginCell.Cell.Index;
-            indices.y = leftCell.Cell.Index;
-            indices.z = rightCell.Cell.Index;
+            indices.x = beginCell.Index;
+            indices.y = leftCell.Index;
+            indices.z = rightCell.Index;
 
             TriangulateBoundaryTriangle(
                 right, Weights3, begin, Weights1, boundary, boundaryWeights, indices

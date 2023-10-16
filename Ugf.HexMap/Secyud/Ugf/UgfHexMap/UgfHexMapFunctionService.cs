@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Secyud.Ugf.DependencyInjection;
 using Secyud.Ugf.HexMap;
+using Secyud.Ugf.HexUtilities;
 using UnityEngine;
 
 namespace Secyud.Ugf.UgfHexMap
@@ -64,7 +65,7 @@ namespace Secyud.Ugf.UgfHexMap
                 UgfCell current = CurrentPathTo;
                 while (current != CurrentPathFrom)
                 {
-                    current.Cell.SetLabel(null);
+                    current.SetLabel(null);
                     current = current.PathFrom;
                 }
 
@@ -72,8 +73,8 @@ namespace Secyud.Ugf.UgfHexMap
             }
             else if (CurrentPathFrom is not null)
             {
-                CurrentPathFrom.Cell.DisableHighlight();
-                CurrentPathTo.Cell.DisableHighlight();
+                CurrentPathFrom.DisableHighlight();
+                CurrentPathTo.DisableHighlight();
             }
 
             CurrentPathFrom = CurrentPathTo = null;
@@ -137,7 +138,7 @@ namespace Secyud.Ugf.UgfHexMap
                         neighbor.Distance = (int)distance;
                         neighbor.PathFrom = current;
                         neighbor.SearchHeuristic =
-                            neighbor.Cell.Coordinates.DistanceTo(toCell.Cell.Coordinates);
+                            neighbor.Coordinates.DistanceTo(toCell.Coordinates);
                         _searchFrontier.Enqueue(neighbor);
                     }
                     else if (distance < neighbor.Distance)
@@ -159,12 +160,12 @@ namespace Secyud.Ugf.UgfHexMap
             {
                 IList<UgfCell> path = GetPath();
                 UgfCell location = path[0];
-                HexUnit unit = location.Cell.Unit;
+                HexUnit unit = location.Unit;
                 if (unit)
                 {
-                    location.Cell.Unit = null;
+                    location.Unit = null;
                     location = path[^1];
-                    location.Cell.Unit = unit;
+                    location.Unit = unit;
                     unit.StopAllCoroutines();
                     unit.StartCoroutine(TravelPath(path,unit));
                     ClearPath();

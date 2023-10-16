@@ -1,4 +1,4 @@
-﻿namespace Secyud.Ugf.HexMap
+﻿namespace Secyud.Ugf.HexUtilities
 {
     /// <summary>
     ///     Hexagonal direction, pointy side up, which is north.

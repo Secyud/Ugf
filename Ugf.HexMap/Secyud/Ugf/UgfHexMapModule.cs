@@ -1,7 +1,7 @@
 #region
 
 using Secyud.Ugf.HexMap;
-using Secyud.Ugf.HexMap.Generator;
+using Secyud.Ugf.HexUtilities;
 using Secyud.Ugf.Modularity;
 using UnityEngine;
 
@@ -16,13 +16,13 @@ namespace Secyud.Ugf
     {
         public void ConfigureGame(ConfigurationContext context)
         {
+            context.Manager.AddAssembly(typeof(UgfHexMapModule).Assembly);
+            
             if (!U.DataManager)
             {
                 HexMetrics.NoiseSource = Resources.Load<Texture2D>("Noise");
                 HexMetrics.InitializeHashGrid(1238);
             }
-
-            context.Manager.AddType<HexMapGenerator>();
         }
     }
 }

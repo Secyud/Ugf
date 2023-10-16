@@ -1,6 +1,7 @@
 using System;
 using Secyud.Ugf.DependencyInjection;
 using Secyud.Ugf.HexMap;
+using Secyud.Ugf.HexUtilities;
 
 namespace Secyud.Ugf.UgfHexMap
 {
@@ -11,7 +12,7 @@ namespace Secyud.Ugf.UgfHexMap
 
         public float GetMoveCost(UgfCell fromCell, UgfCell toCell, HexDirection direction)
         {
-            if (toCell.Cell.Index < 0)
+            if (toCell.Index < 0)
                 return -1;
 
             int dHeight = Math.Abs(toCell.Elevation - fromCell.Elevation) + 3;
@@ -37,7 +38,7 @@ namespace Secyud.Ugf.UgfHexMap
                 while (current != function.CurrentPathFrom)
                 {
                     int turn = (int)((current.Distance - 1) / speed);
-                    current.Cell.SetLabel(turn.ToString());
+                    current.SetLabel(turn.ToString());
                     current = current.PathFrom;
                 }
             }

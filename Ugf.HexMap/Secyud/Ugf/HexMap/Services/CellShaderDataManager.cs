@@ -22,6 +22,7 @@ namespace Secyud.Ugf.HexMap
         
         public void ChangeTextureSize(int x, int z)
         {
+            if (x == 0 || z == 0) return;
             _cellTexture.Reinitialize(x, z);
             if (CellData.Length != x * z)
             {

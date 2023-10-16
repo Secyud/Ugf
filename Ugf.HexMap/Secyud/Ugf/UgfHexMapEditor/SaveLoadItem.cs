@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 #endregion
 
-namespace Secyud.Ugf.HexMap.UI
+namespace Secyud.Ugf.UgfHexMapEditor
 {
 	/// <summary>
 	///     Component that represents a single save or load menu item.

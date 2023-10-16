@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Secyud.Ugf.Archiving;
 using Secyud.Ugf.BasicComponents;
+using Secyud.Ugf.HexUtilities;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,8 +12,6 @@ namespace Secyud.Ugf.HexMap
     public class HexCell : MonoBehaviour, IArchivable
     {
         private readonly HexCell[] _neighbors = new HexCell[6];
-        private readonly Dictionary<Type, CellProperty> _properties = new();
-
         public RectTransform UiRect { get; private set; }
         public HexChunk Chunk { get; private set; }
         public int Index { get; private set; }
@@ -44,18 +43,6 @@ namespace Secyud.Ugf.HexMap
         private Text _label;
         private Text Label => _label ? _label : _label = UiRect.GetComponent<Text>();
 
-        public TProperty Get<TProperty>()
-            where TProperty : CellProperty
-        {
-            if (!_properties.TryGetValue(typeof(TProperty), out CellProperty property))
-            {
-                property = U.Get<TProperty>();
-                _properties[typeof(TProperty)] = property;
-                property.Initialize(this);
-            }
-
-            return property as TProperty;
-        }
 
         /// <summary>
         ///     Get one of the neighbor cells.
@@ -84,6 +71,7 @@ namespace Secyud.Ugf.HexMap
             Chunk = chunk;
             Coordinates = HexCoordinates.FromOffsetCoordinates(x, z);
             Index = x + z * Chunk.Grid.CellCountX;
+            chunk.Grid.Cells[Index] = this;
         }
 
         public void CreateMap()
@@ -127,30 +115,16 @@ namespace Secyud.Ugf.HexMap
         ///     Save the cell data.
         /// </summary>
         /// <param name="writer"><see cref="IArchiveWriter" /> to use.</param>
-        public void Save(IArchiveWriter writer)
+        public virtual void Save(IArchiveWriter writer)
         {
-            List<CellProperty> properties = _properties.Values
-                .Where(u => u.SaveProperty)
-                .ToList();
-            writer.Write(properties.Count);
-            foreach (CellProperty p in properties)
-            {
-                writer.WriteObject(p);
-            }
         }
 
         /// <summary>
         ///     Load the cell data.
         /// </summary>
         /// <param name="reader"><see cref="IArchiveReader" /> to use.</param>
-        public void Load(IArchiveReader reader)
+        public virtual void Load(IArchiveReader reader)
         {
-            int count = reader.ReadInt32();
-            for (int i = 0; i < count; i++)
-            {
-                CellProperty p = reader.ReadObject<CellProperty>();
-                _properties[p.GetType()] = p;
-            }
         }
 
         public void Refresh()

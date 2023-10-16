@@ -1,12 +1,13 @@
 ﻿#region
 
-using Secyud.Ugf.HexMap.Generator;
+using Secyud.Ugf.HexMap;
+using Secyud.Ugf.UgfHexMapGenerator;
 using UnityEngine;
 using UnityEngine.Serialization;
 
 #endregion
 
-namespace Secyud.Ugf.HexMap.UI
+namespace Secyud.Ugf.UgfHexMapEditor
 {
 	/// <summary>
 	///     Component that applies actions from the new map menu UI to the hex map.

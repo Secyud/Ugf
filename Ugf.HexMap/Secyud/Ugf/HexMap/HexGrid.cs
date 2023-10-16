@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using Secyud.Ugf.Archiving;
+using Secyud.Ugf.HexUtilities;
 using UnityEngine;
 
 namespace Secyud.Ugf.HexMap
@@ -52,8 +54,9 @@ namespace Secyud.Ugf.HexMap
         }
         
         
-        private void Awake()
+        protected virtual void Awake()
         {
+            Cells = Array.Empty<HexCell>();
             ShaderManager = U.Get<CellShaderDataManager>();
             _shaderData = gameObject.GetOrAddComponent<ShaderData>();
             _shaderData.Initialize(this);

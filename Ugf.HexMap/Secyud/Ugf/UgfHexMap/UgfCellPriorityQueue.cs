@@ -1,11 +1,10 @@
 ﻿#region
 
 using System.Collections.Generic;
-using Secyud.Ugf.UgfHexMap;
 
 #endregion
 
-namespace Secyud.Ugf.HexMap
+namespace Secyud.Ugf.UgfHexMap
 {
 	/// <summary>
 	///     Priority queue to store hex cells for the pathfinding algorithm.

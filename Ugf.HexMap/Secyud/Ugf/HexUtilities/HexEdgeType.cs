@@ -1,4 +1,4 @@
-﻿namespace Secyud.Ugf.HexMap
+﻿namespace Secyud.Ugf.HexUtilities
 {
 	/// <summary>
 	///     Hexagon edge type, determined by absolute elevation difference of adjacent cells.

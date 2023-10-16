@@ -3,12 +3,13 @@
 using System;
 using System.IO;
 using Secyud.Ugf.Archiving;
+using Secyud.Ugf.HexMap;
 using UnityEngine;
 using UnityEngine.UI;
 
 #endregion
 
-namespace Secyud.Ugf.HexMap.UI
+namespace Secyud.Ugf.UgfHexMapEditor
 {
     /// <summary>
     ///     Component that applies actions from the save-load menu UI to the hex map.

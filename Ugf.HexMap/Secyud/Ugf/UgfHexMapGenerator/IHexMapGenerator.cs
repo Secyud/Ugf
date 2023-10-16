@@ -1,6 +1,7 @@
 using Secyud.Ugf.DependencyInjection;
+using Secyud.Ugf.HexMap;
 
-namespace Secyud.Ugf.HexMap.Generator
+namespace Secyud.Ugf.UgfHexMapGenerator
 {
 	public interface IHexMapGenerator:IRegistry
 	{

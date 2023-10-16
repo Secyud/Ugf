@@ -1,6 +1,4 @@
-using System;
 using System.Collections;
-using System.Collections.Generic;
 using JetBrains.Annotations;
 using UnityEngine;
 using UnityEngine.Events;
@@ -13,7 +11,7 @@ namespace Secyud.Ugf.HexMap
 
         [SerializeField] private UnityEvent<Color> HighlightEvent;
         
-        private readonly Dictionary<Type, UnitProperty> _properties = new();
+        private UnitProperty _property;
         private HexCell _location;
         private float _orientation;
         public int Id { get; set; }
@@ -51,21 +49,14 @@ namespace Secyud.Ugf.HexMap
 
         public void SetProperty([NotNull]UnitProperty property)
         {
-            _properties[property.GetType()] = property;
+            _property = property;
             property.Initialize(this);
         }
         
         public TProperty Get<TProperty>()
             where TProperty : UnitProperty
         {
-            if (!_properties.TryGetValue(typeof(TProperty), out UnitProperty property))
-            {
-                property = U.Get<TProperty>();
-                _properties[typeof(TProperty)] = property;
-                property.Initialize(this);
-            }
-
-            return property as TProperty;
+            return _property as TProperty;
         }
         
         public void SetHighlight(Color color)
