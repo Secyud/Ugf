@@ -1,65 +1,23 @@
-﻿#region
-
-using Secyud.Ugf.HexMap.Utilities;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using JetBrains.Annotations;
 using UnityEngine;
-using UnityEngine.Playables;
-
-#endregion
+using UnityEngine.Events;
 
 namespace Secyud.Ugf.HexMap
 {
-    /// <summary>
-    ///     Component representing a unit that occupies a cell of the hex map.
-    /// </summary>
-    public class HexUnit : MonoBehaviour
+    public class HexUnit:MonoBehaviour
     {
         private const float RotationSpeed = 360f;
-        private const float TravelSpeed = 4f;
-        [SerializeField] private SpriteRenderer Border;
 
-        private PlayableDirector _playableDirector;
-        private HexCell _location, _currentTravelLocation;
+        [SerializeField] private UnityEvent<Color> HighlightEvent;
+        
+        private readonly Dictionary<Type, UnitProperty> _properties = new();
+        private HexCell _location;
         private float _orientation;
-        private List<HexCell> _pathToTravel;
+        public int Id { get; set; }
 
-        private HexUnitPlay _loopPlay;
-        private IUnitBase _unitBase;
-
-
-        public IUnitBase UnitBase
-        {
-            get => _unitBase;
-            internal set
-            {
-                _unitBase = value;
-                if (_unitBase is not null)
-                    _unitBase.Unit = this;
-            }
-        }
-
-        public TUnit Get<TUnit>() where TUnit : class
-        {
-            return _unitBase as TUnit;
-        }
-
-        public HexGrid Grid { get; set; }
-
-        private PlayableDirector PlayableDirector
-        {
-            get
-            {
-                if (!_playableDirector)
-                    TryGetComponent(out _playableDirector);
-                return _playableDirector;
-            }
-        }
-
-        /// <summary>
-        ///     Cell that the unit occupies.
-        /// </summary>
         public HexCell Location
         {
             get => _location;
@@ -72,10 +30,7 @@ namespace Secyud.Ugf.HexMap
                 transform.localPosition = value.Position;
             }
         }
-
-        /// <summary>
-        ///     Orientation that the unit is facing.
-        /// </summary>
+        
         public float Orientation
         {
             get => _orientation;
@@ -85,105 +40,40 @@ namespace Secyud.Ugf.HexMap
                 transform.localRotation = Quaternion.Euler(0f, value, 0f);
             }
         }
-
+        
         private void OnEnable()
         {
             if (_location)
             {
                 transform.localPosition = _location.Position;
-                if (_currentTravelLocation) _currentTravelLocation = null;
             }
         }
 
-        public int Id { get; set; }
-
-        public void SetHighlight(Color? color)
+        public void SetProperty([NotNull]UnitProperty property)
         {
-            if (color is null)
-            {
-                Border.gameObject.SetActive(false);
-            }
-            else
-            {
-                Border.gameObject.SetActive(true);
-                Border.color = color.Value;
-            }
+            _properties[property.GetType()] = property;
+            property.Initialize(this);
         }
-
-        /// <summary>
-        ///     Validate the position of the unit.
-        /// </summary>
-        public void ValidateLocation()
+        
+        public TProperty Get<TProperty>()
+            where TProperty : UnitProperty
         {
-            transform.localPosition = _location.Position;
-        }
-
-        /// <summary>
-        ///     Travel along a path.
-        /// </summary>
-        /// <param name="path">List of cells that describe a valid path.</param>
-        /// <param name="travelEndAction"></param>
-        public void Travel(List<HexCell> path)
-        {
-            _location.Unit = null;
-            _location = path[^1];
-            _location.Unit = this;
-            _pathToTravel = path;
-            StopAllCoroutines();
-            StartCoroutine(TravelPath());
-            Grid.ClearPath();
-        }
-
-        private IEnumerator TravelPath()
-        {
-            Vector3 a, b, c = _pathToTravel[0].Position;
-            yield return LookAt(_pathToTravel[1].Position);
-
-            if (!_currentTravelLocation) _currentTravelLocation = _pathToTravel[0];
-
-            float t = Time.deltaTime * TravelSpeed;
-            for (int i = 1; i < _pathToTravel.Count; i++)
+            if (!_properties.TryGetValue(typeof(TProperty), out UnitProperty property))
             {
-                _currentTravelLocation = _pathToTravel[i];
-                a = c;
-                b = _pathToTravel[i - 1].Position;
-
-                c = (b + _currentTravelLocation.Position) * 0.5f;
-
-                for (; t < 1f; t += Time.deltaTime * TravelSpeed)
-                {
-                    transform.localPosition = Bezier.GetPoint(a, b, c, t);
-                    Vector3 d = Bezier.GetDerivative(a, b, c, t);
-                    d.y = 0f;
-                    transform.localRotation = Quaternion.LookRotation(d);
-                    yield return null;
-                }
-
-                t -= 1f;
+                property = U.Get<TProperty>();
+                _properties[typeof(TProperty)] = property;
+                property.Initialize(this);
             }
 
-            _currentTravelLocation = null;
-
-            a = c;
-            b = _location.Position;
-            c = b;
-            for (; t < 1f; t += Time.deltaTime * TravelSpeed)
-            {
-                transform.localPosition = Bezier.GetPoint(a, b, c, t);
-                Vector3 d = Bezier.GetDerivative(a, b, c, t);
-                d.y = 0f;
-                transform.localRotation = Quaternion.LookRotation(d);
-                yield return null;
-            }
-
-            Transform trans = transform;
-            trans.localPosition = _location.Position;
-            _orientation = trans.localRotation.eulerAngles.y;
-            ListPool<HexCell>.Add(_pathToTravel);
-            _pathToTravel = null;
+            return property as TProperty;
         }
-
-        private IEnumerator LookAt(Vector3 point)
+        
+        public void SetHighlight(Color color)
+        {
+            HighlightEvent.Invoke(color);
+        }
+        
+        public IEnumerator LookAt(Vector3 point)
         {
             Transform trans = transform;
             Vector3 localPosition = trans.localPosition;
@@ -210,28 +100,10 @@ namespace Secyud.Ugf.HexMap
             trans.LookAt(point);
             _orientation = trans.localRotation.eulerAngles.y;
         }
-
-        public void SetLoopPlay(HexUnitPlay play)
-        {
-            _loopPlay = play;
-        }
-
-
-        /// <summary>
-        ///     Terminate the unit.
-        /// </summary>
+        
         public void Die()
         {
-            _unitBase?.OnDying();
-            _location.Unit = null;
-            Destroy(this);
-        }
-
-        public void OnPlayFinished()
-        {
-            if (_loopPlay)
-                _loopPlay.ContinuePlay(this);
-            _unitBase?.OnEndPlay();
+            Destroy(gameObject);
         }
     }
 }

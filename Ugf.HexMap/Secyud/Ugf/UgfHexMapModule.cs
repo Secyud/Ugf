@@ -1,7 +1,7 @@
 #region
 
+using Secyud.Ugf.HexMap;
 using Secyud.Ugf.HexMap.Generator;
-using Secyud.Ugf.HexMap.Utilities;
 using Secyud.Ugf.Modularity;
 using UnityEngine;
 

@@ -2,7 +2,7 @@
 
 #region
 
-using Secyud.Ugf.HexMap.Utilities;
+using Secyud.Ugf.HexMap;
 using UnityEditor;
 
 #endregion

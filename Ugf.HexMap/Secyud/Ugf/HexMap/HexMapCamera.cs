@@ -1,6 +1,5 @@
 ﻿#region
 
-using Secyud.Ugf.HexMap.Utilities;
 using UnityEngine;
 
 #endregion

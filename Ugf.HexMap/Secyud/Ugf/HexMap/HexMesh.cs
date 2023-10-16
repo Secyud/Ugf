@@ -1,6 +1,5 @@
 ﻿#region
 
-using Secyud.Ugf.HexMap.Utilities;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -31,7 +30,10 @@ namespace Secyud.Ugf.HexMap
 		private void Awake()
 		{
 			GetComponent<MeshFilter>().mesh = _hexMesh = new Mesh();
-			if (UseCollider) _meshCollider = gameObject.AddComponent<MeshCollider>();
+			if (UseCollider)
+			{
+				_meshCollider = gameObject.AddComponent<MeshCollider>();
+			}
 
 			_hexMesh.name = "Hex Mesh";
 		}
@@ -48,11 +50,14 @@ namespace Secyud.Ugf.HexMap
 				_cellWeights = ListPool<Color>.Get();
 				_cellIndices = ListPool<Vector3>.Get();
 			}
-
-			if (UseUVCoordinates) _uvs = ListPool<Vector2>.Get();
-
-			if (UseUV2Coordinates) _uv2S = ListPool<Vector2>.Get();
-
+			if (UseUVCoordinates)
+			{
+				_uvs = ListPool<Vector2>.Get();
+			}
+			if (UseUV2Coordinates)
+			{
+				_uv2S = ListPool<Vector2>.Get();
+			}
 			_triangles = ListPool<int>.Get();
 		}
 
