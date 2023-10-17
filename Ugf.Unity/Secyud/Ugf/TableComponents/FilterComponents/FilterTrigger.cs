@@ -12,10 +12,11 @@ namespace Secyud.Ugf.TableComponents.FilterComponents
         [SerializeField] private FilterToggle FilterTemplate;
         [SerializeField] private FilterPopup PopupTemplate;
 
-        public List<ICanBeEnabled> Registrations { get; private set; }
-        public List<FilterToggle> Filters { get; private set; }
+        public List<ICanBeEnabled> Registrations { get; } = new();
+        public List<FilterToggle> Filters { get; } = new();
 
-        public Filter Content { get;private set; }
+        public Filter Content { get; private set; }
+
         public void RefreshTable()
         {
             Content.RefreshTable();
@@ -25,33 +26,26 @@ namespace Secyud.Ugf.TableComponents.FilterComponents
         {
             IsDropped = !IsDropped;
         }
-        
+
         public bool IsDropped
         {
-            get => Content.DroppedFilter == this;
+            get => Content.DroppedFilter == this && FilterPopup.PopupExist;
             set
             {
                 if (value)
                     OpenPopup();
-                else 
+                else
                     ClosePopup();
             }
         }
 
-        protected override void Awake()
-        {
-            base.Awake();
-            Registrations = new List<ICanBeEnabled>();
-            Filters = new List<FilterToggle>();
-        }
-
         private void OpenPopup()
         {
-            foreach (FilterTrigger g in Content.Filters)
-                g.IsDropped = false;
+            if (Content.DroppedFilter)
+                Content.DroppedFilter.IsDropped = false;
 
             Content.DroppedFilter = this;
-            
+
             Filters.Clear();
 
             RectTransform content = PopupTemplate.Open();
@@ -71,7 +65,7 @@ namespace Secyud.Ugf.TableComponents.FilterComponents
         {
             FilterTrigger ret = Instantiate(this, parent);
 
-            Content = filter;
+            ret.Content = filter;
             ret.SetFilter(filter, canBeEnabled);
 
             return ret;

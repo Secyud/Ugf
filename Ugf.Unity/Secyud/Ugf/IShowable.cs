@@ -6,12 +6,18 @@ using UnityEngine;
 
 namespace Secyud.Ugf
 {
-	public interface IShowable
-	{
-		string ShowName { get; }
+    public interface IHasDescription
+    {
+        string ShowDescription { get; }
+    }
 
-		string ShowDescription { get; }
+    public interface IHasName
+    {
+        string ShowName { get; }
+    }
 
-		IObjectAccessor<Sprite> ShowIcon { get; }
-	}
+    public interface IShowable : IHasDescription, IHasName
+    {
+        IObjectAccessor<Sprite> ShowIcon { get; }
+    }
 }

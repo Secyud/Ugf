@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
-using Secyud.Ugf.Archiving;
 
 namespace Secyud.Ugf.DataManager
 {
     [AttributeUsage(AttributeTargets.Field)]
     public class SAttribute : Attribute
     {
-        private static readonly Dictionary<Type, FieldType> Map = new()
+        public static readonly Dictionary<Type, FieldType> Map = new()
         {
             [typeof(bool)] = FieldType.Bool,
             [typeof(byte)] = FieldType.UInt8,
@@ -26,9 +25,6 @@ namespace Secyud.Ugf.DataManager
             [typeof(Guid)] = FieldType.Guid,
         };
 
-        public short ID { get; set; }
-        public DataType DataType { get; set; }
-        public EditStyle Style { get; set; }
         public FieldInfo Info { get; private set; }
         public FieldType Type { get; private set; }
         public Type Belong { get; private set; }
@@ -36,8 +32,8 @@ namespace Secyud.Ugf.DataManager
         public void SetPropertyType(FieldInfo info,Type belong)
         {
             if (Info is not null) return;
-            Info = info;
             Map.TryGetValue(info.FieldType, out FieldType type);
+            Info = info;
             Type = type;
             Belong = belong;
         }
@@ -58,19 +54,6 @@ namespace Secyud.Ugf.DataManager
         {
             return Info.FieldType.IsValueType ? 
                 Activator.CreateInstance(Info.FieldType) : null;
-        }
-
-        public void Write(object value, IArchiveWriter writer)
-        {
-            value ??= GetDefault();
-            writer.Write(value,Type);
-        }
-
-        public object Read(IArchiveReader reader)
-        {
-            object value = reader.Read(Type);
-            value ??= GetDefault();
-            return value;
         }
     }
 }

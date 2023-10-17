@@ -13,7 +13,6 @@ namespace Secyud.Ugf.Modularity
         public IUgfApplication Application { get; private set; }
         public IStringLocalizer<DefaultResource> T { get; private set; }
         public ISpriteLocalizer<DefaultResource> S { get; private set; }
-        public InitializeManager InitializeManager { get; private set; }
         public static UgfApplicationFactory Instance { get; private set; }
 
         public void InitializeGame()
@@ -44,7 +43,6 @@ namespace Secyud.Ugf.Modularity
             IDependencyManager provider = Application.DependencyManager;
             T = provider.Get<IStringLocalizer<DefaultResource>>();
             //S = provider.Get<ISpriteLocalizer<DefaultResource>>();
-            InitializeManager = provider.Get<InitializeManager>();
         
             return app;
         }

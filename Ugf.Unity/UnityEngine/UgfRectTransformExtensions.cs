@@ -25,7 +25,8 @@ namespace UnityEngine
 			Rect rect = transform.rect;
 			float x = Math.Min(position.x, Screen.currentResolution.width - lb.x - rect.width);
 			float y = Math.Max(position.y, -lb.y - Screen.currentResolution.height);
-
+			if (x < 0) x = 0;
+			if (y > 0) y = 0;
 			transform.anchoredPosition = new Vector2(x, y);
 		}
 

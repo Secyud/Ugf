@@ -1,6 +1,6 @@
 ﻿#region
 
-using Secyud.Ugf.HexMap.Utilities;
+using Secyud.Ugf.HexUtilities;
 using UnityEngine;
 
 #endregion
@@ -19,8 +19,8 @@ namespace Secyud.Ugf.HexMap
         [SerializeField] private float MoveSpeedMinZoom;
         [SerializeField] private float MoveSpeedMaxZoom;
         [SerializeField] private float RotationSpeed;
+        [SerializeField] private float BorderWidth;
         [SerializeField] private HexGrid Grid;
-        [SerializeField] private Camera Camera;
         private Vector3 _targetPosition;
         private bool _moveToTarget;
         private float _rotationAngle;
@@ -53,7 +53,7 @@ namespace Secyud.Ugf.HexMap
 
             if (_moveToTarget)
             {
-                float speed = MoveSpeedMinZoom / 16;
+                float speed = MoveSpeedMinZoom / 128;
                 Vector3 vector = _targetPosition - transform.localPosition;
                 Vector3 tmp = vector.normalized * speed;
                 if (vector.magnitude > tmp.magnitude)
@@ -123,11 +123,13 @@ namespace Secyud.Ugf.HexMap
 
         private Vector3 ClampPosition(Vector3 position)
         {
-            float xMax = (Grid.CellCountX - 0.5f) * HexMetrics.InnerDiameter;
-            position.x = Mathf.Clamp(position.x, 0, xMax);
+            float xMin = (BorderWidth + 0.5f) * HexMetrics.InnerDiameter;
+            float xMax = (Grid.CellCountX - BorderWidth - 0.5f) * HexMetrics.InnerDiameter;
+            position.x = Mathf.Clamp(position.x, xMin, xMax);
 
-            float zMax = (Grid.CellCountZ - 1) * (1.5f * HexMetrics.OuterRadius);
-            position.z = Mathf.Clamp(position.z, 0, zMax);
+            float zMin = (BorderWidth + 1) * (1.5f * HexMetrics.OuterRadius);
+            float zMax = (Grid.CellCountZ - BorderWidth - 1) * (1.5f * HexMetrics.OuterRadius);
+            position.z = Mathf.Clamp(position.z, zMin, zMax);
 
             return position;
         }

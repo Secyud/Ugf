@@ -109,7 +109,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 9124868180985875343}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 560c34b443cb444e995775d08dbbf049, type: 3}
+  m_Script: {fileID: 11500000, guid: 9bfc70931a0d46e3bb3ac2d930896b15, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
@@ -120,8 +120,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10911, guid: 0000000000000000f000000000000000, type: 0}
-  m_Type: 1
+  m_Sprite: {fileID: 0}
+  m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -130,6 +130,7 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+  Circle: 0
 --- !u!114 &150035732621759536
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -170,7 +171,7 @@ MonoBehaviour:
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
   m_Interactable: 1
-  m_TargetGraphic: {fileID: 9173451939059230816}
+  m_TargetGraphic: {fileID: 0}
   m_TextViewport: {fileID: 4396199641996858305}
   m_TextComponent: {fileID: 2686490879387564760}
   m_Placeholder: {fileID: 0}
@@ -239,6 +240,10 @@ PrefabInstance:
       propertyPath: m_text
       value: "\u200B"
       objectReference: {fileID: 0}
+    - target: {fileID: 713840157853155120, guid: 137c10f6411616d4bbe3dcb0660f1d3e, type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: -6526618575065999699, guid: 0933a75618f2c3b48a0e1141304249b1, type: 2}
     - target: {fileID: 713840157853155120, guid: 137c10f6411616d4bbe3dcb0660f1d3e, type: 3}
       propertyPath: m_enableWordWrapping
       value: 0

@@ -14,8 +14,8 @@ namespace Secyud.Ugf.AssetComponents
     public class AssetContainer<TAsset> : ObjectContainer<TAsset>, IArchivable
         where TAsset : Object
     {
-        [S(ID = 0)] protected IAssetLoader Loader;
-        [S(ID = 1)] protected string AssetName;
+        [S] protected IAssetLoader Loader;
+        [S] protected string AssetName;
 
         protected AssetContainer()
         {
@@ -66,12 +66,14 @@ namespace Secyud.Ugf.AssetComponents
 
         public virtual void Save(IArchiveWriter writer)
         {
-            U.AutoSaveObject(this, writer);
+            writer.WriteNullable(Loader);
+            writer.Write(AssetName);
         }
 
         public virtual void Load(IArchiveReader reader)
         {
-            U.AutoLoadObject(this, reader);
+            Loader = reader.ReadNullable<IAssetLoader>();
+            AssetName = reader.ReadString();
         }
     }
 }

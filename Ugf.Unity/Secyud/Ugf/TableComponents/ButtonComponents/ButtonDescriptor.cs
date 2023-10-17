@@ -11,7 +11,7 @@ namespace Secyud.Ugf.TableComponents.ButtonComponents
 	{
 		public TItem Target { get; set; }
 
-		public abstract void Trigger();
+		public abstract void Invoke();
 
 		public abstract string ShowName { get; }
 

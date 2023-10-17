@@ -17,7 +17,6 @@ namespace Secyud.Ugf.TableComponents.FilterComponents
             {
                 case PointerEventData.InputButton.Left:
                     base.OnPointerDown(eventData);
-                    isOn = !isOn;
                     Refresh();
                     break;
                 case PointerEventData.InputButton.Right:
@@ -47,7 +46,7 @@ namespace Secyud.Ugf.TableComponents.FilterComponents
             Parent.RefreshTable();
         }
 
-        protected void SetFilter(IFilterGroup<TSelf> parent, ICanBeEnabled canBeEnabled)
+        protected virtual void SetFilter(IFilterGroup<TSelf> parent, ICanBeEnabled canBeEnabled)
         {
             Parent = parent;
             SetIsOnWithoutNotify(canBeEnabled.GetEnabled());

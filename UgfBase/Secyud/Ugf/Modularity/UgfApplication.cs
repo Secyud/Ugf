@@ -6,6 +6,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Ugf.Collections.Generic;
 using Secyud.Ugf.Archiving;
+using Secyud.Ugf.DataManager;
 
 #endregion
 
@@ -41,6 +42,7 @@ namespace Secyud.Ugf.Modularity
                 typeof(ModuleLoader)
             );
             DependencyManager.RegisterInstance<IUgfApplication>(this);
+            DependencyManager.RegisterInstance(TypeManager.Instance);
 
             Modules = LoadModules(DependencyManager, plugInSources);
         }
@@ -69,8 +71,9 @@ namespace Secyud.Ugf.Modularity
             foreach (IUgfModuleDescriptor module in Modules)
                 module.Instance.ConfigureGame(context);
 
-            foreach (IPostConfigure module in onPost)
-                module.PostConfigureGame(context);
+            if (!U.DataManager)
+                foreach (IPostConfigure module in onPost)
+                    module.PostConfigureGame(context);
 
             _configuredServices = true;
         }
@@ -107,7 +110,7 @@ namespace Secyud.Ugf.Modularity
         {
             foreach (IUgfModuleDescriptor descriptor in Modules)
                 if (descriptor.Instance is IOnArchiving archiving)
-                   yield return archiving.SaveGame();
+                    yield return archiving.SaveGame();
         }
 
         public void Shutdown()

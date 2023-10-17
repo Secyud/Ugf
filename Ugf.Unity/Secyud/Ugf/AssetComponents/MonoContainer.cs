@@ -63,7 +63,9 @@ namespace Secyud.Ugf.AssetComponents
             }
 
             if (CurrentInstance)
+            {
                 CurrentInstance.Destroy();
+            }
 
             CurrentInstance = OnCanvas ? Prefab.InstantiateOnCanvas() : Prefab.Instantiate();
 

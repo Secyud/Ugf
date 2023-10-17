@@ -2,7 +2,7 @@
 
 using Localization;
 using Secyud.Ugf.DataManager;
-using Secyud.Ugf.InputManaging;
+using Secyud.Ugf.InputManager;
 using Secyud.Ugf.Localization;
 using Secyud.Ugf.Modularity;
 
@@ -16,8 +16,7 @@ namespace Secyud.Ugf
         {
             context.Manager.AddTypes(
                 typeof(DefaultLocalizerFactory),
-                typeof(InputService),
-                typeof(InitializeManager));
+                typeof(InputService));
 
             context.AddResource<DefaultResource>();
         }

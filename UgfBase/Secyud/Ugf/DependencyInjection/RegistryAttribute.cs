@@ -33,7 +33,7 @@ namespace Secyud.Ugf.DependencyInjection
             set
             {
                 _dependScope = value;
-                LifeTime = value is null ? DependencyLifeTime.Singleton : DependencyLifeTime.Scoped;
+                LifeTime = value is null ? LifeTime : DependencyLifeTime.Scoped;
             }
         }
 

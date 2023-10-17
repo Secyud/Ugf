@@ -13,7 +13,7 @@ namespace Secyud.Ugf.AssetComponents
 {
     public class AtlasSpriteContainer : SpriteContainer
     {
-        [S(ID = 2)] protected string AtlasName;
+        [S] protected string AtlasName;
         private SpriteAtlas _atlas;
 
         protected AtlasSpriteContainer()

@@ -22,11 +22,8 @@ namespace Secyud.Ugf.Archiving
         void Write(string value);
         void Write(byte[] value);
         void Write(Guid value);
-        void Write(object value);
-        void WriteList<T>(IList<T> value)where T : class;
+        void WriteObject(object value);
+        void WriteListable<T>(IList<T> value)where T : class;
         void WriteNullable(object value);
-        void Write(object value, FieldType type);
-        void WriteChangeable(object value,FieldType fieldType);
-        void SaveProperties(SAttribute[] attributes, object value);
     }
 }

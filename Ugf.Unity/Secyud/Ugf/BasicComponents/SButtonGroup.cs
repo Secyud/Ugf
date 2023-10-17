@@ -13,7 +13,7 @@ namespace Secyud.Ugf.BasicComponents
 {
     public class SButtonGroup : LayoutGroupTrigger
     {
-        private static SButtonGroup _instance;
+        public static SButtonGroup Instance;
         [SerializeField] private SLabelButton ButtonTemplate;
 
         public void Clear()
@@ -31,7 +31,7 @@ namespace Secyud.Ugf.BasicComponents
             {
                 button.Target = target;
                 SLabelButton b = ButtonTemplate.Instantiate(transform);
-                b.Bind(button.Trigger);
+                b.Bind(button.Invoke);
                 if (Float)
                     b.onClick.AddListener(() => Destroy(gameObject));
                 b.Text = U.T[button.ShowName];
@@ -43,7 +43,7 @@ namespace Secyud.Ugf.BasicComponents
                 group.constraintCount = (int)Math.Ceiling(RectTransform.rect.height / Screen.height);
                 RectTransform.SetRectPosition(
                     UgfUnityExtensions.GetMousePosition() - new Vector2(8, 8),
-                    Vector2.zero
+                    new Vector2(0, -0.5f)
                 );
             }
 
@@ -55,7 +55,7 @@ namespace Secyud.Ugf.BasicComponents
         {
             SButtonGroup group = Instantiate(this, U.Canvas.transform);
             group.OnInitialize(target, buttons);
-            group.Replace(ref _instance);
+            group.Replace(ref Instance);
             return group;
         }
     }

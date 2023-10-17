@@ -12,6 +12,7 @@ namespace Secyud.Ugf.LayoutComponents
 	public class LayoutGroupTrigger : LayoutTrigger
 	{
 		[SerializeField] protected bool Float;
+		[SerializeField] protected int ClearStart;
 		protected LayoutGroup LayoutElement;
 		private const int RecordMax = 1;
 
@@ -41,22 +42,49 @@ namespace Secyud.Ugf.LayoutComponents
 		{
 			base.OnDisable();
 			LayoutElement.enabled = false;
-			if (Float) RectTransform.CheckBoundary();
+			if (Float)
+			{
+				RectTransform.CheckBoundary();
+			}
 		}
 
 		public virtual void RefreshContent(IHasContent content)
 		{
-			for (int i = 0; i < transform.childCount; i++)
-				Destroy(transform.GetChild(i).gameObject);
+			ClearContent();
 			content?.SetContent(PrepareLayout());
 		}
 
 		public virtual RectTransform PrepareLayout()
 		{
-			for (int i = 0; i < RectTransform.childCount; i++)
-				Destroy(RectTransform.GetChild(i).gameObject);
+			ClearContent();
 			enabled = true;
 			return RectTransform;
+		}
+
+		public virtual void ClearContent()
+		{
+			for (int i = ClearStart; i < RectTransform.childCount; i++)
+				Destroy(RectTransform.GetChild(i).gameObject);
+		}
+		
+		
+		public void Initialize(Vector2 position, Vector2 bias)
+		{
+			RectTransform.SetRectPosition(position, bias);
+		}
+		public void InitializeOnCenter()
+		{
+			Vector2 position = new(
+				Screen.currentResolution.width / 2f,
+				-Screen.currentResolution.height / 2f
+			);
+			Initialize(position, new Vector2(-0.5f, -0.5f));
+		}
+
+		public void InitializeOnMouse()
+		{
+			Initialize(UgfUnityExtensions.GetMousePosition() - new Vector2(1,1), 
+				Vector2.zero);
 		}
 	}
 }
