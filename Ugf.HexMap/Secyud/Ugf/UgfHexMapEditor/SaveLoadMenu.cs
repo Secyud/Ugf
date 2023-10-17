@@ -3,6 +3,7 @@
 using System;
 using System.IO;
 using Secyud.Ugf.Archiving;
+using Secyud.Ugf.BasicComponents;
 using Secyud.Ugf.HexMap;
 using UnityEngine;
 using UnityEngine.UI;
@@ -17,10 +18,9 @@ namespace Secyud.Ugf.UgfHexMapEditor
     /// </summary>
     public class SaveLoadMenu : MonoBehaviour
     {
-        private const int MapFileVersion = 5;
-        [SerializeField] private Text MenuLabel;
-        [SerializeField] private Text ActionButtonLabel;
-        [SerializeField] private InputField NameInput;
+        [SerializeField] private SText MenuLabel;
+        [SerializeField] private SText ActionButtonLabel;
+        [SerializeField] private SInputField NameInput;
         [SerializeField] private RectTransform ListContent;
         [SerializeField] private SaveLoadItem ItemPrefab;
         [SerializeField] private HexGrid HexGrid;
@@ -106,7 +106,6 @@ namespace Secyud.Ugf.UgfHexMapEditor
         {
             using FileStream stream = File.OpenWrite(path);
             using DefaultArchiveWriter writer = new(stream);
-            writer.Write(MapFileVersion);
             HexGrid.Save(writer);
         }
 
@@ -120,11 +119,8 @@ namespace Secyud.Ugf.UgfHexMapEditor
 
             using FileStream stream = File.OpenRead(path);
             using DefaultArchiveReader reader = new(stream);
-            int header = reader.ReadInt32();
-            if (header <= MapFileVersion)
-                HexGrid.Load(reader);
-            else
-                Debug.LogWarning("Unknown map format " + header);
+
+            HexGrid.Load(reader);
         }
     }
 }

@@ -10,12 +10,12 @@ namespace Secyud.Ugf.UgfHexMap
     {
         private byte _terrainType;
         private bool _walled;
-        public HexDirection IncomingRiver { get; private set; }
-        public HexDirection OutgoingRiver { get; private set; }
-        
+        public HexDirection IncomingRiver { get; private set; } = HexDirection.InValid;
+        public HexDirection OutgoingRiver { get; private set; }= HexDirection.InValid;
+
         private short _elevation = short.MinValue;
         private short _waterLevel;
-        
+
         public Transform FeaturePrefab { get; set; }
 
         public byte TerrainType
@@ -67,9 +67,13 @@ namespace Secyud.Ugf.UgfHexMap
             RefreshSelfOnly();
 
             UgfCell neighbor = GetNeighbor(IncomingRiver);
+            if (neighbor)
+            {
+                neighbor.OutgoingRiver = HexDirection.InValid;
+                neighbor.RefreshSelfOnly();
+            }
+
             IncomingRiver = HexDirection.InValid;
-            neighbor.OutgoingRiver = HexDirection.InValid;
-            neighbor.RefreshSelfOnly();
         }
 
         /// <summary>
@@ -82,9 +86,14 @@ namespace Secyud.Ugf.UgfHexMap
             RefreshSelfOnly();
 
             UgfCell neighbor = GetNeighbor(OutgoingRiver);
+
+            if (neighbor)
+            {
+                neighbor.IncomingRiver = HexDirection.InValid;
+                neighbor.RefreshSelfOnly();
+            }
+
             OutgoingRiver = HexDirection.InValid;
-            neighbor.IncomingRiver = HexDirection.InValid;
-            neighbor.RefreshSelfOnly();
         }
 
         /// <summary>
@@ -120,17 +129,23 @@ namespace Secyud.Ugf.UgfHexMap
 
         private void ValidateRivers()
         {
-            if (
-                HasOutgoingRiver &&
-                !IsValidRiverDestination(GetNeighbor(OutgoingRiver))
-            )
-                RemoveOutgoingRiver();
+            if (HasOutgoingRiver)
+            {
+                UgfCell neighbor = GetNeighbor(OutgoingRiver);
+                if (neighbor && !IsValidRiverDestination(neighbor))
+                {
+                    RemoveOutgoingRiver();
+                }
+            }
 
-            if (
-                HasIncomingRiver &&
-                !GetNeighbor(IncomingRiver).IsValidRiverDestination(this)
-            )
-                RemoveIncomingRiver();
+            if (HasIncomingRiver)
+            {
+                UgfCell neighbor = GetNeighbor(IncomingRiver);
+                if (neighbor && !neighbor.IsValidRiverDestination(this))
+                {
+                    RemoveIncomingRiver();
+                }
+            }
         }
 
         #endregion
@@ -265,7 +280,7 @@ namespace Secyud.Ugf.UgfHexMap
 
         private bool IsValidRiverDestination(UgfCell neighbor)
         {
-            return neighbor is not null &&
+            return neighbor &&
                    (_elevation >= neighbor._elevation ||
                     _waterLevel == neighbor._elevation);
         }
@@ -356,16 +371,18 @@ namespace Secyud.Ugf.UgfHexMap
 
         public override void Load(IArchiveReader reader)
         {
-            _terrainType =  reader.ReadByte();
-            _walled =  reader.ReadBoolean();
-            _elevation =  reader.ReadInt16();
-            _waterLevel =  reader.ReadInt16();
-            IncomingRiver =  (HexDirection)reader.ReadSByte();
-            OutgoingRiver =  (HexDirection)reader.ReadSByte();
+            _terrainType = reader.ReadByte();
+            _walled = reader.ReadBoolean();
+            _elevation = reader.ReadInt16();
+            _waterLevel = reader.ReadInt16();
+            IncomingRiver = (HexDirection)reader.ReadSByte();
+            OutgoingRiver = (HexDirection)reader.ReadSByte();
             for (int i = 0; i < Roads.Length; i++)
             {
                 Roads[i] = reader.ReadBoolean();
             }
+
+            RefreshPosition();
         }
     }
 }

@@ -22,7 +22,9 @@ namespace Secyud.Ugf.UgfHexMapEditor
 		[SerializeField] private HexGrid HexGrid;
 
 
-		private byte _activeTerrainIndex;
+		private byte _activeMoisture;
+		private byte _activeTemperature;
+		private byte _activeTerrain;
 
 		private short _activeLevel;
 
@@ -33,12 +35,11 @@ namespace Secyud.Ugf.UgfHexMapEditor
 
 		private bool _isDrag;
 		private UgfCell _previousCell;
-		private bool _apply;
 
 		private void Awake()
 		{
 			Shader.EnableKeyword("_HEX_MAP_EDIT_MODE");
-			SetEditMode(true);
+			HexGrid.Initialize(U.Get<UgfHexGridDrawer>());
 		}
 
 		private void Update()
@@ -47,7 +48,12 @@ namespace Secyud.Ugf.UgfHexMapEditor
 			{
 				if (Input.GetMouseButton(0))
 				{
-					HandleInput();
+					HandleInput(true);
+					return;
+				}
+				else if (Input.GetMouseButton(1))
+				{
+					HandleInput(false);
 					return;
 				}
 
@@ -68,29 +74,31 @@ namespace Secyud.Ugf.UgfHexMapEditor
 			_brushSize = (int)size;
 		}
 
-		public void SetTerrainTypeIndex(byte index)
+		public void SetTemperature(int index)
 		{
-			_activeTerrainIndex = index;
+			_activeTemperature = (byte)index;
+			SetTerrain();
+		}
+
+		public void SetMoisture(int index)
+		{
+			_activeMoisture = (byte)index;
+			SetTerrain();
+		}
+
+		private void SetTerrain()
+		{
+			_activeTerrain = (byte)(_activeTemperature * 4 + _activeMoisture);
 		}
 
 		public void SetLevel(float level)
 		{
-			level = (int)level;
-		}
-
-		public void SetMode(bool mode)
-		{
-			_apply = mode;
+			_activeLevel = (short)level;
 		}
 
 		public void SetApplyObject(int toggle)
 		{
 			_applyObject = (ObjectToggle)toggle;
-		}
-
-		public void SetEditMode(bool toggle)
-		{
-			enabled = toggle;
 		}
 
 
@@ -100,7 +108,7 @@ namespace Secyud.Ugf.UgfHexMapEditor
 		}
 
 
-		private void HandleInput()
+		private void HandleInput(bool apply)
 		{
 			UgfCell currentCell = GetCellUnderCursor();
 			if (currentCell is not null)
@@ -111,7 +119,7 @@ namespace Secyud.Ugf.UgfHexMapEditor
 				else
 					_isDrag = false;
 
-				EditCells(currentCell);
+				EditCells(currentCell,apply);
 				_previousCell = currentCell;
 			}
 			else
@@ -167,61 +175,66 @@ namespace Secyud.Ugf.UgfHexMapEditor
 			_isDrag = false;
 		}
 
-		private void EditCells(UgfCell center)
+		private void EditCells(UgfCell center,bool apply)
 		{
 			int centerX = center.Coordinates.X;
 			int centerZ = center.Coordinates.Z;
 
 			for (int r = 0, z = centerZ - _brushSize; z <= centerZ; z++, r++)
 			for (int x = centerX - r; x <= centerX + _brushSize; x++)
-				EditCell(HexGrid.GetCell(new HexCoordinates(x, z)) as UgfCell);
+				EditCell(HexGrid.GetCell(new HexCoordinates(x, z)) as UgfCell,apply);
 
 			for (int r = 0, z = centerZ + _brushSize; z > centerZ; z--, r++)
 			for (int x = centerX - _brushSize; x <= centerX + r; x++)
-				EditCell(HexGrid.GetCell(new HexCoordinates(x, z)) as UgfCell);
+				EditCell(HexGrid.GetCell(new HexCoordinates(x, z)) as UgfCell,apply);
 		}
 
-		private void EditCell(UgfCell cell)
+		private void EditCell(UgfCell cell,bool apply)
 		{
-			if (cell is not null)
+			if (cell is null) return;
+			
+			switch (_applyObject)
 			{
-				cell.TerrainType = _activeTerrainIndex;
-
-				switch (_applyObject)
-				{
-					case ObjectToggle.Ignore:
-						break;
-					case ObjectToggle.Evaluation: 
-						cell.Elevation = _activeLevel;
-						break;
-					case ObjectToggle.WaterLevel:
-						cell.WaterLevel = _activeLevel;
-						break;
-					case ObjectToggle.River:
-						if (!_apply)
-							cell.RemoveRiver();
-						else if (_isDrag)
-							GetDragCell(cell)?.SetOutgoingRiver(_dragDirection);     
-						break;
-					case ObjectToggle.Road:       
-						if (!_apply)
-							cell.RemoveRoads();
-						else if (_isDrag)
-							GetDragCell(cell)?.AddRoad(_dragDirection);
-						break;
-					case ObjectToggle.Wall:
-						cell.Walled = _apply; 
-						break;
-					default:            
-						throw new ArgumentOutOfRangeException();
-				}
+				case ObjectToggle.Ignore:
+					cell.TerrainType = _activeTerrain;
+					break;
+				case ObjectToggle.Evaluation:
+					if (apply && cell.Elevation< _activeLevel)
+					{
+						cell.Elevation += 1;
+					}
+					else if (!apply && cell.Elevation> _activeLevel)
+					{
+						cell.Elevation -= 1;
+					}
+					break;
+				case ObjectToggle.WaterLevel:
+					cell.WaterLevel = _activeLevel;
+					break;
+				case ObjectToggle.River:
+					if (!apply)
+						cell.RemoveRiver();
+					else if (_isDrag)
+						GetDragCell(cell)?.SetOutgoingRiver(_dragDirection);     
+					break;
+				case ObjectToggle.Road:       
+					if (!apply)
+						cell.RemoveRoads();
+					else if (_isDrag)
+						GetDragCell(cell)?.AddRoad(_dragDirection);
+					break;
+				case ObjectToggle.Wall:
+					cell.Walled = apply; 
+					break;
+				default:            
+					throw new ArgumentOutOfRangeException();
 			}
 		}
 
 
 		private enum ObjectToggle
 		{
-			Ignore, Evaluation, WaterLevel, River, Road,Wall
+			Ignore,  WaterLevel,Evaluation,  River,Road,Wall
 		}
 	}
 }

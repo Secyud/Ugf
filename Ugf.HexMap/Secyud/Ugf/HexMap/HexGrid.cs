@@ -246,7 +246,6 @@ namespace Secyud.Ugf.HexMap
             writer.Write(ChunkCountX);
             writer.Write(ChunkCountZ);
 
-
             foreach (HexCell cell in Cells)
             {
                 cell.Save(writer);
@@ -255,6 +254,8 @@ namespace Secyud.Ugf.HexMap
 
         public void Load(IArchiveReader reader)
         {
+            enabled = false;
+            
             int x = reader.ReadInt32();
             int z = reader.ReadInt32();
 
@@ -268,6 +269,8 @@ namespace Secyud.Ugf.HexMap
                 cell.Load(reader);
             }
 
+            enabled = true;
+            
             foreach (HexChunk chunk in Chunks)
             {
                 chunk.Refresh();

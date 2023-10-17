@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using Secyud.Ugf.Archiving;
 using Secyud.Ugf.BasicComponents;
 using Secyud.Ugf.HexUtilities;
@@ -12,8 +9,8 @@ namespace Secyud.Ugf.HexMap
     public class HexCell : MonoBehaviour, IArchivable
     {
         private readonly HexCell[] _neighbors = new HexCell[6];
-        public RectTransform UiRect { get; private set; }
-        public HexChunk Chunk { get; private set; }
+        protected RectTransform UiRect { get; private set; }
+        protected HexChunk Chunk { get; private set; }
         public int Index { get; private set; }
         public HexCoordinates Coordinates { get; private set; }
 
@@ -107,6 +104,7 @@ namespace Secyud.Ugf.HexMap
                 }
             }
 
+            transform.localPosition = Coordinates.Position3D();
             UiRect.anchoredPosition = Coordinates.Position2D();
         }
 
@@ -127,7 +125,7 @@ namespace Secyud.Ugf.HexMap
         {
         }
 
-        public void Refresh()
+        protected void Refresh()
         {
             RefreshSelfOnly();
             foreach (HexCell neighbor in _neighbors)
@@ -139,7 +137,7 @@ namespace Secyud.Ugf.HexMap
             }
         }
 
-        public void RefreshSelfOnly()
+        protected void RefreshSelfOnly()
         {
             Chunk.Refresh();
         }
@@ -182,8 +180,8 @@ namespace Secyud.Ugf.HexMap
         ///     Unit currently occupying the cell, if any.
         /// </summary>
         public HexUnit Unit { get; set; }
-        
-        
+
+
         public Vector3 Position => transform.localPosition;
     }
 }

@@ -15,13 +15,11 @@ namespace Secyud.Ugf.UgfHexMapEditor
 	/// </summary>
 	public class NewMapMenu : MonoBehaviour
 	{
-		[FormerlySerializedAs("hexGrid")] [SerializeField]
-		private HexGrid HexGrid;
+		[SerializeField] private HexGrid HexGrid;
 
 		private bool _generateMaps = true;
 
-		[FormerlySerializedAs("mapGenerator")] [SerializeField]
-		private HexMapGenerator MapGenerator;
+		[SerializeField] private HexMapGenerator MapGenerator;
 
 		public void ToggleMapGeneration(bool toggle)
 		{
@@ -41,25 +39,31 @@ namespace Secyud.Ugf.UgfHexMapEditor
 
 		public void CreateSmallMap()
 		{
-			CreateMap(20, 15);
+			CreateMap(5, 4);
 		}
 
 		public void CreateMediumMap()
 		{
-			CreateMap(40, 30);
+			CreateMap(10, 8);
 		}
 
 		public void CreateLargeMap()
 		{
-			CreateMap(80, 60);
+			CreateMap(15, 12);
 		}
 
 		private void CreateMap(int x, int z)
 		{
 			if (_generateMaps)
-				MapGenerator.GenerateMap(HexGrid, x, z);
+			{
+				MapGenerator.ChunkCountX = x;
+				MapGenerator.ChunkCountZ = z;
+				MapGenerator.GenerateMap();
+			}
 			else
+			{
 				HexGrid.CreateMap(x, z);
+			}
 
 			Close();
 		}

@@ -1,7 +1,6 @@
 ﻿#region
 
 using System.Collections.Generic;
-using Secyud.Ugf.DependencyInjection;
 using Secyud.Ugf.HexMap;
 using Secyud.Ugf.HexUtilities;
 using Secyud.Ugf.UgfHexMap;
@@ -11,13 +10,13 @@ using UnityEngine;
 
 namespace Secyud.Ugf.UgfHexMapGenerator
 {
-    [Registry(LifeTime = DependencyLifeTime.Transient)]
-    public class HexMapGenerator : IHexMapGenerator
+    public class HexMapGenerator : MonoBehaviour
     {
         private static readonly float[] TemperatureBands = { 0.1f, 0.3f, 0.6f };
         private static readonly float[] MoistureBands = { 0.12f, 0.28f, 0.85f };
         private readonly List<HexDirection> _flowDirections = new();
-        private int _cellCount, _landCells;
+        private int CellCount => Grid.Cells.Length;
+        private int _landCells;
         private List<ClimateData> _climate = new();
         private List<ClimateData> _nextClimate = new();
         private List<MapRegion> _regions;
@@ -25,36 +24,85 @@ namespace Secyud.Ugf.UgfHexMapGenerator
         private int _searchFrontierPhase;
         private int _temperatureJitterChannel;
 
-        public HexMapGeneratorParameter Parameter { get; set; }
 
-        public int CellCountX { get; set; }
+        public int Seed;
 
-        public int CellCountZ { get; set; }
+        public HemisphereMode Hemisphere;
 
-        public int DeltaX { get; set; }
+        public HexDirection WindDirection  = HexDirection.Nw;
 
-        public int DeltaZ { get; set; }
 
-        private HexGrid _grid;
+        public int ChunkSizeMin  = 30;
 
-        /// <summary>
-        ///     Generate a random hex map.
-        /// </summary>
-        /// <param name="grid">grid to generate map</param>
-        /// <param name="x">X size of the map.</param>
-        /// <param name="z">Z size of the map.</param>
-        public void GenerateMap(HexGrid grid, int x, int z)
+        public int ChunkSizeMax = 100;
+
+        public int RiverPercentage  = 10;
+
+        public int LandPercentage = 50;
+
+        public int ErosionPercentage = 50;
+
+        public int ElevationMinimum  = -2;
+
+        public int WaterLevel => 2;
+
+        public int ElevationMaximum = 8;
+
+        public int RegionBorder = 5;
+
+        public int RegionCount = 1;
+
+        public float WindStrength  = 4f;
+
+        public float JitterProbability = 0.25f;
+
+        public float SinkProbability= 0.2f;
+
+        // min 0 max 1
+        public float HighRiseProbability = 0.25f;
+
+        public float StartingMoisture  = 0.1f;
+
+        public float EvaporationFactor  = 0.5f;
+
+        public float PrecipitationFactor = 0.25f;
+
+        public float RunoffFactor = 0.25f;
+
+        public float SeepageFactor = 0.125f;
+
+        public float ExtraLakeProbability = 0.25f;
+
+        public float LowTemperature = 0f;
+
+        public float HighTemperature = 1f;
+
+        public float TemperatureJitter = 0.1f;
+
+        public int ChunkCountX = 4;
+
+        public int ChunkCountZ = 4;
+
+        public HexGrid Grid;
+
+        public int CellCountX => Grid.CellCountX;
+        public int CellCountZ => Grid.CellCountZ;
+
+        public void GenerateMap()
         {
-            Parameter ??= new HexMapGeneratorParameter();
             Random.State originalRandomState = Random.state;
 
-            Random.InitState(Parameter.Seed);
+            Random.InitState(Seed);
 
-            _grid = grid;
-
-            grid.CreateMap(x, z);
+            Grid.CreateMap(ChunkCountX, ChunkCountZ);
             _searchFrontier ??= new UgfCellPriorityQueue();
-
+            
+            foreach (HexCell hexCell in Grid.Cells)
+            {
+                UgfCell cell = (UgfCell)hexCell;
+                cell.Elevation = 0;
+            }
+            
             CreateRegions();
             CreateLand();
             ErodeLand();
@@ -72,70 +120,69 @@ namespace Secyud.Ugf.UgfHexMapGenerator
             else
                 _regions.Clear();
 
-            int borderX = Parameter.MapBorderX;
             MapRegion region;
 
-            switch (Parameter.RegionCount)
+            switch (RegionCount)
             {
                 default:
-                    region.XMin = borderX;
-                    region.XMax = CellCountX - borderX;
-                    region.ZMin = Parameter.MapBorderZ;
-                    region.ZMax = CellCountZ - Parameter.MapBorderZ;
+                    region.XMin = 0;
+                    region.XMax = CellCountX;
+                    region.ZMin = 0;
+                    region.ZMax = CellCountZ;
                     _regions.Add(region);
                     break;
                 case 2:
                     if (Random.value < 0.5f)
                     {
-                        region.XMin = borderX;
-                        region.XMax = CellCountX / 2 - Parameter.RegionBorder;
-                        region.ZMin = Parameter.MapBorderZ;
-                        region.ZMax = CellCountZ - Parameter.MapBorderZ;
+                        region.XMin = 0;
+                        region.XMax = CellCountX / 2 - RegionBorder;
+                        region.ZMin = 0;
+                        region.ZMax = CellCountZ - 0;
                         _regions.Add(region);
-                        region.XMin = CellCountX / 2 + Parameter.RegionBorder;
-                        region.XMax = CellCountZ - borderX;
+                        region.XMin = CellCountX / 2 + RegionBorder;
+                        region.XMax = CellCountZ - 0;
                         _regions.Add(region);
                     }
                     else
                     {
-                        region.XMin = borderX;
-                        region.XMax = CellCountX - borderX;
-                        region.ZMin = Parameter.MapBorderZ;
-                        region.ZMax = CellCountZ / 2 - Parameter.RegionBorder;
+                        region.XMin = 0;
+                        region.XMax = CellCountX - 0;
+                        region.ZMin = 0;
+                        region.ZMax = CellCountZ / 2 - RegionBorder;
                         _regions.Add(region);
-                        region.ZMin = CellCountZ / 2 + Parameter.RegionBorder;
-                        region.ZMax = CellCountZ - Parameter.MapBorderZ;
+                        region.ZMin = CellCountZ / 2 + RegionBorder;
+                        region.ZMax = CellCountZ - 0;
                         _regions.Add(region);
                     }
 
                     break;
                 case 3:
-                    region.XMin = borderX;
-                    region.XMax = CellCountX / 3 - Parameter.RegionBorder;
-                    region.ZMin = Parameter.MapBorderZ;
-                    region.ZMax = CellCountZ - Parameter.MapBorderZ;
+                    region.XMin = 0;
+                    region.XMax = CellCountX / 3 - RegionBorder;
+                    region.ZMin = 0;
+                    region.ZMax = CellCountZ - 0;
                     _regions.Add(region);
-                    region.XMin = CellCountX / 3 + Parameter.RegionBorder;
-                    region.XMax = CellCountX * 2 / 3 - Parameter.RegionBorder;
+                    region.XMin = CellCountX / 3 + RegionBorder;
+                    region.XMax = CellCountX * 2 / 3 - RegionBorder;
                     _regions.Add(region);
-                    region.XMin = CellCountX * 2 / 3 + Parameter.RegionBorder;
-                    region.XMax = CellCountX - borderX;
+                    region.XMin = CellCountX * 2 / 3 + RegionBorder;
+                    region.XMax = CellCountX - 0;
                     _regions.Add(region);
                     break;
                 case 4:
-                    region.XMin = borderX;
-                    region.XMax = CellCountX / 2 - Parameter.RegionBorder;
-                    region.ZMin = Parameter.MapBorderZ;
-                    region.ZMax = CellCountZ / 2 - Parameter.RegionBorder;
+                    region.XMin = 0;
+                    region.XMax = CellCountX / 2 - RegionBorder;
+                    region.ZMin = 0;
+                    region.ZMax = CellCountZ / 2 - RegionBorder;
                     _regions.Add(region);
-                    region.XMin = CellCountX / 2 + Parameter.RegionBorder;
-                    region.XMax = CellCountX - borderX;
+                    region.XMin = CellCountX / 2 + RegionBorder;
+                    region.XMax = CellCountX - 0;
                     _regions.Add(region);
-                    region.ZMin = CellCountZ / 2 + Parameter.RegionBorder;
-                    region.ZMax = CellCountZ - Parameter.MapBorderZ;
+                    region.ZMin = CellCountZ / 2 + RegionBorder;
+                    region.ZMax = CellCountZ - 0;
                     _regions.Add(region);
-                    region.XMin = borderX;
-                    region.XMax = CellCountX / 2 - Parameter.RegionBorder;
+                    region.XMin = 0;
+                    region.XMax = CellCountX / 2 - RegionBorder;
                     _regions.Add(region);
                     break;
             }
@@ -143,14 +190,14 @@ namespace Secyud.Ugf.UgfHexMapGenerator
 
         private void CreateLand()
         {
-            int landBudget = Mathf.RoundToInt(_cellCount * Parameter.LandPercentage * 0.01f);
+            int landBudget = Mathf.RoundToInt(CellCount * LandPercentage * 0.01f);
             _landCells = landBudget;
             for (int guard = 0; guard < 10000; guard++)
             {
-                bool sink = Random.value < Parameter.SinkProbability;
+                bool sink = Random.value < SinkProbability;
                 foreach (MapRegion region in _regions)
                 {
-                    int chunkSize = Random.Range(Parameter.ChunkSizeMin, Parameter.ChunkSizeMax - 1);
+                    int chunkSize = Random.Range(ChunkSizeMin, ChunkSizeMax - 1);
                     if (sink)
                     {
                         landBudget = SinkTerrain(chunkSize, landBudget, region);
@@ -180,19 +227,19 @@ namespace Secyud.Ugf.UgfHexMapGenerator
             _searchFrontier.Enqueue(firstCell);
             HexCoordinates center = firstCell.Coordinates;
 
-            int rise = Random.value < Parameter.HighRiseProbability ? 2 : 1;
+            int rise = Random.value < HighRiseProbability ? 2 : 1;
             int size = 0;
             while (size < chunkSize && _searchFrontier.Count > 0)
             {
                 UgfCell current = _searchFrontier.Dequeue();
                 int originalElevation = current.Elevation;
                 int newElevation = originalElevation + rise;
-                if (newElevation > Parameter.ElevationMaximum) continue;
+                if (newElevation > ElevationMaximum) continue;
 
                 current.Elevation = (short)newElevation;
                 if (
-                    originalElevation < Parameter.WaterLevel &&
-                    newElevation >= Parameter.WaterLevel && --budget == 0
+                    originalElevation < WaterLevel &&
+                    newElevation >= WaterLevel && --budget == 0
                 )
                     break;
 
@@ -207,7 +254,7 @@ namespace Secyud.Ugf.UgfHexMapGenerator
                         neighbor.SearchPhase = _searchFrontierPhase;
                         neighbor.Distance = neighbor.Coordinates.DistanceTo(center);
                         neighbor.SearchHeuristic =
-                            Random.value < Parameter.JitterProbability ? 1 : 0;
+                            Random.value < JitterProbability ? 1 : 0;
                         _searchFrontier.Enqueue(neighbor);
                     }
                 }
@@ -227,20 +274,18 @@ namespace Secyud.Ugf.UgfHexMapGenerator
             _searchFrontier.Enqueue(firstCell);
             HexCoordinates center = firstCell.Coordinates;
 
-            int sink = Random.value < Parameter.HighRiseProbability ? 2 : 1;
+            int sink = Random.value < HighRiseProbability ? 2 : 1;
             int size = 0;
             while (size < chunkSize && _searchFrontier.Count > 0)
             {
                 UgfCell current = _searchFrontier.Dequeue();
                 int originalElevation = current.Elevation;
                 int newElevation = current.Elevation - sink;
-                if (newElevation < Parameter.ElevationMinimum) continue;
+                if (newElevation < ElevationMinimum) continue;
 
                 current.Elevation = (short)newElevation;
-                if (
-                    originalElevation >= Parameter.WaterLevel &&
-                    newElevation < Parameter.WaterLevel
-                )
+                if (originalElevation >= WaterLevel &&
+                    newElevation < WaterLevel)
                     budget += 1;
 
                 size += 1;
@@ -254,7 +299,7 @@ namespace Secyud.Ugf.UgfHexMapGenerator
                         neighbor.SearchPhase = _searchFrontierPhase;
                         neighbor.Distance = neighbor.Coordinates.DistanceTo(center);
                         neighbor.SearchHeuristic =
-                            Random.value < Parameter.JitterProbability ? 1 : 0;
+                            Random.value < JitterProbability ? 1 : 0;
                         _searchFrontier.Enqueue(neighbor);
                     }
                 }
@@ -267,14 +312,14 @@ namespace Secyud.Ugf.UgfHexMapGenerator
         private void ErodeLand()
         {
             List<UgfCell> erodibleCells = ListPool<UgfCell>.Get();
-            for (int i = 0; i < _cellCount; i++)
+            for (int i = 0; i < CellCount; i++)
             {
-                UgfCell cell = _grid.GetCell(i) as UgfCell;
+                UgfCell cell = Grid.GetCell(i) as UgfCell;
                 if (IsErodible(cell)) erodibleCells.Add(cell);
             }
 
             int targetErodibleCount =
-                (int)(erodibleCells.Count * (100 - Parameter.ErosionPercentage) * 0.01f);
+                (int)(erodibleCells.Count * (100 - ErosionPercentage) * 0.01f);
 
             while (erodibleCells.Count > targetErodibleCount)
             {
@@ -352,10 +397,10 @@ namespace Secyud.Ugf.UgfHexMapGenerator
             _nextClimate.Clear();
             ClimateData initialData = new ClimateData
             {
-                Moisture = Parameter.StartingMoisture
+                Moisture = StartingMoisture
             };
             ClimateData clearData = new ClimateData();
-            for (int i = 0; i < _cellCount; i++)
+            for (int i = 0; i < CellCount; i++)
             {
                 _climate.Add(initialData);
                 _nextClimate.Add(clearData);
@@ -363,7 +408,7 @@ namespace Secyud.Ugf.UgfHexMapGenerator
 
             for (int cycle = 0; cycle < 40; cycle++)
             {
-                for (int i = 0; i < _cellCount; i++) EvolveClimate(i);
+                for (int i = 0; i < CellCount; i++) EvolveClimate(i);
 
                 (_climate, _nextClimate) = (_nextClimate, _climate);
             }
@@ -371,36 +416,36 @@ namespace Secyud.Ugf.UgfHexMapGenerator
 
         private void EvolveClimate(int i)
         {
-            UgfCell cell = _grid.GetCell(i) as UgfCell;
+            UgfCell cell = Grid.GetCell(i) as UgfCell;
             ClimateData cellClimate = _climate[i];
 
             if (cell!.IsUnderwater)
             {
                 cellClimate.Moisture = 1f;
-                cellClimate.Clouds += Parameter.EvaporationFactor;
+                cellClimate.Clouds += EvaporationFactor;
             }
             else
             {
-                float evaporation = cellClimate.Moisture * Parameter.EvaporationFactor;
+                float evaporation = cellClimate.Moisture * EvaporationFactor;
                 cellClimate.Moisture -= evaporation;
                 cellClimate.Clouds += evaporation;
             }
 
-            float precipitation = cellClimate.Clouds * Parameter.PrecipitationFactor;
+            float precipitation = cellClimate.Clouds * PrecipitationFactor;
             cellClimate.Clouds -= precipitation;
             cellClimate.Moisture += precipitation;
 
-            float cloudMaximum = 1f - cell.ViewElevation / (Parameter.ElevationMaximum + 1f);
+            float cloudMaximum = 1f - cell.ViewElevation / (ElevationMaximum + 1f);
             if (cellClimate.Clouds > cloudMaximum)
             {
                 cellClimate.Moisture += cellClimate.Clouds - cloudMaximum;
                 cellClimate.Clouds = cloudMaximum;
             }
 
-            HexDirection mainDispersalDirection = Parameter.WindDirection.Opposite();
-            float cloudDispersal = cellClimate.Clouds * (1f / (5f + Parameter.WindStrength));
-            float runoff = cellClimate.Moisture * Parameter.RunoffFactor * (1f / 6f);
-            float seepage = cellClimate.Moisture * Parameter.SeepageFactor * (1f / 6f);
+            HexDirection mainDispersalDirection = WindDirection.Opposite();
+            float cloudDispersal = cellClimate.Clouds * (1f / (5f + WindStrength));
+            float runoff = cellClimate.Moisture * RunoffFactor * (1f / 6f);
+            float seepage = cellClimate.Moisture * SeepageFactor * (1f / 6f);
             for (HexDirection d = HexDirection.Ne; d <= HexDirection.Nw; d++)
             {
                 UgfCell neighbor = cell.GetNeighbor(d);
@@ -408,7 +453,7 @@ namespace Secyud.Ugf.UgfHexMapGenerator
 
                 ClimateData neighborClimate = _nextClimate[neighbor.Index];
                 if (d == mainDispersalDirection)
-                    neighborClimate.Clouds += cloudDispersal * Parameter.WindStrength;
+                    neighborClimate.Clouds += cloudDispersal * WindStrength;
                 else
                     neighborClimate.Clouds += cloudDispersal;
 
@@ -438,15 +483,15 @@ namespace Secyud.Ugf.UgfHexMapGenerator
         private void CreateRivers()
         {
             List<UgfCell> riverOrigins = ListPool<UgfCell>.Get();
-            for (int i = 0; i < _cellCount; i++)
+            for (int i = 0; i < CellCount; i++)
             {
-                UgfCell cell = _grid.GetCell(i) as UgfCell;
+                UgfCell cell = Grid.GetCell(i) as UgfCell;
                 if (cell!.IsUnderwater) continue;
 
                 ClimateData data = _climate[i];
                 float weight =
-                    data.Moisture * (cell.Elevation - Parameter.WaterLevel) /
-                    (Parameter.ElevationMaximum - Parameter.WaterLevel);
+                    data.Moisture * (cell.Elevation - WaterLevel) /
+                    (ElevationMaximum - WaterLevel);
                 if (weight > 0.75f)
                 {
                     riverOrigins.Add(cell);
@@ -458,7 +503,7 @@ namespace Secyud.Ugf.UgfHexMapGenerator
                 if (weight > 0.25f) riverOrigins.Add(cell);
             }
 
-            int riverBudget = Mathf.RoundToInt(_landCells * Parameter.RiverPercentage * 0.01f);
+            int riverBudget = Mathf.RoundToInt(_landCells * RiverPercentage * 0.01f);
             while (riverBudget > 0 && riverOrigins.Count > 0)
             {
                 int index = Random.Range(0, riverOrigins.Count);
@@ -485,7 +530,8 @@ namespace Secyud.Ugf.UgfHexMapGenerator
                 }
             }
 
-            if (riverBudget > 0) Debug.LogWarning("Failed to use up river budget.");
+            if (riverBudget > 0)
+                Debug.LogWarning("Failed to use up river budget.");
 
             ListPool<UgfCell>.Add(riverOrigins);
         }
@@ -553,7 +599,7 @@ namespace Secyud.Ugf.UgfHexMapGenerator
 
                 if (
                     minNeighborElevation >= cell.Elevation &&
-                    Random.value < Parameter.ExtraLakeProbability
+                    Random.value < ExtraLakeProbability
                 )
                 {
                     cell.WaterLevel = cell.Elevation;
@@ -570,9 +616,9 @@ namespace Secyud.Ugf.UgfHexMapGenerator
         {
             _temperatureJitterChannel = Random.Range(0, 4);
 
-            for (int i = 0; i < _cellCount; i++)
+            for (int i = 0; i < CellCount; i++)
             {
-                UgfCell cell = _grid.GetCell(i) as UgfCell;
+                UgfCell cell = Grid.GetCell(i) as UgfCell;
                 float temperature = DetermineTemperature(cell);
                 float moisture = _climate[i].Moisture;
                 if (!cell!.IsUnderwater)
@@ -593,7 +639,7 @@ namespace Secyud.Ugf.UgfHexMapGenerator
                 else
                 {
                     byte terrain;
-                    if (cell.Elevation == Parameter.WaterLevel - 1)
+                    if (cell.Elevation == WaterLevel - 1)
                     {
                         int cliffs = 0, slopes = 0;
                         for (
@@ -620,11 +666,11 @@ namespace Secyud.Ugf.UgfHexMapGenerator
                         else
                             terrain = 12;
                     }
-                    else if (cell.Elevation >= Parameter.WaterLevel)
+                    else if (cell.Elevation >= WaterLevel)
                     {
                         terrain = 0;
                     }
-                    else if (cell.Elevation < 0)
+                    else if (cell.Elevation < 2)
                     {
                         terrain = 4;
                     }
@@ -633,7 +679,8 @@ namespace Secyud.Ugf.UgfHexMapGenerator
                         terrain = 8;
                     }
 
-                    if (terrain == 0 && temperature < TemperatureBands[0]) terrain = 12;
+                    if (terrain == 0 && temperature < TemperatureBands[0])
+                        terrain = 12;
 
                     cell.TerrainType = terrain;
                 }
@@ -642,27 +689,27 @@ namespace Secyud.Ugf.UgfHexMapGenerator
 
         private float DetermineTemperature(UgfCell cell)
         {
-            float latitude = (float)(cell.Coordinates.Z + DeltaZ) / CellCountZ;
-            if (Parameter.Hemisphere == HemisphereMode.Both)
+            float latitude = (float)cell.Coordinates.Z / CellCountZ;
+            if (Hemisphere == HemisphereMode.Both)
             {
                 latitude *= 2f;
                 if (latitude > 1f) latitude = 2f - latitude;
             }
-            else if (Parameter.Hemisphere == HemisphereMode.North)
+            else if (Hemisphere == HemisphereMode.North)
             {
                 latitude = 1f - latitude;
             }
 
             float temperature =
-                Mathf.LerpUnclamped(Parameter.LowTemperature, Parameter.HighTemperature, latitude);
+                Mathf.LerpUnclamped(LowTemperature, HighTemperature, latitude);
 
-            temperature *= 1f - (cell.ViewElevation - Parameter.WaterLevel) /
-                (Parameter.ElevationMaximum - Parameter.WaterLevel + 1f);
+            temperature *= 1f - (cell.ViewElevation - WaterLevel) /
+                (ElevationMaximum - WaterLevel + 1f);
 
             float jitter =
                 HexMetrics.SampleNoise(cell.Position * 0.1f)[_temperatureJitterChannel];
 
-            temperature += (jitter * 2f - 1f) * Parameter.TemperatureJitter;
+            temperature += (jitter * 2f - 1f) * TemperatureJitter;
 
             return temperature;
         }
@@ -672,7 +719,7 @@ namespace Secyud.Ugf.UgfHexMapGenerator
             int x = Random.Range(region.XMin, region.XMax);
             int z = Random.Range(region.ZMin, region.ZMax);
 
-            return _grid.GetCell(x, z) as UgfCell;
+            return Grid.GetCell(x, z) as UgfCell;
         }
 
         private struct MapRegion
