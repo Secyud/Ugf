@@ -2,7 +2,7 @@
 
 namespace Secyud.Ugf.UgfHexMap
 {
-    public abstract class HexUnitPlay : MonoBehaviour
+    public abstract class HexUnitAnim : MonoBehaviour
     {
         [SerializeField] protected float PlayTime;
         [SerializeField] protected bool Loop;

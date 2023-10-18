@@ -17,11 +17,11 @@ namespace Secyud.Ugf.UgfHexMap
     }
 
     public abstract class UgfHexMapFunctionService<TMessageService> :
-        IUgfHexMapFunction,IRegistry
+        IUgfHexMapFunction, IRegistry
         where TMessageService : IHexMapMessageService
     {
+        private readonly UgfCellPriorityQueue _searchFrontier = new();
         private int _searchFrontierPhase;
-        private UgfCellPriorityQueue _searchFrontier;
         private TMessageService _messageService;
         public bool HasPath { get; private set; }
 
@@ -99,10 +99,8 @@ namespace Secyud.Ugf.UgfHexMap
         {
             float speed = _messageService.GetSpeed(unit);
             _searchFrontierPhase += 2;
-            if (_searchFrontier == null)
-                _searchFrontier = new UgfCellPriorityQueue();
-            else
-                _searchFrontier.Clear();
+            
+            _searchFrontier.Clear();
 
             fromCell.SearchPhase = _searchFrontierPhase;
             fromCell.Distance = 0;
@@ -119,8 +117,7 @@ namespace Secyud.Ugf.UgfHexMap
                 for (HexDirection d = HexDirection.Ne; d <= HexDirection.Nw; d++)
                 {
                     UgfCell neighbor = current.GetNeighbor(d);
-                    if (neighbor == null ||
-                        neighbor.SearchPhase > _searchFrontierPhase)
+                    if (!neighbor || neighbor.SearchPhase > _searchFrontierPhase)
                         continue;
 
                     float moveCost = _messageService.GetMoveCost(
@@ -130,15 +127,16 @@ namespace Secyud.Ugf.UgfHexMap
                     float distance = current.Distance + moveCost;
                     float turn = (distance - 1) / speed;
                     if (turn > currentTurn)
+                    {
                         distance = turn * speed + moveCost;
+                    }
 
                     if (neighbor.SearchPhase < _searchFrontierPhase)
                     {
                         neighbor.SearchPhase = _searchFrontierPhase;
                         neighbor.Distance = (int)distance;
                         neighbor.PathFrom = current;
-                        neighbor.SearchHeuristic =
-                            neighbor.Coordinates.DistanceTo(toCell.Coordinates);
+                        neighbor.SearchHeuristic = neighbor.DistanceTo(toCell);
                         _searchFrontier.Enqueue(neighbor);
                     }
                     else if (distance < neighbor.Distance)
@@ -153,7 +151,7 @@ namespace Secyud.Ugf.UgfHexMap
 
             return false;
         }
-        
+
         public void Travel()
         {
             if (HasPath)
@@ -167,13 +165,13 @@ namespace Secyud.Ugf.UgfHexMap
                     location = path[^1];
                     location.Unit = unit;
                     unit.StopAllCoroutines();
-                    unit.StartCoroutine(TravelPath(path,unit));
+                    unit.StartCoroutine(TravelPath(path, unit));
                     ClearPath();
                 }
             }
         }
-        
-        private IEnumerator TravelPath(IList<UgfCell> path,HexUnit unit)
+
+        private IEnumerator TravelPath(IList<UgfCell> path, HexUnit unit)
         {
             Vector3 a, b, c = path[0].Position;
             Transform transform = unit.transform;
@@ -214,6 +212,5 @@ namespace Secyud.Ugf.UgfHexMap
             transform.localPosition = unit.Location.Position;
             unit.Orientation = transform.localRotation.eulerAngles.y;
         }
-
     }
 }

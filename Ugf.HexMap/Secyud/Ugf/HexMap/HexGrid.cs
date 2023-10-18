@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Secyud.Ugf.Archiving;
+using Secyud.Ugf.HexMapExtensions;
 using Secyud.Ugf.HexUtilities;
 using UnityEngine;
 
@@ -62,8 +63,10 @@ namespace Secyud.Ugf.HexMap
             _shaderData.Initialize(this);
         }
 
-        private void OnEnable()
+        protected virtual void OnEnable()
         {
+            HexCellExtension.CurrentGrid = this;
+            
             ShaderManager.ChangeTextureSize(CellCountX, CellCountZ);
 
             foreach (HexCell c in Cells)

@@ -147,7 +147,7 @@ namespace Secyud.Ugf.HexMap
             return Coordinates.DirectionFrom(other.Coordinates);
         }
 
-        public float DistanceTo(HexCell cell)
+        public int DistanceTo(HexCell cell)
         {
             return Coordinates.DistanceTo(cell.Coordinates);
         }
