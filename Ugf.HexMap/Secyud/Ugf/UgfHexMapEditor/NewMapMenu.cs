@@ -65,6 +65,11 @@ namespace Secyud.Ugf.UgfHexMapEditor
 				HexGrid.CreateMap(x, z);
 			}
 
+			foreach (HexCell cell in HexGrid.Cells)
+			{
+				cell.SetLabel(cell.Index.ToString());
+			}
+			
 			Close();
 		}
 	}

@@ -9,16 +9,26 @@ namespace Secyud.Ugf.Modularity.Plugins
 {
     public class TypePlugInSource : IPlugInSource
     {
-        private readonly Type[] _moduleTypes;
+        protected Type[] ModuleTypes;
 
+
+        protected TypePlugInSource()
+        {
+            
+        }
+        
+        /// <summary>
+        /// type should be inherited from IUgfModule
+        /// </summary>
+        /// <param name="moduleTypes"></param>
         public TypePlugInSource(params Type[] moduleTypes)
         {
-            _moduleTypes = moduleTypes ?? Type.EmptyTypes;
+            ModuleTypes = moduleTypes ?? Type.EmptyTypes;
         }
 
         public IEnumerable<Type> GetModules()
         {
-            return _moduleTypes;
+            return ModuleTypes;
         }
     }
 }

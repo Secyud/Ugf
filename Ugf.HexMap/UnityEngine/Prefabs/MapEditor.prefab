@@ -6901,8 +6901,8 @@ MonoBehaviour:
   Seed: 0
   Hemisphere: 0
   WindDirection: 5
-  ChunkSizeMin: 30
-  ChunkSizeMax: 100
+  ChunkSizeMin: 4
+  ChunkSizeMax: 20
   RiverPercentage: 10
   LandPercentage: 50
   ErosionPercentage: 50

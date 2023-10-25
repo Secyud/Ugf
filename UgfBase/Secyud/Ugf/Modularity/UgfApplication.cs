@@ -141,7 +141,9 @@ namespace Secyud.Ugf.Modularity
         private void CheckMultipleConfigureServices()
         {
             if (_configuredServices)
+            {
                 throw new UgfInitializationException("Services have already been configured!");
+            }
         }
     }
 }

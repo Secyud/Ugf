@@ -15,7 +15,7 @@ namespace UnityEngine.Editor
 	/// </summary>
 	public class TextureArrayWizard : ScriptableWizard
 	{
-		[FormerlySerializedAs("textures")] public Texture2D[] Textures;
+		 public Texture2D[] Textures;
 
 		private void OnWizardCreate()
 		{

@@ -121,6 +121,12 @@ namespace Secyud.Ugf.UgfHexMapEditor
             using DefaultArchiveReader reader = new(stream);
 
             HexGrid.Load(reader);
+            
+
+            foreach (HexCell cell in HexGrid.Cells)
+            {
+                cell.SetLabel(cell.Index.ToString());
+            }
         }
     }
 }

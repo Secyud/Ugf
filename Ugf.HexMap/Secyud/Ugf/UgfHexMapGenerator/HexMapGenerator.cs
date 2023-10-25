@@ -12,8 +12,8 @@ namespace Secyud.Ugf.UgfHexMapGenerator
 {
     public class HexMapGenerator : MonoBehaviour
     {
-        private static readonly float[] TemperatureBands = { 0.1f, 0.3f, 0.6f };
-        private static readonly float[] MoistureBands = { 0.12f, 0.28f, 0.85f };
+        private static readonly float[] TemperatureBands = { 0.04f, 0.3f, 0.6f };
+        private static readonly float[] MoistureBands = { 0.1f, 0.2f, 0.8f };
         private readonly List<HexDirection> _flowDirections = new();
         private int CellCount => Grid.Cells.Length;
         private int _landCells;
