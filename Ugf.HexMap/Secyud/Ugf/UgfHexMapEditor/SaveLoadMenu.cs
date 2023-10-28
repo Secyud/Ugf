@@ -123,10 +123,7 @@ namespace Secyud.Ugf.UgfHexMapEditor
             HexGrid.Load(reader);
             
 
-            foreach (HexCell cell in HexGrid.Cells)
-            {
-                cell.SetLabel(cell.Index.ToString());
-            }
+            HexGrid.ShowLabel();
         }
     }
 }

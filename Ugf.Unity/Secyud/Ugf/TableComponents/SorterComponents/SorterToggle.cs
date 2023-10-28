@@ -100,7 +100,7 @@ namespace Secyud.Ugf.TableComponents.SorterComponents
         {
             Sorter = sorter;
             Triggerable = triggerable;
-            Name.text = U.T[triggerable.ShowName];
+            Name.text = U.T[triggerable.Name];
         }
 
         public SorterToggle Create(Transform parent, Sorter sorter, ICanBeStated triggerable)

@@ -13,11 +13,11 @@ namespace Secyud.Ugf.TableComponents.ButtonComponents
 
 		public abstract void Invoke();
 
-		public abstract string ShowName { get; }
+		public abstract string Name { get; }
 
-		public virtual string ShowDescription => null;
+		public virtual string Description => null;
 
-		public virtual IObjectAccessor<Sprite> ShowIcon => null;
+		public virtual IObjectAccessor<Sprite> Icon => null;
 
 		public virtual void SetButton(SLabelButton button)
 		{

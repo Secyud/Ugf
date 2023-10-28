@@ -34,7 +34,7 @@ namespace Secyud.Ugf.BasicComponents
                 b.Bind(button.Invoke);
                 if (Float)
                     b.onClick.AddListener(() => Destroy(gameObject));
-                b.Text = U.T[button.ShowName];
+                b.Text = U.T[button.Name];
                 button.SetButton(b);
             }
 

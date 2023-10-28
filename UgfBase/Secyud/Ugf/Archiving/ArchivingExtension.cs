@@ -1,5 +1,6 @@
 ﻿using System;
 using Secyud.Ugf.DataManager;
+using UnityEngine;
 
 namespace Secyud.Ugf.Archiving
 {
@@ -77,6 +78,26 @@ namespace Secyud.Ugf.Archiving
                     writer.WriteNullable(value);
                     break;
                 default: throw new ArgumentOutOfRangeException();
+            }
+        }
+
+        
+        
+        public static void SaveResource(this IArchivedResource resource, IArchiveWriter writer)
+        {
+            writer.Write(resource.ResourceId);
+        }
+        public static void LoadResource(this IArchivedResource shown, IArchiveReader reader)
+        {
+            string name = reader.ReadString();
+            TypeDescriptor property = U.Tm.GetProperty(shown.GetType());
+            if (property.Resources.TryGetValue(name, out ResourceDescriptor resource))
+            {
+                resource.WriteToObject(shown);
+            }
+            else
+            {
+                Debug.LogError($"Cannot get item from resource. Type: {shown.GetType()}, Name: {name}.");
             }
         }
     }

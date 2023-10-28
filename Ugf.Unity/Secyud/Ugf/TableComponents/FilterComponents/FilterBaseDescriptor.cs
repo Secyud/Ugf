@@ -10,11 +10,11 @@ namespace Secyud.Ugf.TableComponents.FilterComponents
 	{
 		private bool _enabled = true;
 
-		public virtual string ShowName => null;
+		public string Name { get; set; }
 
-		public virtual string ShowDescription => null;
+		public virtual string Description => null;
 
-		public virtual IObjectAccessor<Sprite> ShowIcon => null;
+		public virtual IObjectAccessor<Sprite> Icon => null;
 
 		public void SetEnabled(bool value)
 		{

@@ -14,7 +14,7 @@ namespace Secyud.Ugf.HexMap
         [SerializeField] private RectTransform UiPrefab;
         [SerializeField] protected Camera Camera;
         [SerializeField] public HexMapCamera MapCamera;
-        
+
         private ShaderData _shaderData;
         private readonly List<HexUnit> _units = new();
 
@@ -53,8 +53,8 @@ namespace Secyud.Ugf.HexMap
             MapCamera.enabled = true;
             Camera.enabled = true;
         }
-        
-        
+
+
         protected virtual void Awake()
         {
             Cells = Array.Empty<HexCell>();
@@ -66,7 +66,7 @@ namespace Secyud.Ugf.HexMap
         protected virtual void OnEnable()
         {
             HexCellExtension.CurrentGrid = this;
-            
+
             ShaderManager.ChangeTextureSize(CellCountX, CellCountZ);
 
             foreach (HexCell c in Cells)
@@ -218,7 +218,6 @@ namespace Secyud.Ugf.HexMap
 
         #region Unit
 
-
         public void AddUnit(HexUnit unit, HexCell location, float orientation)
         {
             _units.Add(unit);
@@ -243,7 +242,7 @@ namespace Secyud.Ugf.HexMap
         }
 
         #endregion
-        
+
         public void Save(IArchiveWriter writer)
         {
             writer.Write(ChunkCountX);
@@ -258,7 +257,7 @@ namespace Secyud.Ugf.HexMap
         public void Load(IArchiveReader reader)
         {
             enabled = false;
-            
+
             int x = reader.ReadInt32();
             int z = reader.ReadInt32();
 
@@ -273,10 +272,21 @@ namespace Secyud.Ugf.HexMap
             }
 
             enabled = true;
-            
+
             foreach (HexChunk chunk in Chunks)
             {
                 chunk.Refresh();
+            }
+        }
+
+        public void ShowLabel()
+        {
+            int x, y;
+            foreach (HexCell cell in Cells)
+            {
+                x = cell.Index % CellCountX;
+                y = cell.Index / CellCountX;
+                cell.SetLabel(x + "," + y);
             }
         }
     }

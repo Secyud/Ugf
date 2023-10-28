@@ -8,16 +8,16 @@ namespace Secyud.Ugf
 {
     public interface IHasDescription
     {
-        string ShowDescription { get; }
+        string Description { get; }
     }
 
     public interface IHasName
     {
-        string ShowName { get; }
+        string Name { get; }
     }
 
     public interface IShowable : IHasDescription, IHasName
     {
-        IObjectAccessor<Sprite> ShowIcon { get; }
+        IObjectAccessor<Sprite> Icon { get; }
     }
 }
