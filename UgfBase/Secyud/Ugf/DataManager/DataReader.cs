@@ -78,7 +78,7 @@ namespace Secyud.Ugf.DataManager
                     if (attr.ReadOnly)
                     {
                         object field = attr.GetValue(value);
-
+                        
                         if (field is IList list)
                         {
                             LoadList(list);

@@ -1,6 +1,6 @@
 namespace Secyud.Ugf.Archiving
 {
-    public interface IArchivedResource
+    public interface IDataResource
     {
         public string ResourceId { get; set; }
     }

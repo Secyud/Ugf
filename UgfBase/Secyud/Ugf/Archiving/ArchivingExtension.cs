@@ -83,11 +83,11 @@ namespace Secyud.Ugf.Archiving
 
         
         
-        public static void SaveResource(this IArchivedResource resource, IArchiveWriter writer)
+        public static void SaveResource(this IDataResource resource, IArchiveWriter writer)
         {
             writer.Write(resource.ResourceId);
         }
-        public static void LoadResource(this IArchivedResource shown, IArchiveReader reader)
+        public static void LoadResource(this IDataResource shown, IArchiveReader reader)
         {
             string name = reader.ReadString();
             TypeDescriptor property = U.Tm.GetProperty(shown.GetType());
