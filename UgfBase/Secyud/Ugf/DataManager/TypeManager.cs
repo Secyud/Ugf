@@ -55,12 +55,14 @@ namespace Secyud.Ugf.DataManager
             return null;
         }
 
-        public bool TryWriteObject(object obj, string showName)
+        public bool TryWriteObject(object obj, string resourceId)
         {
             TypeDescriptor property = GetProperty(obj.GetType());
             if (!property.Resources
-                    .TryGetValue(showName, out ResourceDescriptor resource))
+                    .TryGetValue(resourceId, out ResourceDescriptor resource))
+            {
                 return false;
+            }
             resource.WriteToObject(obj);
             return true;
         }

@@ -28,7 +28,8 @@ namespace Secyud.Ugf.Archiving
                 _                 => new NotSupportedException("Type not support!")
             };
         }
-        public static void WriteField(this IArchiveWriter writer,object value, FieldType type)
+
+        public static void WriteField(this IArchiveWriter writer, object value, FieldType type)
         {
             switch (type)
             {
@@ -81,23 +82,20 @@ namespace Secyud.Ugf.Archiving
             }
         }
 
-        
-        
+
         public static void SaveResource(this IDataResource resource, IArchiveWriter writer)
         {
             writer.Write(resource.ResourceId);
         }
+
         public static void LoadResource(this IDataResource shown, IArchiveReader reader)
         {
             string name = reader.ReadString();
-            TypeDescriptor property = U.Tm.GetProperty(shown.GetType());
-            if (property.Resources.TryGetValue(name, out ResourceDescriptor resource))
+            if (!U.Tm.TryWriteObject(shown, name))
             {
-                resource.WriteToObject(shown);
-            }
-            else
-            {
+#if DEBUG
                 Debug.LogError($"Cannot get item from resource. Type: {shown.GetType()}, Name: {name}.");
+#endif
             }
         }
     }

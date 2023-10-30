@@ -2,7 +2,7 @@
 
 namespace Secyud.Ugf.DataManager
 {
-    public class ResourcesDictionary:Dictionary<string, ResourceDescriptor>
+    public class ResourcesDictionary:SortedDictionary<string, ResourceDescriptor>
     {
 
     }
