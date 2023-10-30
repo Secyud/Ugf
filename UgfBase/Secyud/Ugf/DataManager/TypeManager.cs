@@ -55,6 +55,31 @@ namespace Secyud.Ugf.DataManager
             return null;
         }
 
+        public List<TObject> ConstructListFromFile<TObject>(string path)
+            where TObject : class
+        {
+            using FileStream fileStream = File.OpenRead(path);
+            using DataReader reader = new(fileStream);
+
+            List<TObject> list = new();
+            
+            int count = reader.ReadInt32();
+            for (int i = 0; i < count; i++)
+            {
+                Guid id = reader.ReadGuid();
+                string name = reader.ReadString();
+                int dataLength = reader.ReadInt32();
+
+                Type type = U.Tm[id];
+                object obj = U.Get(type);
+                reader.LoadProperties(obj);
+                
+                list.Add(obj as TObject);
+            }
+
+            return list;
+        }
+
         public bool TryWriteObject(object obj, string resourceId)
         {
             TypeDescriptor property = GetProperty(obj.GetType());

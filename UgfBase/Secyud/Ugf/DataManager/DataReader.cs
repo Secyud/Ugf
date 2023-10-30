@@ -44,14 +44,15 @@ namespace Secyud.Ugf.DataManager
 
             object ret = U.Get(type);
 
-            LoadProperties(type, ret);
+            LoadProperties(ret);
 
             return ret;
         }
 
-        public void LoadProperties(Type type, object value)
+        public void LoadProperties(object value)
         {
-            TypeDescriptor descriptor = TypeManager.Instance.GetProperty(type);
+            TypeDescriptor descriptor = TypeManager.Instance.GetProperty(
+                value.GetType());
             SortedDictionary<string, SAttribute> attrs = new();
 
             PropertyDescriptor current = descriptor.Properties;
@@ -85,7 +86,7 @@ namespace Secyud.Ugf.DataManager
                         }
                         else
                         {
-                            LoadProperties(attr.Info.FieldType, field);
+                            LoadProperties(field);
                         }
                     }
                     else

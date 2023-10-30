@@ -45,14 +45,14 @@ namespace Secyud.Ugf.DataManager
         {
             using MemoryStream stream = new(Data);
             using DataReader reader = new(stream);
-            reader.LoadProperties(obj.GetType(), obj);
+            reader.LoadProperties(obj);
         }
 
         public void ReadFromObject(object obj)
         {
             using MemoryStream stream = new();
             using DataWriter writer = new(stream);
-            writer.SaveProperties(obj.GetType(), obj);
+            writer.SaveProperties(obj);
             Data = stream.ToArray();
         }
     }

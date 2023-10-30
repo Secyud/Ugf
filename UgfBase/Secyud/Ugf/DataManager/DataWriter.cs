@@ -79,12 +79,13 @@ namespace Secyud.Ugf.DataManager
             Type type = value.GetType();
             Write(TypeManager.Instance[type]);
 
-            SaveProperties(type, value);
+            SaveProperties( value);
         }
 
-        public void SaveProperties(Type type, object value)
+        public void SaveProperties( object value)
         {
-            TypeDescriptor descriptor = TypeManager.Instance.GetProperty(type);
+            TypeDescriptor descriptor = 
+                TypeManager.Instance.GetProperty(value.GetType());
             List<SAttribute> attrs = new();
 
             
@@ -115,7 +116,7 @@ namespace Secyud.Ugf.DataManager
                     }
                     else
                     {
-                        SaveProperties(attr.Info.FieldType, field);
+                        SaveProperties(field);
                     }
                 }
                 else
