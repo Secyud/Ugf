@@ -31,7 +31,14 @@ namespace Secyud.Ugf.DataManager
         public FieldType Type { get; private set; }
         public Type Belong { get; private set; }
         public FieldType ElementType { get; private set; }
-
+        public Type TypeLimit { get;  }
+        
+        public SAttribute(Type type = null)
+        {
+            TypeLimit = type;
+        }
+        
+        
         public void SetPropertyType(FieldInfo info, Type belong)
         {
             if (Info is not null) return;
@@ -44,7 +51,7 @@ namespace Secyud.Ugf.DataManager
                 Type elementType = info.FieldType.IsArray
                     ? info.FieldType.GetElementType()
                     : info.FieldType.GetGenericArguments().FirstOrDefault();
-                
+
                 if (elementType is not null)
                 {
                     Map.TryGetValue(elementType, out FieldType elementFieldType);
