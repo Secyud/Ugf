@@ -31,12 +31,6 @@ namespace Secyud.Ugf.DataManager
         public FieldType Type { get; private set; }
         public Type Belong { get; private set; }
         public FieldType ElementType { get; private set; }
-        public Type TypeLimit { get;  }
-        
-        public SAttribute(Type type = null)
-        {
-            TypeLimit = type;
-        }
         
         
         public void SetPropertyType(FieldInfo info, Type belong)
