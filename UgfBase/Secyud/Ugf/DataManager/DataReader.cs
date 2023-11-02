@@ -31,6 +31,7 @@ namespace Secyud.Ugf.DataManager
                 FieldType.String  => ReadString(),
                 FieldType.Guid    => ReadGuid(),
                 FieldType.Object  => ReadClassObject(),
+                FieldType.InValid => new UgfException($"invalid field"),
                 _                 => new NotSupportedException("Type not support!")
             };
         }
@@ -102,7 +103,7 @@ namespace Secyud.Ugf.DataManager
 
                         if (field is IList list)
                         {
-                            LoadList(list);
+                            LoadList(list,attr);
                         }
                         else
                         {
@@ -117,18 +118,14 @@ namespace Secyud.Ugf.DataManager
             }
         }
 
-        /// <summary>
-        /// list load allow class object only
-        /// </summary>
-        /// <param name="list"></param>
-        public void LoadList(IList list)
+        public void LoadList(IList list,SAttribute s)
         {
             if (list.IsFixedSize)
             {
                 int count = list.Count;
                 for (int i = 0; i < count; i++)
                 {
-                    list[i] = ReadDataObject(FieldType.Object);
+                    list[i] = ReadDataObject(s.ElementType);
                 }
             }
             else
@@ -137,7 +134,7 @@ namespace Secyud.Ugf.DataManager
                 list.Clear();
                 for (int i = 0; i < count; i++)
                 {
-                    list.Add(ReadDataObject(FieldType.Object));
+                    list.Add(ReadDataObject(s.ElementType));
                 }
             }
         }

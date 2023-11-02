@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 
 namespace Secyud.Ugf.DataManager
@@ -28,14 +30,31 @@ namespace Secyud.Ugf.DataManager
         public FieldInfo Info { get; private set; }
         public FieldType Type { get; private set; }
         public Type Belong { get; private set; }
+        public FieldType ElementType { get; private set; }
 
-        public void SetPropertyType(FieldInfo info,Type belong)
+        public void SetPropertyType(FieldInfo info, Type belong)
         {
             if (Info is not null) return;
             Map.TryGetValue(info.FieldType, out FieldType type);
             Info = info;
             Type = type;
             Belong = belong;
+            if (typeof(IList).IsAssignableFrom(info.FieldType))
+            {
+                Type elementType = info.FieldType.IsArray
+                    ? info.FieldType.GetElementType()
+                    : info.FieldType.GetGenericArguments().FirstOrDefault();
+                
+                if (elementType is not null)
+                {
+                    Map.TryGetValue(elementType, out FieldType elementFieldType);
+                    ElementType = elementFieldType;
+                }
+            }
+            else
+            {
+                ElementType = FieldType.InValid;
+            }
         }
 
         public bool ReadOnly => Info.IsInitOnly;
@@ -52,8 +71,7 @@ namespace Secyud.Ugf.DataManager
 
         private object GetDefault()
         {
-            return Info.FieldType.IsValueType ? 
-                Activator.CreateInstance(Info.FieldType) : null;
+            return Info.FieldType.IsValueType ? Activator.CreateInstance(Info.FieldType) : null;
         }
     }
 }

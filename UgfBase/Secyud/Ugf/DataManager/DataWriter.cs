@@ -62,6 +62,8 @@ namespace Secyud.Ugf.DataManager
                 case FieldType.Object:
                     WriteClassObject(value);
                     break;
+                case FieldType.InValid:
+                    throw new UgfException($"invalid field ${value}");
                 default: throw new ArgumentOutOfRangeException();
             }
         }
@@ -119,7 +121,7 @@ namespace Secyud.Ugf.DataManager
                 {
                     if (field is IList list)
                     {
-                        WriteList(list);
+                        WriteList(list,attr);
                     }
                     else
                     {
@@ -135,7 +137,7 @@ namespace Secyud.Ugf.DataManager
             }
         }
 
-        private void WriteList(IList list)
+        private void WriteList(IList list,SAttribute s)
         {
 
             if (!list.IsFixedSize)
@@ -145,7 +147,7 @@ namespace Secyud.Ugf.DataManager
             
             for (int i = 0; i < list.Count; i++)
             {
-                WriteDataObject(list[i], FieldType.Object);
+                WriteDataObject(list[i], s.ElementType);
             }
         }
     }
