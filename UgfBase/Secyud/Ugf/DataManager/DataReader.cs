@@ -76,20 +76,8 @@ namespace Secyud.Ugf.DataManager
 
                 if (attrs.TryGetValue(name, out SAttribute attr))
                 {
-                    if (attr.ReadOnly)
-                    {
-                        object field = attr.GetValue(value);
-                        
-                        if (field is IList list)
-                        {
-                            LoadList(list);
-                        }
-                        else
-                        {
-                            LoadProperties(field);
-                        }
-                    }
-                    else
+                    if (!attr.ReadOnly ||
+                        attr.Type != FieldType.Object)
                     {
                         if (U.DataManager)
                         {
@@ -106,6 +94,19 @@ namespace Secyud.Ugf.DataManager
                         else
                         {
                             attr.SetValue(value, ReadDataObject((FieldType)ReadByte()));
+                        }
+                    }
+                    else
+                    {
+                        object field = attr.GetValue(value);
+
+                        if (field is IList list)
+                        {
+                            LoadList(list);
+                        }
+                        else
+                        {
+                            LoadProperties(field);
                         }
                     }
                 }

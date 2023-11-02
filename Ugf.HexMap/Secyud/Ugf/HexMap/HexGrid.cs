@@ -281,12 +281,13 @@ namespace Secyud.Ugf.HexMap
 
         public void ShowLabel()
         {
-            int x, y;
             foreach (HexCell cell in Cells)
             {
-                x = cell.Index % CellCountX;
-                y = cell.Index / CellCountX;
-                cell.SetLabel(x + "," + y);
+                // int x, y;
+                // x = cell.Index % CellCountX;
+                // y = cell.Index / CellCountX;
+                // cell.SetLabel(x + "," + y);
+                cell.SetLabel(cell.Index.ToString());
             }
         }
     }

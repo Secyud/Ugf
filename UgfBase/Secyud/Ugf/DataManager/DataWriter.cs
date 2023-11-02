@@ -79,16 +79,16 @@ namespace Secyud.Ugf.DataManager
             Type type = value.GetType();
             Write(TypeManager.Instance[type]);
 
-            SaveProperties( value);
+            SaveProperties(value);
         }
 
-        public void SaveProperties( object value)
+        public void SaveProperties(object value)
         {
-            TypeDescriptor descriptor = 
+            TypeDescriptor descriptor =
                 TypeManager.Instance.GetProperty(value.GetType());
             List<SAttribute> attrs = new();
 
-            
+
             PropertyDescriptor current = descriptor.Properties;
             while (current is not null)
             {
@@ -108,7 +108,14 @@ namespace Secyud.Ugf.DataManager
                 Write(0);
                 long pRecord = Writer.BaseStream.Position;
                 object field = attr.GetValue(value);
-                if (attr.ReadOnly)
+
+                if (!attr.ReadOnly ||
+                    attr.Type != FieldType.Object)
+                {
+                    Write((byte)attr.Type);
+                    WriteDataObject(field, attr.Type);
+                }
+                else
                 {
                     if (field is IList list)
                     {
@@ -118,11 +125,6 @@ namespace Secyud.Ugf.DataManager
                     {
                         SaveProperties(field);
                     }
-                }
-                else
-                {
-                    Write((byte)attr.Type);
-                    WriteDataObject(field, attr.Type);
                 }
 
                 int len = (int)(Writer.BaseStream.Position - pRecord);
