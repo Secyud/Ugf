@@ -117,6 +117,10 @@ namespace Secyud.Ugf.DataManager
             }
         }
 
+        /// <summary>
+        /// list load allow class object only
+        /// </summary>
+        /// <param name="list"></param>
         public void LoadList(IList list)
         {
             if (list.IsFixedSize)
@@ -124,7 +128,7 @@ namespace Secyud.Ugf.DataManager
                 int count = list.Count;
                 for (int i = 0; i < count; i++)
                 {
-                    list[i] = ReadDataObject((FieldType)ReadByte());
+                    list[i] = ReadDataObject(FieldType.Object);
                 }
             }
             else
@@ -133,7 +137,7 @@ namespace Secyud.Ugf.DataManager
                 list.Clear();
                 for (int i = 0; i < count; i++)
                 {
-                    list.Add(ReadDataObject((FieldType)ReadByte()));
+                    list.Add(ReadDataObject(FieldType.Object));
                 }
             }
         }

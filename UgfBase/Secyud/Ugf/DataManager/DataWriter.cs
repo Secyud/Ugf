@@ -137,13 +137,15 @@ namespace Secyud.Ugf.DataManager
 
         private void WriteList(IList list)
         {
-            Write(list.Count);
 
-            foreach (object obj in list)
+            if (!list.IsFixedSize)
             {
-                SAttribute.Map.TryGetValue(obj.GetType(), out FieldType fieldType);
-                Write((byte)fieldType);
-                WriteDataObject(obj, fieldType);
+                Write(list.Count);
+            }
+            
+            for (int i = 0; i < list.Count; i++)
+            {
+                WriteDataObject(list[i], FieldType.Object);
             }
         }
     }
