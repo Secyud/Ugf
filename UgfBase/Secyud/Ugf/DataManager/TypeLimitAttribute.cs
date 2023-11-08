@@ -3,16 +3,13 @@
 namespace Secyud.Ugf.DataManager
 {
     [AttributeUsage(AttributeTargets.Field)]
-    public class TypeLimitAttribute:Attribute
+    public class TypeLimitAttribute : Attribute
     {
-        public TypeLimitAttribute(Type limitType, bool limitChild = false)
+        public TypeLimitAttribute(Type limitType)
         {
             LimitType = limitType;
-            LimitChild = limitChild;
         }
 
-        public Type LimitType { get;}
-        
-        public bool LimitChild { get; }
+        public Type LimitType { get; }
     }
 }
