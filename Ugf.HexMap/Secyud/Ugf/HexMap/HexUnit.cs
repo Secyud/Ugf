@@ -21,7 +21,8 @@ namespace Secyud.Ugf.HexMap
             get => _location;
             set
             {
-                if (_location) _location.Unit = null;
+                if (_location)
+                    _location.Unit = null;
 
                 _location = value;
                 _location.Unit = this;

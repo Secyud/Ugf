@@ -84,13 +84,16 @@ namespace Secyud.Ugf.UgfHexMapEditor
             for (int i = 0; i < ListContent.childCount; i++) Destroy(ListContent.GetChild(i).gameObject);
 
             string[] paths =
-                Directory.GetFiles(Application.persistentDataPath, "*.map");
+                Directory.GetDirectories(Path.Combine(U.Path, "Data/Play"));
             Array.Sort(paths);
             foreach (string path in paths)
             {
-                SaveLoadItem item = Instantiate(ItemPrefab, ListContent, false);
-                item.Menu = this;
-                item.MapName = Path.GetFileNameWithoutExtension(path);
+                if (File.Exists(Path.Combine(path ,"map.binary")))
+                {
+                    SaveLoadItem item = Instantiate(ItemPrefab, ListContent, false);
+                    item.Menu = this;
+                    item.MapName = Path.GetFileName(path);
+                }
             }
         }
 
@@ -99,7 +102,7 @@ namespace Secyud.Ugf.UgfHexMapEditor
             string mapName = NameInput.text;
             if (mapName.Length == 0) return null;
 
-            return Path.Combine(Application.persistentDataPath, mapName + ".map");
+            return Path.Combine(U.Path,"Data/Play", mapName ,"map.binary");
         }
 
         private void Save(string path)

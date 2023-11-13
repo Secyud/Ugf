@@ -161,12 +161,9 @@ namespace Secyud.Ugf.UgfHexMap
                 HexUnit unit = location.Unit;
                 if (unit)
                 {
-                    location.Unit = null;
-                    location = path[^1];
-                    location.Unit = unit;
+                    unit.Location = path[^1];
                     unit.StopAllCoroutines();
                     unit.StartCoroutine(TravelPath(path, unit));
-                    ClearPath();
                 }
             }
         }
@@ -211,6 +208,7 @@ namespace Secyud.Ugf.UgfHexMap
 
             transform.localPosition = unit.Location.Position;
             unit.Orientation = transform.localRotation.eulerAngles.y;
+            ClearPath();
         }
     }
 }

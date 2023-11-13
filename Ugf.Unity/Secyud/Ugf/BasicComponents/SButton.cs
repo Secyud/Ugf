@@ -1,5 +1,6 @@
 #region
 
+using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 
@@ -11,13 +12,16 @@ namespace Secyud.Ugf.BasicComponents
 	{
 		public void Bind(UnityAction action)
 		{
-			Clear();
 			onClick.AddListener(action);
 		}
 		
 		public void Clear()
 		{
 			onClick.RemoveAllListeners();
+			if (TryGetComponent<AudioSource>(out var source))
+			{
+				Bind(source.Play);
+			}
 		}
 
 		// ReSharper disable once InconsistentNaming
