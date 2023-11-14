@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
+using UnityEngine;
 
 namespace Secyud.Ugf.DataManager
 {
@@ -52,6 +53,8 @@ namespace Secyud.Ugf.DataManager
                 return obj;
             }
 
+            Debug.LogWarning($"Failed construct from resource: {type}" +
+                             $"\r\n\t Resource Id: {name}");
             return null;
         }
 
