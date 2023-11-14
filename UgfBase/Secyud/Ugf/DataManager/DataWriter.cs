@@ -90,7 +90,6 @@ namespace Secyud.Ugf.DataManager
                 TypeManager.Instance.GetProperty(value.GetType());
             List<SAttribute> attrs = new();
 
-
             PropertyDescriptor current = descriptor.Properties;
             while (current is not null)
             {

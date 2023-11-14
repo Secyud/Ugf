@@ -27,12 +27,18 @@ namespace Secyud.Ugf.DataManager
             [typeof(Guid)] = FieldType.Guid,
         };
 
+        public SAttribute(short id = 16384)
+        {
+            Id = id;
+        }
+
         public FieldInfo Info { get; private set; }
-        public FieldType Type { get; private set; }
         public Type Belong { get; private set; }
+        public FieldType Type { get; private set; }
         public FieldType ElementType { get; private set; }
-        
-        
+        public short Id { get; }
+
+
         public void SetPropertyType(FieldInfo info, Type belong)
         {
             if (Info is not null) return;
