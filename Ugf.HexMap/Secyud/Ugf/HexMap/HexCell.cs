@@ -71,7 +71,7 @@ namespace Secyud.Ugf.HexMap
             chunk.Grid.Cells[Index] = this;
         }
 
-        public void CreateMap()
+        public virtual void CreateMap()
         {
             HexGrid grid = Chunk.Grid;
             HexCell[] cells = grid.Cells;
