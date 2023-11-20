@@ -7,7 +7,7 @@ namespace Secyud.Ugf.Modularity.Plugins
 {
     public class FilePluginSource : TypePlugInSource
     {
-        protected FilePluginSource(List<string> filePaths)
+        public FilePluginSource(params string[] filePaths)
         {
             ModuleTypes = filePaths
                 .Select(Assembly.LoadFile)
