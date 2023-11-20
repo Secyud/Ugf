@@ -14,7 +14,6 @@ namespace Secyud.Ugf.LayoutComponents
 		[SerializeField] protected bool Float;
 		[SerializeField] protected int ClearStart;
 		protected LayoutGroup LayoutElement;
-		private const int RecordMax = 1;
 
 		public LayoutGroup Element => LayoutElement;
 
@@ -50,7 +49,6 @@ namespace Secyud.Ugf.LayoutComponents
 
 		public virtual void RefreshContent(IHasContent content)
 		{
-			ClearContent();
 			content?.SetContent(PrepareLayout());
 		}
 

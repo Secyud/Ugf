@@ -48,6 +48,14 @@ namespace Secyud.Ugf.AssetComponents
         protected override TComponent GetObject()
         {
             GameObject obj = Loader.LoadAsset<GameObject>(AssetName);
+            
+            #if DEBUG
+            if (obj is null)
+            {
+                Debug.LogError($"Failed get {AssetName}.");
+            }
+            #endif
+            
             return obj ? obj.GetComponent<TComponent>() : null;
         }
 
@@ -74,8 +82,10 @@ namespace Secyud.Ugf.AssetComponents
 
         public void Destroy()
         {
-            if (CurrentInstance) CurrentInstance.Destroy();
-            CurrentInstance = null;
+            if (CurrentInstance)
+            {
+                CurrentInstance.Destroy();
+            }
         }
     }
 }

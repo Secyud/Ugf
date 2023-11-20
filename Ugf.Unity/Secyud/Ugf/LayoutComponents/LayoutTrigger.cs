@@ -10,7 +10,7 @@ namespace Secyud.Ugf.LayoutComponents
 {
     public class LayoutTrigger : MonoBehaviour
     {
-        private const int RecordMax = 1;
+        [SerializeField] private int RecordMax = 1;
         protected ContentSizeFitter ContentSizeFitter;
 
         private RectTransform _rectTransform;
@@ -41,7 +41,7 @@ namespace Secyud.Ugf.LayoutComponents
         {
             if (ContentSizeFitter)
                 ContentSizeFitter.enabled = true;
-            Record = Math.Max(1, Record);
+            Record = Math.Max(1, RecordMax);
         }
     }
 }
