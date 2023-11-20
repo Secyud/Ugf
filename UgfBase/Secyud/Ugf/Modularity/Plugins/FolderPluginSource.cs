@@ -8,8 +8,6 @@ namespace Secyud.Ugf.Modularity.Plugins
 {
     public class FolderPluginSource : TypePlugInSource
     {
-        private bool _moduleInitialized;
-
         public FolderPluginSource(string folderPath)
         {
             List<Type> pluginTypes = new();
