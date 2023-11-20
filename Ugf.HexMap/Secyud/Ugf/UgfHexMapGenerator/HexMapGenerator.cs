@@ -110,6 +110,13 @@ namespace Secyud.Ugf.UgfHexMapGenerator
             CreateRivers();
             SetTerrainType();
 
+            foreach (HexCell hexCell in Grid.Cells)
+            {
+                UgfCell cell = (UgfCell)hexCell;
+                cell.SearchHeuristic = 0;
+                cell.SearchPhase = 0;
+            }
+
             Random.state = originalRandomState;
         }
 

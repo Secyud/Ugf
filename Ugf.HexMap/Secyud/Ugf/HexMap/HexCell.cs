@@ -144,7 +144,7 @@ namespace Secyud.Ugf.HexMap
 
         public HexDirection DirectionTo(HexCell other)
         {
-            return Coordinates.DirectionFrom(other.Coordinates);
+            return Coordinates.DirectionTo(other.Coordinates);
         }
 
         public int DistanceTo(HexCell cell)

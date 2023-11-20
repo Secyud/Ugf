@@ -71,11 +71,6 @@ namespace Secyud.Ugf.UgfHexMap
 
                 HasPath = false;
             }
-            else if (CurrentPathFrom is not null)
-            {
-                CurrentPathFrom.DisableHighlight();
-                CurrentPathTo.DisableHighlight();
-            }
 
             CurrentPathFrom = CurrentPathTo = null;
         }

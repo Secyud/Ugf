@@ -11,7 +11,7 @@ namespace Secyud.Ugf.UgfHexMap
         public int TravelSpeed => 5;
         public virtual float GetSpeed(HexUnit unit) => 5;
 
-        public float GetMoveCost(UgfCell fromCell, UgfCell toCell, HexDirection direction)
+        public virtual float GetMoveCost(UgfCell fromCell, UgfCell toCell, HexDirection direction)
         {
             if (!toCell.IsValid())
                 return -1;

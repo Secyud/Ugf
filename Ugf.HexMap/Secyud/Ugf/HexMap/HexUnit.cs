@@ -1,5 +1,6 @@
 using System.Collections;
 using JetBrains.Annotations;
+using Secyud.Ugf.HexUtilities;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -92,10 +93,33 @@ namespace Secyud.Ugf.HexMap
             trans.LookAt(point);
             _orientation = trans.localRotation.eulerAngles.y;
         }
+
+        public HexDirection DirectionTo(HexCell cell)
+        {
+            return _location.DirectionTo(cell);
+        }
+        
+        public HexDirection DirectionTo(HexUnit unit)
+        {
+            return DirectionTo(unit._location);
+        }
+        
+        public float DistanceTo(HexCell cell)
+        {
+            return _location.DistanceTo(cell);
+        }
+        
+        public float DistanceTo(HexUnit unit)
+        {
+            return DistanceTo(unit._location);
+        }
+        
+        
         
         public void Die()
         {
             Destroy(gameObject);
         }
+
     }
 }
