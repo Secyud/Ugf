@@ -28,7 +28,7 @@ namespace Secyud.Ugf.Modularity.Plugins
 
                 foreach (string file in files.Where(u => u.EndsWith(".dll")))
                 {
-                    Assembly assembly = Assembly.LoadFile(file);
+                    Assembly assembly = Assembly.LoadFrom(file);
                     Type type = assembly.ExportedTypes.FirstOrDefault(
                         u => typeof(IUgfModule).IsAssignableFrom(u));
                     if (type is not null)
