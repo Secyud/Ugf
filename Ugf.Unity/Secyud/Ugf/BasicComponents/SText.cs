@@ -13,6 +13,7 @@ namespace Secyud.Ugf.BasicComponents
 		{
 			SText sText = Instantiate(this, parent);
 			sText.text = label;
+			
 			return sText;
 		}
 

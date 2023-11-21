@@ -60,7 +60,9 @@ namespace Secyud.Ugf.AssetComponents
         public override void Release()
         {
             if (CurrentInstance)
+            {
                 Loader.Release(CurrentInstance);
+            }
             CurrentInstance = null;
         }
 

@@ -35,7 +35,10 @@ namespace Secyud.Ugf.DataManager
                 data.AddLast(attribute);
             }
 
-            Attributes = data.OrderBy(u => u.Info.Name).ToArray();
+            Attributes = data
+                .OrderBy(u => u.Id)
+                .ThenBy(u => u.Info.Name)
+                .ToArray();
         }
     }
 }

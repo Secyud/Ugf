@@ -9,9 +9,9 @@ namespace Secyud.Ugf.Modularity
     [AttributeUsage(AttributeTargets.Class)]
     public class DependsOnAttribute : Attribute, IDependedTypesProvider
     {
-        public DependsOnAttribute(params Type[] dependedTypes)
+        public DependsOnAttribute(params Type[] dependedModules)
         {
-            DependedTypes = dependedTypes ?? Type.EmptyTypes;
+            DependedTypes = dependedModules ?? Type.EmptyTypes;
         }
 
         public Type[] DependedTypes { get; }

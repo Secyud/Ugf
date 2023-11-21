@@ -1,5 +1,6 @@
 ﻿using System;
 using Secyud.Ugf.DataManager;
+using UnityEngine;
 
 namespace Secyud.Ugf.Archiving
 {
@@ -27,7 +28,8 @@ namespace Secyud.Ugf.Archiving
                 _                 => new NotSupportedException("Type not support!")
             };
         }
-        public static void WriteField(this IArchiveWriter writer,object value, FieldType type)
+
+        public static void WriteField(this IArchiveWriter writer, object value, FieldType type)
         {
             switch (type)
             {
@@ -77,6 +79,23 @@ namespace Secyud.Ugf.Archiving
                     writer.WriteNullable(value);
                     break;
                 default: throw new ArgumentOutOfRangeException();
+            }
+        }
+
+
+        public static void SaveResource(this IDataResource resource, IArchiveWriter writer)
+        {
+            writer.Write(resource.ResourceId);
+        }
+
+        public static void LoadResource(this IDataResource shown, IArchiveReader reader)
+        {
+            string name = reader.ReadString();
+            if (!U.Tm.TryWriteObject(shown, name))
+            {
+#if DEBUG
+                Debug.LogError($"Cannot get item from resource. Type: {shown.GetType()}, Name: {name}.");
+#endif
             }
         }
     }

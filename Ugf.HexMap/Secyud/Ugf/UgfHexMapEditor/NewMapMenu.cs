@@ -39,7 +39,7 @@ namespace Secyud.Ugf.UgfHexMapEditor
 
 		public void CreateSmallMap()
 		{
-			CreateMap(5, 4);
+			CreateMap(8, 8);
 		}
 
 		public void CreateMediumMap()
@@ -65,6 +65,7 @@ namespace Secyud.Ugf.UgfHexMapEditor
 				HexGrid.CreateMap(x, z);
 			}
 
+			HexGrid.ShowLabel();
 			Close();
 		}
 	}

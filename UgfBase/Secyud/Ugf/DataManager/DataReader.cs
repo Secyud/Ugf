@@ -31,6 +31,7 @@ namespace Secyud.Ugf.DataManager
                 FieldType.String  => ReadString(),
                 FieldType.Guid    => ReadGuid(),
                 FieldType.Object  => ReadClassObject(),
+                FieldType.InValid => new UgfException($"invalid field"),
                 _                 => new NotSupportedException("Type not support!")
             };
         }
@@ -44,14 +45,15 @@ namespace Secyud.Ugf.DataManager
 
             object ret = U.Get(type);
 
-            LoadProperties(type, ret);
+            LoadProperties(ret);
 
             return ret;
         }
 
-        public void LoadProperties(Type type, object value)
+        public void LoadProperties(object value)
         {
-            TypeDescriptor descriptor = TypeManager.Instance.GetProperty(type);
+            TypeDescriptor descriptor = TypeManager.Instance.GetProperty(
+                value.GetType());
             SortedDictionary<string, SAttribute> attrs = new();
 
             PropertyDescriptor current = descriptor.Properties;
@@ -75,20 +77,8 @@ namespace Secyud.Ugf.DataManager
 
                 if (attrs.TryGetValue(name, out SAttribute attr))
                 {
-                    if (attr.ReadOnly)
-                    {
-                        object field = attr.GetValue(value);
-
-                        if (field is IList list)
-                        {
-                            LoadList(list);
-                        }
-                        else
-                        {
-                            LoadProperties(attr.Info.FieldType, field);
-                        }
-                    }
-                    else
+                    if (!attr.ReadOnly ||
+                        attr.Type != FieldType.Object)
                     {
                         if (U.DataManager)
                         {
@@ -107,6 +97,19 @@ namespace Secyud.Ugf.DataManager
                             attr.SetValue(value, ReadDataObject((FieldType)ReadByte()));
                         }
                     }
+                    else
+                    {
+                        object field = attr.GetValue(value);
+
+                        if (field is IList list)
+                        {
+                            LoadList(list,attr);
+                        }
+                        else
+                        {
+                            LoadProperties(field);
+                        }
+                    }
                 }
                 else
                 {
@@ -115,14 +118,14 @@ namespace Secyud.Ugf.DataManager
             }
         }
 
-        public void LoadList(IList list)
+        public void LoadList(IList list,SAttribute s)
         {
             if (list.IsFixedSize)
             {
                 int count = list.Count;
                 for (int i = 0; i < count; i++)
                 {
-                    list[i] = ReadDataObject((FieldType)ReadByte());
+                    list[i] = ReadDataObject(s.ElementType);
                 }
             }
             else
@@ -131,7 +134,7 @@ namespace Secyud.Ugf.DataManager
                 list.Clear();
                 for (int i = 0; i < count; i++)
                 {
-                    list.Add(ReadDataObject((FieldType)ReadByte()));
+                    list.Add(ReadDataObject(s.ElementType));
                 }
             }
         }

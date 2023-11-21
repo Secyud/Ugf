@@ -71,7 +71,7 @@ namespace Secyud.Ugf.HexMap
             chunk.Grid.Cells[Index] = this;
         }
 
-        public void CreateMap()
+        public virtual void CreateMap()
         {
             HexGrid grid = Chunk.Grid;
             HexCell[] cells = grid.Cells;
@@ -144,10 +144,10 @@ namespace Secyud.Ugf.HexMap
 
         public HexDirection DirectionTo(HexCell other)
         {
-            return Coordinates.DirectionFrom(other.Coordinates);
+            return Coordinates.DirectionTo(other.Coordinates);
         }
 
-        public float DistanceTo(HexCell cell)
+        public int DistanceTo(HexCell cell)
         {
             return Coordinates.DistanceTo(cell.Coordinates);
         }

@@ -16,6 +16,7 @@
         Double = 11,
         Decimal = 12,
         String = 13,
-        Guid = 14
+        Guid = 14,
+        InValid = 255,
     }
 }

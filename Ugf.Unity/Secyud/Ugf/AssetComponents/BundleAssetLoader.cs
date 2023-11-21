@@ -29,8 +29,6 @@ namespace Secyud.Ugf.AssetComponents
 		public void Release<TAsset>(TAsset asset) where TAsset : Object
 		{
 			
-			
-			
 		}
 
 		public virtual TAsset LoadAsset<TAsset>(string name)

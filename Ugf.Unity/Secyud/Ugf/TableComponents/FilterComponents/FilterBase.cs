@@ -51,7 +51,7 @@ namespace Secyud.Ugf.TableComponents.FilterComponents
             Parent = parent;
             SetIsOnWithoutNotify(canBeEnabled.GetEnabled());
             Bind(canBeEnabled.SetEnabled);
-            Name.text = U.T[canBeEnabled.ShowName];
+            Name.text = U.T[canBeEnabled.Name];
         }
     }
 }

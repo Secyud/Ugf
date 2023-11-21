@@ -16,7 +16,7 @@ namespace Secyud.Ugf
 {
     public static class U
     {
-        public const bool DataManager = false;
+        public static bool DataManager { get; set; } = false;
         
         public static IStringLocalizer<DefaultResource> T => UgfApplicationFactory.Instance.T;
         public static ISpriteLocalizer<DefaultResource> S => UgfApplicationFactory.Instance.S;
@@ -31,11 +31,14 @@ namespace Secyud.Ugf
         {
             get
             {
-#if UNITY_EDITOR
-                return Application.dataPath[..^6];
-#else
-                return System.IO.Directory.GetCurrentDirectory();
-#endif
+                if (DataManager)
+                {
+                    return System.IO.Directory.GetCurrentDirectory();
+                }
+                else
+                {
+                    return Application.dataPath[..^6];
+                }
             }
         }
 

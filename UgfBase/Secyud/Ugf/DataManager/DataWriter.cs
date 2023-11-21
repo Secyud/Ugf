@@ -62,6 +62,8 @@ namespace Secyud.Ugf.DataManager
                 case FieldType.Object:
                     WriteClassObject(value);
                     break;
+                case FieldType.InValid:
+                    throw new UgfException($"invalid field ${value}");
                 default: throw new ArgumentOutOfRangeException();
             }
         }
@@ -79,15 +81,15 @@ namespace Secyud.Ugf.DataManager
             Type type = value.GetType();
             Write(TypeManager.Instance[type]);
 
-            SaveProperties(type, value);
+            SaveProperties(value);
         }
 
-        public void SaveProperties(Type type, object value)
+        public void SaveProperties(object value)
         {
-            TypeDescriptor descriptor = TypeManager.Instance.GetProperty(type);
+            TypeDescriptor descriptor =
+                TypeManager.Instance.GetProperty(value.GetType());
             List<SAttribute> attrs = new();
 
-            
             PropertyDescriptor current = descriptor.Properties;
             while (current is not null)
             {
@@ -107,21 +109,23 @@ namespace Secyud.Ugf.DataManager
                 Write(0);
                 long pRecord = Writer.BaseStream.Position;
                 object field = attr.GetValue(value);
-                if (attr.ReadOnly)
-                {
-                    if (field is IList list)
-                    {
-                        WriteList(list);
-                    }
-                    else
-                    {
-                        SaveProperties(attr.Info.FieldType, field);
-                    }
-                }
-                else
+
+                if (!attr.ReadOnly ||
+                    attr.Type != FieldType.Object)
                 {
                     Write((byte)attr.Type);
                     WriteDataObject(field, attr.Type);
+                }
+                else
+                {
+                    if (field is IList list)
+                    {
+                        WriteList(list,attr);
+                    }
+                    else
+                    {
+                        SaveProperties(field);
+                    }
                 }
 
                 int len = (int)(Writer.BaseStream.Position - pRecord);
@@ -132,15 +136,17 @@ namespace Secyud.Ugf.DataManager
             }
         }
 
-        private void WriteList(IList list)
+        private void WriteList(IList list,SAttribute s)
         {
-            Write(list.Count);
 
-            foreach (object obj in list)
+            if (!list.IsFixedSize)
             {
-                SAttribute.Map.TryGetValue(obj.GetType(), out FieldType fieldType);
-                Write((byte)fieldType);
-                WriteDataObject(obj, fieldType);
+                Write(list.Count);
+            }
+            
+            for (int i = 0; i < list.Count; i++)
+            {
+                WriteDataObject(list[i], s.ElementType);
             }
         }
     }

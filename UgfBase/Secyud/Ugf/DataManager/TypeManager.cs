@@ -6,6 +6,9 @@ using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
+using System.Ugf;
+using Secyud.Ugf.Archiving;
+using UnityEngine;
 
 namespace Secyud.Ugf.DataManager
 {
@@ -17,7 +20,7 @@ namespace Secyud.Ugf.DataManager
         private readonly MD5 _md5 = MD5.Create();
         public static TypeManager Instance { get; } = new();
 
-        public TypeDescriptor GetProperty([NotNull]Type type)
+        public TypeDescriptor GetProperty([NotNull] Type type)
         {
             if (!_propertyDict.TryGetValue(type, out TypeDescriptor property))
             {
@@ -31,10 +34,7 @@ namespace Secyud.Ugf.DataManager
         public T ConstructFromResource<T>(string name)
             where T : class
         {
-            TypeDescriptor property = U.Tm.GetProperty(typeof(T));
-            T obj = U.Get<T>();
-            property.Resources[name].WriteToObject(obj);
-            return obj;
+            return ConstructFromResource(typeof(T), name) as T;
         }
 
         public object ConstructFromResource(Guid typeId, string name)
@@ -49,18 +49,55 @@ namespace Secyud.Ugf.DataManager
             {
                 object obj = U.Get(property.Type);
                 resource.WriteToObject(obj);
+
+                if (obj is IDataResource r &&
+                    r.ResourceId.IsNullOrEmpty())
+                {
+                    r.ResourceId = name;
+                }
+
                 return obj;
             }
 
+            Debug.LogWarning($"Failed construct from resource: {type}" +
+                             $"\r\n\t Resource Id: {name}");
             return null;
         }
 
-        public bool TryWriteObject(object obj, string showName)
+        public List<TObject> ConstructListFromFile<TObject>(string path)
+            where TObject : class
+        {
+            using FileStream fileStream = File.OpenRead(path);
+            using DataReader reader = new(fileStream);
+
+            List<TObject> list = new();
+
+            int count = reader.ReadInt32();
+            for (int i = 0; i < count; i++)
+            {
+                Guid id = reader.ReadGuid();
+                string name = reader.ReadString();
+                int dataLength = reader.ReadInt32();
+
+                Type type = U.Tm[id];
+                object obj = U.Get(type);
+                reader.LoadProperties(obj);
+
+                list.Add(obj as TObject);
+            }
+
+            return list;
+        }
+
+        public bool TryWriteObject(object obj, string resourceId)
         {
             TypeDescriptor property = GetProperty(obj.GetType());
             if (!property.Resources
-                    .TryGetValue(showName, out ResourceDescriptor resource))
+                    .TryGetValue(resourceId, out ResourceDescriptor resource))
+            {
                 return false;
+            }
+
             resource.WriteToObject(obj);
             return true;
         }
@@ -74,6 +111,7 @@ namespace Secyud.Ugf.DataManager
                     _typeDict.TryGetValue(id, out Type value);
                     return value;
                 }
+
                 return _typeDict[id];
             }
             set
@@ -121,7 +159,7 @@ namespace Secyud.Ugf.DataManager
             _idDict.TryGetValue(type.FullName, out Guid id);
             return id;
         }
-        
+
         public List<Tuple<string, Guid>> SubTypes(Type type = null)
         {
             IEnumerable<KeyValuePair<Guid, Type>> types = _typeDict;
