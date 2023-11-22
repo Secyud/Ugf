@@ -154,6 +154,13 @@ namespace Secyud.Ugf.DataManager
             }
         }
 
+        public Guid TryGetId(Type type)
+        {
+            _idDict.TryGetValue(type, out var id);
+
+            return id;
+        }
+
         public List<Tuple<string, Guid>> SubTypes(Type type = null)
         {
             IEnumerable<KeyValuePair<Guid, Type>> types = _typeDict;
@@ -194,12 +201,17 @@ namespace Secyud.Ugf.DataManager
 
         private void CheckId(ref Guid id, Type type)
         {
+            if (id != default)
+            {
+                return;
+            }
+
             IDAttribute attr = type.GetCustomAttribute<IDAttribute>();
             if (attr is not null)
             {
                 id = attr.Id;
             }
-            
+
             if (id == default)
             {
                 id = new Guid(_md5.ComputeHash(Encoding.UTF8.GetBytes(type.FullName ?? string.Empty)));

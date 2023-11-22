@@ -41,7 +41,9 @@ namespace Secyud.Ugf.DataManager
             if (!ReadBoolean())
                 return null;
 
-            Type type = TypeManager.Instance[ReadGuid()];
+            Guid guid = ReadGuid();
+            
+            Type type = TypeManager.Instance[guid];
 
             object ret = U.Get(type);
 
