@@ -40,7 +40,7 @@ namespace Secyud.Ugf.Modularity
             Application = app;
             IDependencyManager provider = Application.DependencyManager;
             T = provider.Get<IStringLocalizer<DefaultResource>>();
-            //S = provider.Get<ISpriteLocalizer<DefaultResource>>();
+            S = provider.Get<ISpriteLocalizer<DefaultResource>>();
         
             return app;
         }

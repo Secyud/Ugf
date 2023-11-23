@@ -11,7 +11,5 @@ namespace Secyud.Ugf.DependencyInjection
         object Get(Type type);
 
         T Get<T>() where T : class;
-        object TryGet(Type type);
-        T TryGet<T>() where T : class;
     }
 }

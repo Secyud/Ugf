@@ -21,25 +21,16 @@ namespace Secyud.Ugf.DependencyInjection
             return Get(typeof(T)) as T;
         }
 
-        public T TryGet<T>() where T : class
-        {
-            return TryGet(typeof(T)) as T;
-        }
-
-        public object TryGet(Type type)
-        {
-            InstanceDescriptor descriptor = GetInstanceDescriptor(type);
-            return descriptor?.ObjectAccessor();
-        }
-
         public virtual object Get(Type type)
         {
             InstanceDescriptor descriptor = GetInstanceDescriptor(type);
 
             if (descriptor is null)
-                throw new UgfException($"Can't find dependency for exposed type {type}");
+            {
+                U.LogWarning($"Can't find dependency for exposed type {type}");
+            }
 
-            return descriptor.ObjectAccessor();
+            return descriptor?.ObjectAccessor?.Invoke();
         }
 
         protected virtual void HandleScope(DependencyDescriptor dd, InstanceDescriptor id)

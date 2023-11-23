@@ -89,8 +89,8 @@ namespace Secyud.Ugf.Archiving
 
         public static void LoadResource(this IDataResource shown, IArchiveReader reader)
         {
-            string name = reader.ReadString();
-            U.Tm.LoadObjectFromResource(shown, name);
+            string resourceId = reader.ReadString();
+            U.Tm.LoadObjectFromResource(shown, resourceId);
         }
     }
 }
