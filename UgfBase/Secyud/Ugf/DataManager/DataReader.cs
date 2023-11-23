@@ -42,7 +42,7 @@ namespace Secyud.Ugf.DataManager
                 return null;
 
             Guid guid = ReadGuid();
-            
+
             Type type = TypeManager.Instance[guid];
 
             object ret = U.Get(type);
@@ -105,7 +105,7 @@ namespace Secyud.Ugf.DataManager
 
                         if (field is IList list)
                         {
-                            LoadList(list,attr);
+                            LoadList(list, attr);
                         }
                         else
                         {
@@ -120,7 +120,7 @@ namespace Secyud.Ugf.DataManager
             }
         }
 
-        public void LoadList(IList list,SAttribute s)
+        public void LoadList(IList list, SAttribute s)
         {
             if (list.IsFixedSize)
             {
@@ -139,6 +139,46 @@ namespace Secyud.Ugf.DataManager
                     list.Add(ReadDataObject(s.ElementType));
                 }
             }
+        }
+
+
+        public ResourceDescriptor ReadResource(out Guid id)
+        {
+            id = ReadGuid();
+            string name = ReadString();
+            int len = ReadInt32();
+            byte[] data = ReadBytes(len);
+            
+            return new ResourceDescriptor(name)
+            {
+                Data = data
+            };
+        }
+
+        public object ReadResourceObject()
+        {
+            long position = Reader.BaseStream.Position;
+            int len = 0;
+            Guid id = default;
+            string resourceId = default;
+            try
+            {
+                id = ReadGuid();
+                resourceId = ReadString();
+                len = ReadInt32();
+                Type type = U.Tm[id];
+                object obj = U.Get(type);
+                LoadProperties(obj);
+                return obj;
+            }
+            catch (Exception e)
+            {
+                U.LogError($"Failed read resource object: id: {id}\r\nresourceId: {resourceId}");
+                U.LogError(e);
+                Reader.BaseStream.Seek(position + len + 24, SeekOrigin.Begin);
+            }
+
+            return null;
         }
     }
 }

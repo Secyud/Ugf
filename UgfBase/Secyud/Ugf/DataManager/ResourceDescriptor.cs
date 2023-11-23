@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Ugf;
 using Secyud.Ugf.Archiving;
 
 namespace Secyud.Ugf.DataManager
@@ -41,14 +42,14 @@ namespace Secyud.Ugf.DataManager
             }
         }
 
-        public void WriteToObject(object obj)
+        public void LoadObject(object obj)
         {
             using MemoryStream stream = new(Data);
             using DataReader reader = new(stream);
             reader.LoadProperties(obj);
         }
 
-        public void ReadFromObject(object obj)
+        public void SaveObject(object obj)
         {
             using MemoryStream stream = new();
             using DataWriter writer = new(stream);

@@ -120,7 +120,7 @@ namespace Secyud.Ugf.DataManager
                 {
                     if (field is IList list)
                     {
-                        WriteList(list,attr);
+                        WriteList(list, attr);
                     }
                     else
                     {
@@ -136,18 +136,25 @@ namespace Secyud.Ugf.DataManager
             }
         }
 
-        private void WriteList(IList list,SAttribute s)
+        private void WriteList(IList list, SAttribute s)
         {
-
             if (!list.IsFixedSize)
             {
                 Write(list.Count);
             }
-            
+
             for (int i = 0; i < list.Count; i++)
             {
                 WriteDataObject(list[i], s.ElementType);
             }
+        }
+
+        public void SaveResource(Guid id, ResourceDescriptor resource)
+        {
+            Write(id);
+            Write(resource.Name);
+            Write(resource.Data.Length);
+            Write(resource.Data);
         }
     }
 }

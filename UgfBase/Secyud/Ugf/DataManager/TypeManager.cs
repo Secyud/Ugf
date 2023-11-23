@@ -15,11 +15,21 @@ namespace Secyud.Ugf.DataManager
     public class TypeManager
     {
         private readonly ConcurrentDictionary<Guid, Type> _typeDict = new();
+
+        /// <summary>
+        /// separate guid and property. not every type needs property.
+        /// </summary>
         private readonly ConcurrentDictionary<Type, Guid> _idDict = new();
+
         private readonly ConcurrentDictionary<Type, TypeDescriptor> _propertyDict = new();
         private readonly MD5 _md5 = MD5.Create();
         public static TypeManager Instance { get; } = new();
 
+        /// <summary>
+        /// get the property of specific type;
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
         public TypeDescriptor GetProperty([NotNull] Type type)
         {
             if (!_propertyDict.TryGetValue(type, out TypeDescriptor property))
@@ -31,32 +41,22 @@ namespace Secyud.Ugf.DataManager
             return property;
         }
 
-        public T ConstructFromResource<T>(string name)
-            where T : class
-        {
-            return ConstructFromResource(typeof(T), name) as T;
-        }
-
-        public object ConstructFromResource(Guid typeId, string name)
-        {
-            return ConstructFromResource(this[typeId], name);
-        }
-
-        public object ConstructFromResource(Type type, string name)
+        /// <summary>
+        /// generate object form resource stored in <see cref="_propertyDict"/>
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="resourceId"></param>
+        /// <returns></returns>
+        public object ReadObjectFromResource(Type type, string resourceId)
         {
             try
             {
                 TypeDescriptor property = GetProperty(type);
-                if (property.Resources.TryGetValue(name, out ResourceDescriptor resource))
+                if (property.Resources.TryGetValue(resourceId, out ResourceDescriptor resource))
                 {
                     object obj = U.Get(property.Type);
-                    resource.WriteToObject(obj);
 
-                    if (obj is IDataResource r &&
-                        r.ResourceId.IsNullOrEmpty())
-                    {
-                        r.ResourceId = name;
-                    }
+                    WriteObject(obj, resourceId, resource);
 
                     return obj;
                 }
@@ -64,62 +64,79 @@ namespace Secyud.Ugf.DataManager
             catch (Exception e)
             {
                 U.LogError($"Failed construct from resource: {type}" +
-                                  $"\r\n\t Resource Id: {name}");
+                           $"\r\n\t Resource Id: {resourceId}");
                 U.LogError(e);
             }
 
             return null;
         }
 
-        public List<TObject> ConstructListFromFile<TObject>(string path)
-            where TObject : class
+        /// <summary>
+        /// write object form resource stored in &lt;see cref="_propertyDict"/&gt;
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <param name="resourceId"></param>
+        /// <returns></returns>
+        public void LoadObjectFromResource(object obj, string resourceId)
         {
-            using FileStream fileStream = File.OpenRead(path);
-            using DataReader reader = new(fileStream);
+            Type type = obj.GetType();
+            TypeDescriptor property = GetProperty(type);
 
-            List<TObject> list = new();
+            if (property.Resources
+                .TryGetValue(resourceId, out ResourceDescriptor resource))
+            {
+                WriteObject(obj, resourceId, resource);
+            }
+            else
+            {
+                U.LogError($"Failed construct from resource: {type}" +
+                           $"\r\n\t Resource Id: {resourceId}");
+            }
+        }
+        
+        public void LoadResourcesFromStream(Stream stream)
+        {
+            using DataReader reader = new(stream);
 
             int count = reader.ReadInt32();
+
             for (int i = 0; i < count; i++)
             {
-                Guid id = reader.ReadGuid();
-                string name = reader.ReadString();
-                int dataLength = reader.ReadInt32();
+                ResourceDescriptor resource = reader.ReadResource(out Guid id);
+                Type type = this[id];
 
-                Type type = U.Tm[id];
-                object obj = U.Get(type);
-                reader.LoadProperties(obj);
-
-                list.Add(obj as TObject);
+                if (type is not null)
+                {
+                    TypeDescriptor descriptor = GetProperty(type);
+                    descriptor.Resources[resource.Name] = resource;
+                }
             }
-
-            return list;
         }
 
-        public bool TryWriteObject(object obj, string resourceId)
+        private void WriteObject(
+            [NotNull] object obj,
+            [NotNull] string resourceId,
+            [NotNull] ResourceDescriptor resource)
         {
-            TypeDescriptor property = GetProperty(obj.GetType());
-            if (!property.Resources
-                    .TryGetValue(resourceId, out ResourceDescriptor resource))
-            {
-                return false;
-            }
+            resource.LoadObject(obj);
 
-            resource.WriteToObject(obj);
-            return true;
+            if (obj is IDataResource r &&
+                r.ResourceId.IsNullOrEmpty())
+            {
+                r.ResourceId = resourceId;
+            }
         }
 
         public Type this[Guid id]
         {
             get
             {
-                if (U.DataManager)
+                if (!_typeDict.TryGetValue(id, out Type value))
                 {
-                    _typeDict.TryGetValue(id, out Type value);
-                    return value;
+                    U.LogError($"Cannot find type for id: {id}.");
                 }
 
-                return _typeDict[id];
+                return value;
             }
             set
             {
@@ -160,6 +177,11 @@ namespace Secyud.Ugf.DataManager
             }
         }
 
+        /// <summary>
+        /// used in data manager
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
         public Guid TryGetId(Type type)
         {
             _idDict.TryGetValue(type, out var id);
@@ -183,27 +205,6 @@ namespace Secyud.Ugf.DataManager
                     .ToList();
         }
 
-        public void ReadResource(string path)
-        {
-            using FileStream stream = File.OpenRead(path);
-            using DataReader reader = new(stream);
-
-            int count = reader.ReadInt32();
-
-            for (int i = 0; i < count; i++)
-            {
-                Guid id = reader.ReadGuid();
-                string name = reader.ReadString();
-                int len = reader.ReadInt32();
-                byte[] data = reader.ReadBytes(len);
-
-                TypeDescriptor descriptor = GetProperty(this[id]);
-                descriptor.Resources[name] = new ResourceDescriptor(name)
-                {
-                    Data = data
-                };
-            }
-        }
 
         private void CheckId(ref Guid id, Type type)
         {

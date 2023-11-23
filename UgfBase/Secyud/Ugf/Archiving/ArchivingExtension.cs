@@ -90,10 +90,7 @@ namespace Secyud.Ugf.Archiving
         public static void LoadResource(this IDataResource shown, IArchiveReader reader)
         {
             string name = reader.ReadString();
-            if (!U.Tm.TryWriteObject(shown, name))
-            {
-                U.LogError($"Cannot get item from resource. Type: {shown.GetType()}, Name: {name}.");
-            }
+            U.Tm.LoadObjectFromResource(shown, name);
         }
     }
 }

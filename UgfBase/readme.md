@@ -89,4 +89,6 @@ Use `U.Get<>()` will return the default scope's service. Use `scope.Get<>()` if 
 
 > Match the `Ugf.DataManager` tool. Provide data config, object generation functions.
 
+
+
 # ...
