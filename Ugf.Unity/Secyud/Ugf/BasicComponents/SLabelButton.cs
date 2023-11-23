@@ -1,8 +1,6 @@
 #region
 
 using UnityEngine;
-using UnityEngine.Events;
-using UnityEngine.UI;
 
 #endregion
 

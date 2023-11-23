@@ -1,6 +1,5 @@
 ﻿using System;
 using Secyud.Ugf.DataManager;
-using UnityEngine;
 
 namespace Secyud.Ugf.Archiving
 {

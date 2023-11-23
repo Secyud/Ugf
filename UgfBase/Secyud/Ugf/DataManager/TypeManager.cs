@@ -9,7 +9,6 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Ugf;
 using Secyud.Ugf.Archiving;
-using UnityEngine;
 
 namespace Secyud.Ugf.DataManager
 {

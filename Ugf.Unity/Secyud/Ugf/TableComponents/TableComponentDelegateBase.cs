@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Secyud.Ugf.TableComponents
+﻿namespace Secyud.Ugf.TableComponents
 {
     public abstract class TableComponentDelegateBase<TTableComponent, TTableComponentDelegate>
         where TTableComponentDelegate : TableComponentDelegateBase<TTableComponent, TTableComponentDelegate>

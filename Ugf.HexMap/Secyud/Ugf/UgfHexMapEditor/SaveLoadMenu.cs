@@ -6,7 +6,6 @@ using Secyud.Ugf.Archiving;
 using Secyud.Ugf.BasicComponents;
 using Secyud.Ugf.HexMap;
 using UnityEngine;
-using UnityEngine.UI;
 
 #endregion
 

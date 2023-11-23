@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using Secyud.Ugf.TableComponents.PagerComponents;
 using UnityEngine;
 using Object = UnityEngine.Object;
 

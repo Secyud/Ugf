@@ -1,5 +1,4 @@
 ﻿using Secyud.Ugf.LayoutComponents;
-using Secyud.Ugf.TableComponents.PagerComponents;
 using UnityEngine;
 
 namespace Secyud.Ugf.TableComponents.SorterComponents

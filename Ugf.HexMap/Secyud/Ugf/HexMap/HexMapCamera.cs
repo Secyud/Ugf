@@ -1,6 +1,5 @@
 ﻿#region
 
-using System;
 using Secyud.Ugf.HexUtilities;
 using UnityEngine;
 
