@@ -45,23 +45,30 @@ namespace Secyud.Ugf.DataManager
 
         public object ConstructFromResource(Type type, string name)
         {
-            TypeDescriptor property = GetProperty(type);
-            if (property.Resources.TryGetValue(name, out ResourceDescriptor resource))
+            try
             {
-                object obj = U.Get(property.Type);
-                resource.WriteToObject(obj);
-
-                if (obj is IDataResource r &&
-                    r.ResourceId.IsNullOrEmpty())
+                TypeDescriptor property = GetProperty(type);
+                if (property.Resources.TryGetValue(name, out ResourceDescriptor resource))
                 {
-                    r.ResourceId = name;
-                }
+                    object obj = U.Get(property.Type);
+                    resource.WriteToObject(obj);
 
-                return obj;
+                    if (obj is IDataResource r &&
+                        r.ResourceId.IsNullOrEmpty())
+                    {
+                        r.ResourceId = name;
+                    }
+
+                    return obj;
+                }
+            }
+            catch (Exception e)
+            {
+                U.LogError($"Failed construct from resource: {type}" +
+                                  $"\r\n\t Resource Id: {name}");
+                U.LogError(e);
             }
 
-            Debug.LogWarning($"Failed construct from resource: {type}" +
-                             $"\r\n\t Resource Id: {name}");
             return null;
         }
 

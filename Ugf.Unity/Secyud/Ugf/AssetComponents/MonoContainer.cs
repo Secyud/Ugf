@@ -49,13 +49,11 @@ namespace Secyud.Ugf.AssetComponents
         {
             GameObject obj = Loader.LoadAsset<GameObject>(AssetName);
             
-            #if DEBUG
             if (obj is null)
             {
-                Debug.LogError($"Failed get {AssetName}.");
+                U.LogError($"Failed get {AssetName}.");
             }
-            #endif
-            
+
             return obj ? obj.GetComponent<TComponent>() : null;
         }
 
@@ -67,7 +65,9 @@ namespace Secyud.Ugf.AssetComponents
             {
                 Prefab = GetObject();
                 if (!Prefab)
-                    Debug.LogError($"{typeof(TComponent)} cannot be found!");
+                {
+                    U.LogError($"{typeof(TComponent)} cannot be found!");
+                }
             }
 
             if (CurrentInstance)

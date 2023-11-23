@@ -93,9 +93,7 @@ namespace Secyud.Ugf.Archiving
             string name = reader.ReadString();
             if (!U.Tm.TryWriteObject(shown, name))
             {
-#if DEBUG
-                Debug.LogError($"Cannot get item from resource. Type: {shown.GetType()}, Name: {name}.");
-#endif
+                U.LogError($"Cannot get item from resource. Type: {shown.GetType()}, Name: {name}.");
             }
         }
     }

@@ -116,7 +116,7 @@ namespace Secyud.Ugf.UgfHexMapEditor
         {
             if (!File.Exists(path))
             {
-                Debug.LogError("File does not exist " + path);
+                U.LogError("File does not exist " + path);
                 return;
             }
 

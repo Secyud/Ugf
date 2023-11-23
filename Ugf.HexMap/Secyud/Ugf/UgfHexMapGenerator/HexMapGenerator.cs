@@ -219,7 +219,7 @@ namespace Secyud.Ugf.UgfHexMapGenerator
 
             if (landBudget > 0)
             {
-                Debug.LogWarning("Failed to use up " + landBudget + " land budget.");
+                U.LogWarning("Failed to use up " + landBudget + " land budget.");
                 _landCells -= landBudget;
             }
         }
@@ -535,7 +535,9 @@ namespace Secyud.Ugf.UgfHexMapGenerator
             }
 
             if (riverBudget > 0)
-                Debug.LogWarning("Failed to use up river budget.");
+            {
+                U.LogWarning("Failed to use up river budget.");
+            }
 
             ListPool<UgfCell>.Add(riverOrigins);
         }

@@ -90,7 +90,7 @@ namespace Secyud.Ugf.DataManager
                             }
                             catch (Exception e)
                             {
-                                Console.WriteLine(e);
+                                U.LogError(e);
                                 Reader.BaseStream.Seek(len + position, SeekOrigin.Begin);
                             }
                         }
