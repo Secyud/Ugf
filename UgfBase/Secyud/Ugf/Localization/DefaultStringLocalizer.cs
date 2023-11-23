@@ -11,14 +11,14 @@ using System.Ugf;
 
 namespace Secyud.Ugf.Localization
 {
-    public class DefaultStringLocalizer<TResource> : IStringLocalizer<TResource>
+    public class DefaultStringLocalizer<TResource> : ILocalizer<string,TResource>
         where TResource : DefaultResource
     {
         private readonly IDictionary<string, string> _dictionary;
 
-        public DefaultStringLocalizer(ILocalizerFactory localizerFactory)
+        public DefaultStringLocalizer(ILocalizerFactory<string> localizerFactory)
         {
-            _dictionary = localizerFactory.GetLocalizerStringDictionary<TResource>();
+            _dictionary = localizerFactory.GetDictionary<TResource>();
         }
 
         public string this[string str]

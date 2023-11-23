@@ -1,6 +1,7 @@
 #region
 
 using Secyud.Ugf.BasicComponents;
+using Secyud.Ugf.Localization;
 using UnityEngine;
 
 #endregion
@@ -21,7 +22,7 @@ namespace Secyud.Ugf.FunctionalComponents
 
 		private void OnEnable()
 		{
-			_image.Sprite = U.S[Value];
+			_image.Sprite = DefaultLocalizer<Sprite>.Localizer[Value];
 			enabled = false;
 		}
 	}

@@ -16,15 +16,14 @@ namespace Secyud.Ugf
     public static class U
     {
         public static bool DataManager { get; set; } = false;
-        
-        public static IStringLocalizer<DefaultResource> T => UgfApplicationFactory.Instance.T;
-        public static ISpriteLocalizer<DefaultResource> S => UgfApplicationFactory.Instance.S;
+        public static ILocalizer<string> T => DefaultLocalizer<string>.Localizer;
         public static TypeManager Tm => TypeManager.Instance;
         public static IDependencyManager M => UgfApplicationFactory.Instance.Application.DependencyManager;
         public static Camera Camera => UgfApplicationFactory.Instance.Manager.Camera;
         public static Canvas Canvas => UgfApplicationFactory.Instance.Manager.Canvas;
         public static UgfApplicationFactory Factory => UgfApplicationFactory.Instance;
 
+        
         public static string Path
 
         {

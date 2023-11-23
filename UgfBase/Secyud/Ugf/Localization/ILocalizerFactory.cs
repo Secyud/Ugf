@@ -9,13 +9,17 @@ using Secyud.Ugf.DependencyInjection;
 
 namespace Secyud.Ugf.Localization
 {
-    public interface ILocalizerFactory:IRegistry
+    public interface ILocalizerFactory<in TObject>:IRegistry
     {
-        void AddResource<TResource>() where TResource : DefaultResource;
+        void AddResource<TResource>() 
+            where TResource : DefaultResource;
 
-        void RegisterResource<TResource>() where TResource : DefaultResource;
+        void RegisterResource<TResource,TService>() 
+            where TResource : DefaultResource
+            where TService: ILocalizer<TObject,TResource>;
 
-        IDictionary<string, string> GetLocalizerStringDictionary<TResource>() where TResource : DefaultResource;
+        IDictionary<string, string> GetDictionary<TResource>()
+            where TResource : DefaultResource;
 
         void ChangeCulture(CultureInfo cultureInfo);
     }

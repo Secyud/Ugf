@@ -52,7 +52,9 @@ namespace Secyud.Ugf.DependencyInjection
         public void AddTypes(params Type[] types)
         {
             foreach (Type type in types)
+            {
                 AddType(type);
+            }
         }
 
         public void AddType<T>()
@@ -66,7 +68,9 @@ namespace Secyud.Ugf.DependencyInjection
                 return;
 
             foreach (ITypeAnalyzer analyzer in _analyzers)
+            {
                 analyzer.AnalyzeType(type);
+            }
 
             if (typeof(IRegistry).IsAssignableFrom(type))
             {
@@ -137,7 +141,8 @@ namespace Secyud.Ugf.DependencyInjection
             descriptor.Instance = instance;
         }
 
-        public void Register<T, TExposed>(DependencyLifeTime lifeTime = DependencyLifeTime.Singleton)
+        public void Register<T, TExposed>(DependencyLifeTime lifeTime = DependencyLifeTime.Singleton) 
+            where T : TExposed
         {
             CreateDependencyDescriptor(
                 typeof(T), typeof(TExposed),
@@ -146,6 +151,7 @@ namespace Secyud.Ugf.DependencyInjection
 
         public void RegisterCustom<T, TExposed>(IDependencyConstructor constructor,
             DependencyLifeTime lifeTime = DependencyLifeTime.Singleton)
+            where T : TExposed
         {
             _dependencyDescriptors[typeof(TExposed)] = DependencyDescriptor.Describe(
                 typeof(T), this, constructor,

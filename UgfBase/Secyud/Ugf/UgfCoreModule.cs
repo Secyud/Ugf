@@ -14,10 +14,10 @@ namespace Secyud.Ugf
         public void Configure(ConfigurationContext context)
         {
             context.Manager.AddTypes(
-                typeof(DefaultLocalizerFactory),
+                typeof(DefaultLocalizerFactory<string>),
                 typeof(InputService));
 
-            context.AddResource<DefaultResource>();
+            context.AddStringResource<DefaultResource>();
         }
     }
 }

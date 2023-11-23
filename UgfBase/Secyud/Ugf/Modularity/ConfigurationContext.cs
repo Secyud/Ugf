@@ -15,10 +15,10 @@ namespace Secyud.Ugf.Modularity
         public IDependencyManager Manager { get; }
         public override IDependencyProvider Provider => Manager;
 
-        private ILocalizerFactory LocalizerFactory =>
-            _localizerFactory ??= Manager.Get<ILocalizerFactory>();
+        private ILocalizerFactory<string> StringLocalizerFactory =>
+            _localizerFactory ??= Manager.Get<ILocalizerFactory<string>>();
 
-        private ILocalizerFactory _localizerFactory;
+        private ILocalizerFactory<string> _localizerFactory;
 
         public ConfigurationContext(IDependencyManager manager)
         {
@@ -26,10 +26,10 @@ namespace Secyud.Ugf.Modularity
             Manager = manager;
         }
 
-        public void AddResource<TResource>()
+        public void AddStringResource<TResource>()
             where TResource : DefaultResource
         {
-            LocalizerFactory.RegisterResource<TResource>();
+            StringLocalizerFactory.RegisterResource<TResource,DefaultStringLocalizer<TResource>>();
         }
 
         private class OptionConstructor<TOption> : IDependencyConstructor where TOption : new()

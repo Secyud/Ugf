@@ -21,9 +21,12 @@ namespace Secyud.Ugf.DependencyInjection
 
         void RegisterInstance<T>(T instance);
 
-        void Register<T, TExposed>(DependencyLifeTime lifeTime = DependencyLifeTime.Singleton);
+        void Register<T, TExposed>(DependencyLifeTime lifeTime = DependencyLifeTime.Singleton) 
+            where T:TExposed;
 
-        void RegisterCustom<T, TExposed>(IDependencyConstructor constructor,
-            DependencyLifeTime lifeTime = DependencyLifeTime.Singleton);
+        void RegisterCustom<T, TExposed>(
+            IDependencyConstructor constructor,
+            DependencyLifeTime lifeTime = DependencyLifeTime.Singleton)
+            where T:TExposed;
     }
 }

@@ -20,7 +20,7 @@ namespace UnityEngine
             return buttons.Where(u => u.Visible(item));
         }
 
-        public static List<TMP_Dropdown.OptionData> GetOptionsFromEnum(this IStringLocalizer l, Type enumType,
+        public static List<TMP_Dropdown.OptionData> GetOptionsFromEnum(this ILocalizer<string> l, Type enumType,
             string prefix = null, string suffix = null)
         {
             return Enum

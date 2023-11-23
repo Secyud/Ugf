@@ -1,110 +1,76 @@
 #region
 
 using Localization;
-using Newtonsoft.Json;
 using Secyud.Ugf.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
-using System.IO;
 using System.Reflection;
-using System.Text;
 using System.Ugf.Collections.Generic;
 
 #endregion
 
 namespace Secyud.Ugf.Localization
 {
-    public class DefaultLocalizerFactory : ILocalizerFactory
+    public class DefaultLocalizerFactory<TObject> : ILocalizerFactory<TObject>
     {
-        public static string LocalizationPath => Path.Combine(U.Path, "Localization");
-
         private readonly IDependencyRegistrar _registrar;
-        private readonly Dictionary<Type, Dictionary<string, string>> _localizationStrings = new();
-        private readonly Dictionary<Type, List<Type>> _registeredResource = new();
+        private readonly Dictionary<Type, LocalizeDescriptor> _localizeDescriptors = new();
 
+        private LocalizeDescriptor GetDescriptor(Type type)
+        {
+            if (!_localizeDescriptors.TryGetValue(type, out LocalizeDescriptor descriptor))
+            {
+                descriptor = new LocalizeDescriptor();
+                descriptor.Resources.AddIfNotContains(type);
+                _localizeDescriptors[type] = descriptor;
+            }
+
+            return descriptor;
+        }
+        
         public DefaultLocalizerFactory(IDependencyRegistrar registrar)
         {
             _registrar = registrar;
         }
-
 
         public void AddResource<TResource>()
             where TResource : DefaultResource
         {
             AddResource(typeof(TResource));
         }
+        
+        private void AddResource([NotNull] Type resourceType)
+        {
+            Type toResource = resourceType
+                .GetCustomAttribute<ResourceNameAttribute>()?
+                .ToResource ?? resourceType;
+            LocalizeDescriptor descriptor = GetDescriptor(toResource);
+            descriptor.Resources.AddIfNotContains(resourceType);
+        }
 
-        public void RegisterResource<TResource>()
-            where TResource : DefaultResource
+        public void RegisterResource<TResource,TService>()
+            where TResource : DefaultResource 
+            where TService : ILocalizer<TObject, TResource>
         {
             _registrar.Register<
-                DefaultStringLocalizer<TResource>,
-                IStringLocalizer<TResource>>(
+                TService,
+                ILocalizer<TObject,TResource>>(
                 DependencyLifeTime.Transient);
             AddResource<TResource>();
         }
 
-        public IDictionary<string, string> GetLocalizerStringDictionary<TResource>()
+        public IDictionary<string, string> GetDictionary<TResource>()
             where TResource : DefaultResource
         {
-            return GetLocalizerStringDictionary(typeof(TResource));
+            return GetDescriptor(typeof(TResource)).Dictionary;
         }
 
         public void ChangeCulture(CultureInfo cultureInfo)
         {
-            _localizationStrings.Clear();
+            _localizeDescriptors.Clear();
             CultureInfo.CurrentCulture = cultureInfo;
-        }
-
-        private void AddResource([NotNull] Type resourceType)
-        {
-            Type toResource =
-                resourceType
-                    .GetCustomAttribute<ResourceNameAttribute>()?
-                    .ToResource ?? resourceType;
-
-            if (!_registeredResource.ContainsKey(toResource))
-                _registeredResource[toResource] = new List<Type>();
-
-            _registeredResource[toResource].AddIfNotContains(resourceType);
-        }
-
-        private IDictionary<string, string> GetLocalizerStringDictionary(Type resource)
-        {
-            if (!_localizationStrings.ContainsKey(resource))
-            {
-                if (!_registeredResource.ContainsKey(resource))
-                    throw new UgfException("Please use basic resource registered!");
-
-                _localizationStrings[resource] = new Dictionary<string, string>();
-
-                List<Type> resources = _registeredResource[resource];
-
-                foreach (Type addedResource in resources)
-                    CreateLocalizationStrings(addedResource, _localizationStrings[resource]);
-            }
-
-            return _localizationStrings[resource];
-        }
-
-        private static void CreateLocalizationStrings(Type resourceType, IDictionary<string, string> localizer)
-        {
-            string path = Path.Combine(LocalizationPath, $"{resourceType.Name}/{CultureInfo.CurrentCulture.Name}.json");
-
-            if (!File.Exists(path))
-                return;
-
-            using FileStream fs = new(path, FileMode.Open, FileAccess.Read);
-            using StreamReader sr = new(fs, Encoding.UTF8);
-
-            string jsonStr = sr.ReadToEnd();
-
-            Dictionary<string, string> addedWords = JsonConvert.DeserializeObject<Dictionary<string, string>>(jsonStr);
-
-            foreach (KeyValuePair<string, string> word in addedWords)
-                localizer[word.Key] = word.Value;
         }
     }
 }
