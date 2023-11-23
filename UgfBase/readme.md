@@ -1,8 +1,7 @@
-Ugf is a unity framework. It provide several functions.
-Some core function is learned form ABP framework.
-
-[toc]
-
+- [Modularity](#modularity)
+- [Dependency Injection](#dependency-injection)
+- [DataManager](#datamanager)
+- ...
 # Modularity
 
 * Provide a convenient way to control initialization sequence for different assembly.
@@ -90,3 +89,4 @@ Use `U.Get<>()` will return the default scope's service. Use `scope.Get<>()` if 
 
 > Match the `Ugf.DataManager` tool. Provide data config, object generation functions.
 
+# ...
