@@ -1,7 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Secyud.Ugf.TableComponents.PagerComponents;
-using Secyud.Ugf.TableComponents.SorterComponents;
 using Object = UnityEngine.Object;
 
 namespace Secyud.Ugf.TableComponents.FilterComponents

@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Secyud.Ugf;
 using UnityEditor;
 using UnityEngine.UI;
 
@@ -95,11 +96,11 @@ namespace UnityEngine.Editor
 		static void FindMissingScriptObject()
 		{
 			GameObject[] objs = Selection.gameObjects;
-			Debug.Log($"选中的物体数量为：{objs.Length}");
+			U.Log($"选中的物体数量为：{objs.Length}");
 
 			List<GameObject> allObjs = objs
 				.SelectMany(obj => obj.GetComponentsInChildren<Transform>().Select(x => x.gameObject)).ToList();
-			Debug.Log($"选中的物体及其子物体的数量为：{allObjs.Count()}");
+			U.Log($"选中的物体及其子物体的数量为：{allObjs.Count()}");
 
 			allObjs.ForEach(
 				obj =>
@@ -113,7 +114,7 @@ namespace UnityEngine.Editor
 					//2、Debug物体名字
 					if (hasNullScript)
 					{
-						Debug.Log($"物体 【{obj.name}】 上有Missing的脚本");
+						U.Log($"物体 【{obj.name}】 上有Missing的脚本");
 					}
 				}
 			);

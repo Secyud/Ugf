@@ -21,14 +21,18 @@ namespace Secyud.Ugf.UgfHexMap
         {
             LastTime -= Time.deltaTime;
             if (LastTime < 0)
+            {
                 EndPlay();
+            }
             else
+            {
                 OnUpdate();
+            }
         }
 
         protected abstract void OnUpdate();
 
-        public virtual void Play(UgfUnit unit,UgfCell targetCell)
+        public virtual void Play(UgfUnit unit, UgfCell targetCell)
         {
             Unit = unit;
             TargetCell = targetCell;
@@ -37,15 +41,15 @@ namespace Secyud.Ugf.UgfHexMap
             {
                 trans.parent = unit.transform;
             }
+
             trans.position = unit.transform.position;
-            trans.LookAt(targetCell.Position,Vector3.up);
+            trans.LookAt(targetCell.Position, Vector3.up);
             enabled = !Loop;
             ContinuePlay(unit);
         }
 
         protected virtual void ContinuePlay(UgfUnit unit)
         {
-            
         }
 
         protected virtual void EndPlay()

@@ -3,7 +3,6 @@
 using Secyud.Ugf.HexMap;
 using Secyud.Ugf.UgfHexMapGenerator;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 #endregion
 

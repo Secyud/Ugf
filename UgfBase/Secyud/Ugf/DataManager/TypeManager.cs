@@ -4,18 +4,18 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
 using System.Ugf;
 using Secyud.Ugf.Archiving;
-using UnityEngine;
 
 namespace Secyud.Ugf.DataManager
 {
     public class TypeManager
     {
         private readonly ConcurrentDictionary<Guid, Type> _typeDict = new();
-        private readonly ConcurrentDictionary<string, Guid> _idDict = new();
+        private readonly ConcurrentDictionary<Type, Guid> _idDict = new();
         private readonly ConcurrentDictionary<Type, TypeDescriptor> _propertyDict = new();
         private readonly MD5 _md5 = MD5.Create();
         public static TypeManager Instance { get; } = new();
@@ -44,23 +44,30 @@ namespace Secyud.Ugf.DataManager
 
         public object ConstructFromResource(Type type, string name)
         {
-            TypeDescriptor property = GetProperty(type);
-            if (property.Resources.TryGetValue(name, out ResourceDescriptor resource))
+            try
             {
-                object obj = U.Get(property.Type);
-                resource.WriteToObject(obj);
-
-                if (obj is IDataResource r &&
-                    r.ResourceId.IsNullOrEmpty())
+                TypeDescriptor property = GetProperty(type);
+                if (property.Resources.TryGetValue(name, out ResourceDescriptor resource))
                 {
-                    r.ResourceId = name;
-                }
+                    object obj = U.Get(property.Type);
+                    resource.WriteToObject(obj);
 
-                return obj;
+                    if (obj is IDataResource r &&
+                        r.ResourceId.IsNullOrEmpty())
+                    {
+                        r.ResourceId = name;
+                    }
+
+                    return obj;
+                }
+            }
+            catch (Exception e)
+            {
+                U.LogError($"Failed construct from resource: {type}" +
+                                  $"\r\n\t Resource Id: {name}");
+                U.LogError(e);
             }
 
-            Debug.LogWarning($"Failed construct from resource: {type}" +
-                             $"\r\n\t Resource Id: {name}");
             return null;
         }
 
@@ -116,12 +123,11 @@ namespace Secyud.Ugf.DataManager
             }
             set
             {
-                string name = value.FullName;
-                CheckId(ref id, name);
-                if (name is not null)
+                if (value is not null)
                 {
+                    CheckId(ref id, value);
                     _typeDict[id] = value;
-                    _idDict[name] = id;
+                    _idDict[value] = id;
                 }
             }
         }
@@ -130,11 +136,14 @@ namespace Secyud.Ugf.DataManager
         {
             get
             {
-                if (type.FullName is null)
-                    return default;
-                if (!_idDict.TryGetValue(type.FullName, out Guid id))
+                if (type is null)
                 {
-                    id = new Guid(_md5.ComputeHash(Encoding.UTF8.GetBytes(type.FullName)));
+                    return default;
+                }
+
+                if (!_idDict.TryGetValue(type, out Guid id))
+                {
+                    CheckId(ref id, type);
                     this[type] = id;
                 }
 
@@ -142,21 +151,19 @@ namespace Secyud.Ugf.DataManager
             }
             set
             {
-                string name = type.FullName;
-                CheckId(ref value, name);
-                if (name is not null)
+                if (type is not null)
                 {
+                    CheckId(ref value, type);
                     _typeDict[value] = type;
-                    _idDict[name] = value;
+                    _idDict[type] = value;
                 }
             }
         }
 
         public Guid TryGetId(Type type)
         {
-            if (type.FullName is null)
-                return default;
-            _idDict.TryGetValue(type.FullName, out Guid id);
+            _idDict.TryGetValue(type, out var id);
+
             return id;
         }
 
@@ -198,10 +205,23 @@ namespace Secyud.Ugf.DataManager
             }
         }
 
-        private void CheckId(ref Guid id, string name)
+        private void CheckId(ref Guid id, Type type)
         {
+            if (id != default)
+            {
+                return;
+            }
+
+            IDAttribute attr = type.GetCustomAttribute<IDAttribute>();
+            if (attr is not null)
+            {
+                id = attr.Id;
+            }
+
             if (id == default)
-                id = new Guid(_md5.ComputeHash(Encoding.UTF8.GetBytes(name)));
+            {
+                id = new Guid(_md5.ComputeHash(Encoding.UTF8.GetBytes(type.FullName ?? string.Empty)));
+            }
         }
     }
 }

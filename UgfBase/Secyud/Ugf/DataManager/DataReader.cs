@@ -41,7 +41,9 @@ namespace Secyud.Ugf.DataManager
             if (!ReadBoolean())
                 return null;
 
-            Type type = TypeManager.Instance[ReadGuid()];
+            Guid guid = ReadGuid();
+            
+            Type type = TypeManager.Instance[guid];
 
             object ret = U.Get(type);
 
@@ -88,7 +90,7 @@ namespace Secyud.Ugf.DataManager
                             }
                             catch (Exception e)
                             {
-                                Console.WriteLine(e);
+                                U.LogError(e);
                                 Reader.BaseStream.Seek(len + position, SeekOrigin.Begin);
                             }
                         }

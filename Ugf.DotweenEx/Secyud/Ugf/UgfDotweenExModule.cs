@@ -1,7 +1,6 @@
 #region
 
 using Secyud.Ugf.Modularity;
-using Secyud.Ugf.Option;
 
 #endregion
 

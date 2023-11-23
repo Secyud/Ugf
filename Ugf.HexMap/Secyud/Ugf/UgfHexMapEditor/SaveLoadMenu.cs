@@ -6,7 +6,6 @@ using Secyud.Ugf.Archiving;
 using Secyud.Ugf.BasicComponents;
 using Secyud.Ugf.HexMap;
 using UnityEngine;
-using UnityEngine.UI;
 
 #endregion
 
@@ -116,7 +115,7 @@ namespace Secyud.Ugf.UgfHexMapEditor
         {
             if (!File.Exists(path))
             {
-                Debug.LogError("File does not exist " + path);
+                U.LogError("File does not exist " + path);
                 return;
             }
 

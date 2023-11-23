@@ -4,7 +4,6 @@ using System;
 using Localization;
 using Secyud.Ugf.Localization;
 using Secyud.Ugf.Modularity;
-using Secyud.Ugf.Archiving;
 using Secyud.Ugf.DataManager;
 using Secyud.Ugf.DependencyInjection;
 using UnityEngine;
@@ -85,6 +84,46 @@ namespace Secyud.Ugf
 
             _step++;
             return false;
+        }
+
+        public static void Log(object obj)
+        {
+#if DEBUG
+            if (DataManager)
+            {
+                Console.WriteLine(obj);
+            }
+            else
+            {
+                Debug.Log(obj);
+            }
+#endif
+        }
+        public static void LogError(object obj)
+        {
+#if DEBUG
+            if (DataManager)
+            {
+                Console.Error.WriteLine(obj);
+            }
+            else
+            {
+                Debug.LogError(obj);
+            }
+#endif
+        }
+        public static void LogWarning(object obj)
+        {
+#if DEBUG
+            if (DataManager)
+            {
+                Console.WriteLine(obj);
+            }
+            else
+            {
+                Debug.LogWarning(obj);
+            }
+#endif
         }
     }
 }

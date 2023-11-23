@@ -1,9 +1,7 @@
 ﻿using System;
 using Localization;
-using Secyud.Ugf.DataManager;
 using Secyud.Ugf.DependencyInjection;
 using Secyud.Ugf.Localization;
-using UnityEngine;
 
 namespace Secyud.Ugf.Modularity
 {
