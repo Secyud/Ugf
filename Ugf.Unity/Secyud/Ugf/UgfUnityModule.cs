@@ -11,7 +11,7 @@ namespace Secyud.Ugf
 	)]
 	public class UgfUnityModule : IUgfModule
 	{
-		public void ConfigureGame(ConfigurationContext context)
+		public void Configure(ConfigurationContext context)
 		{
 			context.Manager.AddAssembly(typeof(UgfUnityModule).Assembly);
 		}

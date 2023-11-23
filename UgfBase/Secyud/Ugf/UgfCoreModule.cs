@@ -11,7 +11,7 @@ namespace Secyud.Ugf
 {
     public class UgfCoreModule : IUgfModule
     {
-        public void ConfigureGame(ConfigurationContext context)
+        public void Configure(ConfigurationContext context)
         {
             context.Manager.AddTypes(
                 typeof(DefaultLocalizerFactory),

@@ -53,27 +53,27 @@ namespace Secyud.Ugf.Modularity
 
             ConfigurationContext context = new(DependencyManager);
 
-            List<IPreConfigure> onPre = new();
-            List<IPostConfigure> onPost = new();
+            List<IOnPreConfigure> onPre = new();
+            List<IOnPostConfigure> onPost = new();
 
             foreach (IUgfModuleDescriptor descriptor in Modules)
             {
-                if (descriptor.Instance is IPreConfigure preInitialization)
+                if (descriptor.Instance is IOnPreConfigure preInitialization)
                     onPre.AddLast(preInitialization);
-                if (descriptor.Instance is IPostConfigure postInitialization)
+                if (descriptor.Instance is IOnPostConfigure postInitialization)
                     onPost.AddLast(postInitialization);
             }
 
 
-            foreach (IPreConfigure module in onPre)
-                module.PreConfigureGame(context);
+            foreach (IOnPreConfigure module in onPre)
+                module.PreConfigure(context);
 
             foreach (IUgfModuleDescriptor module in Modules)
-                module.Instance.ConfigureGame(context);
+                module.Instance.Configure(context);
 
             if (!U.DataManager)
-                foreach (IPostConfigure module in onPost)
-                    module.PostConfigureGame(context);
+                foreach (IOnPostConfigure module in onPost)
+                    module.PostConfigure(context);
 
             _configuredServices = true;
         }

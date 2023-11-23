@@ -13,7 +13,7 @@ namespace Secyud.Ugf
     )]
     public class UgfHexMapModule : IUgfModule
     {
-        public void ConfigureGame(ConfigurationContext context)
+        public void Configure(ConfigurationContext context)
         {
             context.Manager.AddAssembly(typeof(UgfHexMapModule).Assembly);
             

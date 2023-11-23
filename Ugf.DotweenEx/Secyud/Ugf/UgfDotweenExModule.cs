@@ -12,7 +12,7 @@ namespace Secyud.Ugf
     )]
     public class UgfDotweenExModule : IUgfModule
     {
-        public void ConfigureGame(ConfigurationContext context)
+        public void Configure(ConfigurationContext context)
         {
             context.Manager.AddAssembly(typeof(UgfDotweenExModule).Assembly);
         }
