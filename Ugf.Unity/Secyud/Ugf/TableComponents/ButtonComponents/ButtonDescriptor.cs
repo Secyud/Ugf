@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace Secyud.Ugf.TableComponents.ButtonComponents
 {
-	public abstract class ButtonDescriptor<TItem> : ITriggerable
+	public abstract class ButtonDescriptor<TItem> 
 	{
 		public TItem Target { get; set; }
 

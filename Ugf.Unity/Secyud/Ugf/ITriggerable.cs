@@ -12,8 +12,4 @@ namespace Secyud.Ugf
 		bool? Enabled { get; set; }
 	}
 
-	public interface ITriggerable : IShowable
-	{
-		void Invoke();
-	}
 }
