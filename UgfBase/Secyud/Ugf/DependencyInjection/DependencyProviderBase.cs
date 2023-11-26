@@ -47,9 +47,6 @@ namespace Secyud.Ugf.DependencyInjection
             {
                 DependencyDescriptor dd = GetDependencyDescriptor(type);
 
-                if (dd is null)
-                    return null;
-
                 if (!InstanceDescriptor.TryGetValue(dd.ImplementationType, out id))
                 {
                     id = new InstanceDescriptor();

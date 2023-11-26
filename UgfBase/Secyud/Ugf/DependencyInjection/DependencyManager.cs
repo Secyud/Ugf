@@ -33,7 +33,12 @@ namespace Secyud.Ugf.DependencyInjection
 
         public override DependencyDescriptor GetDependencyDescriptor(Type exposedType)
         {
-            return _dependencyDescriptors[exposedType];
+            if (_dependencyDescriptors.TryGetValue(exposedType, out var descriptor))
+            {
+                return descriptor;
+            }
+
+            throw new UgfException($"Cannot get service not registered: {exposedType}");
         }
 
         public void AddAssembly(Assembly assembly)

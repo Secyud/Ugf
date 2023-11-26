@@ -14,7 +14,7 @@ namespace Secyud.Ugf
         public void Configure(ConfigurationContext context)
         {
             context.Manager.AddTypes(
-                typeof(DefaultLocalizerFactory<string>),
+                typeof(DefaultStringLocalizerFactory),
                 typeof(InputService));
 
             context.AddStringResource<DefaultResource>();
