@@ -1,94 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
+using JetBrains.Annotations;
 using Secyud.Ugf.DataManager;
 
 namespace Secyud.Ugf.Archiving
 {
-    public class DefaultArchiveReader : IArchiveReader, IDisposable
+    public class DefaultArchiveReader :BinaryReader, IArchiveReader, IDisposable
     {
-        protected readonly BinaryReader Reader;
-
-        public DefaultArchiveReader(Stream stream)
+        public DefaultArchiveReader([NotNull] Stream input) : base(input)
         {
-            Reader = new BinaryReader(stream);
         }
 
-        public void Dispose()
+        public DefaultArchiveReader([NotNull] Stream input, [NotNull] Encoding encoding) : base(input, encoding)
         {
-            Reader.Dispose();
         }
 
-        public bool ReadBoolean()
+        public DefaultArchiveReader(Stream input, Encoding encoding, bool leaveOpen) : base(input, encoding, leaveOpen)
         {
-            return Reader.ReadBoolean();
         }
-
-        public byte ReadByte()
-        {
-            return Reader.ReadByte();
-        }
-
-        public ushort ReadUInt16()
-        {
-            return Reader.ReadUInt16();
-        }
-
-        public uint ReadUInt32()
-        {
-            return Reader.ReadUInt32();
-        }
-
-        public ulong ReadUInt64()
-        {
-            return Reader.ReadUInt64();
-        }
-
-        public sbyte ReadSByte()
-        {
-            return Reader.ReadSByte();
-        }
-
-        public short ReadInt16()
-        {
-            return Reader.ReadInt16();
-        }
-
-        public int ReadInt32()
-        {
-            return Reader.ReadInt32();
-        }
-
-        public long ReadInt64()
-        {
-            return Reader.ReadInt64();
-        }
-
-        public float ReadSingle()
-        {
-            return Reader.ReadSingle();
-        }
-
-        public double ReadDouble()
-        {
-            return Reader.ReadDouble();
-        }
-
-        public decimal ReadDecimal()
-        {
-            return Reader.ReadDecimal();
-        }
-
-        public string ReadString()
-        {
-            return Reader.ReadString();
-        }
-
-        public byte[] ReadBytes(int length)
-        {
-            return Reader.ReadBytes(length);
-        }
-
         public Guid ReadGuid()
         {
             return new Guid(ReadBytes(16));
@@ -106,8 +37,8 @@ namespace Secyud.Ugf.Archiving
 
         public TObject ReadObject<TObject>() where TObject : class
         {
-            Type type = TypeManager.Instance[ReadGuid()];
-            object obj = U.Get(type);
+            TypeDescriptor descriptor = TypeManager.Instance[ReadGuid()];
+            object obj = U.Get(descriptor.GetType());
             if (obj is IArchivable archivable)
                 archivable.Load(this);
             return obj as TObject;

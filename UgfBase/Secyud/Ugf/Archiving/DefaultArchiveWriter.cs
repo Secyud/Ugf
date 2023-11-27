@@ -1,97 +1,31 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Threading.Tasks;
+using System.Text;
 
 namespace Secyud.Ugf.Archiving
 {
-    public class DefaultArchiveWriter : IArchiveWriter, IDisposable, IAsyncDisposable
+    public class DefaultArchiveWriter : BinaryWriter, IArchiveWriter
     {
-        protected readonly BinaryWriter Writer;
+        public DefaultArchiveWriter()
+        {
+        }
 
         public DefaultArchiveWriter(Stream stream)
+            : base(stream)
         {
-            Writer = new BinaryWriter(stream);
         }
 
-        public void Dispose()
+
+        public DefaultArchiveWriter(Stream stream, Encoding encoding)
+            : base(stream, encoding)
         {
-            Writer.Dispose();
         }
 
-        public ValueTask DisposeAsync()
-        {
-            return Writer.DisposeAsync();
-        }
 
-        public void Write(bool value)
+        public DefaultArchiveWriter(Stream stream, Encoding encoding, bool leaveOpen)
+            : base(stream, encoding, leaveOpen)
         {
-            Writer.Write(value);
-        }
-
-        public void Write(byte value)
-        {
-            Writer.Write(value);
-        }
-
-        public void Write(ushort value)
-        {
-            Writer.Write(value);
-        }
-
-        public void Write(uint value)
-        {
-            Writer.Write(value);
-        }
-
-        public void Write(ulong value)
-        {
-            Writer.Write(value);
-        }
-
-        public void Write(sbyte value)
-        {
-            Writer.Write(value);
-        }
-
-        public void Write(short value)
-        {
-            Writer.Write(value);
-        }
-
-        public void Write(int value)
-        {
-            Writer.Write(value);
-        }
-
-        public void Write(long value)
-        {
-            Writer.Write(value);
-        }
-
-        public void Write(float value)
-        {
-            Writer.Write(value);
-        }
-
-        public void Write(double value)
-        {
-            Writer.Write(value);
-        }
-
-        public void Write(decimal value)
-        {
-            Writer.Write(value);
-        }
-
-        public void Write(string value)
-        {
-            Writer.Write(value);
-        }
-
-        public void Write(byte[] value)
-        {
-            Writer.Write(value);
         }
 
         public void Write(Guid id)
@@ -105,7 +39,7 @@ namespace Secyud.Ugf.Archiving
             if (value is IArchivable archivable)
                 archivable.Save(this);
         }
-        
+
         public void WriteNullable(object value)
         {
             if (value is null)
@@ -125,6 +59,5 @@ namespace Secyud.Ugf.Archiving
                 WriteObject(t);
             }
         }
-
     }
 }

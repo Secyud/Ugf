@@ -43,9 +43,9 @@ namespace Secyud.Ugf.DataManager
 
             Guid guid = ReadGuid();
 
-            Type type = TypeManager.Instance[guid];
+            TypeDescriptor descriptor = TypeManager.Instance[guid];
 
-            object ret = U.Get(type);
+            object ret = U.Get(descriptor.Type);
 
             LoadProperties(ret);
 
@@ -54,8 +54,7 @@ namespace Secyud.Ugf.DataManager
 
         public void LoadProperties(object value)
         {
-            TypeDescriptor descriptor = TypeManager.Instance.GetProperty(
-                value.GetType());
+            TypeDescriptor descriptor = TypeManager.Instance[value.GetType()];
             SortedDictionary<string, SAttribute> attrs = new();
 
             PropertyDescriptor current = descriptor.Properties;
@@ -75,47 +74,40 @@ namespace Secyud.Ugf.DataManager
                 string name = ReadString();
                 int len = ReadInt32();
 
-                long position = Reader.BaseStream.Position;
+                long position = BaseStream.Position;
 
-                if (attrs.TryGetValue(name, out SAttribute attr))
+                try
                 {
-                    if (!attr.ReadOnly ||
-                        attr.Type != FieldType.Object)
+                    if (attrs.TryGetValue(name, out SAttribute attr))
                     {
-                        if (U.DataManager)
+                        if (!attr.ReadOnly ||
+                            attr.Type != FieldType.Object)
                         {
-                            try
-                            {
-                                attr.SetValue(value, ReadDataObject((FieldType)ReadByte()));
-                            }
-                            catch (Exception e)
-                            {
-                                U.LogError(e);
-                                Reader.BaseStream.Seek(len + position, SeekOrigin.Begin);
-                            }
+                            attr.SetValue(value, ReadDataObject((FieldType)ReadByte()));
                         }
                         else
                         {
-                            attr.SetValue(value, ReadDataObject((FieldType)ReadByte()));
+                            object field = attr.GetValue(value);
+
+                            if (field is IList list)
+                            {
+                                LoadList(list, attr);
+                            }
+                            else
+                            {
+                                LoadProperties(field);
+                            }
                         }
                     }
                     else
                     {
-                        object field = attr.GetValue(value);
-
-                        if (field is IList list)
-                        {
-                            LoadList(list, attr);
-                        }
-                        else
-                        {
-                            LoadProperties(field);
-                        }
+                        BaseStream.Seek(len, SeekOrigin.Current);
                     }
                 }
-                else
+                catch (Exception e)
                 {
-                    Reader.BaseStream.Seek(len, SeekOrigin.Current);
+                    U.LogError(e);
+                    BaseStream.Seek(len + position, SeekOrigin.Begin);
                 }
             }
         }
@@ -148,37 +140,11 @@ namespace Secyud.Ugf.DataManager
             string name = ReadString();
             int len = ReadInt32();
             byte[] data = ReadBytes(len);
-            
+
             return new ResourceDescriptor(name)
             {
                 Data = data
             };
-        }
-
-        public object ReadResourceObject()
-        {
-            long position = Reader.BaseStream.Position;
-            int len = 0;
-            Guid id = default;
-            string resourceId = default;
-            try
-            {
-                id = ReadGuid();
-                resourceId = ReadString();
-                len = ReadInt32();
-                Type type = U.Tm[id];
-                object obj = U.Get(type);
-                LoadProperties(obj);
-                return obj;
-            }
-            catch (Exception e)
-            {
-                U.LogError($"Failed read resource object: id: {id}\r\nresourceId: {resourceId}");
-                U.LogError(e);
-                Reader.BaseStream.Seek(position + len + 24, SeekOrigin.Begin);
-            }
-
-            return null;
         }
     }
 }

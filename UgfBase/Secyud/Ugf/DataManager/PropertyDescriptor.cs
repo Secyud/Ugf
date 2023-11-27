@@ -19,7 +19,7 @@ namespace Secyud.Ugf.DataManager
         {
             BaseProperty = type.BaseType == typeof(object)
                 ? null
-                : TypeManager.Instance.GetProperty(type.BaseType).Properties;
+                : TypeManager.Instance[type.BaseType].Properties;
 
             FieldInfo[] infos = type.GetFields(Flag);
             List<SAttribute> data = new();

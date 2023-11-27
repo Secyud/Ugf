@@ -1,7 +1,6 @@
 #region
 
 using System;
-using Localization;
 using Secyud.Ugf.Localization;
 using Secyud.Ugf.Modularity;
 using Secyud.Ugf.DataManager;

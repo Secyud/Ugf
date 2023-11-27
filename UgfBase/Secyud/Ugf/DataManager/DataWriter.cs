@@ -79,7 +79,7 @@ namespace Secyud.Ugf.DataManager
             Write(true);
 
             Type type = value.GetType();
-            Write(TypeManager.Instance[type]);
+            Write(TypeManager.Instance[type].Id);
 
             SaveProperties(value);
         }
@@ -87,7 +87,7 @@ namespace Secyud.Ugf.DataManager
         public void SaveProperties(object value)
         {
             TypeDescriptor descriptor =
-                TypeManager.Instance.GetProperty(value.GetType());
+                TypeManager.Instance[value.GetType()];
             List<SAttribute> attrs = new();
 
             PropertyDescriptor current = descriptor.Properties;
@@ -107,7 +107,7 @@ namespace Secyud.Ugf.DataManager
             {
                 Write(attr.Info.Name);
                 Write(0);
-                long pRecord = Writer.BaseStream.Position;
+                long pRecord = BaseStream.Position;
                 object field = attr.GetValue(value);
 
                 if (!attr.ReadOnly ||
@@ -128,11 +128,11 @@ namespace Secyud.Ugf.DataManager
                     }
                 }
 
-                int len = (int)(Writer.BaseStream.Position - pRecord);
+                int len = (int)(BaseStream.Position - pRecord);
 
-                Writer.BaseStream.Seek(-len - 4, SeekOrigin.Current);
+                BaseStream.Seek(-len - 4, SeekOrigin.Current);
                 Write(len);
-                Writer.BaseStream.Seek(len, SeekOrigin.Current);
+                BaseStream.Seek(len, SeekOrigin.Current);
             }
         }
 

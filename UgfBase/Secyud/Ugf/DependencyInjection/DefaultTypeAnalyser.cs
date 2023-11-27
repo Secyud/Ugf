@@ -3,11 +3,11 @@ using Secyud.Ugf.DataManager;
 
 namespace Secyud.Ugf.DependencyInjection
 {
-    public class DefaultTypeAnalyser:ITypeAnalyzer
+    public class DefaultTypeAnalyser : ITypeAnalyzer
     {
         public void AnalyzeType(Type type)
         {
-            TypeManager.Instance[type] = default;
+            _ = TypeManager.Instance[type];
         }
     }
 }

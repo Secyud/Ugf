@@ -13,21 +13,7 @@ namespace Secyud.Ugf.DataManager
         /// <returns></returns>
         public static List<object> ReadResourceObjects(this Stream stream)
         {
-            using DataReader reader = new(stream);
-            List<object> list = new();
-
-            int count = reader.ReadInt32();
-            for (int i = 0; i < count; i++)
-            {
-                object obj = reader.ReadResourceObject();
-
-                if (obj is not null)
-                {
-                    list.Add(obj);
-                }
-            }
-
-            return list;
+            return stream.ReadResourceObjects<object>();
         }
 
         /// <summary>
@@ -40,13 +26,30 @@ namespace Secyud.Ugf.DataManager
             where TObject : class
         {
             using DataReader reader = new(stream);
-
             List<TObject> list = new();
-
             int count = reader.ReadInt32();
             for (int i = 0; i < count; i++)
             {
-                object obj = reader.ReadResourceObject();
+                long position = reader.BaseStream.Position;
+                object obj = null;
+                int len = 0;
+                Guid id = default;
+                string resourceId = default;
+                try
+                {
+                    id = reader.ReadGuid();
+                    resourceId = reader.ReadString();
+                    len = reader.ReadInt32();
+                    TypeDescriptor descriptor = U.Tm[id];
+                    obj = U.Get(descriptor.Type);
+                    reader.LoadProperties(obj);
+                }
+                catch (Exception e)
+                {
+                    U.LogError(e);
+                    U.LogError($"Failed read resource object: id: {id}\r\nresourceId: {resourceId}");
+                    reader.BaseStream.Seek(position + len + 24, SeekOrigin.Begin);
+                }
 
                 if (obj is not null)
                 {
@@ -57,15 +60,28 @@ namespace Secyud.Ugf.DataManager
             return list;
         }
 
-        public static T ReadObjectFromResource<T>(this TypeManager manager, string name)
+        public static T ReadObjectFromResource<T>(this TypeManager manager, string resourceId)
             where T : class
         {
-            return manager.ReadObjectFromResource(typeof(T), name) as T;
+            return manager.ReadObjectFromResource(typeof(T), resourceId) as T;
         }
 
-        public static object ReadObjectFromResource(this TypeManager manager, Guid typeId, string name)
+        public static object ReadObjectFromResource(this TypeManager manager, Guid typeId, string resourceId)
         {
-            return manager.ReadObjectFromResource(manager[typeId], name);
+            TypeDescriptor property = manager[typeId];
+            return property.ReadObjectFromResource(resourceId);
+        }
+
+        public static object ReadObjectFromResource(this TypeManager manager, Type type, string resourceId)
+        {
+            TypeDescriptor property = manager[type];
+            return property.ReadObjectFromResource(resourceId);
+        }
+
+        public static void LoadObjectFromResource(this TypeManager manager, object obj, string resourceId)
+        {
+            TypeDescriptor property = manager[obj.GetType()];
+            property.LoadObjectFromResource(obj, resourceId);
         }
     }
 }
