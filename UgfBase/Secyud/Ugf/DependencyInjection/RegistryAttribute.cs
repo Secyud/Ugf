@@ -37,7 +37,7 @@ namespace Secyud.Ugf.DependencyInjection
             }
         }
 
-        public DependencyLifeTime LifeTime { get; set; } = DependencyLifeTime.Singleton;
+        public DependencyLifeTime LifeTime { get; set; }
 
         public bool IncludeDefaults { get; set; } = true;
 

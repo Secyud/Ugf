@@ -222,9 +222,13 @@ namespace Secyud.Ugf.DependencyInjection
         private void DestroyScope(Type scopeType) 
         {
             if (!_scopes.TryRemove(scopeType, out DependencyScopeProvider scopeDescriptor))
+            {
                 return;
+            }
             foreach (DependencyScopeProvider scope in scopeDescriptor.SubProviders)
+            {
                 DestroyScope(scope.GetType());
+            }
             scopeDescriptor.InstanceDescriptor.Clear();
             scopeDescriptor.Dispose();
         }
