@@ -199,7 +199,7 @@ namespace Secyud.Ugf.HexMap
         /// <param name="xOffset">X array offset coordinate.</param>
         /// <param name="zOffset">Z array offset coordinate.</param>
         /// <returns></returns>
-        public HexCell GetCell(int xOffset, int zOffset)
+        internal HexCell GetCell(int xOffset, int zOffset)
         {
             return Cells[xOffset + zOffset * CellCountX];
         }
@@ -213,6 +213,8 @@ namespace Secyud.Ugf.HexMap
         {
             return Cells[cellIndex];
         }
+
+        public HexCell this[int x, int z] => GetCell(x + HexCellExtension.Border, z + HexCellExtension.Border);
 
         #endregion
 
@@ -283,11 +285,10 @@ namespace Secyud.Ugf.HexMap
         {
             foreach (HexCell cell in Cells)
             {
-                // int x, y;
-                // x = cell.Index % CellCountX;
-                // y = cell.Index / CellCountX;
-                // cell.SetLabel(x + "," + y);
-                cell.SetLabel(cell.Index.ToString());
+                if (cell.IsValid())
+                {
+                    cell.SetLabel(cell.X + "," + cell.Z);
+                }
             }
         }
     }

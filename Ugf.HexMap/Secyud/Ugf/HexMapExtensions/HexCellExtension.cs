@@ -15,8 +15,8 @@ namespace Secyud.Ugf.HexMapExtensions
             int x = cell.Index % CurrentGrid.CellCountX;
             int z = cell.Index / CurrentGrid.CellCountX;
 
-            return x > Border && x < CurrentGrid.CellCountX - Border &&
-                   z > Border && z < CurrentGrid.CellCountZ - Border;
+            return x >= Border && x < CurrentGrid.CellCountX - Border &&
+                   z >= Border && z < CurrentGrid.CellCountZ - Border;
         }
     }
 }

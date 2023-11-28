@@ -1,5 +1,6 @@
 using Secyud.Ugf.Archiving;
 using Secyud.Ugf.BasicComponents;
+using Secyud.Ugf.HexMapExtensions;
 using Secyud.Ugf.HexUtilities;
 using UnityEngine;
 using UnityEngine.UI;
@@ -12,6 +13,11 @@ namespace Secyud.Ugf.HexMap
         protected RectTransform UiRect { get; private set; }
         protected HexChunk Chunk { get; private set; }
         public int Index { get; private set; }
+
+        public int X => Index % Chunk.Grid.CellCountX - HexCellExtension.Border;
+
+        public int Z => Index / Chunk.Grid.CellCountX - HexCellExtension.Border;
+
         public HexCoordinates Coordinates { get; private set; }
 
         private Image _highlight;

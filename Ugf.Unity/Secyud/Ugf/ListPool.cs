@@ -20,7 +20,10 @@ namespace Secyud.Ugf
 		/// <returns>The requested list.</returns>
 		public static List<T> Get()
 		{
-			if (Stack.Count > 0) return Stack.Pop();
+			if (Stack.Count > 0)
+			{
+				return Stack.Pop();
+			}
 
 			return new List<T>();
 		}
