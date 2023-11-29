@@ -10,15 +10,20 @@ namespace Secyud.Ugf.UgfHexMap
         {
             UgfTriangulation triangulation = new(chunk);
 
-            foreach (HexCell cell in chunk.Cells)
+            foreach (int index in chunk.Cells)
             {
-                triangulation.TriangulateCell(cell as UgfCell);
+                triangulation.TriangulateCell(chunk.Grid.GetCell(index) as UgfCell);
             }
         }
 
         public Color32 GetCellShaderData(HexCell cell)
         {
             return new Color32(1, 1, 1, ((UgfCell)cell).TerrainType);
+        }
+
+        public virtual HexCell CreateCell()
+        {
+            return new UgfCell();
         }
     }
 }

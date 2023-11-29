@@ -5,6 +5,7 @@ namespace Secyud.Ugf.UgfHexMap
 {
     public interface IHexMapMessageService
     {
+        HexGrid Grid { get; }
         float Turns { get; }
         float GetSpeed(HexUnit unit);
         int TravelSpeed { get; }

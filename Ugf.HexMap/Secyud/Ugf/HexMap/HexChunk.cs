@@ -5,7 +5,7 @@ namespace Secyud.Ugf.HexMap
 {
     public class HexChunk : MonoBehaviour
     {
-        public readonly HexCell[] Cells = new HexCell[HexMetrics.ChunkSizeX * HexMetrics.ChunkSizeZ];
+        public readonly int[] Cells = new int[HexMetrics.ChunkSizeX * HexMetrics.ChunkSizeZ];
 
         [SerializeField] private Canvas Canvas;
         [SerializeField] private HexMesh[] Meshes;
@@ -64,23 +64,23 @@ namespace Secyud.Ugf.HexMap
             for (int j = 0; j < HexMetrics.ChunkSizeZ; j++)
             for (int i = 0; i < HexMetrics.ChunkSizeX; i++)
             {
-                HexCell cell = Cells[j * HexMetrics.ChunkSizeX + i]
-                    = Instantiate(grid.CellTemplate,transform,false) ;
-
+                HexCell cell = grid.HexGridDrawer.CreateCell() ;
                 RectTransform uiRect
                     = Instantiate(grid.UiTemplate, Canvas.transform, false);
 
                 cell.Initialize(uiRect, this,
                     i + x * HexMetrics.ChunkSizeX,
                     j + z * HexMetrics.ChunkSizeZ);
+                
+                Cells[j * HexMetrics.ChunkSizeX + i] = cell.Index;
             }
         }
 
         public void CreateMap()
         {
-            foreach (HexCell cell in Cells)
+            foreach (int index in Cells)
             {
-                cell.CreateMap();
+                Grid.GetCell(index).CreateMap();
             }
         }
         

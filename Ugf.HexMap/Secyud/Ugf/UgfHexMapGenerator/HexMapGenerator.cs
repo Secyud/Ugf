@@ -29,20 +29,20 @@ namespace Secyud.Ugf.UgfHexMapGenerator
 
         public HemisphereMode Hemisphere;
 
-        public HexDirection WindDirection  = HexDirection.Nw;
+        public HexDirection WindDirection = HexDirection.Nw;
 
 
-        public int ChunkSizeMin  = 30;
+        public int ChunkSizeMin = 30;
 
         public int ChunkSizeMax = 100;
 
-        public int RiverPercentage  = 10;
+        public int RiverPercentage = 10;
 
         public int LandPercentage = 50;
 
         public int ErosionPercentage = 50;
 
-        public int ElevationMinimum  = -2;
+        public int ElevationMinimum = -2;
 
         public int WaterLevel => 2;
 
@@ -52,18 +52,18 @@ namespace Secyud.Ugf.UgfHexMapGenerator
 
         public int RegionCount = 1;
 
-        public float WindStrength  = 4f;
+        public float WindStrength = 4f;
 
         public float JitterProbability = 0.25f;
 
-        public float SinkProbability= 0.2f;
+        public float SinkProbability = 0.2f;
 
         // min 0 max 1
         public float HighRiseProbability = 0.25f;
 
-        public float StartingMoisture  = 0.1f;
+        public float StartingMoisture = 0.1f;
 
-        public float EvaporationFactor  = 0.5f;
+        public float EvaporationFactor = 0.5f;
 
         public float PrecipitationFactor = 0.25f;
 
@@ -96,13 +96,13 @@ namespace Secyud.Ugf.UgfHexMapGenerator
 
             Grid.CreateMap(ChunkCountX, ChunkCountZ);
             _searchFrontier ??= new UgfCellPriorityQueue();
-            
+
             foreach (HexCell hexCell in Grid.Cells)
             {
                 UgfCell cell = (UgfCell)hexCell;
                 cell.Elevation = 0;
             }
-            
+
             CreateRegions();
             CreateLand();
             ErodeLand();
@@ -255,7 +255,7 @@ namespace Secyud.Ugf.UgfHexMapGenerator
                 for (HexDirection d = HexDirection.Ne; d <= HexDirection.Nw; d++)
                 {
                     UgfCell neighbor = current.GetNeighbor(d);
-                    if (neighbor && neighbor.SearchPhase < _searchFrontierPhase)
+                    if (neighbor is not null && neighbor.SearchPhase < _searchFrontierPhase)
                     {
                         neighbor.SearchPhase = _searchFrontierPhase;
                         neighbor.Distance = neighbor.Coordinates.DistanceTo(center);
@@ -299,7 +299,7 @@ namespace Secyud.Ugf.UgfHexMapGenerator
                 for (HexDirection d = HexDirection.Ne; d <= HexDirection.Nw; d++)
                 {
                     UgfCell neighbor = current.GetNeighbor(d);
-                    if (neighbor  && neighbor.SearchPhase < _searchFrontierPhase)
+                    if (neighbor is not null && neighbor.SearchPhase < _searchFrontierPhase)
                     {
                         neighbor.SearchPhase = _searchFrontierPhase;
                         neighbor.Distance = neighbor.Coordinates.DistanceTo(center);
@@ -345,7 +345,7 @@ namespace Secyud.Ugf.UgfHexMapGenerator
                 {
                     UgfCell neighbor = cell.GetNeighbor(d);
                     if (
-                        neighbor  && neighbor.Elevation == cell.Elevation + 2 &&
+                        neighbor is not null && neighbor.Elevation == cell.Elevation + 2 &&
                         !erodibleCells.Contains(neighbor)
                     )
                         erodibleCells.Add(neighbor);
@@ -357,7 +357,7 @@ namespace Secyud.Ugf.UgfHexMapGenerator
                 {
                     UgfCell neighbor = targetCell.GetNeighbor(d);
                     if (
-                        neighbor && neighbor != cell &&
+                        neighbor is not null && neighbor != cell &&
                         neighbor.Elevation == targetCell.Elevation + 1 &&
                         !IsErodible(neighbor)
                     )
@@ -374,7 +374,7 @@ namespace Secyud.Ugf.UgfHexMapGenerator
             for (HexDirection d = HexDirection.Ne; d <= HexDirection.Nw; d++)
             {
                 UgfCell neighbor = cell.GetNeighbor(d);
-                if (neighbor && neighbor.Elevation <= erodibleElevation) return true;
+                if (neighbor is not null && neighbor.Elevation <= erodibleElevation) return true;
             }
 
             return false;
@@ -387,7 +387,7 @@ namespace Secyud.Ugf.UgfHexMapGenerator
             for (HexDirection d = HexDirection.Ne; d <= HexDirection.Nw; d++)
             {
                 UgfCell neighbor = cell.GetNeighbor(d);
-                if (neighbor && neighbor.Elevation <= erodibleElevation) candidates.Add(neighbor);
+                if (neighbor is not null && neighbor.Elevation <= erodibleElevation) candidates.Add(neighbor);
             }
 
             UgfCell target = candidates[Random.Range(0, candidates.Count)];
@@ -453,7 +453,7 @@ namespace Secyud.Ugf.UgfHexMapGenerator
             for (HexDirection d = HexDirection.Ne; d <= HexDirection.Nw; d++)
             {
                 UgfCell neighbor = cell.GetNeighbor(d);
-                if (!neighbor) continue;
+                if (neighbor is null) continue;
 
                 ClimateData neighborClimate = _nextClimate[neighbor.Index];
                 if (d == mainDispersalDirection)
@@ -522,7 +522,7 @@ namespace Secyud.Ugf.UgfHexMapGenerator
                     for (HexDirection d = HexDirection.Ne; d <= HexDirection.Nw; d++)
                     {
                         UgfCell neighbor = origin.GetNeighbor(d);
-                        if (neighbor && 
+                        if (neighbor is not null &&
                             (neighbor.HasRiver || neighbor.IsUnderwater))
                         {
                             isValidOrigin = false;
@@ -554,7 +554,7 @@ namespace Secyud.Ugf.UgfHexMapGenerator
                 for (HexDirection d = HexDirection.Ne; d <= HexDirection.Nw; d++)
                 {
                     UgfCell neighbor = cell.GetNeighbor(d);
-                    if (!neighbor) continue;
+                    if (neighbor is null) continue;
 
                     if (neighbor.Elevation < minNeighborElevation) minNeighborElevation = neighbor.Elevation;
 
@@ -592,7 +592,7 @@ namespace Secyud.Ugf.UgfHexMapGenerator
                     if (minNeighborElevation >= cell.Elevation)
                     {
                         cell.WaterLevel = (short)minNeighborElevation;
-                        if (minNeighborElevation == cell.Elevation) 
+                        if (minNeighborElevation == cell.Elevation)
                             cell.Elevation = (short)(minNeighborElevation - 1);
                     }
 
@@ -655,7 +655,7 @@ namespace Secyud.Ugf.UgfHexMapGenerator
                         )
                         {
                             UgfCell neighbor = cell.GetNeighbor(d);
-                            if (!neighbor) continue;
+                            if (neighbor is null) continue;
 
                             int delta = neighbor.Elevation - cell.WaterLevel;
                             if (delta == 0)

@@ -10,7 +10,6 @@ namespace Secyud.Ugf.HexMap
     public class HexGrid : MonoBehaviour, IArchivable
     {
         [SerializeField] private HexChunk ChunkPrefab;
-        [SerializeField] private HexCell CellPrefab;
         [SerializeField] private RectTransform UiPrefab;
         [SerializeField] protected Camera Camera;
         [SerializeField] public HexMapCamera MapCamera;
@@ -19,13 +18,12 @@ namespace Secyud.Ugf.HexMap
         private readonly List<HexUnit> _units = new();
 
         public HexChunk ChunkTemplate => ChunkPrefab;
-        public HexCell CellTemplate => CellPrefab;
         public RectTransform UiTemplate => UiPrefab;
 
         public IHexGridDrawer HexGridDrawer { get; private set; }
         public CellShaderDataManager ShaderManager { get; private set; }
-        public HexChunk[] Chunks { get; private set; }
-        public HexCell[] Cells { get; private set; }
+        public HexChunk[] Chunks { get; set; }
+        public HexCell[] Cells { get; set; }
 
         public int CellCountX { get; private set; }
         public int CellCountZ { get; private set; }

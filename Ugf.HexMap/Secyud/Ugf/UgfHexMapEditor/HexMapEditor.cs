@@ -34,7 +34,7 @@ namespace Secyud.Ugf.UgfHexMapEditor
         private HexDirection _dragDirection;
 
         private bool _isDrag;
-        private UgfCell _previousCell;
+        private int _previousCellIndex;
 
         private void Awake()
         {
@@ -65,7 +65,7 @@ namespace Secyud.Ugf.UgfHexMapEditor
                 ClearCellHighlightData();
             }
 
-            _previousCell = null;
+            _previousCellIndex = -1;
         }
 
 
@@ -111,10 +111,10 @@ namespace Secyud.Ugf.UgfHexMapEditor
         private void HandleInput(bool apply)
         {
             UgfCell currentCell = GetCellUnderCursor();
-            if (currentCell)
+            if (currentCell is not null)
             {
-                if (_previousCell &&
-                    _previousCell != currentCell)
+                if (_previousCellIndex >= 0 &&
+                    _previousCellIndex != currentCell.Index)
                 {
                     ValidateDrag(currentCell);
                 }
@@ -124,11 +124,11 @@ namespace Secyud.Ugf.UgfHexMapEditor
                 }
 
                 EditCells(currentCell, apply);
-                _previousCell = currentCell;
+                _previousCellIndex = currentCell.Index;
             }
             else
             {
-                _previousCell = null;
+                _previousCellIndex = -1;
             }
 
             UpdateCellHighlightData(currentCell);
@@ -170,11 +170,14 @@ namespace Secyud.Ugf.UgfHexMapEditor
                 _dragDirection <= HexDirection.Nw;
                 _dragDirection++
             )
-                if (_previousCell.GetNeighbor(_dragDirection) == currentCell)
+            {
+                HexCell previousCell = HexGrid.GetCell(_previousCellIndex);
+                if ( previousCell.GetNeighbor(_dragDirection) == currentCell)
                 {
                     _isDrag = true;
                     return;
                 }
+            }
 
             _isDrag = false;
         }
@@ -195,7 +198,7 @@ namespace Secyud.Ugf.UgfHexMapEditor
 
         private void EditCell(UgfCell cell, bool apply)
         {
-            if (!cell) return;
+            if (cell  is  null) return;
 
             switch (_applyObject)
             {

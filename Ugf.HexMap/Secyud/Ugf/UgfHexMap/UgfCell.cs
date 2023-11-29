@@ -67,7 +67,7 @@ namespace Secyud.Ugf.UgfHexMap
             RefreshSelfOnly();
 
             UgfCell neighbor = GetNeighbor(IncomingRiver);
-            if (neighbor)
+            if (neighbor is not null)
             {
                 neighbor.OutgoingRiver = HexDirection.InValid;
                 neighbor.RefreshSelfOnly();
@@ -87,7 +87,7 @@ namespace Secyud.Ugf.UgfHexMap
 
             UgfCell neighbor = GetNeighbor(OutgoingRiver);
 
-            if (neighbor)
+            if (neighbor  is not null)
             {
                 neighbor.IncomingRiver = HexDirection.InValid;
                 neighbor.RefreshSelfOnly();
@@ -132,7 +132,7 @@ namespace Secyud.Ugf.UgfHexMap
             if (HasOutgoingRiver)
             {
                 UgfCell neighbor = GetNeighbor(OutgoingRiver);
-                if (neighbor && !IsValidRiverDestination(neighbor))
+                if (neighbor  is not null&& !IsValidRiverDestination(neighbor))
                 {
                     RemoveOutgoingRiver();
                 }
@@ -141,7 +141,7 @@ namespace Secyud.Ugf.UgfHexMap
             if (HasIncomingRiver)
             {
                 UgfCell neighbor = GetNeighbor(IncomingRiver);
-                if (neighbor && !neighbor.IsValidRiverDestination(this))
+                if (neighbor  is not null&& !neighbor.IsValidRiverDestination(this))
                 {
                     RemoveIncomingRiver();
                 }
@@ -280,7 +280,7 @@ namespace Secyud.Ugf.UgfHexMap
 
         private bool IsValidRiverDestination(UgfCell neighbor)
         {
-            return neighbor &&
+            return neighbor  is not null&&
                    (_elevation >= neighbor._elevation ||
                     _waterLevel == neighbor._elevation);
         }
@@ -307,7 +307,7 @@ namespace Secyud.Ugf.UgfHexMap
             position.y +=
                 (HexMetrics.SampleNoise(position).y * 2f - 1f) *
                 HexMetrics.ElevationPerturbStrength;
-            transform.localPosition = position;
+            Position = position;
 
             Vector3 uiPosition = UiRect.localPosition;
             uiPosition.z = -position.y;
@@ -331,7 +331,7 @@ namespace Secyud.Ugf.UgfHexMap
         /// <summary>
         ///     Pathing data used by pathfinding algorithm.
         /// </summary>
-        public UgfCell PathFrom { get; set; }
+        public int PathFromIndex { get; set; }
 
         /// <summary>
         ///     Heuristic data used by pathfinding algorithm.

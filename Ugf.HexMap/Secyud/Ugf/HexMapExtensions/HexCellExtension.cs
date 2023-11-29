@@ -5,18 +5,15 @@ namespace Secyud.Ugf.HexMapExtensions
     public static class HexCellExtension
     {
         public const int Border = 5;
-        
+
         internal static HexGrid CurrentGrid { get; set; }
-        
+
         public static bool IsValid(this HexCell cell)
         {
-            if (!cell) return false;
-            
-            int x = cell.Index % CurrentGrid.CellCountX;
-            int z = cell.Index / CurrentGrid.CellCountX;
+            if (cell is null) return false;
 
-            return x >= Border && x < CurrentGrid.CellCountX - Border &&
-                   z >= Border && z < CurrentGrid.CellCountZ - Border;
+            return cell.X >= 0 && cell.X < CurrentGrid.CellCountX - 2 * Border &&
+                   cell.Z >= 0 && cell.Z < CurrentGrid.CellCountZ - 2 * Border;
         }
     }
 }

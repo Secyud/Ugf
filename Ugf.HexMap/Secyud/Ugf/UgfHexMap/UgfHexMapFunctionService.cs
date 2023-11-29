@@ -10,8 +10,8 @@ namespace Secyud.Ugf.UgfHexMap
 {
     public interface IUgfHexMapFunction
     {
-        UgfCell CurrentPathFrom { get; }
-        UgfCell CurrentPathTo { get; }
+        int CurrentPathFromIndex { get; }
+        int CurrentPathToIndex { get; }
         bool HasPath { get; }
         void Travel();
     }
@@ -25,8 +25,8 @@ namespace Secyud.Ugf.UgfHexMap
         private TMessageService _messageService;
         public bool HasPath { get; private set; }
 
-        public UgfCell CurrentPathFrom { get; private set; }
-        public UgfCell CurrentPathTo { get; private set; }
+        public int CurrentPathFromIndex { get; private set; }
+        public int CurrentPathToIndex { get; private set; }
 
         protected UgfHexMapFunctionService(TMessageService service)
         {
@@ -37,20 +37,24 @@ namespace Secyud.Ugf.UgfHexMap
         ///     Get a list of cells representing the currently visible path.
         /// </summary>
         /// <returns>The current path list, if a visible path exists.</returns>
-        public IList<UgfCell> GetPath()
+        public IList<int> GetPath()
         {
+            var grid = _messageService.Grid;
+
             if (!HasPath)
             {
-                return Array.Empty<UgfCell>();
+                return Array.Empty<int>();
             }
 
-            List<UgfCell> path = new();
-            for (UgfCell c = CurrentPathTo; c != CurrentPathFrom; c = c.PathFrom)
+            List<int> path = new();
+            for (int c = CurrentPathToIndex;
+                 c != CurrentPathFromIndex;
+                 c = (grid.GetCell(c) as UgfCell)!.PathFromIndex)
             {
                 path.Add(c);
             }
 
-            path.Add(CurrentPathFrom);
+            path.Add(CurrentPathFromIndex);
             path.Reverse();
             return path;
         }
@@ -62,17 +66,19 @@ namespace Secyud.Ugf.UgfHexMap
         {
             if (HasPath)
             {
-                UgfCell current = CurrentPathTo;
-                while (current != CurrentPathFrom)
+                var grid = _messageService.Grid;
+                int current = CurrentPathToIndex;
+                while (current != CurrentPathFromIndex)
                 {
-                    current.SetLabel(null);
-                    current = current.PathFrom;
+                    UgfCell cell = grid.GetCell(current) as UgfCell;
+                    cell!.SetLabel(null);
+                    current = cell.PathFromIndex;
                 }
 
                 HasPath = false;
             }
 
-            CurrentPathFrom = CurrentPathTo = null;
+            CurrentPathFromIndex = CurrentPathToIndex = -1;
         }
 
         /// <summary>
@@ -84,8 +90,8 @@ namespace Secyud.Ugf.UgfHexMap
         public void FindPath(UgfCell fromCell, UgfCell toCell, HexUnit unit)
         {
             ClearPath();
-            CurrentPathFrom = fromCell;
-            CurrentPathTo = toCell;
+            CurrentPathFromIndex = fromCell.Index;
+            CurrentPathToIndex = toCell.Index;
             HasPath = Search(fromCell, toCell, unit);
             _messageService.ShowPath(this, unit);
         }
@@ -94,7 +100,7 @@ namespace Secyud.Ugf.UgfHexMap
         {
             float speed = _messageService.GetSpeed(unit);
             _searchFrontierPhase += 2;
-            
+
             _searchFrontier.Clear();
 
             fromCell.SearchPhase = _searchFrontierPhase;
@@ -112,7 +118,7 @@ namespace Secyud.Ugf.UgfHexMap
                 for (HexDirection d = HexDirection.Ne; d <= HexDirection.Nw; d++)
                 {
                     UgfCell neighbor = current.GetNeighbor(d);
-                    if (!neighbor || neighbor.SearchPhase > _searchFrontierPhase)
+                    if (neighbor is null || neighbor.SearchPhase > _searchFrontierPhase)
                         continue;
 
                     float moveCost = _messageService.GetMoveCost(
@@ -130,7 +136,7 @@ namespace Secyud.Ugf.UgfHexMap
                     {
                         neighbor.SearchPhase = _searchFrontierPhase;
                         neighbor.Distance = (int)distance;
-                        neighbor.PathFrom = current;
+                        neighbor.PathFromIndex = current.Index;
                         neighbor.SearchHeuristic = neighbor.DistanceTo(toCell);
                         _searchFrontier.Enqueue(neighbor);
                     }
@@ -138,7 +144,7 @@ namespace Secyud.Ugf.UgfHexMap
                     {
                         int oldPriority = neighbor.SearchPriority;
                         neighbor.Distance = (int)distance;
-                        neighbor.PathFrom = current;
+                        neighbor.PathFromIndex = current.Index;
                         _searchFrontier.Change(neighbor, oldPriority);
                     }
                 }
@@ -151,31 +157,32 @@ namespace Secyud.Ugf.UgfHexMap
         {
             if (HasPath)
             {
-                IList<UgfCell> path = GetPath();
-                UgfCell location = path[0];
-                HexUnit unit = location.Unit;
+                IList<int> path = GetPath();
+                int location = path[0];
+                HexUnit unit = _messageService.Grid.GetCell(location).Unit;
                 if (unit)
                 {
-                    unit.Location = path[^1];
+                    unit.Location = _messageService.Grid.GetCell(path[^1]);
                     unit.StopAllCoroutines();
                     unit.StartCoroutine(TravelPath(path, unit));
                 }
             }
         }
 
-        private IEnumerator TravelPath(IList<UgfCell> path, HexUnit unit)
+        private IEnumerator TravelPath(IList<int> path, HexUnit unit)
         {
-            Vector3 a, b, c = path[0].Position;
+            var grid = _messageService.Grid;
+            Vector3 a, b, c = grid.GetCell(path[0]).Position;
             Transform transform = unit.transform;
 
             float t = Time.deltaTime * _messageService.TravelSpeed;
             for (int i = 1; i < path.Count; i++)
             {
-                UgfCell currentTravelLocation = path[i];
+                UgfCell currentTravelLocation = grid.GetCell(path[i]) as UgfCell;
                 a = c;
-                b = path[i - 1].Position;
+                b = grid.GetCell(path[i - 1]).Position;
 
-                c = (b + currentTravelLocation.Position) * 0.5f;
+                c = (b + currentTravelLocation!.Position) * 0.5f;
 
                 for (; t < 1f; t += Time.deltaTime * _messageService.TravelSpeed)
                 {

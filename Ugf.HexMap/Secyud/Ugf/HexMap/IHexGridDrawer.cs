@@ -7,5 +7,7 @@ namespace Secyud.Ugf.HexMap
         void TriangulateChunk(HexChunk chunk);
 
         Color32 GetCellShaderData(HexCell cell);
+
+        HexCell CreateCell();
     }
 }

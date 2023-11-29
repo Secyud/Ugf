@@ -6,31 +6,34 @@ using UnityEngine.Events;
 
 namespace Secyud.Ugf.HexMap
 {
-    public class HexUnit:MonoBehaviour
+    public class HexUnit : MonoBehaviour
     {
         private const float RotationSpeed = 360f;
 
         [SerializeField] private UnityEvent<Color> HighlightEvent;
-        
+
         private UnitProperty _property;
-        private HexCell _location;
+        private int _locationIndex = -1;
         private float _orientation;
         public int Id { get; set; }
+        public HexGrid Grid { get; set; }
 
         public HexCell Location
         {
-            get => _location;
+            get => Grid.GetCell(_locationIndex);
             set
             {
-                if (_location)
-                    _location.Unit = null;
+                if (_locationIndex >= 0)
+                {
+                    Grid.GetCell(_locationIndex).Unit = null;
+                }
 
-                _location = value;
-                _location.Unit = this;
+                _locationIndex = value.Index;
+                Grid.GetCell(_locationIndex).Unit  = this;
                 transform.localPosition = value.Position;
             }
         }
-        
+
         public float Orientation
         {
             get => _orientation;
@@ -40,32 +43,32 @@ namespace Secyud.Ugf.HexMap
                 transform.localRotation = Quaternion.Euler(0f, value, 0f);
             }
         }
-        
+
         private void OnEnable()
         {
-            if (_location)
+            if (_locationIndex>=0)
             {
-                transform.localPosition = _location.Position;
+                transform.localPosition = Grid.GetCell(_locationIndex).Position;
             }
         }
 
-        public void SetProperty([NotNull]UnitProperty property)
+        public void SetProperty([NotNull] UnitProperty property)
         {
             _property = property;
             property.Initialize(this);
         }
-        
+
         public TProperty Get<TProperty>()
             where TProperty : UnitProperty
         {
             return _property as TProperty;
         }
-        
+
         public void SetHighlight(Color color)
         {
             HighlightEvent.Invoke(color);
         }
-        
+
         public IEnumerator LookAt(Vector3 point)
         {
             Transform trans = transform;
@@ -96,30 +99,28 @@ namespace Secyud.Ugf.HexMap
 
         public HexDirection DirectionTo(HexCell cell)
         {
-            return _location.DirectionTo(cell);
+            return Location.DirectionTo(cell);
         }
-        
+
         public HexDirection DirectionTo(HexUnit unit)
         {
-            return DirectionTo(unit._location);
+            return DirectionTo(unit.Location);
         }
-        
+
         public float DistanceTo(HexCell cell)
         {
-            return _location.DistanceTo(cell);
+            return Location.DistanceTo(cell);
         }
-        
+
         public float DistanceTo(HexUnit unit)
         {
-            return DistanceTo(unit._location);
+            return DistanceTo(unit.Location);
         }
-        
-        
-        
+
+
         public void Die()
         {
             Destroy(gameObject);
         }
-
     }
 }
