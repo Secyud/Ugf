@@ -34,7 +34,7 @@ namespace Secyud.Ugf.UgfHexMap
         }
 
         /// <summary>
-        ///     Get a list of cells representing the currently visible path.
+        /// Get a list of cells representing the currently visible path.
         /// </summary>
         /// <returns>The current path list, if a visible path exists.</returns>
         public IList<int> GetPath()
