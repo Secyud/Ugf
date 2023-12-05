@@ -13,8 +13,7 @@ namespace UnityEngine
 {
     public static class UgfUnityExtensions
     {
-        public static IEnumerable<TButton> SelectVisibleFor<TButton, TItem>(this IEnumerable<TButton> buttons,
-            TItem item)
+        public static IEnumerable<TButton> SelectVisibleFor<TButton, TItem>(this IEnumerable<TButton> buttons, TItem item)
             where TButton : ButtonDescriptor<TItem>
         {
             return buttons.Where(u => u.Visible(item));

@@ -20,7 +20,14 @@ namespace Secyud.Ugf.FunctionalComponents
 		{
 			_timeRecord += Time.deltaTime;
 			if (OutTime < _timeRecord)
-				Destroy(gameObject);
+			{
+				Die();
+			}
+		}
+
+		public void Die()
+		{
+			Destroy(gameObject);
 		}
 	}
 }

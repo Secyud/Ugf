@@ -19,7 +19,15 @@ namespace Secyud.Ugf.BasicComponents
 
 		public void SetTextFloatToInt(float f)
 		{
-			text = ((int)f).ToString();
+			SetText((int)f);
+		}
+		public void SetText(byte value)
+		{
+			text = value.ToString();
+		}
+		public void SetText(int value)
+		{
+			text = value.ToString();
 		}
 	}
 }

@@ -11,7 +11,9 @@ namespace Secyud.Ugf.BasicComponents
 		public void OnPointerClick(PointerEventData eventData)
 		{
 			if (eventData.button == PointerEventData.InputButton.Right)
+			{
 				RightClick.Invoke();
+			}
 		}
 
 		public void Bind(UnityAction action)
