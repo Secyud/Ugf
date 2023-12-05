@@ -16,6 +16,7 @@ namespace Secyud.Ugf.HexMap
 		public void LateUpdate()
 		{
 			Grid.ShaderManager.ApplyTexture();
+			enabled = false;
 		}
 
 		public void Refresh()

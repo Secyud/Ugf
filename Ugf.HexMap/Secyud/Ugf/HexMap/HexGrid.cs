@@ -112,6 +112,7 @@ namespace Secyud.Ugf.HexMap
             }
 
             ShaderManager.ChangeTextureSize(CellCountX, CellCountZ);
+            MapCamera.ValidatePosition();
         }
 
         /// <summary>
@@ -197,7 +198,7 @@ namespace Secyud.Ugf.HexMap
         /// <param name="xOffset">X array offset coordinate.</param>
         /// <param name="zOffset">Z array offset coordinate.</param>
         /// <returns></returns>
-        internal HexCell GetCell(int xOffset, int zOffset)
+        public HexCell GetCell(int xOffset, int zOffset)
         {
             return Cells[xOffset + zOffset * CellCountX];
         }
@@ -211,9 +212,7 @@ namespace Secyud.Ugf.HexMap
         {
             return Cells[cellIndex];
         }
-
-        public HexCell this[int x, int z] => GetCell(x + HexCellExtension.Border, z + HexCellExtension.Border);
-
+        
         #endregion
 
         #region Unit

@@ -14,7 +14,6 @@ namespace Secyud.Ugf.AssetComponents
     public class AtlasSpriteContainer : SpriteContainer
     {
         [S] protected string AtlasName;
-        private SpriteAtlas _atlas;
 
         protected AtlasSpriteContainer()
         {
@@ -26,10 +25,10 @@ namespace Secyud.Ugf.AssetComponents
         {
             return spriteName.IsNullOrEmpty()
                 ? null
-                : new AtlasSpriteContainer()
+                : new AtlasSpriteContainer
                 {
                     Loader = loader,
-                    AtlasName = $"Images/Atlas/{atlasName}.spriteatlas",
+                    AtlasName = atlasName,
                     AssetName = spriteName
                 };
         }
@@ -43,14 +42,7 @@ namespace Secyud.Ugf.AssetComponents
         
         protected override Sprite GetObject()
         {
-            _atlas ??= Loader.LoadAsset<SpriteAtlas>(AtlasName);
-            return _atlas ? _atlas.GetSprite(AssetName) : null;
-        }
-        
-        public override void Release()
-        {
-            base.Release();
-            _atlas = null;
+            return  Loader.LoadAsset<Sprite>($"Images/{AtlasName}/{AssetName}.png");
         }
     }
 }
