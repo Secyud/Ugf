@@ -7,6 +7,15 @@ namespace Secyud.Ugf.TableComponents.SelectComponents
         public override string Name => nameof(SingleSelect);
         
         [SerializeField] private TableCell ShowCell;
+        [SerializeField] private GameObject GameObject;
+
+        private void Awake()
+        {
+            if (!GameObject)
+            {
+                GameObject = gameObject;
+            }
+        }
 
         public TableCell Cell => ShowCell;
 
@@ -18,7 +27,7 @@ namespace Secyud.Ugf.TableComponents.SelectComponents
 
         public void OnCancel()
         {
-            Destroy(gameObject);
+            Destroy(GameObject);
         }
     }
 }

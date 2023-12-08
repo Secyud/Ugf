@@ -43,5 +43,6 @@ namespace Secyud.Ugf.Collections
         }
 
         public IReadOnlyList<TKey> KeyList => _keys;
+        public ICollection<TItem> ValueList => _items.Values;
     }
 }
