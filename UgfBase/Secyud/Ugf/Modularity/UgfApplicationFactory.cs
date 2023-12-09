@@ -32,10 +32,8 @@ namespace Secyud.Ugf.Modularity
             IUgfApplication app = new UgfApplication(
                 new DependencyManager(), startUpModule, plugInSources
             );
-            app.Configure();
             Application = app;
-            IDependencyManager provider = Application.DependencyManager;
-        
+            app.Configure();
             return app;
         }
     }

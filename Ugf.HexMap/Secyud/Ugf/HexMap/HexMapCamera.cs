@@ -76,7 +76,7 @@ namespace Secyud.Ugf.HexMap
         /// </summary>
         public void ValidatePosition()
         {
-            AdjustPosition(0.1f, 0.1f);
+            AdjustPosition(0.5f, 0.5f);
             AdjustZoom(-999);
         }
 
