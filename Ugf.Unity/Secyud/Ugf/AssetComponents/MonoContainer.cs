@@ -80,6 +80,16 @@ namespace Secyud.Ugf.AssetComponents
             return CurrentInstance;
         }
 
+        public TComponent GetOrCreate()
+        {
+            if (!Value)
+            {
+                Create();
+            }
+
+            return Value;
+        }
+
         public void Destroy()
         {
             if (CurrentInstance)

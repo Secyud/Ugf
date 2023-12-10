@@ -10,6 +10,7 @@ namespace Secyud.Ugf.AssetComponents
 		where TComponent : Component
 	{
 		TComponent Create();
+		TComponent GetOrCreate();
 
 		void Destroy();
 	}
