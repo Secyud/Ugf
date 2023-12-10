@@ -31,7 +31,7 @@ namespace Secyud.Ugf.NotificationComponents
             gameObject.SetActive(true);
 
             Sequence sequence = DOTween.Sequence();
-            
+
             sequence.Append(_canvasGroup.DOFade(1, 0.2f));
             sequence.AppendInterval(ExistTime);
             sequence.Append(_canvasGroup.DOFade(0, 0.8f));
@@ -45,7 +45,7 @@ namespace Secyud.Ugf.NotificationComponents
         {
             Destroy(this);
         }
-        
+
         private void OnDestroy()
         {
             _content.RemoveNotification(this);
@@ -53,7 +53,7 @@ namespace Secyud.Ugf.NotificationComponents
 
         public void MoveTo(int index)
         {
-            _transform.DOLocalMoveY(_transform.localPosition.y +index*(_transform.rect.height + Interval) , 0.3f);
+            _transform.DOLocalMoveY( index * (_transform.rect.height + Interval), 0.3f);
         }
     }
 }
