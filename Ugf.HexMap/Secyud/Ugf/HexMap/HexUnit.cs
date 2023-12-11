@@ -1,5 +1,4 @@
 using System.Collections;
-using JetBrains.Annotations;
 using Secyud.Ugf.HexUtilities;
 using UnityEngine;
 using UnityEngine.Events;
@@ -12,11 +11,10 @@ namespace Secyud.Ugf.HexMap
 
         [SerializeField] private UnityEvent<Color> HighlightEvent;
 
-        private UnitProperty _property;
         private int _locationIndex = -1;
         private float _orientation;
         public int Id { get; set; }
-        public HexGrid Grid { get; set; }
+        public HexGrid Grid { get; private set; }
 
         public HexCell Location
         {
@@ -29,7 +27,7 @@ namespace Secyud.Ugf.HexMap
                 }
 
                 _locationIndex = value.Index;
-                Grid.GetCell(_locationIndex).Unit  = this;
+                Grid.GetCell(_locationIndex).Unit = this;
                 transform.localPosition = value.Position;
             }
         }
@@ -46,22 +44,10 @@ namespace Secyud.Ugf.HexMap
 
         private void OnEnable()
         {
-            if (_locationIndex>=0)
+            if (_locationIndex >= 0)
             {
                 transform.localPosition = Grid.GetCell(_locationIndex).Position;
             }
-        }
-
-        public void SetProperty([NotNull] UnitProperty property)
-        {
-            _property = property;
-            property.Initialize(this);
-        }
-
-        public TProperty Get<TProperty>()
-            where TProperty : UnitProperty
-        {
-            return _property as TProperty;
         }
 
         public void SetHighlight(Color color)
@@ -117,6 +103,12 @@ namespace Secyud.Ugf.HexMap
             return DistanceTo(unit.Location);
         }
 
+        public virtual void Initialize(int id, HexGrid grid, HexCell cell, float orientation = 0)
+        {
+            Id = id;
+            Grid = grid;
+            grid.AddUnit(this, cell, orientation);
+        }
 
         public virtual void Die()
         {

@@ -30,7 +30,9 @@ namespace Secyud.Ugf.Modularity
             moduleTypes.Add(moduleType);
 
             foreach (Type dependedModuleType in FindDependedModuleTypes(moduleType))
+            {
                 AddModuleAndDependenciesRecursively(moduleTypes, dependedModuleType);
+            }
         }
 
         public static List<Type> FindDependedModuleTypes(Type moduleType)
