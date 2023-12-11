@@ -39,17 +39,22 @@ namespace Secyud.Ugf.HexMap
         private void Update()
         {
             float zoomDelta = Input.GetAxis("Mouse ScrollWheel");
-            if (zoomDelta != 0f) AdjustZoom(zoomDelta);
+            if (zoomDelta != 0f)
+            {
+                AdjustZoom(zoomDelta);
+            }
 
             float rotationDelta = Input.GetAxis("Rotation");
-            if (rotationDelta != 0f) AdjustRotation(rotationDelta);
+            if (rotationDelta != 0f)
+            {
+                AdjustRotation(rotationDelta);
+            }
 
             float xDelta = Input.GetAxis("Horizontal");
             float zDelta = Input.GetAxis("Vertical");
             if (xDelta != 0f || zDelta != 0f)
             {
                 AdjustPosition(xDelta, zDelta);
-                _moveToTarget = false;
             }
 
             if (_moveToTarget)
@@ -58,10 +63,15 @@ namespace Secyud.Ugf.HexMap
                 Vector3 vector = _targetPosition - transform.localPosition;
                 Vector3 tmp = vector.normalized * speed;
                 if (vector.magnitude > tmp.magnitude)
+                {
                     vector = tmp;
+                }
+
                 transform.localPosition += vector;
                 if ((vector - transform.localPosition).magnitude < 1f)
+                {
                     _moveToTarget = false;
+                }
             }
         }
 
@@ -120,12 +130,13 @@ namespace Secyud.Ugf.HexMap
             Vector3 position = transform.localPosition;
             position += direction * distance;
             transform.localPosition = ClampPosition(position);
+            _moveToTarget = false;
         }
 
         private Vector3 ClampPosition(Vector3 position)
         {
-            float borderWidth = Mathf.Lerp(BorderWidthMin, BorderWidthMax, 1-_zoom);
-            
+            float borderWidth = Mathf.Lerp(BorderWidthMin, BorderWidthMax, 1 - _zoom);
+
             float xMin = (borderWidth + 0.5f) * HexMetrics.InnerDiameter;
             float xMax = (Grid.CellCountX - borderWidth - 0.5f) * HexMetrics.InnerDiameter;
             position.x = Mathf.Clamp(position.x, xMin, xMax);

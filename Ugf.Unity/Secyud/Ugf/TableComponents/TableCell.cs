@@ -11,5 +11,10 @@ namespace Secyud.Ugf.TableComponents
             get => Index;
             set => Index = value;
         }
+
+        public virtual void BindShowable(IShowable item)
+        {
+            
+        }
     }
 }

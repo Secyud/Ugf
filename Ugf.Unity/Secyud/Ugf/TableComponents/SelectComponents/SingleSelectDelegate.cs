@@ -43,6 +43,10 @@ namespace Secyud.Ugf.TableComponents.SelectComponents
             _selectedItem = item == _selectedItem ? null : item;
                 
             TableCell target = Component.Cell;
+            if (item is IShowable showable)
+            {
+                target.BindShowable(showable);
+            }
             SButton button = target.gameObject.GetOrAddComponent<SButton>();
             button.onClick.RemoveAllListeners();
             if (_selectedItem != null)
