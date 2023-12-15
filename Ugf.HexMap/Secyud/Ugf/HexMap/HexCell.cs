@@ -11,33 +11,25 @@ namespace Secyud.Ugf.HexMap
     {
         private readonly HexCell[] _neighbors = new HexCell[6];
 
-        protected RectTransform UiRect
-        {
-            get => _uiRect;
-            private set => _uiRect = value;
-        }
+        protected RectTransform UiRect { get; private set; }
 
-        protected HexChunk Chunk
-        {
-            get => _chunk;
-            private set => _chunk = value;
-        }
+        protected HexChunk Chunk { get; private set; }
 
-        public int Index
-        {
-            get => _index;
-            private set => _index = value;
-        }
+        public int Index { get; private set; }
+        
+        public HexCoordinates Coordinates { get; private set; }
 
+        /// <summary>
+        ///     Unit currently occupying the cell, if any.
+        /// </summary>
+        public HexUnit Unit { get; set; }
+
+        public Vector3 Position { get; protected set; }
+        
         public int X => Index % Chunk.Grid.CellCountX - HexCellExtension.Border;
 
         public int Z => Index / Chunk.Grid.CellCountX - HexCellExtension.Border;
 
-        public HexCoordinates Coordinates
-        {
-            get => _coordinates;
-            private set => _coordinates = value;
-        }
 
         private Image _highlight;
 
@@ -63,10 +55,6 @@ namespace Secyud.Ugf.HexMap
         }
 
         private Text _label;
-        private RectTransform _uiRect;
-        private HexChunk _chunk;
-        private int _index;
-        private HexCoordinates _coordinates;
         private Text Label => _label ? _label : _label = UiRect.GetComponent<Text>();
 
 
@@ -204,12 +192,5 @@ namespace Secyud.Ugf.HexMap
                 highlight.enabled = true;
             }
         }
-
-        /// <summary>
-        ///     Unit currently occupying the cell, if any.
-        /// </summary>
-        public HexUnit Unit { get; set; }
-
-        public Vector3 Position { get; protected set; }
     }
 }

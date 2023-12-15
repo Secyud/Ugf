@@ -8,30 +8,26 @@ using System.Ugf.Collections.Generic;
 
 namespace Secyud.Ugf.Collections
 {
-    public class RegistrableDictionary<TKey, TItem>
+    public class RegistrableDictionary<TKey, TItem>:RegistrableCollection<TItem>
         where TItem : IHasId<TKey>
     {
         private readonly Dictionary<TKey, TItem> _items = new();
         private readonly List<TKey> _keys = new();
 
-        public void Register(TItem item)
+        public override void Register(TItem item)
         {
             if (!_items.ContainsKey(item.Id))
                 _keys.Add(item.Id);
             _items[item.Id] = item;
         }
 
-        public void RegisterList(params TItem[] items)
-        {
-            foreach (TItem item in items) Register(item);
-        }
 
         public TItem Get(TKey key)
         {
             _items.TryGetValue(key, out TItem value);
             return value;
         }
-        
+
         public TItem GetByIndex(int index)
         {
             return _keys.Any() ? _items[_keys[index]] : default;
