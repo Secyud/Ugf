@@ -89,28 +89,46 @@ namespace Secyud.Ugf.Modularity
             foreach (IUgfModuleDescriptor descriptor in Modules)
             {
                 if (descriptor.Instance is IOnPreInitialization preInitialization)
+                {
                     onPreInitializations.AddLast(preInitialization);
+                }
+
                 if (descriptor.Instance is IOnInitialization initialization)
+                {
                     onInitializations.AddLast(initialization);
+                }
+
                 if (descriptor.Instance is IOnPostInitialization postInitialization)
+                {
                     onPostInitializations.AddLast(postInitialization);
+                }
             }
 
             foreach (IOnPreInitialization module in onPreInitializations)
+            {
                 yield return module.OnGamePreInitialization(context);
+            }
 
             foreach (IOnInitialization module in onInitializations)
+            {
                 yield return module.OnGameInitializing(context);
+            }
 
             foreach (IOnPostInitialization module in onPostInitializations)
+            {
                 yield return module.OnGamePostInitialization(context);
+            }
         }
 
         public IEnumerator GameSaving()
         {
             foreach (IUgfModuleDescriptor descriptor in Modules)
+            {
                 if (descriptor.Instance is IOnArchiving archiving)
+                {
                     yield return archiving.SaveGame();
+                }
+            }
         }
 
         public void Shutdown()

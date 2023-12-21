@@ -3,10 +3,12 @@ using System.Ugf;
 using Secyud.Ugf.Archiving;
 using Secyud.Ugf.AssetComponents;
 using Secyud.Ugf.AssetLoading;
+using Secyud.Ugf.DataManager;
 using UnityEngine;
 
 namespace Secyud.Ugf.UgfHexMap
 {
+    [ID("444be33a-104a-1d04-a043-0b7b00d798bc")]
     public class UgfUnitEffectContainer : PrefabContainer<UgfUnitEffect>
     {
         public new static PrefabContainer<UgfUnitEffect> Create(

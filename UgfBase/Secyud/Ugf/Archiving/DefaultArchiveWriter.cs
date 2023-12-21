@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using JetBrains.Annotations;
+using Secyud.Ugf.DataManager;
 
 namespace Secyud.Ugf.Archiving
 {
@@ -28,6 +30,11 @@ namespace Secyud.Ugf.Archiving
         {
         }
 
+        public override void Write([CanBeNull]string value)
+        {
+            base.Write(value ?? string.Empty);
+        }
+
         public void Write(Guid id)
         {
             Write(id.ToByteArray());
@@ -35,7 +42,8 @@ namespace Secyud.Ugf.Archiving
 
         public void WriteObject(object value)
         {
-            Write(value.GetType().GUID);
+            TypeDescriptor descriptor = TypeManager.Instance[value.GetType()];
+            Write(descriptor.Id);
             if (value is IArchivable archivable)
                 archivable.Save(this);
         }

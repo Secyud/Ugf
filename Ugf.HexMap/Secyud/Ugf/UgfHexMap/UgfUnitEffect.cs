@@ -1,21 +1,37 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Secyud.Ugf.UgfHexMap
 {
-    public sealed class UgfUnitEffect : MonoBehaviour
+    [RequireComponent(typeof(ParticleSystem))]
+    public class UgfUnitEffect : MonoBehaviour
     {
-        public UgfUnitEffectDelegate Delegate { get; set; }
+        private UgfUnitEffectDelegate _effectDelegate;
 
+        public UgfUnit Unit { get; private set; }
+        public UgfCell Target { get; private set; }
+        public ParticleSystem Particle { get; private set; }
 
-        private void Update()
+        public virtual void SetDelegate(UgfUnitEffectDelegate effectDelegate,
+            UgfUnit unit, UgfCell target)
         {
-            Delegate?.OnUpdate();
+            _effectDelegate = effectDelegate;
+            Unit = unit;
+            Target = target;
         }
 
-        private void OnDestroy()
+        protected void Awake()
         {
-            Delegate?.OnDestroy();
+            Particle = GetComponent<ParticleSystem>();
+        }
+
+        protected virtual void Update()
+        {
+            _effectDelegate?.OnUpdate(this);
+        }
+
+        protected virtual void OnDestroy()
+        {
+            _effectDelegate?.OnDestroy(this);
         }
     }
 }

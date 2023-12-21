@@ -5,24 +5,20 @@ namespace Secyud.Ugf.UgfHexMap
 {
     public class UgfUnitEffectDelegate
     {
-        protected UgfUnit Unit { get; set; }
-        protected UgfUnitEffect Effect { get; set; }
         
-        public virtual void OnInitialize(UgfUnitEffect effect, UgfUnit unit, HexCell target)
+        public virtual void OnInitialize(UgfUnitEffect effect, UgfUnit unit, UgfCell target)
         {
-            Effect = effect;
-            Unit = unit;
-            Effect.Delegate = this;
+            effect.SetDelegate(this,unit,target);
         }
 
-        public virtual void OnUpdate()
+        public virtual void OnUpdate(UgfUnitEffect effect)
         {
             
         }
 
-        public virtual void OnDestroy()
+        public virtual void OnDestroy(UgfUnitEffect effect)
         {
-            Unit.OnPlayFinished();
+            effect.Unit.OnPlayFinished();
         }
     }
 }

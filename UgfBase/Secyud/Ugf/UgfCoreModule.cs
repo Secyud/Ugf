@@ -4,6 +4,7 @@ using Localization;
 using Secyud.Ugf.InputManager;
 using Secyud.Ugf.Localization;
 using Secyud.Ugf.Modularity;
+using Secyud.Ugf.VirtualPath;
 
 #endregion
 
@@ -15,7 +16,8 @@ namespace Secyud.Ugf
         {
             context.Manager.AddTypes(
                 typeof(DefaultStringLocalizerFactory),
-                typeof(InputService));
+                typeof(InputService),
+                typeof(VirtualPathManager));
 
             context.AddStringResource<DefaultResource>();
         }

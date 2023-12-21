@@ -38,7 +38,7 @@ namespace Secyud.Ugf.Archiving
         public TObject ReadObject<TObject>() where TObject : class
         {
             TypeDescriptor descriptor = TypeManager.Instance[ReadGuid()];
-            object obj = U.Get(descriptor.GetType());
+            object obj = U.Get(descriptor.Type);
             if (obj is IArchivable archivable)
                 archivable.Load(this);
             return obj as TObject;
