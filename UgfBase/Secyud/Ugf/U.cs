@@ -34,7 +34,7 @@ namespace Secyud.Ugf
                 }
                 else
                 {
-                    return Application.dataPath[..^6];
+                    return Application.dataPath +"/..";
                 }
             }
         }
