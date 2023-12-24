@@ -1,8 +1,9 @@
+using System.Diagnostics;
 using UnityEngine;
 
 namespace Secyud.Ugf.ModManagement
 {
-    public class SteamModManagePanel:MonoBehaviour
+    public class SteamModManagePanel : MonoBehaviour
     {
         public void Close()
         {
@@ -11,8 +12,8 @@ namespace Secyud.Ugf.ModManagement
 
         public void EnsureSetting()
         {
-            // TODO
+            Application.Quit();
+            Process.Start(System.AppDomain.CurrentDomain.BaseDirectory);
         }
-
     }
 }
