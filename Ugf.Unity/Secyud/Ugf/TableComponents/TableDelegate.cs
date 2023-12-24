@@ -17,7 +17,7 @@ namespace Secyud.Ugf.TableComponents
 
     public class TableDelegate<TItem> : TableDelegate
     {
-        public IList<TItem> Items { get; private set; }
+        public IList<TItem> Items { get; }
         public IList<TItem> ItemsTmp { get; set; }
 
         private TableDelegate(Table table, IList<TItem> items)

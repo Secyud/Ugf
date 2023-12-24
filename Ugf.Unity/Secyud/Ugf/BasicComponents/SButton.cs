@@ -14,15 +14,6 @@ namespace Secyud.Ugf.BasicComponents
 		{
 			onClick.AddListener(action);
 		}
-		
-		public void Clear()
-		{
-			onClick.RemoveAllListeners();
-			if (TryGetComponent<AudioSource>(out var source))
-			{
-				Bind(source.Play);
-			}
-		}
 
 		// ReSharper disable once InconsistentNaming
 		public bool disabled

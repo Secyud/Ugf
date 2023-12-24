@@ -1,19 +1,20 @@
 ﻿using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Secyud.Ugf.TableComponents.SelectComponents
 {
-    public class SingleSelect:TableComponentBase<SingleSelect,SingleSelectDelegate>
+    public class SingleSelect : TableComponentBase<SingleSelect, SingleSelectDelegate>
     {
         public override string Name => nameof(SingleSelect);
-        
+
         [SerializeField] private TableCell ShowCell;
-        [SerializeField] private GameObject GameObject;
+        [SerializeField] private GameObject CancelGameObject;
 
         private void Awake()
         {
-            if (!GameObject)
+            if (!CancelGameObject)
             {
-                GameObject = gameObject;
+                CancelGameObject = gameObject;
             }
         }
 
@@ -27,7 +28,10 @@ namespace Secyud.Ugf.TableComponents.SelectComponents
 
         public void OnCancel()
         {
-            Destroy(GameObject);
+            if (CancelGameObject)
+            {
+                Destroy(CancelGameObject);
+            }
         }
     }
 }

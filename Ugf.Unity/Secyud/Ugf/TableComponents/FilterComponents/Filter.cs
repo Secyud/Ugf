@@ -32,9 +32,13 @@ namespace Secyud.Ugf.TableComponents.FilterComponents
 
         public void CreateTrigger<TItem>(FilterTriggerDescriptor<TItem> descriptor)
         {
+            CreateTrigger(descriptor, descriptor.Filters);
+        }
+        public void CreateTrigger(ICanBeEnabled descriptor,IEnumerable<ICanBeEnabled> filters)
+        {
             FilterTrigger trigger = TriggerTemplate.Create(transform, this, descriptor);
             Filters.Add(trigger);
-            trigger.Registrations.AddRange(descriptor.Filters);
+            trigger.Registrations.AddRange(filters);
         }
     }
 }
