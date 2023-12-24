@@ -16,11 +16,6 @@ namespace Secyud.Ugf.Modularity
         int CurrentStep { get; set; }
 
         void Configure();
-
-        IEnumerator GameInitialization();
-        
-        IEnumerator GameSaving();
-
         void Shutdown();
     }
 }

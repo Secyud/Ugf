@@ -6,6 +6,7 @@ using Secyud.Ugf.Modularity;
 using Secyud.Ugf.DataManager;
 using Secyud.Ugf.DependencyInjection;
 using UnityEngine;
+using Object = UnityEngine.Object;
 using Random = UnityEngine.Random;
 
 #endregion
@@ -22,7 +23,7 @@ namespace Secyud.Ugf
         public static Canvas Canvas => UgfApplicationFactory.Instance.Manager.Canvas;
         public static UgfApplicationFactory Factory => UgfApplicationFactory.Instance;
 
-        
+
         public static string Path
 
         {
@@ -34,7 +35,7 @@ namespace Secyud.Ugf
                 }
                 else
                 {
-                    return Application.dataPath +"/..";
+                    return Application.dataPath + "/..";
                 }
             }
         }
@@ -97,6 +98,7 @@ namespace Secyud.Ugf
             }
 #endif
         }
+
         public static void LogError(object obj)
         {
 #if DEBUG
@@ -110,6 +112,21 @@ namespace Secyud.Ugf
             }
 #endif
         }
+
+        public static void LogError(object obj, Object context)
+        {
+#if DEBUG
+            if (DataManager)
+            {
+                Console.Error.WriteLine($"{obj} \r\n {context}");
+            }
+            else
+            {
+                Debug.LogError(obj, context);
+            }
+#endif
+        }
+
         public static void LogWarning(object obj)
         {
 #if DEBUG

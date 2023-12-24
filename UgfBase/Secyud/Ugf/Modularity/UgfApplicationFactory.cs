@@ -5,26 +5,16 @@ namespace Secyud.Ugf.Modularity
 {
     public class UgfApplicationFactory
     {
-        public  UgfGameManager Manager { get; private set; }
+        public UgfGameManager Manager { get; private set; }
         public IUgfApplication Application { get; private set; }
         public static UgfApplicationFactory Instance { get; private set; }
 
-        public void InitializeGame()
-        {
-            Manager.StartCoroutine(Application.GameInitialization());
-        }
-
-        public void SaveGame()
-        {
-            Manager.StartCoroutine(Application.GameSaving());
-        }
-
-        public void GameShutdown()
+        public void Shutdown()
         {
             Application.Shutdown();
         }
-    
-        public IUgfApplication Create(UgfGameManager manager,Type startUpModule,
+
+        public IUgfApplication Create(UgfGameManager manager, Type startUpModule,
             PlugInSourceList plugInSources = null)
         {
             Manager = manager;

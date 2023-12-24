@@ -1,5 +1,12 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Ugf.Collections.Generic;
 using Secyud.Ugf.DataManager;
+using Secyud.Ugf.DependencyInjection;
+using Secyud.Ugf.Modularity;
+using UnityEditor;
+using UnityEngine;
 
 namespace Secyud.Ugf.Archiving
 {
@@ -92,5 +99,91 @@ namespace Secyud.Ugf.Archiving
             string resourceId = reader.ReadString();
             U.Tm.LoadObjectFromResource(shown, resourceId);
         }
+        
+        
+        
+        public static IEnumerator GameInitialization(this IUgfApplication application)
+        {
+            using GameInitializeContext context = new(application.DependencyManager.CreateScopeProvider());
+
+            foreach (IUgfModuleDescriptor module in application.Modules)
+            {
+                if (module.Instance is IOnPreInitialization preInitialization)
+                {
+                    yield return preInitialization.OnGamePreInitialization(context);
+                }
+            }
+
+            foreach (var module in application.Modules)
+            {
+                if (module.Instance is IOnInitialization initialization)
+                {
+                    yield return initialization.OnGameInitializing(context);
+                }
+            }
+
+            foreach (IUgfModuleDescriptor module in application.Modules)
+            {
+                if (module.Instance is IOnPostInitialization postInitialization)
+                {
+                    yield return postInitialization.OnGamePostInitialization(context);
+                }
+            }
+        }
+        
+        public static IEnumerator GameLoading(this IUgfApplication application)
+        {
+            using GameInitializeContext context = new(application.DependencyManager.CreateScopeProvider());
+
+            foreach (IUgfModuleDescriptor module in application.Modules)
+            {
+                if (module.Instance is IOnPreInitialization preInitialization)
+                {
+                    yield return preInitialization.OnGamePreInitialization(context);
+                }
+            }
+
+            foreach (var module in application.Modules)
+            {
+                if (module.Instance is IOnArchiving initialization)
+                {
+                    yield return initialization.LoadGame();
+                }
+            }
+
+            foreach (IUgfModuleDescriptor module in application.Modules)
+            {
+                if (module.Instance is IOnPostInitialization postInitialization)
+                {
+                    yield return postInitialization.OnGamePostInitialization(context);
+                }
+            }
+        }
+
+        public static IEnumerator GameSaving(this IUgfApplication applications)
+        {
+            foreach (IUgfModuleDescriptor descriptor in applications.Modules)
+            {
+                if (descriptor.Instance is IOnArchiving archiving)
+                {
+                    yield return archiving.SaveGame();
+                }
+            }
+        }
+        
+        public  static void InitializeGame(this UgfApplicationFactory factory)
+        {
+            factory.Manager.StartCoroutine(factory.Application.GameInitialization());
+        }
+        
+        public static void SaveGame(this UgfApplicationFactory factory)
+        {
+            factory.Manager.StartCoroutine(factory.Application.GameSaving());
+        }
+        public static void LoadGame(this UgfApplicationFactory factory)
+        {
+            factory.Manager.StartCoroutine(factory.Application.GameLoading());
+        }
+
     }
 }

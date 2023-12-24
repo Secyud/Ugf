@@ -20,7 +20,7 @@ namespace Secyud.Ugf.Modularity
         private readonly Type _startupModuleType;
         private bool _configuredServices;
 
-        public int TotalStep { get; private set; }
+        public int TotalStep { get; set; }
         public int CurrentStep { get; set; }
 
         public IDependencyManager DependencyManager { get; }
@@ -52,94 +52,46 @@ namespace Secyud.Ugf.Modularity
             CheckMultipleConfigureServices();
 
             ConfigurationContext context = new(DependencyManager);
-
-            List<IOnPreConfigure> onPre = new();
-            List<IOnPostConfigure> onPost = new();
-
-            foreach (IUgfModuleDescriptor descriptor in Modules)
+            
+            foreach (IUgfModuleDescriptor module in Modules)
             {
-                if (descriptor.Instance is IOnPreConfigure preInitialization)
-                    onPre.AddLast(preInitialization);
-                if (descriptor.Instance is IOnPostConfigure postInitialization)
-                    onPost.AddLast(postInitialization);
+                if (module.Instance is IOnPreConfigure onPre)
+                {
+                    onPre.PreConfigure(context);
+                }
             }
 
-
-            foreach (IOnPreConfigure module in onPre)
-                module.PreConfigure(context);
-
             foreach (IUgfModuleDescriptor module in Modules)
+            {
                 module.Instance.Configure(context);
+            }
 
             if (!U.DataManager)
-                foreach (IOnPostConfigure module in onPost)
-                    module.PostConfigure(context);
+            {
+                foreach (IUgfModuleDescriptor module in Modules)
+                {
+                    if (module.Instance is IOnPostConfigure onPost)
+                    {
+                        onPost.PostConfigure(context);
+                    }
+                }
+            }
 
             _configuredServices = true;
         }
 
-        public IEnumerator GameInitialization()
-        {
-            using GameInitializeContext context = new(DependencyManager.CreateScopeProvider());
-
-            List<IOnPreInitialization> onPreInitializations = new();
-            List<IOnInitialization> onInitializations = new();
-            List<IOnPostInitialization> onPostInitializations = new();
-
-            foreach (IUgfModuleDescriptor descriptor in Modules)
-            {
-                if (descriptor.Instance is IOnPreInitialization preInitialization)
-                {
-                    onPreInitializations.AddLast(preInitialization);
-                }
-
-                if (descriptor.Instance is IOnInitialization initialization)
-                {
-                    onInitializations.AddLast(initialization);
-                }
-
-                if (descriptor.Instance is IOnPostInitialization postInitialization)
-                {
-                    onPostInitializations.AddLast(postInitialization);
-                }
-            }
-
-            foreach (IOnPreInitialization module in onPreInitializations)
-            {
-                yield return module.OnGamePreInitialization(context);
-            }
-
-            foreach (IOnInitialization module in onInitializations)
-            {
-                yield return module.OnGameInitializing(context);
-            }
-
-            foreach (IOnPostInitialization module in onPostInitializations)
-            {
-                yield return module.OnGamePostInitialization(context);
-            }
-        }
-
-        public IEnumerator GameSaving()
-        {
-            foreach (IUgfModuleDescriptor descriptor in Modules)
-            {
-                if (descriptor.Instance is IOnArchiving archiving)
-                {
-                    yield return archiving.SaveGame();
-                }
-            }
-        }
 
         public void Shutdown()
         {
             using GameShutDownContext context = new(DependencyManager.CreateScopeProvider());
-
+            
             for (int i = Modules.Count - 1; i >= 0; i--)
             {
                 if (Modules[i].Instance is IOnShutDown module)
-                    module.OnGameShutDown(context);
+                    module.OnShutDown(context);
             }
+            
+            UnityEngine.Application.Quit();
         }
 
 

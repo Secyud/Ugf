@@ -2,6 +2,6 @@
 {
     public interface IOnShutDown
     {
-        void OnGameShutDown(GameShutDownContext context);
+        void OnShutDown(GameShutDownContext context);
     }
 }
