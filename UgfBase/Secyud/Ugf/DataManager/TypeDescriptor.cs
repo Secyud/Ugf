@@ -19,12 +19,18 @@ namespace Secyud.Ugf.DataManager
         }
 
         /// <summary>
-        /// generate object form resource stored in <see cref="TypeManager._propertyDict"/>
+        /// generate object form resource stored in <see cref="Resources"/>
         /// </summary>
         /// <param name="resourceId"></param>
         /// <returns></returns>
         public object ReadObjectFromResource(string resourceId)
         {
+            if (resourceId is null)
+            {
+                U.LogError($"Please set resource id. For type {Type}");
+                return null;
+            }
+            
             if (Resources.TryGetValue(resourceId, out ResourceDescriptor resource))
             {
                 object obj = U.Get(Type);
