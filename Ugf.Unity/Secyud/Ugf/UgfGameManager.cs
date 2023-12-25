@@ -1,13 +1,15 @@
 #region
 
 using System;
+using Secyud.Ugf.Modularity;
+using Secyud.Ugf.UpdateComponents;
 using UnityEngine;
 
 #endregion
 
-namespace Secyud.Ugf.Modularity
+namespace Secyud.Ugf
 {
-    public abstract class UgfGameManager : MonoBehaviour
+    public abstract class UgfGameManager : MonoBehaviour, IUgfGameManager
     {
         [SerializeField] private Camera MainCamera;
         [SerializeField] private Canvas MainCanvas;
@@ -18,7 +20,7 @@ namespace Secyud.Ugf.Modularity
         private UgfApplicationFactory _factory;
         public Camera Camera => MainCamera;
         public Canvas Canvas => MainCanvas;
-        
+
 
         public virtual void Awake()
         {

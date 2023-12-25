@@ -1,6 +1,6 @@
 ﻿namespace Secyud.Ugf.AssetComponents
 {
-	public abstract class ObjectContainer<TObject> : IObjectAccessor<TObject>, IReleasable
+	public abstract class ObjectContainer<TObject> : IObjectAccessor<TObject>
 	{
 		protected TObject CurrentInstance;
 
@@ -11,10 +11,5 @@
 		protected abstract TObject GetObject();
 
 		public virtual TObject Value => CurrentInstance ??= GetObject();
-
-		public virtual void Release()
-		{
-			CurrentInstance = default;
-		}
 	}
 }

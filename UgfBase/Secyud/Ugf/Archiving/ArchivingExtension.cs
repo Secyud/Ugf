@@ -1,11 +1,7 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Ugf.Collections.Generic;
 using Secyud.Ugf.DataManager;
-using Secyud.Ugf.DependencyInjection;
 using Secyud.Ugf.Modularity;
-using UnityEditor;
 using UnityEngine;
 
 namespace Secyud.Ugf.Archiving
@@ -99,9 +95,8 @@ namespace Secyud.Ugf.Archiving
             string resourceId = reader.ReadString();
             U.Tm.LoadObjectFromResource(shown, resourceId);
         }
-        
-        
-        
+
+
         public static IEnumerator GameInitialization(this IUgfApplication application)
         {
             using GameInitializeContext context = new(application.DependencyManager.CreateScopeProvider());
@@ -130,7 +125,7 @@ namespace Secyud.Ugf.Archiving
                 }
             }
         }
-        
+
         public static IEnumerator GameLoading(this IUgfApplication application)
         {
             using GameInitializeContext context = new(application.DependencyManager.CreateScopeProvider());
@@ -143,7 +138,7 @@ namespace Secyud.Ugf.Archiving
                 }
             }
 
-            foreach (var module in application.Modules)
+            foreach (IUgfModuleDescriptor module in application.Modules)
             {
                 if (module.Instance is IOnArchiving initialization)
                 {
@@ -170,20 +165,29 @@ namespace Secyud.Ugf.Archiving
                 }
             }
         }
-        
-        public  static void InitializeGame(this UgfApplicationFactory factory)
+
+        public static void InitializeGame(this UgfApplicationFactory factory)
         {
-            factory.Manager.StartCoroutine(factory.Application.GameInitialization());
-        }
-        
-        public static void SaveGame(this UgfApplicationFactory factory)
-        {
-            factory.Manager.StartCoroutine(factory.Application.GameSaving());
-        }
-        public static void LoadGame(this UgfApplicationFactory factory)
-        {
-            factory.Manager.StartCoroutine(factory.Application.GameLoading());
+            if (factory.Manager is MonoBehaviour monoBehaviour)
+            {
+                monoBehaviour.StartCoroutine(factory.Application.GameInitialization());
+            }
         }
 
+        public static void SaveGame(this UgfApplicationFactory factory)
+        {
+            if (factory.Manager is MonoBehaviour monoBehaviour)
+            {
+                monoBehaviour.StartCoroutine(factory.Application.GameSaving());
+            }
+        }
+
+        public static void LoadGame(this UgfApplicationFactory factory)
+        {
+            if (factory.Manager is MonoBehaviour monoBehaviour)
+            {
+                monoBehaviour.StartCoroutine(factory.Application.GameLoading());
+            }
+        }
     }
 }

@@ -1,14 +1,3 @@
-// The SteamManager is designed to work with Steamworks.NET
-// This file is released into the public domain.
-// Where that dedication is not recognized you are granted a perpetual,
-// irrevocable license to copy and modify this file as you see fit.
-//
-// Version: 1.0.13
-
-#if !(UNITY_STANDALONE_WIN || UNITY_STANDALONE_LINUX || UNITY_STANDALONE_OSX || STEAMWORKS_WIN || STEAMWORKS_LIN_OSX)
-#define DISABLESTEAMWORKS
-#endif
-
 using System;
 using Steamworks;
 using UnityEngine;
@@ -19,36 +8,19 @@ using UnityEngine;
 //
 namespace Secyud.Ugf
 {
-    [DisallowMultipleComponent]
-    public sealed class SteamManager : MonoBehaviour
+    public class SteamManager : IDisposable
     {
-#if !DISABLESTEAMWORKS
-        private static bool _everInitialized = false;
-
         private static SteamManager _instance;
-        
-        public static SteamManager Instance
-        {
-            get
-            {
-                if (!_instance)
-                {
-                    _instance = new GameObject("SteamManager").AddComponent<SteamManager>();
-                }
 
-                return _instance;
-            }
-        }
+        public static SteamManager Instance => _instance ??= new SteamManager();
 
         private static SteamPlugInSource _plugInSource;
 
         public SteamPlugInSource PlugInSource => _plugInSource ??= new SteamPlugInSource();
 
-        private bool _initialized;
+        public bool Initialized { get; private set; }
 
-        public static bool Initialized => Instance._initialized;
-
-        private SteamAPIWarningMessageHook_t _steamAPIWarningMessageHook;
+        private readonly SteamAPIWarningMessageHook_t _steamAPIWarningMessageHook;
 
         [AOT.MonoPInvokeCallback(typeof(SteamAPIWarningMessageHook_t))]
         private static void SteamAPIDebugTextHook(int nSeverity, System.Text.StringBuilder pchDebugText)
@@ -61,14 +33,12 @@ namespace Secyud.Ugf
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
         private static void InitOnPlayMode()
         {
-            _everInitialized = false;
             _instance = null;
         }
 #endif
-
-        private void Awake()
+        public SteamManager()
         {
-            if (_everInitialized)
+            if (_instance is not null)
             {
                 // This is almost always an error.
                 // The most common case where this happens is when SteamManager gets destroyed because of Application.Quit(),
@@ -77,15 +47,12 @@ namespace Secyud.Ugf
                 throw new Exception("Tried to Initialize the SteamAPI twice in one session!");
             }
 
-            // We want our SteamManager Instance to persist across scenes.
-            DontDestroyOnLoad(gameObject);
-
             if (!Packsize.Test())
             {
                 U.LogError(
                     "[Steamworks.NET] Packsize Test returned false, " +
                     "the wrong version of Steamworks.NET is being run " +
-                    "in this platform.", this);
+                    "in this platform.");
             }
 
             if (!DllCheck.Test())
@@ -93,7 +60,7 @@ namespace Secyud.Ugf
                 U.LogError(
                     "[Steamworks.NET] DllCheck Test returned false, " +
                     "One or more of the Steamworks binaries seems to " +
-                    "be the wrong version.", this);
+                    "be the wrong version.");
             }
 
             try
@@ -121,8 +88,10 @@ namespace Secyud.Ugf
             {
                 // We catch this exception here, as it will be the first occurrence of it.
                 Debug.LogError(
-                    "[Steamworks.NET] Could not load [lib]steam_api.dll/so/dylib. It's likely not in the correct location. Refer to the README for more details.\n" +
-                    e, this);
+                    "[Steamworks.NET] Could not load [lib]steam_api.dll/so/dylib. " +
+                    "It's likely not in the correct location. " +
+                    "Refer to the README for more details.\n" +
+                    e);
 
                 Application.Quit();
                 return;
@@ -137,78 +106,26 @@ namespace Secyud.Ugf
             // [*] Your App ID is not completely set up, i.e. in Release State: Unavailable, or it's missing default packages.
             // Valve's documentation for this is located here:
             // https://partner.steamgames.com/doc/sdk/api#initialization_and_shutdown
-            _initialized = SteamAPI.Init();
-            if (!_initialized)
+            Initialized = SteamAPI.Init();
+            if (!Initialized)
             {
                 U.LogError(
                     "[Steamworks.NET] SteamAPI_Init() failed. " +
                     "Refer to Valve's documentation or the comment " +
-                    "above this line for more information.", this);
+                    "above this line for more information.");
 
                 return;
             }
 
-            _everInitialized = true;
+            // Set up our callback to receive warning messages from Steam.
+            // You must launch with "-debug_steamapi" in the launch args to receive warnings.
+            _steamAPIWarningMessageHook = SteamAPIDebugTextHook;
+            SteamClient.SetWarningMessageHook(_steamAPIWarningMessageHook);
         }
 
-        // This should only ever get called on first load and after an Assembly reload, You should never Disable the Steamworks Manager yourself.
-        private void OnEnable()
+        public void Dispose()
         {
-            if (_instance == null)
-            {
-                _instance = this;
-            }
-
-            if (!_initialized)
-            {
-                return;
-            }
-
-            if (_steamAPIWarningMessageHook == null)
-            {
-                // Set up our callback to receive warning messages from Steam.
-                // You must launch with "-debug_steamapi" in the launch args to receive warnings.
-                _steamAPIWarningMessageHook = SteamAPIDebugTextHook;
-                SteamClient.SetWarningMessageHook(_steamAPIWarningMessageHook);
-            }
-        }
-
-        // OnApplicationQuit gets called too early to shutdown the SteamAPI.
-        // Because the SteamManager should be persistent and never disabled or destroyed we can shutdown the SteamAPI here.
-        // Thus it is not recommended to perform any Steamworks work in other OnDestroy functions as the order of execution can not be garenteed upon Shutdown. Prefer OnDisable().
-        private void OnDestroy()
-        {
-            if (_instance != this)
-            {
-                return;
-            }
-
-            _instance = null;
-
-            if (!_initialized)
-            {
-                return;
-            }
-
             SteamAPI.Shutdown();
         }
-
-        private void Update()
-        {
-            if (!_initialized)
-            {
-                return;
-            }
-
-            // Run Steam client callbacks
-            SteamAPI.RunCallbacks();
-        }
-#else
-	public static bool Initialized {
-		get {
-			return false;
-		}
-	}
-#endif // !DISABLESTEAMWORKS
     }
 }

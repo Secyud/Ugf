@@ -13,7 +13,7 @@ namespace Secyud.Ugf.ModManagement
         public void EnsureSetting()
         {
             Application.Quit();
-            Process.Start(System.AppDomain.CurrentDomain.BaseDirectory);
+            Process.Start(Process.GetCurrentProcess().MainModule!.FileName);
         }
     }
 }

@@ -11,7 +11,7 @@ using Object = UnityEngine.Object;
 
 namespace Secyud.Ugf.AssetComponents
 {
-    public class AssetContainer<TAsset> : ObjectContainer<TAsset>, IArchivable
+    public class AssetContainer<TAsset> : ObjectContainer<TAsset>, IArchivable,IDisposable
         where TAsset : Object
     {
         [S] protected IAssetLoader Loader;
@@ -52,20 +52,6 @@ namespace Secyud.Ugf.AssetComponents
             return Loader.LoadAsset<TAsset>(AssetName);
         }
 
-        ~AssetContainer()
-        {
-            Release();
-        }
-
-        public override void Release()
-        {
-            if (CurrentInstance)
-            {
-                Loader.Release(CurrentInstance);
-            }
-            CurrentInstance = null;
-        }
-
         public virtual void Save(IArchiveWriter writer)
         {
             writer.WriteNullable(Loader);
@@ -76,6 +62,15 @@ namespace Secyud.Ugf.AssetComponents
         {
             Loader = reader.ReadNullable<IAssetLoader>();
             AssetName = reader.ReadString();
+        }
+        
+        public void Dispose()
+        {
+            if (CurrentInstance)
+            {
+                Loader.Release(CurrentInstance);
+            }
+            CurrentInstance = null;
         }
     }
 }

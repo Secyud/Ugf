@@ -3,19 +3,23 @@
 using System.Collections.Generic;
 using System.Ugf.Collections.Generic;
 using Secyud.Ugf.DependencyInjection;
-using Secyud.Ugf.Modularity;
+using Secyud.Ugf.UpdateComponents;
 using UnityEngine;
 
 #endregion
 
 namespace Secyud.Ugf.InputManager
 {
-    [Registry(typeof(IUpdateService))]
-    public class InputService : IUpdateService
+    public class InputService :IRegistry
     {
         private readonly List<InputComponent> _list = new();
         private readonly List<InputEvent> _globalInput = new();
 
+        public InputService(IUpdateService service)
+        {
+            service.UpdateAction += Update;
+        }
+        
         public void AddInput(InputComponent component)
         {
             _list.AddLast(component);

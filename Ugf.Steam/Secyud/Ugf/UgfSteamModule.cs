@@ -1,4 +1,6 @@
 using Secyud.Ugf.Modularity;
+using Secyud.Ugf.UpdateComponents;
+using Steamworks;
 
 namespace Secyud.Ugf
 {
@@ -11,6 +13,9 @@ namespace Secyud.Ugf
         {
             context.Manager.AddAssembly(typeof(UgfSteamModule).Assembly);
             context.Manager.RegisterInstance(SteamManager.Instance);
+
+            IUpdateService updateService = context.Get<IUpdateService>();
+            updateService.UpdateAction += SteamAPI.RunCallbacks;
         }
     }
 }

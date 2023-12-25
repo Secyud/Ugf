@@ -5,7 +5,7 @@ namespace Secyud.Ugf.Modularity
 {
     public class UgfApplicationFactory
     {
-        public UgfGameManager Manager { get; private set; }
+        public IUgfGameManager Manager { get; private set; }
         public IUgfApplication Application { get; private set; }
         public static UgfApplicationFactory Instance { get; private set; }
 
@@ -14,7 +14,7 @@ namespace Secyud.Ugf.Modularity
             Application.Shutdown();
         }
 
-        public IUgfApplication Create(UgfGameManager manager, Type startUpModule,
+        public IUgfApplication Create(IUgfGameManager manager, Type startUpModule,
             PlugInSourceList plugInSources = null)
         {
             Manager = manager;

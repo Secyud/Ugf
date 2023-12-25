@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-
 namespace Secyud.Ugf.VirtualPath
 {
     public interface IVirtualPathManager
