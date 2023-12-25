@@ -78,8 +78,7 @@ namespace Secyud.Ugf.DataManager
 
             Write(true);
 
-            Type type = value.GetType();
-            Write(TypeManager.Instance[type].Id);
+            Write(value.GetType().GUID);
 
             SaveProperties(value);
         }

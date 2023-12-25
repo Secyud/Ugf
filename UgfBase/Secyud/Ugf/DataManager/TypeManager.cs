@@ -8,15 +8,9 @@ namespace Secyud.Ugf.DataManager
 {
     public class TypeManager
     {
-        private readonly ConcurrentDictionary<Guid, TypeDescriptor> _typeDict = new();
-
-        /// <summary>
-        /// store property.
-        /// </summary>
-        private readonly ConcurrentDictionary<Type, TypeDescriptor> _propertyDict = new();
-
         public static TypeManager Instance { get; } = new();
-
+        
+        private readonly ConcurrentDictionary<Guid, TypeDescriptor> _typeDict = new();
 
         public void AddResourcesFromStream(Stream stream)
         {
@@ -62,11 +56,17 @@ namespace Secyud.Ugf.DataManager
                     return null;
                 }
 
-                if (!_propertyDict.TryGetValue(type, out TypeDescriptor property))
+                if (_typeDict.TryGetValue(type.GUID, out TypeDescriptor property))
+                {
+                    if (U.DataManager && property.Type != type)
+                    {
+                        U.LogError($"Duplicate guid: {type.GUID} for {type} and {property.Type}");
+                    }
+                }
+                else
                 {
                     property = new TypeDescriptor(type);
-                    _propertyDict[type] = property;
-                    _typeDict[property.Id] = property;
+                    _typeDict[type.GUID] = property;
                 }
 
                 return property;
@@ -80,7 +80,7 @@ namespace Secyud.Ugf.DataManager
                 return null;
             }
 
-            _propertyDict.TryGetValue(type, out TypeDescriptor property);
+            _typeDict.TryGetValue(type.GUID, out TypeDescriptor property);
             
             return property;
         }

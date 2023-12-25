@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using JetBrains.Annotations;
-using Secyud.Ugf.DataManager;
 
 namespace Secyud.Ugf.Archiving
 {
@@ -42,8 +41,7 @@ namespace Secyud.Ugf.Archiving
 
         public void WriteObject(object value)
         {
-            TypeDescriptor descriptor = TypeManager.Instance[value.GetType()];
-            Write(descriptor.Id);
+            Write(value.GetType().GUID);
             if (value is IArchivable archivable)
                 archivable.Save(this);
         }

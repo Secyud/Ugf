@@ -1,6 +1,3 @@
-using Secyud.Ugf.HexMap;
-using UnityEngine;
-
 namespace Secyud.Ugf.UgfHexMap
 {
     public class UgfUnitEffectDelegate
