@@ -71,7 +71,7 @@ namespace Secyud.Ugf.DataManager
 
                 if (_typeDict.TryGetValue(type.GUID, out TypeDescriptor property))
                 {
-                    if (U.DataManager && property.Type != type)
+                    if (U. DataManager && property.Type != type)
                     {
                         U.LogError($"Duplicate guid: {type.GUID} for {type} and {property.Type}");
                     }

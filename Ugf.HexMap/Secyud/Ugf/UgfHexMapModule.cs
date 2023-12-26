@@ -16,12 +16,8 @@ namespace Secyud.Ugf
         public void Configure(ConfigurationContext context)
         {
             context.Manager.AddAssembly(typeof(UgfHexMapModule).Assembly);
-            
-            if (!U.DataManager)
-            {
-                HexMetrics.NoiseSource = Resources.Load<Texture2D>("Noise");
-                HexMetrics.InitializeHashGrid(1238);
-            }
+            HexMetrics.NoiseSource = Resources.Load<Texture2D>("Noise");
+            HexMetrics.InitializeHashGrid(1238);
         }
     }
 }

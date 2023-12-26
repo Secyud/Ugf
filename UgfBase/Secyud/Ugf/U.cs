@@ -14,7 +14,7 @@ using Random = UnityEngine.Random;
 namespace Secyud.Ugf
 {
     public static class U
-    {
+    { 
         public static bool DataManager { get; set; } = false;
         public static ILocalizer<string> T => DefaultLocalizer<string>.Localizer;
         public static TypeManager Tm => TypeManager.Instance;
@@ -25,7 +25,6 @@ namespace Secyud.Ugf
 
 
         public static string Path
-
         {
             get
             {
@@ -101,7 +100,6 @@ namespace Secyud.Ugf
 
         public static void LogError(object obj)
         {
-#if DEBUG
             if (DataManager)
             {
                 Console.Error.WriteLine(obj);
@@ -110,12 +108,10 @@ namespace Secyud.Ugf
             {
                 Debug.LogError(obj);
             }
-#endif
         }
 
         public static void LogError(object obj, Object context)
         {
-#if DEBUG
             if (DataManager)
             {
                 Console.Error.WriteLine($"{obj} \r\n {context}");
@@ -124,12 +120,10 @@ namespace Secyud.Ugf
             {
                 Debug.LogError(obj, context);
             }
-#endif
         }
 
         public static void LogWarning(object obj)
         {
-#if DEBUG
             if (DataManager)
             {
                 Console.WriteLine(obj);
@@ -138,7 +132,6 @@ namespace Secyud.Ugf
             {
                 Debug.LogWarning(obj);
             }
-#endif
         }
     }
 }

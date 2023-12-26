@@ -46,25 +46,34 @@ namespace Secyud.Ugf.Modularity
 
         public void Configure()
         {
+            
+            
             CheckMultipleConfigureServices();
 
             ConfigurationContext context = new(DependencyManager);
             
-            foreach (IUgfModuleDescriptor module in Modules)
+            if (U.DataManager)
             {
-                if (module.Instance is IOnPreConfigure onPre)
+                foreach (IUgfModuleDescriptor moduleDescriptor in Modules)
                 {
-                    onPre.PreConfigure(context);
+                    context.Manager.AddAssembly(moduleDescriptor.Assembly);
                 }
             }
-
-            foreach (IUgfModuleDescriptor module in Modules)
+            else
             {
-                module.Instance.Configure(context);
-            }
+                foreach (IUgfModuleDescriptor module in Modules)
+                {
+                    if (module.Instance is IOnPreConfigure onPre)
+                    {
+                        onPre.PreConfigure(context);
+                    }
+                }
 
-            if (!U.DataManager)
-            {
+                foreach (IUgfModuleDescriptor module in Modules)
+                {
+                    module.Instance.Configure(context);
+                }
+
                 foreach (IUgfModuleDescriptor module in Modules)
                 {
                     if (module.Instance is IOnPostConfigure onPost)
@@ -81,13 +90,13 @@ namespace Secyud.Ugf.Modularity
         public void Shutdown()
         {
             using GameShutDownContext context = new(DependencyManager.CreateScopeProvider());
-            
+
             for (int i = Modules.Count - 1; i >= 0; i--)
             {
                 if (Modules[i].Instance is IOnShutDown module)
                     module.OnShutDown(context);
             }
-            
+
             UnityEngine.Application.Quit();
         }
 
