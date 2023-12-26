@@ -13,8 +13,6 @@ namespace Secyud.Ugf.UgfHexMap
         int CurrentPathFromIndex { get; }
         int CurrentPathToIndex { get; }
         bool HasPath { get; }
-        bool IsTraveling { get; }
-        void Travel();
     }
 
     public abstract class UgfHexMapFunctionService<TMessageService> :
@@ -25,7 +23,6 @@ namespace Secyud.Ugf.UgfHexMap
         private int _searchFrontierPhase;
         private TMessageService _messageService;
         public bool HasPath { get; private set; }
-        public bool IsTraveling { get; private set; }
 
         public int CurrentPathFromIndex { get; private set; }
         public int CurrentPathToIndex { get; private set; }
@@ -171,9 +168,8 @@ namespace Secyud.Ugf.UgfHexMap
             }
         }
 
-        private IEnumerator TravelPath(IList<int> path, HexUnit unit)
+        protected virtual IEnumerator TravelPath(IList<int> path, HexUnit unit)
         {
-            IsTraveling = true;
             var grid = _messageService.Grid;
             Vector3 a, b, c = grid.GetCell(path[0]).Position;
             Transform transform = unit.transform;
@@ -214,7 +210,6 @@ namespace Secyud.Ugf.UgfHexMap
             transform.localPosition = unit.Location.Position;
             unit.Orientation = transform.localRotation.eulerAngles.y;
             ClearPath();
-            IsTraveling = false;
         }
     }
 }
