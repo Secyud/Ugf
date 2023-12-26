@@ -12,10 +12,13 @@ namespace Secyud.Ugf
         public void Configure(ConfigurationContext context)
         {
             context.Manager.AddAssembly(typeof(UgfSteamModule).Assembly);
-            context.Manager.RegisterInstance(SteamManager.Instance);
+            if (!U.DataManager)
+            {
+                context.Manager.RegisterInstance(SteamManager.Instance);
 
-            IUpdateService updateService = context.Get<IUpdateService>();
-            updateService.UpdateAction += SteamAPI.RunCallbacks;
+                IUpdateService updateService = context.Get<IUpdateService>();
+                updateService.UpdateAction += SteamAPI.RunCallbacks;
+            }
         }
     }
 }

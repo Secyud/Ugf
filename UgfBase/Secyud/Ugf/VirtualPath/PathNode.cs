@@ -25,13 +25,21 @@ namespace Secyud.Ugf.VirtualPath
 
         public void AddFile(string path)
         {
-            string fileName = Path.GetFileName(path);
-            List<Uri> filePaths = GetFiles(fileName);
-            filePaths.AddIfNotContains(new Uri(path));
+            if (File.Exists(path))
+            {
+                string fileName = Path.GetFileName(path);
+                List<Uri> filePaths = GetFiles(fileName);
+                filePaths.AddIfNotContains(new Uri(path));
+            }
         }
 
         public void AddDirectory(string folderPath)
         {
+            if (!Directory.Exists(folderPath))
+            {
+                return;
+            }
+            
             foreach (string file in Directory.GetFiles(folderPath))
             {
                 AddFile(file);

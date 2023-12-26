@@ -11,6 +11,7 @@ namespace Secyud.Ugf.DataManager
         public static TypeManager Instance { get; } = new();
         
         private readonly ConcurrentDictionary<Guid, TypeDescriptor> _typeDict = new();
+        private readonly ConcurrentDictionary<Type, TypeDescriptor> _genericTypeDict = new();
 
         public void AddResourcesFromStream(Stream stream)
         {
@@ -56,6 +57,18 @@ namespace Secyud.Ugf.DataManager
                     return null;
                 }
 
+                if (type.IsGenericType)
+                {
+                    if (!_genericTypeDict.TryGetValue(type, out TypeDescriptor descriptor))
+                    {
+                        descriptor = new TypeDescriptor(type);
+                        _genericTypeDict[type] = descriptor;
+                    }
+
+                    return descriptor;
+                }
+                
+
                 if (_typeDict.TryGetValue(type.GUID, out TypeDescriptor property))
                 {
                     if (U.DataManager && property.Type != type)
@@ -73,19 +86,12 @@ namespace Secyud.Ugf.DataManager
             }
         }
 
-        public TypeDescriptor TryGet(Type type)
+        public bool IsRegistered(Type type)
         {
-            if (type is null)
-            {
-                return null;
-            }
-
-            _typeDict.TryGetValue(type.GUID, out TypeDescriptor property);
-            
-            return property;
+            return type is not null && _typeDict.ContainsKey(type.GUID);
         }
 
-        public IEnumerable<TypeDescriptor> GetChildrenOfBaseType(Type baseType = null)
+        public IEnumerable<Type> GetRegisteredType(Type baseType = null)
         {
             IEnumerable<TypeDescriptor> ret = _typeDict.Values;
 
@@ -97,7 +103,7 @@ namespace Secyud.Ugf.DataManager
                         !u.Type.IsAbstract && u.Type.IsClass);
             }
 
-            return ret;
+            return ret.Select(u=>u.Type);
         }
     }
 }

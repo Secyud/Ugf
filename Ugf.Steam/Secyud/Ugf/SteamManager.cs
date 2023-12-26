@@ -14,18 +14,13 @@ namespace Secyud.Ugf
 
         public static SteamManager Instance => _instance ??= new SteamManager();
 
-        private static SteamPlugInSource _plugInSource;
-
+        private SteamPlugInSource _plugInSource;
         public SteamPlugInSource PlugInSource => _plugInSource ??= new SteamPlugInSource();
-
-        public bool Initialized { get; private set; }
-
-        private readonly SteamAPIWarningMessageHook_t _steamAPIWarningMessageHook;
 
         [AOT.MonoPInvokeCallback(typeof(SteamAPIWarningMessageHook_t))]
         private static void SteamAPIDebugTextHook(int nSeverity, System.Text.StringBuilder pchDebugText)
         {
-            Debug.LogWarning(pchDebugText);
+            U.LogWarning(pchDebugText);
         }
 
 #if UNITY_2019_3_OR_NEWER
@@ -87,7 +82,7 @@ namespace Secyud.Ugf
             catch (DllNotFoundException e)
             {
                 // We catch this exception here, as it will be the first occurrence of it.
-                Debug.LogError(
+                U.LogError(
                     "[Steamworks.NET] Could not load [lib]steam_api.dll/so/dylib. " +
                     "It's likely not in the correct location. " +
                     "Refer to the README for more details.\n" +
@@ -106,8 +101,7 @@ namespace Secyud.Ugf
             // [*] Your App ID is not completely set up, i.e. in Release State: Unavailable, or it's missing default packages.
             // Valve's documentation for this is located here:
             // https://partner.steamgames.com/doc/sdk/api#initialization_and_shutdown
-            Initialized = SteamAPI.Init();
-            if (!Initialized)
+            if (!SteamAPI.Init())
             {
                 U.LogError(
                     "[Steamworks.NET] SteamAPI_Init() failed. " +
@@ -119,8 +113,7 @@ namespace Secyud.Ugf
 
             // Set up our callback to receive warning messages from Steam.
             // You must launch with "-debug_steamapi" in the launch args to receive warnings.
-            _steamAPIWarningMessageHook = SteamAPIDebugTextHook;
-            SteamClient.SetWarningMessageHook(_steamAPIWarningMessageHook);
+            SteamClient.SetWarningMessageHook(SteamAPIDebugTextHook);
         }
 
         public void Dispose()

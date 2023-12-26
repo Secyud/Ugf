@@ -3,12 +3,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Ugf;
 using Newtonsoft.Json;
 using Secyud.Ugf.Modularity;
 using Steamworks;
 using UnityEngine;
-using Version = System.Version;
 
 namespace Secyud.Ugf.ModManagement
 {

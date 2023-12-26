@@ -1,6 +1,7 @@
 ﻿#region
 
 using System;
+using System.Runtime.InteropServices;
 using System.Ugf;
 using JetBrains.Annotations;
 using Secyud.Ugf.AssetLoading;
@@ -17,6 +18,7 @@ namespace Secyud.Ugf.AssetComponents
 		png
 	}
 
+	[Guid("e98b3736-5cc4-31bb-0fd7-14bc3dc329cf")]
 	public class SpriteContainer : AssetContainer<Sprite>
 	{
 		protected SpriteContainer()

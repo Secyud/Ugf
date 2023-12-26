@@ -72,7 +72,7 @@ namespace Secyud.Ugf.TableComponents.SorterComponents
 
         public void OnClick()
         {
-            OnClick(_record++ % 3);
+            OnClick(++_record % 3);
         }
 
         public void OnClick(int state)
