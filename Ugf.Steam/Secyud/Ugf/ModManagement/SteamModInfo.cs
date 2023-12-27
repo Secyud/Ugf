@@ -105,6 +105,7 @@ namespace Secyud.Ugf.ModManagement
             public SortedDictionary<string,string> AddTags { get; set; }
             public List<string> RemoveTags { get; set; }
             public string ChangeNote { get; set; }
+            public List<string> MapFolders { get; set; }
 
             public LocalInfo()
             {

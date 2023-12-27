@@ -1,5 +1,8 @@
+using System.IO;
+using Secyud.Ugf.ModManagement;
 using Secyud.Ugf.Modularity;
 using Secyud.Ugf.UpdateComponents;
+using Secyud.Ugf.VirtualPath;
 using Steamworks;
 
 namespace Secyud.Ugf
@@ -15,6 +18,17 @@ namespace Secyud.Ugf
             context.Manager.RegisterInstance(SteamManager.Instance);
             IUpdateService updateService = context.Get<IUpdateService>();
             updateService.UpdateAction += SteamAPI.RunCallbacks;
+
+            IVirtualPathManager virtualPathManager = context.Get<IVirtualPathManager>();
+            foreach (SteamModInfo info in SteamManager.Instance.PlugInSource.SteamModInfos)
+            {
+                if (info?.Local?.MapFolders is null) continue;
+                foreach (string folder in info.Local.MapFolders)
+                {
+                    virtualPathManager.AddDirectory(folder,
+                        Path.Combine(info.Folder, folder));
+                }
+            }
         }
     }
 }
