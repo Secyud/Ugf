@@ -16,9 +16,8 @@ namespace Secyud.Ugf.DataManager
 
         public PropertyDescriptor(Type type)
         {
-            BaseProperty = type.BaseType == typeof(object)
-                ? null
-                : TypeManager.Instance[type.BaseType].Properties;
+            TypeDescriptor baseProperty = TypeManager.Instance[type.BaseType];
+            BaseProperty = baseProperty?.Properties;
 
             FieldInfo[] infos = type.GetFields(Flag);
             List<SAttribute> data = new();

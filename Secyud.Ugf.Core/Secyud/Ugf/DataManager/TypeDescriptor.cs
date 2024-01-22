@@ -11,7 +11,7 @@ namespace Secyud.Ugf.DataManager
         private ResourcesDictionary _resources;
         public Type Type { get; }
         public PropertyDescriptor Properties => _data ??= new PropertyDescriptor(Type);
-        public ResourcesDictionary Resources => _resources ??= new ResourcesDictionary();
+        private ResourcesDictionary Resources => _resources ??= new ResourcesDictionary();
 
         public TypeDescriptor(Type type)
         {
@@ -90,6 +90,22 @@ namespace Secyud.Ugf.DataManager
         {
             UgfLogger.LogError(
                 $"Data with id {resourceId} not found for type {Type}.");
+        }
+
+
+        private class ResourcesDictionary
+        {
+            private readonly SortedDictionary<int, ResourceDescriptor> _innerDictionary = new();
+        
+            public ResourceDescriptor Get(int id)
+            {
+                return _innerDictionary.GetValueOrDefault(id);
+            }
+        
+            public void Add(ResourceDescriptor descriptor)
+            {
+                _innerDictionary[descriptor.Id] = descriptor;
+            }
         }
     }
 }
