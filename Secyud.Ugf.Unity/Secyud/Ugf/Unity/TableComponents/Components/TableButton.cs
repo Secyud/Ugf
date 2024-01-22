@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Secyud.Ugf.Unity.Ui;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 namespace Secyud.Ugf.Unity.TableComponents.Components
@@ -12,18 +13,13 @@ namespace Secyud.Ugf.Unity.TableComponents.Components
     {
         [SerializeField] private Table _table;
         [SerializeField] private Button _buttonTemplate;
-        [SerializeField] private LayoutTrigger _content;
-        [SerializeField] private RectTransform _window;
+        [SerializeField] private LayoutTrigger _floating;
 
         private List<ITableButtonDescriptor> _buttons;
 
         private void Awake()
         {
             _buttons = new List<ITableButtonDescriptor>();
-            if (!_window)
-            {
-                _window = _content.RectTransform;
-            }
         }
 
         private void Start()
@@ -47,29 +43,22 @@ namespace Secyud.Ugf.Unity.TableComponents.Components
 
         private void OpenButtonWindow(TableCell cell)
         {
-            _window.gameObject.SetActive(true);
-            _content.ClearContent();
+            _floating.ClearContent();
             foreach (ITableButtonDescriptor descriptor in _buttons)
             {
                 if (descriptor.Visible(cell.CellObject))
                 {
-                    Button button = _buttonTemplate.Instantiate(_content.RectTransform);
-                    descriptor.SetButton(button);
+                    Button button = _buttonTemplate.Instantiate(_floating.RectTransform);
+                    descriptor.SetButton(button,cell.CellObject);
                     button.onClick.AddListener(CloseButtonWindow);
                 }
             }
-            
-            _window.localPosition = 
-                cell.transform.localPosition + 
-                _table.Content.transform.position -
-                _window.parent.position;
-            _window.gameObject.SetActive(true);
-            _content.Refresh();
+            _floating.ActivateFloating(cell.transform);
         }
 
         private void CloseButtonWindow()
         {
-            _window.gameObject.SetActive(false);
+            _floating.gameObject.SetActive(false);
         }
     }
 }

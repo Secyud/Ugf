@@ -22,7 +22,7 @@ namespace Secyud.Ugf.Unity.AssetLoading
         public virtual void LoadAssetAsync<TAsset>(string name, Action<TAsset> useAction) where TAsset : Object
         {
             AssetBundleRequest request = _bundle.LoadAssetAsync(name);
-            request.completed += _ => useAction(request.asset as TAsset);
+            request.completed += _ => useAction?.Invoke(request.asset as TAsset);
         }
 
         public void Release<TAsset>(TAsset asset) where TAsset : Object

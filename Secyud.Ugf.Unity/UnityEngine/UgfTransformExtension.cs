@@ -6,7 +6,8 @@ namespace UnityEngine
     {
         public static void TryFillWithContent(this Transform transform, object mayHasContent)
         {
-            if (mayHasContent is IHasContent hasContent)
+            if (transform && 
+                mayHasContent is IHasContent hasContent)
             {
                 hasContent.SetContent(transform);
             }

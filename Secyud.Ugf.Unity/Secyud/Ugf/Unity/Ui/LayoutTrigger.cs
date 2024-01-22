@@ -34,8 +34,23 @@ namespace Secyud.Ugf.Unity.Ui
         {
             for (int i = 0; i < RectTransform.childCount; i++)
             {
-                Destroy(RectTransform.GetChild(i).gameObject);
+                Transform child = RectTransform.GetChild(i);
+                if (child.TryGetComponent(out LayoutElement element) &&
+                    element.ignoreLayout) continue;
+                Destroy(child.gameObject);
             }
+        }
+
+        public void ActivateFloating(Transform target)
+        {
+            RectTransform.localPosition =
+                target.localPosition +
+                target.parent.position -
+                RectTransform.parent.position;
+
+            gameObject.SetActive(true);
+
+            Refresh(checkBoundary: true);
         }
     }
 }

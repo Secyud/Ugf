@@ -14,6 +14,11 @@ namespace Secyud.Ugf.Unity.Ui
         public void SelectThisTab()
         {
             _group.SelectTab(this);
+            Refresh();
+        }
+
+        protected virtual void Refresh()
+        {
         }
     }
 }

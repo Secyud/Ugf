@@ -12,6 +12,7 @@ namespace Secyud.Ugf.Unity.Ui
         private ContentSizeFitter _contentSizeFitter;
         private RectTransform _rectTransform;
         private int _record;
+        private bool _checkBoundary;
         public RectTransform RectTransform { get; private set; }
 
 
@@ -33,9 +34,10 @@ namespace Secyud.Ugf.Unity.Ui
             }
         }
 
-        public void Refresh(int last = 3)
+        public void Refresh(int last = 3, bool checkBoundary = false)
         {
             _record = last;
+            _checkBoundary = checkBoundary;
             enabled = true;
         }
 
@@ -44,6 +46,11 @@ namespace Secyud.Ugf.Unity.Ui
             if (_contentSizeFitter)
             {
                 _contentSizeFitter.enabled = false;
+            }
+
+            if (_checkBoundary)
+            {
+                RectTransform.CheckBoundary();
             }
         }
 
