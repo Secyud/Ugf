@@ -4,7 +4,7 @@
 
 using System.IO;
 
-namespace Secyud.Ugf.Archiving
+namespace Secyud.Ugf.DataManager
 {
     public interface IArchivable
     {

@@ -1,12 +1,23 @@
 ﻿using System.Collections.Generic;
 using JetBrains.Annotations;
-using Secyud.Ugf.Archiving;
 using Secyud.Ugf.DataManager;
 
 namespace System.IO
 {
     public static class UgfBinaryExtension
     {
+        public static void SaveResource(this BinaryWriter writer, IDataResource resource)
+        {
+            writer.Write(resource.ResourceId);
+        }
+
+        public static void LoadResource(this BinaryReader reader, IDataResource shown)
+        {
+            int resourceId = reader.ReadInt32();
+            TypeManager.Instance
+                .LoadObjectFromResource(shown, resourceId);
+        }
+
         public static Guid ReadGuid(this BinaryReader reader)
         {
             return new Guid(reader.ReadBytes(16));

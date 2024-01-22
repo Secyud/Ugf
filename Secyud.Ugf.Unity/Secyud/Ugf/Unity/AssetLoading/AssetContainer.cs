@@ -2,15 +2,15 @@
 
 using System;
 using System.IO;
-using Secyud.Ugf.Archiving;
 using Secyud.Ugf.DataManager;
+using Secyud.Ugf.Logging;
 using Object = UnityEngine.Object;
 
 #endregion
 
 namespace Secyud.Ugf.Unity.AssetLoading
 {
-    public class AssetContainer<TAsset> : ObjectContainer<TAsset>, IArchivable,IDisposable
+    public class AssetContainer<TAsset> : ObjectContainer<TAsset, TAsset>, IArchivable, IDisposable
         where TAsset : Object
     {
         [S] protected IAssetLoader Loader;
@@ -23,11 +23,13 @@ namespace Secyud.Ugf.Unity.AssetLoading
         public static AssetContainer<TAsset> Create(
             IAssetLoader loader, string assetName)
         {
-            return assetName.IsNullOrEmpty() ? null : new AssetContainer<TAsset>
-            {
-                Loader = loader,
-                AssetName = assetName
-            };
+            return assetName.IsNullOrEmpty()
+                ? null
+                : new AssetContainer<TAsset>
+                {
+                    Loader = loader,
+                    AssetName = assetName
+                };
         }
 
         public static AssetContainer<TAsset> Create(
@@ -42,34 +44,69 @@ namespace Secyud.Ugf.Unity.AssetLoading
             return Create(U.Get<TAssetLoader>(), assetName);
         }
 
-        public override TAsset Value => CurrentInstance
-            ? CurrentInstance
-            : CurrentInstance = GetObject();
+        protected override TAsset HandleResult(TAsset result)
+        {
+            if (!result)
+            {
+                UgfLogger.LogError($"Failed get object {AssetName}.");
+            }
 
-        protected override TAsset GetObject()
+            return result;
+        }
+
+        protected override TAsset GetOrigin()
         {
             return Loader.LoadAsset<TAsset>(AssetName);
         }
 
-        public virtual void Save(BinaryWriter writer)
+        protected override void GetOriginAsync(Action<TAsset> useAction)
+        {
+            Loader.LoadAssetAsync(AssetName, useAction);
+        }
+
+        public override TAsset GetValue()
+        {
+            if (!Instance)
+                Instance = HandleResult(GetOrigin());
+            return Instance;
+        }
+
+        public override void GetValueAsync(Action<TAsset> useAction)
+        {
+            if (Instance)
+            {
+                useAction.Invoke(Instance);
+            }
+            else
+            {
+                GetOriginAsync(o =>
+                {
+                    Instance = HandleResult(o);
+                    useAction.Invoke(Instance);
+                });
+            }
+        }
+
+        public override void Save(BinaryWriter writer)
         {
             writer.WriteNullable(Loader);
             writer.Write(AssetName);
         }
 
-        public virtual void Load(BinaryReader reader)
+        public override void Load(BinaryReader reader)
         {
             Loader = reader.ReadNullable<IAssetLoader>();
             AssetName = reader.ReadString();
         }
-        
+
         public void Dispose()
         {
-            if (CurrentInstance)
+            if (Instance)
             {
-                Loader.Release(CurrentInstance);
+                Loader.Release(Instance);
             }
-            CurrentInstance = null;
+
+            Instance = null;
         }
     }
 }

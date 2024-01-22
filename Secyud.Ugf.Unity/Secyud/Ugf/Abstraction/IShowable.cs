@@ -15,6 +15,6 @@ namespace Secyud.Ugf.Abstraction
 
     public interface IHasIcon
     {
-        IObjectAccessor<Sprite> Icon { get; }
+        IObjectContainer<Sprite> Icon { get; }
     }
 }

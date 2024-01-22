@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Secyud.Ugf.Archiving;
 using Secyud.Ugf.Logging;
 
 namespace Secyud.Ugf.DataManager
@@ -96,12 +95,12 @@ namespace Secyud.Ugf.DataManager
         private class ResourcesDictionary
         {
             private readonly SortedDictionary<int, ResourceDescriptor> _innerDictionary = new();
-        
+
             public ResourceDescriptor Get(int id)
             {
                 return _innerDictionary.GetValueOrDefault(id);
             }
-        
+
             public void Add(ResourceDescriptor descriptor)
             {
                 _innerDictionary[descriptor.Id] = descriptor;
