@@ -1,0 +1,19 @@
+{
+    "name": "Secyud.Ugf.Steam",
+    "rootNamespace": "",
+    "references": [
+        "GUID:68bd7fdb68ef2684e982e8a9825b18a5",
+        "GUID:d05fe201de5a1be42a68bc45288721f5",
+        "GUID:cd59cefb7aca48f1bfed1c147e9000a8",
+        "GUID:6055be8ebefd69e48b49212b09b47b2f"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
