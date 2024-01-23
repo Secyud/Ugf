@@ -42,6 +42,11 @@ namespace Secyud.Ugf.DataManager
             }
         }
 
+        public object CreateInstance(Guid id)
+        {
+            return this[id]?.CreateInstance();
+        }
+
         public TypeDescriptor this[Guid id]
         {
             get

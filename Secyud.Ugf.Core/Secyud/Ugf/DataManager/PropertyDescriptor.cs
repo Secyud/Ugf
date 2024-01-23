@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 
@@ -28,7 +29,7 @@ namespace Secyud.Ugf.DataManager
 
                 if (attribute is null) continue;
 
-                attribute.SetPropertyType(info, type);
+                attribute.SetPropertyType(info);
 
                 data.Add(attribute);
             }
@@ -37,6 +38,22 @@ namespace Secyud.Ugf.DataManager
                 .OrderBy(u => u.Id)
                 .ThenBy(u => u.Info.Name)
                 .ToArray();
+        }
+
+        public void FillAttributes(
+            [NotNull] IDictionary<string, SAttribute> dictionary)
+        {
+            dictionary.Clear();
+            PropertyDescriptor property = this;
+            while (property is not null)
+            {
+                foreach (SAttribute attribute in property.Attributes)
+                {
+                    dictionary[attribute.Info.Name] = attribute;
+                }
+
+                property = BaseProperty;
+            }
         }
     }
 }

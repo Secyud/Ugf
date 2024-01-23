@@ -27,7 +27,6 @@ namespace Secyud.Ugf.DataManager
             where TObject : class
         {
             using BinaryReader reader = new(stream);
-            DataLoader loader = new(reader);
             List<TObject> list = new();
             int count = reader.ReadInt32();
             for (int i = 0; i < count; i++)
@@ -43,7 +42,7 @@ namespace Secyud.Ugf.DataManager
                     resourceId = reader.ReadString();
                     len = reader.ReadInt32();
                     obj = TypeManager.Instance[id].CreateInstance();
-                    loader.LoadProperties(obj);
+                    reader.DeserializeResource(obj);
                 }
                 catch (Exception e)
                 {

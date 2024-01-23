@@ -1,4 +1,8 @@
-﻿using System.IO;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using System.IO;
 using Secyud.Ugf.Logging;
 
 namespace Secyud.Ugf.DataManager
@@ -33,16 +37,14 @@ namespace Secyud.Ugf.DataManager
         {
             using MemoryStream stream = new(Data);
             using BinaryReader reader = new(stream);
-            DataLoader loader = new(reader);
-            loader.LoadProperties(obj);
+            reader.DeserializeResource(obj);
         }
 
         public void SaveObject(object obj)
         {
             using MemoryStream stream = new();
             using BinaryWriter writer = new(stream);
-            DataSaver saver = new(writer);
-            saver.SaveProperties(obj);
+            writer.SerializeResource(obj);
             Data = stream.ToArray();
         }
     }

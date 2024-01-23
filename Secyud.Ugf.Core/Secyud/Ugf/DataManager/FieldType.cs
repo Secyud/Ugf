@@ -1,23 +1,26 @@
-﻿namespace Secyud.Ugf.DataManager
+﻿using System;
+
+namespace Secyud.Ugf.DataManager
 {
+    [Flags]
     public enum FieldType : byte
     {
-        Object = 0,
-        Bool = 1,
-        UInt8 = 2,
-        UInt16 = 3,
-        UInt32 = 4,
-        UInt64 = 5,
-        Int8 = 6,
-        Int16 = 7,
-        Int32 = 8,
-        Int64 = 9,
-        Single = 10,
-        Double = 11,
-        Decimal = 12,
-        String = 13,
-        Guid = 14,
-        Set = 15,
-        InValid = 255,
+        UInt8   = 0b10000100,
+        UInt16  = 0b10000101,
+        UInt32  = 0b10000110,
+        UInt64  = 0b10000111,
+        Int8    = 0b10000000,
+        Int16   = 0b10000001,
+        Int32   = 0b10000010,
+        Int64   = 0b10000011,
+        Bool    = 0b10001000,
+        Decimal = 0b10001001,
+        Single  = 0b10001010,
+        Double  = 0b10001011,
+        String  = 0b10001100,
+        Guid    = 0b10001101,
+        Object  = 0b10010000,
+        List        = 0b00100000,
+        InValid     = 0b00000000,
     }
 }

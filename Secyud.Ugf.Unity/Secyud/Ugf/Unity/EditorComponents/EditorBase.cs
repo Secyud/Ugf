@@ -3,7 +3,8 @@
 namespace Secyud.Ugf.Unity.EditorComponents
 {
     /// <summary>
-    /// Editor 
+    /// Editor simplify the bind of component.
+    /// Maybe more functions.
     /// </summary>
     public abstract class EditorBase<TProperty> : MonoBehaviour
     {

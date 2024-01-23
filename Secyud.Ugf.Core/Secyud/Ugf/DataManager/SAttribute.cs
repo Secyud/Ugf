@@ -27,58 +27,70 @@ namespace Secyud.Ugf.DataManager
             [typeof(Guid)] = FieldType.Guid,
         };
 
-        public SAttribute(short id = 16384)
+        public SAttribute(short id = 16384,
+            SShowType showType = SShowType.Normal)
         {
             Id = id;
+            ShowType = showType;
         }
 
-        public FieldInfo Info { get; private set; }
-        public Type Belong { get; private set; }
-        public FieldType Type { get; private set; }
-        public FieldType ElementType { get; private set; }
         public short Id { get; }
+        public FieldType Type { get; private set; }
+        public SShowType ShowType { get; private set; }
+        public FieldInfo Info { get; private set; }
 
-
-        public void SetPropertyType(FieldInfo info, Type belong)
+        public void SetPropertyType(FieldInfo info)
         {
             if (Info is not null) return;
-            Map.TryGetValue(info.FieldType, out FieldType type);
             Info = info;
-            Type = type;
-            Belong = belong;
             if (typeof(IList).IsAssignableFrom(info.FieldType))
             {
                 Type elementType = info.FieldType.IsArray
                     ? info.FieldType.GetElementType()
                     : info.FieldType.GetGenericArguments().FirstOrDefault();
 
-                if (elementType is not null)
+                FieldType elementFieldType = GetFieldType(elementType);
+                if (elementFieldType > 0)
                 {
-                    Map.TryGetValue(elementType, out FieldType elementFieldType);
-                    ElementType = elementFieldType;
+                    Type = elementFieldType | FieldType.List;
                 }
             }
             else
             {
-                ElementType = FieldType.InValid;
+                Type = GetFieldType(info.FieldType);
             }
+        }
+
+        private static FieldType GetFieldType(Type type)
+        {
+            FieldType fieldType;
+
+            if (type is null)
+            {
+                fieldType = FieldType.InValid;
+            }
+            else if (type.IsValueType)
+            {
+                Map.TryGetValue(type, out fieldType);
+            }
+            else
+            {
+                fieldType = FieldType.Object;
+            }
+
+            return fieldType;
         }
 
         public bool ReadOnly => Info.IsInitOnly;
 
         public object GetValue(object obj)
         {
-            return Info.GetValue(obj);
+            return obj is null ? null : Info.GetValue(obj);
         }
 
         public void SetValue(object obj, object value)
         {
             Info.SetValue(obj, value);
-        }
-
-        private object GetDefault()
-        {
-            return Info.FieldType.IsValueType ? Activator.CreateInstance(Info.FieldType) : null;
         }
     }
 }

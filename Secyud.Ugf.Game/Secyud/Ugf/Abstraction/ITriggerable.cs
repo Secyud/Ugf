@@ -10,6 +10,6 @@ namespace Secyud.Ugf.Abstraction
     /// </summary>
     public interface ITriggerable
     {
-        event Action ExtraActions;
+        event Action TriggerActions;
     }
 }

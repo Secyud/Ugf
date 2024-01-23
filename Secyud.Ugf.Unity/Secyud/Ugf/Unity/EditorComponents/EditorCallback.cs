@@ -5,13 +5,13 @@ using UnityEngine.Events;
 namespace Secyud.Ugf.Unity.EditorComponents
 {
     /// <summary>
-    /// 属性设定时应当有所反应， 以确认属性设定的真实值，
-    /// 真实值可能用于文字显示，图形变化，一般加入
-    /// SetWithoutNotification之类的事件
+    /// When can't foresee the type of ui component
+    /// but know the params need. Use this component
+    /// to run a callback to sync data and ui.
     /// </summary>
     /// <typeparam name="TValue"></typeparam>
     [Serializable]
-    public class EditorEvent<TValue>
+    public class EditorCallback<TValue>
     {
         [SerializeField] private UnityEvent<TValue> _event = new();
 
