@@ -6,6 +6,9 @@ using System.Reflection;
 
 namespace Secyud.Ugf.DataManager
 {
+    /// <summary>
+    /// Pre handling the serialization needed message.  
+    /// </summary>
     public class PropertyDescriptor
     {
         private const BindingFlags Flag = BindingFlags.Instance | BindingFlags.NonPublic |
@@ -40,6 +43,11 @@ namespace Secyud.Ugf.DataManager
                 .ToArray();
         }
 
+        /// <summary>
+        /// Fill the dictionary with field need to be
+        /// serialized or deserialized.
+        /// </summary>
+        /// <param name="dictionary"></param>
         public void FillAttributes(
             [NotNull] IDictionary<string, SAttribute> dictionary)
         {

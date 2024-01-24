@@ -1,10 +1,6 @@
-#region
-
 using System;
 using System.Collections.Concurrent;
 using Secyud.Ugf.Logging;
-
-#endregion
 
 namespace Secyud.Ugf.DependencyInjection
 {

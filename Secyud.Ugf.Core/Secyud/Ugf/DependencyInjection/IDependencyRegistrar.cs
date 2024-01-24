@@ -1,9 +1,5 @@
-#region
-
 using System;
 using System.Reflection;
-
-#endregion
 
 namespace Secyud.Ugf.DependencyInjection
 {

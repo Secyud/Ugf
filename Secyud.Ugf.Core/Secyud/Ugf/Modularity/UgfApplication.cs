@@ -47,6 +47,9 @@ namespace Secyud.Ugf.Modularity
             }
         }
 
+        /// <summary>
+        /// shutdown and exit application
+        /// </summary>
         public void Shutdown()
         {
             ShutDownContext context = new(_dependencyManager.CreateScopeProvider());

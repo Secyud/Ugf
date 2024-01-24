@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using JetBrains.Annotations;
 using Secyud.Ugf.Logging;
 
 namespace Secyud.Ugf.DataManager
@@ -23,7 +25,8 @@ namespace Secyud.Ugf.DataManager
         }
 
         /// <summary>
-        /// generate object form resource stored in <see cref="Resources"/>
+        /// generate object form resource stored in
+        /// <see cref="Resources"/>
         /// </summary>
         /// <param name="resourceId"></param>
         /// <returns></returns>
@@ -35,8 +38,8 @@ namespace Secyud.Ugf.DataManager
                 return null;
             }
 
-            ResourceDescriptor descriptor = Resources.Get(resourceId);
-            if (descriptor is null)
+            byte[] data = Resources.Get(resourceId);
+            if (data is null)
             {
                 LogNotFindIdForType(resourceId);
                 return null;
@@ -44,37 +47,40 @@ namespace Secyud.Ugf.DataManager
             else
             {
                 object obj = Activator.CreateInstance(Type);
-                descriptor.LoadObject(obj);
+                using MemoryStream stream = new(data);
+                using BinaryReader reader = new(stream);
+                reader.DeserializeResource(obj);
                 TrySetResourceId(obj, resourceId);
                 return obj;
             }
         }
 
-        public void LoadObjectFromResource(object obj, int resourceId)
+        /// <summary>
+        /// fill the object with the resource stored
+        /// in <see cref="Resources"/>.
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <param name="resourceId"></param>
+        public void LoadObjectFromResource([NotNull] object obj, int resourceId)
         {
-            ResourceDescriptor descriptor = Resources.Get(resourceId);
-            if (descriptor is null)
+            Throw.IfNull(obj);
+            byte[] data = Resources.Get(resourceId);
+            if (data is null)
             {
                 LogNotFindIdForType(resourceId);
             }
             else
             {
-                descriptor.LoadObject(obj);
+                using MemoryStream stream = new(data);
+                using BinaryReader reader = new(stream);
+                reader.DeserializeResource(obj);
                 TrySetResourceId(obj, resourceId);
             }
         }
 
-        public void AddResource(ResourceDescriptor descriptor)
+        public void AddResource(int id,[NotNull] byte[] data)
         {
-            Resources.Add(descriptor);
-        }
-
-        public void AddResources(IEnumerable<ResourceDescriptor> descriptors)
-        {
-            foreach (ResourceDescriptor descriptor in descriptors)
-            {
-                AddResource(descriptor);
-            }
+            Resources.Add(id, data);
         }
 
         private static void TrySetResourceId(object obj, int resourceId)
@@ -94,16 +100,17 @@ namespace Secyud.Ugf.DataManager
 
         private class ResourcesDictionary
         {
-            private readonly SortedDictionary<int, ResourceDescriptor> _innerDictionary = new();
+            private readonly SortedDictionary<int, byte[]> _innerDictionary = new();
 
-            public ResourceDescriptor Get(int id)
+            public byte[] Get(int id)
             {
                 return _innerDictionary.GetValueOrDefault(id);
             }
 
-            public void Add(ResourceDescriptor descriptor)
+            public void Add(int id, [NotNull] byte[] data)
             {
-                _innerDictionary[descriptor.Id] = descriptor;
+                Throw.IfNull(data);
+                _innerDictionary[id] = data;
             }
         }
     }

@@ -2,6 +2,10 @@
 
 namespace Secyud.Ugf.DataManager
 {
+    /// <summary>
+    /// The type of field, to handle the serialization
+    /// of resource. List is a flag.
+    /// </summary>
     [Flags]
     public enum FieldType : byte
     {

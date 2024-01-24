@@ -19,7 +19,10 @@ namespace Secyud.Ugf.Unity.Ui.Notifications
         /// <param name="action">
         /// Action to set the content of notification
         /// </param>
-        /// <exception cref="UgfNotRegisteredException"></exception>
+        /// <exception cref="UgfNotRegisteredException">
+        /// Throw if the prefab of notification panel is
+        /// not registered.
+        /// </exception>
         public void PopupNotification(Action<RectTransform> action)
         {
             if (_instance)

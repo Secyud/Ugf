@@ -1,8 +1,4 @@
-#region
-
 using System.Globalization;
-
-#endregion
 
 namespace Secyud.Ugf.Localization
 {

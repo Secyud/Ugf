@@ -1,9 +1,5 @@
-#region
-
 using System;
 using System.Diagnostics.CodeAnalysis;
-
-#endregion
 
 namespace Secyud.Ugf.DependencyInjection
 {

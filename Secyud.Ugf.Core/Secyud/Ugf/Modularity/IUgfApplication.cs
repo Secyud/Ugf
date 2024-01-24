@@ -1,7 +1,3 @@
-#region
-
-#endregion
-
 namespace Secyud.Ugf.Modularity
 {
     public interface IUgfApplication : IModuleContainer

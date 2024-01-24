@@ -2,6 +2,10 @@
 
 namespace Secyud.Ugf.Logging
 {
+    /// <summary>
+    /// shortcut of logger, you can change the inner logger
+    /// to log in different ways.
+    /// </summary>
     public static class UgfLogger
     {
         public static ILogger InnerLogger { get; set; } = DefaultLogger.Instance;

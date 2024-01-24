@@ -1,11 +1,7 @@
-#region
-
 using Secyud.Ugf.DataManager;
 using Secyud.Ugf.Logging;
 using Secyud.Ugf.Modularity;
 using Secyud.Ugf.VirtualPath;
-
-#endregion
 
 namespace Secyud.Ugf
 {

@@ -6,6 +6,11 @@ namespace Secyud.Ugf.Unity.Ui
     public class MessageService : IRegistry
     {
         private Canvas _messageCanvas;
+
+        /// <summary>
+        /// Provide a new canvas to handle message.
+        /// The message is usually in front of other ui. 
+        /// </summary>
         public Canvas MessageCanvas => _messageCanvas ??= CreateMessageCanvas();
 
         protected virtual Canvas CreateMessageCanvas()

@@ -36,9 +36,17 @@ namespace Secyud.Ugf.DataManager
             {
                 Guid id = reader.ReadGuid();
                 TypeDescriptor descriptor = this[id];
-                ResourceDescriptor resource = new();
-                resource.Load(reader);
-                descriptor?.AddResource(resource);
+                if (descriptor is null)
+                {
+                    reader.BaseStream.Seek(sizeof(int), SeekOrigin.Current);
+                    int length = reader.ReadInt32();
+                    reader.BaseStream.Seek(length, SeekOrigin.Current);
+                }
+                else
+                {
+                    reader.ReadeResource(out int resourceId, out byte[] data);
+                    descriptor.AddResource(resourceId, data);
+                }
             }
         }
 

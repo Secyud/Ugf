@@ -1,11 +1,7 @@
-#region
-
 using Secyud.Ugf.Modularity.Plugins;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-
-#endregion
 
 namespace Secyud.Ugf.Modularity
 {

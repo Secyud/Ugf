@@ -1,10 +1,6 @@
-#region
-
 using Secyud.Ugf.DependencyInjection;
 using Secyud.Ugf.Option;
 using System;
-
-#endregion
 
 namespace Secyud.Ugf.Modularity
 {
@@ -34,6 +30,13 @@ namespace Secyud.Ugf.Modularity
             }
         }
 
+        /// <summary>
+        /// Configure the option. You can get option by
+        /// calling <see cref="IDependencyProvider.Get{T}"/>.
+        /// The T should be IOption&lt;TOption&gt;
+        /// </summary>
+        /// <param name="option">the option init action</param>
+        /// <typeparam name="TOption">the option type</typeparam>
         public void Configure<TOption>(Action<TOption> option)
             where TOption : new()
         {

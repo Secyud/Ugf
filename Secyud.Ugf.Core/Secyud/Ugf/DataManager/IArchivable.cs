@@ -1,7 +1,3 @@
-#region
-
-#endregion
-
 using System.IO;
 
 namespace Secyud.Ugf.DataManager

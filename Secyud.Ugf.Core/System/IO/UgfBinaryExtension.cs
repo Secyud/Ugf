@@ -1,5 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using JetBrains.Annotations;
+using Secyud.Ugf;
 using Secyud.Ugf.DataManager;
 
 namespace System.IO
@@ -18,6 +20,20 @@ namespace System.IO
                 .LoadObjectFromResource(shown, resourceId);
         }
 
+        public static void WriteResource(this BinaryWriter writer, int resourceId,[NotNull]byte[] data)
+        {
+            Throw.IfNull(data);
+            writer.Write(resourceId);
+            writer.Write(data.Length);
+            writer.Write(data);
+        } 
+        public static void ReadeResource(this BinaryReader reader, out int resourceId,out byte[] data)
+        {
+            resourceId = reader.ReadInt32();
+            int count = reader.ReadInt32();
+            data = reader.ReadBytes(count);
+        }
+        
         public static Guid ReadGuid(this BinaryReader reader)
         {
             return new Guid(reader.ReadBytes(16));
