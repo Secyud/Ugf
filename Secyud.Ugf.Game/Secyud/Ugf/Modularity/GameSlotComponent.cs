@@ -33,6 +33,8 @@ namespace Secyud.Ugf.Modularity
 
         public virtual void DeleteSlot()
         {
+            U.Get<IGameArchivingService>().TryDeleteSlot(_slotIndex);
+            InitSlotUi();
         }
     }
 }
