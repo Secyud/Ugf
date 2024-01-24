@@ -1,10 +1,6 @@
-﻿#region
-
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Secyud.Ugf.DependencyInjection;
 using UnityEngine;
-
-#endregion
 
 namespace Secyud.Ugf.Unity.InputtingComponents
 {

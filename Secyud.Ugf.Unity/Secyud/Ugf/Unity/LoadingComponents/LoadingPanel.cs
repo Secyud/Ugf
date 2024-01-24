@@ -1,11 +1,7 @@
-#region
-
 using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-
-#endregion
 
 namespace Secyud.Ugf.Unity.LoadingComponents
 {

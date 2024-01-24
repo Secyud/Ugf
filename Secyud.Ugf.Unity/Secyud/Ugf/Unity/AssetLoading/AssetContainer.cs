@@ -1,12 +1,8 @@
-﻿#region
-
-using System;
+﻿using System;
 using System.IO;
 using Secyud.Ugf.DataManager;
 using Secyud.Ugf.Logging;
 using Object = UnityEngine.Object;
-
-#endregion
 
 namespace Secyud.Ugf.Unity.AssetLoading
 {
@@ -59,9 +55,9 @@ namespace Secyud.Ugf.Unity.AssetLoading
             return Loader.LoadAsset<TAsset>(AssetName);
         }
 
-        protected override void GetOriginAsync(Action<TAsset> useAction)
+        protected override void GetOriginAsync(Action<TAsset> callback)
         {
-            Loader.LoadAssetAsync(AssetName, useAction);
+            Loader.LoadAssetAsync(AssetName, callback);
         }
 
         public override TAsset GetValue()
@@ -71,18 +67,18 @@ namespace Secyud.Ugf.Unity.AssetLoading
             return Instance;
         }
 
-        public override void GetValueAsync(Action<TAsset> useAction)
+        public override void GetValueAsync(Action<TAsset> callback)
         {
             if (Instance)
             {
-                useAction.Invoke(Instance);
+                callback.Invoke(Instance);
             }
             else
             {
                 GetOriginAsync(o =>
                 {
                     Instance = HandleResult(o);
-                    useAction.Invoke(Instance);
+                    callback.Invoke(Instance);
                 });
             }
         }

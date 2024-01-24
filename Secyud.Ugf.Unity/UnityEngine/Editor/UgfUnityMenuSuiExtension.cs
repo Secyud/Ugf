@@ -1,10 +1,6 @@
 #if UNITY_EDITOR
 
-#region
-
 using UnityEditor;
-
-#endregion
 
 namespace UnityEngine.Editor
 {

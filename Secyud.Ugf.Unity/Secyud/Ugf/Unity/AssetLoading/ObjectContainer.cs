@@ -15,7 +15,7 @@ namespace Secyud.Ugf.Unity.AssetLoading
 
         protected abstract TValue HandleResult(TOrigin result);
         protected abstract TOrigin GetOrigin();
-        protected abstract void GetOriginAsync(Action<TOrigin> useAction);
+        protected abstract void GetOriginAsync(Action<TOrigin> callback);
 
         public virtual TValue GetValue()
         {
@@ -23,18 +23,18 @@ namespace Secyud.Ugf.Unity.AssetLoading
             return Instance;
         }
 
-        public virtual void GetValueAsync(Action<TValue> useAction)
+        public virtual void GetValueAsync(Action<TValue> callback)
         {
             if (Instance is not null)
             {
-                useAction.Invoke(Instance);
+                callback.Invoke(Instance);
             }
             else
             {
                 GetOriginAsync(o =>
                 {
                     Instance = HandleResult(o);
-                    useAction.Invoke(Instance);
+                    callback.Invoke(Instance);
                 });
             }
         }

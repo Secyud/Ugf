@@ -7,9 +7,9 @@ namespace Secyud.Ugf.Game.DialogueManager
 {
     public class DialogueService : IRegistry
     {
-        public PrefabContainer<DialoguePanel> DialoguePanelPrefab { get; set; }
+        public MonoContainer<DialoguePanel> DialoguePanel { get;  } 
+            = MonoContainer<DialoguePanel>.OnCanvas();
 
-        private DialoguePanel _dialoguePanelInstance;
         private IList<DialogueUnit> _dialogues;
         private int _currentDialogueIndex;
 
@@ -19,38 +19,23 @@ namespace Secyud.Ugf.Game.DialogueManager
         /// times if you want to set branch in dialogue. 
         /// </summary>
         /// <param name="dialogues">The dialogue list you want to set.</param>
-        /// <exception cref="UgfNotRegisteredException"></exception>
         public void OpenDialoguePanel(IList<DialogueUnit> dialogues)
         {
-            // Instance is exist, move it to the front of UIs.
-            if (_dialoguePanelInstance)
-            {
-                Transform transform = _dialoguePanelInstance.transform;
-                transform.SetSiblingIndex(transform.parent.childCount - 1);
-                return;
-            }
-
-            if (DialoguePanelPrefab is null)
-            {
-                throw new UgfNotRegisteredException(
-                    nameof(DialogueService),
-                    nameof(DialoguePanelPrefab));
-            }
-
             _dialogues = dialogues;
             _currentDialogueIndex = 0;
 
-            DialoguePanelPrefab.GetValueAsync(p =>
-                _dialoguePanelInstance = p.Instantiate(U.Canvas.transform));
+            DialoguePanel.GetValueAsync(p =>
+            {
+                p.SetDialogue(_dialogues[0]);
+            });
         }
-
 
         internal void ContinueDialogue()
         {
             _currentDialogueIndex++;
             if (_currentDialogueIndex < _dialogues.Count)
             {
-                _dialoguePanelInstance.SetDialogue(
+                DialoguePanel.GetValue().SetDialogue(
                     _dialogues[_currentDialogueIndex]);
             }
             else
@@ -61,7 +46,7 @@ namespace Secyud.Ugf.Game.DialogueManager
 
         public void CloseDialoguePanel()
         {
-            _dialoguePanelInstance.Destroy();
+            DialoguePanel.Destroy();
         }
     }
 }

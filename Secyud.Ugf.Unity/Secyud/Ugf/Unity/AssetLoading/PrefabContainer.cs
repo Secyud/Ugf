@@ -1,12 +1,8 @@
-﻿#region
-
-using System;
+﻿using System;
 using System.IO;
 using Secyud.Ugf.DataManager;
 using Secyud.Ugf.Logging;
 using UnityEngine;
-
-#endregion
 
 namespace Secyud.Ugf.Unity.AssetLoading
 {
@@ -67,9 +63,9 @@ namespace Secyud.Ugf.Unity.AssetLoading
             return Loader.LoadAsset<GameObject>(AssetName);
         }
 
-        protected override void GetOriginAsync(Action<GameObject> useAction)
+        protected override void GetOriginAsync(Action<GameObject> callback)
         {
-            Loader.LoadAssetAsync(AssetName, useAction);
+            Loader.LoadAssetAsync(AssetName, callback);
         }
 
         public override TComponent GetValue()
@@ -81,18 +77,18 @@ namespace Secyud.Ugf.Unity.AssetLoading
             return Instance;
         }
 
-        public override void GetValueAsync(Action<TComponent> useAction)
+        public override void GetValueAsync(Action<TComponent> callback)
         {
             if (Instance)
             {
-                useAction.Invoke(Instance);
+                callback.Invoke(Instance);
             }
             else
             {
                 GetOriginAsync(o =>
                 {
                     Instance = HandleResult(o);
-                    useAction.Invoke(Instance);
+                    callback.Invoke(Instance);
                 });
             }
         }

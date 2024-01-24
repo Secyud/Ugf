@@ -1,10 +1,6 @@
-#region
-
 using Secyud.Ugf.Logging;
 using Secyud.Ugf.Modularity;
 using Secyud.Ugf.Unity.Utilities;
-
-#endregion
 
 namespace Secyud.Ugf
 {

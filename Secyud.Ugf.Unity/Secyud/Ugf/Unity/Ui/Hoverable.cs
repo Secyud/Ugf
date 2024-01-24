@@ -1,10 +1,6 @@
-#region
-
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
-
-#endregion
 
 namespace Secyud.Ugf.Unity.Ui
 {

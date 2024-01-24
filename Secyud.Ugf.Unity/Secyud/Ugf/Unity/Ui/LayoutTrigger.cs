@@ -1,9 +1,5 @@
-﻿#region
-
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
-
-#endregion
 
 namespace Secyud.Ugf.Unity.Ui
 {

@@ -1,11 +1,7 @@
-﻿#region
-
-using System;
+﻿using System;
 using System.Runtime.InteropServices;
 using JetBrains.Annotations;
 using UnityEngine;
-
-#endregion
 
 namespace Secyud.Ugf.Unity.AssetLoading
 {

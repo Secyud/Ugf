@@ -26,6 +26,7 @@ namespace Secyud.Ugf
             }
 
             Instance = this;
+            DontDestroyOnLoad(gameObject);
             _factory = new UgfApplicationFactory(StartUpModule, PlugInSourceList);
             _factory.Configure();
         }

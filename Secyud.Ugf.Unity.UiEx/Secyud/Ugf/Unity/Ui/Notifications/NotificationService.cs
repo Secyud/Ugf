@@ -7,10 +7,13 @@ namespace Secyud.Ugf.Unity.Ui.Notifications
 {
     public class NotificationService : IRegistry
     {
-        private readonly MessageService _messageService;
-        public PrefabContainer<NotificationPanel> NotificationPrefab { get; set; }
+        public MonoContainer<NotificationPanel> NotificationPanel { get; }
 
-        private NotificationPanel _instance;
+        public NotificationService(MessageService messageService)
+        {
+            NotificationPanel = new MonoContainer<NotificationPanel>(
+                messageService.MessageCanvas.transform);
+        }
 
         /// <summary>
         /// Popup a notification.
@@ -25,28 +28,8 @@ namespace Secyud.Ugf.Unity.Ui.Notifications
         /// </exception>
         public void PopupNotification(Action<RectTransform> action)
         {
-            if (_instance)
-            {
-                action?.Invoke(_instance.CreateNotification());
-            }
-            else
-            {
-                if (NotificationPrefab is null)
-                {
-                    throw new UgfNotRegisteredException(
-                        nameof(NotificationService),
-                        nameof(NotificationPrefab));
-                }
-
-                MessageService messageService = U.Get<MessageService>();
-                Canvas canvas = messageService.MessageCanvas;
-
-                NotificationPrefab.GetValueAsync(p =>
-                {
-                    _instance = p.Instantiate(canvas.transform);
-                    action?.Invoke(_instance.CreateNotification());
-                });
-            }
+            NotificationPanel.GetValueAsync(p =>
+                action?.Invoke(p.CreateNotification()));
         }
     }
 }

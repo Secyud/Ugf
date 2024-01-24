@@ -1,5 +1,3 @@
-#region
-
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -10,8 +8,6 @@ using Secyud.Ugf.DependencyInjection;
 using Secyud.Ugf.Localization;
 using Secyud.Ugf.VirtualPath;
 using UnityEngine;
-
-#endregion
 
 namespace Secyud.Ugf.Unity.Localization
 {

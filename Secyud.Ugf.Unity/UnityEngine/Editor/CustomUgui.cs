@@ -1,12 +1,8 @@
 #if UNITY_EDITOR
 
-#region
-
 using Secyud.Ugf.Unity.Ui;
 using UnityEditor;
 using UnityEditor.UI;
-
-#endregion
 
 namespace UnityEngine.Editor
 {
