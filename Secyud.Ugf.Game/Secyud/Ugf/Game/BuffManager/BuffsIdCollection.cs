@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using Secyud.Ugf.Abstraction;
 
-namespace Secyud.Ugf.Game.Buff
+namespace Secyud.Ugf.Game.BuffManager
 {
     public class BuffsIdCollection<TTarget, TBuff> : BuffCollectionBase<TTarget, TBuff, int, int>
         where TBuff : class, IInstallable<TTarget>, IOverlayable<TTarget>, IHasId<int>

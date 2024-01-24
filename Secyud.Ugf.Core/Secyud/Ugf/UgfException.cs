@@ -9,7 +9,7 @@ namespace Secyud.Ugf
 {
     public class UgfException : Exception
     {
-        public UgfException()
+        protected UgfException()
         {
         }
 

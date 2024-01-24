@@ -2,7 +2,6 @@
 
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using Secyud.Ugf.Abstraction;
 using Secyud.Ugf.DataManager;
 using UnityEngine;
@@ -10,7 +9,7 @@ using UnityEngine.Pool;
 
 #endregion
 
-namespace Secyud.Ugf.Game.Buff
+namespace Secyud.Ugf.Game.BuffManager
 {
     public abstract class BuffCollectionBase<TTarget, TBuff, TIndex, TKey> : IHasContent
         where TBuff : class, IInstallable<TTarget>, IOverlayable<TTarget>, IHasId<TIndex>
