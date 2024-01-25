@@ -14,7 +14,7 @@ namespace Secyud.Ugf.Unity.Ui
             Panels = new List<TabPanel>();
         }
 
-        protected virtual void Start()
+        public void InitTabGroup()
         {
             SelectTab(Panels[0]);
         }
@@ -23,11 +23,12 @@ namespace Secyud.Ugf.Unity.Ui
         {
             if (_currentTab)
             {
-                _currentTab.transform.localPosition += new Vector3(0, 65536, 0);
+                _currentTab.transform.localPosition +=
+                    new Vector3(0, 65536, 0);
             }
-            
+
             _currentTab = tab;
-            
+
             if (_currentTab)
             {
                 _currentTab.transform.localPosition = Vector3.zero;

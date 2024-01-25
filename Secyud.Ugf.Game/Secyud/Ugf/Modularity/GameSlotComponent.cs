@@ -1,5 +1,4 @@
-﻿using TMPro;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Secyud.Ugf.Modularity
 {
@@ -17,7 +16,11 @@ namespace Secyud.Ugf.Modularity
             }
 
             Service = U.Get<IGameArchivingService>();
-            Service.LoadSlotMessage(this);
+        }
+
+        private void Start()
+        {
+            InitSlot();
         }
 
         public virtual void EnsureSlot()
@@ -28,6 +31,11 @@ namespace Secyud.Ugf.Modularity
         public virtual void DeleteSlot()
         {
             Service.TryDeleteSlot(SlotIndex);
+            InitSlot();
+        }
+
+        public virtual void InitSlot()
+        {
             Service.LoadSlotMessage(this);
         }
     }

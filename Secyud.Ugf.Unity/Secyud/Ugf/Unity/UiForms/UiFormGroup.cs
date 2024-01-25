@@ -23,9 +23,12 @@ namespace Secyud.Ugf.Unity.UiForms
 
         public void CreateAll()
         {
-            for (int i = 0; i < Elements.Count; i++)
+            int count = Elements.Count;
+            for (int i = 0; i < count; i++)
             {
-                Elements[i].CreateForm();
+                Element form = Elements[i];
+                form.CreateInstance();
+                form.SetFormVisible();
             }
 
             SetInFrontOfUi();
@@ -33,28 +36,34 @@ namespace Secyud.Ugf.Unity.UiForms
 
         public void DestroyAll()
         {
-            for (int i = 0; i < Elements.Count; i++)
+            int count = Elements.Count;
+            for (int i = 0; i < count; i++)
             {
-                Elements[i].DestroyFrom();
-            }
-        }
-
-        public void HideAll()
-        {
-            for (int i = 0; i < Elements.Count; i++)
-            {
-                Elements[i].HideForm();
+                Element form = Elements[i];
+                form.DestroyInstance();
             }
         }
 
         public void ShowAll()
         {
-            for (int i = 0; i < Elements.Count; i++)
+            int count = Elements.Count;
+            for (int i = 0; i < count; i++)
             {
-                Elements[i].ShowForm();
+                Element form = Elements[i];
+                form.SetFormVisible();
             }
 
             SetInFrontOfUi();
+        }
+
+        public void HideAll()
+        {
+            int count = Elements.Count;
+            for (int i = 0; i < count; i++)
+            {
+                Element form = Elements[i];
+                form.SetFormInvisible();
+            }
         }
 
         private void SetInFrontOfUi()
@@ -80,48 +89,61 @@ namespace Secyud.Ugf.Unity.UiForms
 
             public void CreateForm()
             {
-                if (!Instance)
-                {
-                    Instance = Prefab.Instantiate(Group._transform);
-                    Instance.OnShowing();
-                }
-
+                CreateInstance();
+                SetFormVisible();
                 SetInFrontOfUi();
             }
 
             public void DestroyFrom()
+            {
+                DestroyInstance();
+            }
+
+            public void ShowForm()
+            {
+                SetFormVisible();
+                SetInFrontOfUi();
+            }
+
+            public void HideForm()
+            {
+                SetFormInvisible();
+            }
+
+            private void SetInFrontOfUi()
+            {
+                Instance.transform.SetAsLastSibling();
+            }
+
+            internal void CreateInstance()
+            {
+                if (Instance) return;
+                Instance = Prefab.Instantiate(Group._transform);
+                Instance.OnShowing();
+            }
+
+            internal void DestroyInstance()
             {
                 if (!Instance) return;
                 Instance.OnHiding();
                 Instance.Destroy();
             }
 
-            public void HideForm()
+            internal void SetFormVisible()
+            {
+                if (!Instance || Instance.Visible) return;
+                Instance.transform.localPosition = _position;
+                Instance.Visible = true;
+                Instance.OnShowing();
+            }
+
+            internal void SetFormInvisible()
             {
                 if (!Instance || !Instance.Visible) return;
-                
                 Instance.transform.localPosition =
                     new Vector3(65536, 0, 0);
                 Instance.Visible = false;
                 Instance.OnHiding();
-            }
-
-            public void ShowForm()
-            {
-                if (!Instance) return;
-                if (!Instance.Visible)
-                {
-                    Instance.transform.localPosition = _position;
-                    Instance.Visible = true;
-                    Instance.OnShowing();
-                }
-
-                SetInFrontOfUi();
-            }
-
-            private void SetInFrontOfUi()
-            {
-                Instance.transform.SetAsLastSibling();
             }
         }
     }
