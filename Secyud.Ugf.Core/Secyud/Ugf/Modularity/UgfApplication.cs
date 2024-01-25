@@ -21,26 +21,30 @@ namespace Secyud.Ugf.Modularity
             Modules = modules;
         }
 
+        /// <summary>
+        /// Configure all modules
+        /// </summary>
         public void Configure()
         {
             ConfigurationContext context = new(_dependencyManager);
 
-            foreach (IUgfModuleDescriptor module in Modules)
+            int moduleCount = Modules.Count;
+            for (int i = 0; i < moduleCount; i++)
             {
-                if (module.Instance is IOnPreConfigure onPre)
+                if (Modules[i].Instance is IOnPreConfigure onPre)
                 {
                     onPre.PreConfigure(context);
                 }
             }
 
-            foreach (IUgfModuleDescriptor module in Modules)
+            for (int i = 0; i < moduleCount; i++)
             {
-                module.Instance.Configure(context);
+                Modules[i].Instance.Configure(context);
             }
 
-            foreach (IUgfModuleDescriptor module in Modules)
+            for (int i = 0; i < moduleCount; i++)
             {
-                if (module.Instance is IOnPostConfigure onPost)
+                if (Modules[i].Instance is IOnPostConfigure onPost)
                 {
                     onPost.PostConfigure(context);
                 }

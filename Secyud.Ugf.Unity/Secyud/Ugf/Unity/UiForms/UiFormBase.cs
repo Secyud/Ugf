@@ -27,7 +27,8 @@ namespace Secyud.Ugf.Unity.UiForms
     public abstract class UiFormBase<TForm> : UiFormBase where TForm : UiFormBase
     {
         private static TForm _prefab;
-        private static void ActionWithPrefab(Action<UiFormGroup.Element> action)
+        private static void ActionWithPrefab(
+            Action<UiFormGroup.Element> action)
         {
             if (_prefab)
             {

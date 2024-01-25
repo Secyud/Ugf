@@ -1,58 +1,99 @@
 ﻿using System.Collections;
+using Secyud.Ugf.Unity.LoadingComponents;
 
 namespace Secyud.Ugf.Modularity
 {
     public static class UgfApplicationExtension
     {
-        public static IEnumerator NewingGame(this IUgfApplication application)
+        public static IEnumerator NewingGame(
+            this IUgfApplication application,
+            IProgressRate progressRate)
         {
-            foreach (IUgfModuleDescriptor module in application.Modules)
+            yield return application.PreInitializeGame();
+            int moduleCount = application.Modules.Count;
+            progressRate.Rate = 0;
+            float addStep = 99f / moduleCount;
+            for (int i = 0; i < moduleCount; i++)
             {
-                if (module.Instance is IGameModule gameModule)
+                if (application.Modules[i].Instance is
+                    IGameModule gameModule)
                 {
                     yield return gameModule.OnGameNewing();
                 }
+
+                progressRate.Rate += addStep;
             }
+
+            yield return application.PostInitializeGame();
+            progressRate.Rate = 100;
         }
 
-        public static IEnumerator LoadingGame(this IUgfApplication application)
+        public static IEnumerator LoadingGame(
+            this IUgfApplication application,
+            IProgressRate progressRate)
         {
-            foreach (IUgfModuleDescriptor module in application.Modules)
+            yield return application.PreInitializeGame();
+            int moduleCount = application.Modules.Count;
+            progressRate.Rate = 0;
+            float addStep = 99f / moduleCount;
+            for (int i = 0; i < moduleCount; i++)
             {
-                if (module.Instance is IGameModule gameModule)
+                if (application.Modules[i].Instance is
+                    IGameModule gameModule)
                 {
                     yield return gameModule.OnGameLoading();
                 }
+
+                progressRate.Rate += addStep;
             }
+
+            yield return application.PostInitializeGame();
+
+            progressRate.Rate = 100;
         }
 
-        public static IEnumerator SavingGame(this IUgfApplication applications)
+        public static IEnumerator SavingGame(
+            this IUgfApplication application,
+            IProgressRate progressRate)
         {
-            foreach (IUgfModuleDescriptor descriptor in applications.Modules)
+            int moduleCount = application.Modules.Count;
+            float addStep = 99f / moduleCount;
+            for (int i = 0; i < moduleCount; i++)
             {
-                if (descriptor.Instance is IGameModule gameModule)
+                if (application.Modules[i].Instance is
+                    IGameModule gameModule)
                 {
                     yield return gameModule.OnGameSaving();
                 }
+
+                progressRate.Rate += addStep;
             }
+
+            progressRate.Rate = 100;
         }
 
-        public static IEnumerator PreInitializeGame(this IUgfApplication application)
+        private static IEnumerator PreInitializeGame(
+            this IModuleContainer application)
         {
-            foreach (IUgfModuleDescriptor module in application.Modules)
+            int moduleCount = application.Modules.Count;
+            for (int i = 0; i < moduleCount; i++)
             {
-                if (module.Instance is IGamePreInitialize gameModule)
+                if (application.Modules[i].Instance is
+                    IGamePreInitialize gameModule)
                 {
                     yield return gameModule.OnGamePreInitialize();
                 }
             }
         }
 
-        public static IEnumerator PostInitializeGame(this IUgfApplication applications)
+        private static IEnumerator PostInitializeGame(
+            this IModuleContainer application)
         {
-            foreach (IUgfModuleDescriptor descriptor in applications.Modules)
+            int moduleCount = application.Modules.Count;
+            for (int i = 0; i < moduleCount; i++)
             {
-                if (descriptor.Instance is IGamePostInitialize gameModule)
+                if (application.Modules[i].Instance is
+                    IGamePostInitialize gameModule)
                 {
                     yield return gameModule.OnGamePostInitialize();
                 }

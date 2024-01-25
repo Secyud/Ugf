@@ -7,7 +7,7 @@ namespace Secyud.Ugf.Unity.UiForms
     {
         public int GroupId { get; }
         public List<Element> Elements { get; } = new();
-        
+
         private readonly RectTransform _transform;
 
         public UiFormGroup(int groupId)
@@ -59,14 +59,14 @@ namespace Secyud.Ugf.Unity.UiForms
 
         private void SetInFrontOfUi()
         {
-            _transform.SetSiblingIndex(_transform.parent.childCount - 1);
+            _transform.SetAsLastSibling();
         }
 
         public class Element
         {
             private readonly Vector3 _position;
             public string Name { get; }
-            public  UiFormGroup Group {get;}
+            public UiFormGroup Group { get; }
             public UiFormBase Prefab { get; }
             public UiFormBase Instance { get; private set; }
 
@@ -85,39 +85,43 @@ namespace Secyud.Ugf.Unity.UiForms
                     Instance = Prefab.Instantiate(Group._transform);
                     Instance.OnShowing();
                 }
+
+                SetInFrontOfUi();
             }
 
             public void DestroyFrom()
             {
-                if (Instance)
-                {
-                    Instance.OnHiding();
-                    Instance.Destroy();
-                }
+                if (!Instance) return;
+                Instance.OnHiding();
+                Instance.Destroy();
             }
 
             public void HideForm()
             {
-                if (Instance && Instance.Visible)
-                {
-                    Instance.transform.localPosition =
-                        new Vector3(65536, 0, 0);
-                    Instance.Visible = false;
-                    Instance.OnHiding();
-                }
+                if (!Instance || !Instance.Visible) return;
+                
+                Instance.transform.localPosition =
+                    new Vector3(65536, 0, 0);
+                Instance.Visible = false;
+                Instance.OnHiding();
             }
 
             public void ShowForm()
             {
-                if (Instance && !Instance.Visible)
+                if (!Instance) return;
+                if (!Instance.Visible)
                 {
                     Instance.transform.localPosition = _position;
                     Instance.Visible = true;
                     Instance.OnShowing();
                 }
 
-                Instance.transform.SetSiblingIndex(
-                    Group._transform.childCount - 1);
+                SetInFrontOfUi();
+            }
+
+            private void SetInFrontOfUi()
+            {
+                Instance.transform.SetAsLastSibling();
             }
         }
     }

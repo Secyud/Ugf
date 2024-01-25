@@ -1,36 +1,36 @@
-using System;
+﻿using System;
+using Secyud.Ugf.Unity.LoadingComponents;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Secyud.Ugf.Unity.LoadingComponents
+namespace Secyud.Ugf.Unity.UiForms
 {
-    [RequireComponent(typeof(Canvas))]
-    public class LoadingPanel : MonoBehaviour
+    public class LoadingFormBase<TForm>:UiFormBase<TForm>
+        where TForm : UiFormBase
     {
         [SerializeField] private Slider _slider;
         [SerializeField] private TextMeshProUGUI _text;
         [SerializeField] private float _speed = 100;
 
-        private ILoadableObject _progressRate;
+        protected IProgressRate ProgressRate { get; set; }
 
         protected virtual void Awake()
         {
-            GetComponent<Canvas>().worldCamera = U.Camera;
             _slider.minValue = 0;
             _slider.maxValue = 100;
             _slider.value = 0;
         }
 
-        private void Update()
+        protected virtual void Update()
         {
-            if (_slider.value >= 100)
+            if (_slider.value >= 90 && ProgressRate.LoadFinished)
             {
-                Destroy(gameObject);
+                DestroyFrom();
             }
-            else if (_slider.value < _progressRate.Rate)
+            else if (_slider.value < ProgressRate.Rate)
             {
-                _slider.value = Math.Min(_speed * Time.deltaTime, _progressRate.Rate);
+                _slider.value = Math.Min(_speed * Time.deltaTime, ProgressRate.Rate);
                 if (_text)
                 {
                     _text.text = $"{Math.Min(100, (int)_slider.value)}%";
