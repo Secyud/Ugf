@@ -27,14 +27,14 @@ namespace Secyud.Ugf.Unity.AssetLoading
         {
             if (Instance is not null)
             {
-                callback.Invoke(Instance);
+                callback?.Invoke(Instance);
             }
             else
             {
                 GetOriginAsync(o =>
                 {
                     Instance = HandleResult(o);
-                    callback.Invoke(Instance);
+                    callback?.Invoke(Instance);
                 });
             }
         }

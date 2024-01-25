@@ -34,7 +34,7 @@ namespace Secyud.Ugf.Unity.AssetLoading
         {
             if (_instance)
             {
-                callback.Invoke(_instance);
+                callback?.Invoke(_instance);
             }
             else
             {
