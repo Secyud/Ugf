@@ -8,15 +8,17 @@ namespace Secyud.Ugf.Unity.UiForms
         public int GroupId { get; }
         public List<Element> Elements { get; } = new();
         
-        private readonly Transform _transform;
+        private readonly RectTransform _transform;
 
         public UiFormGroup(int groupId)
         {
             GroupId = groupId;
             GameObject groupObject = new($"Ui Group {groupId}");
-            _transform = groupObject.transform;
-            _transform.SetParent(U.Canvas.transform);
+            RectTransform canvasTransform = U.Canvas.transform as RectTransform;
+            _transform = groupObject.AddComponent<RectTransform>();
+            _transform.SetParent(canvasTransform);
             _transform.localPosition = Vector3.zero;
+            _transform.sizeDelta = canvasTransform!.sizeDelta;
         }
 
         public void CreateAll()

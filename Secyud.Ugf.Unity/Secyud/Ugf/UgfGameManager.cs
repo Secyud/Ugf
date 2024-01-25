@@ -8,11 +8,9 @@ namespace Secyud.Ugf
     {
         protected abstract Type StartUpModule { get; }
         protected abstract PlugInSourceList PlugInSourceList { get; }
-        private UgfApplicationFactory _factory;
-
         [field:SerializeField]public Camera Camera { get; private set; }
         [field:SerializeField]public Canvas Canvas { get; private set; }
-
+        public UgfApplicationFactory Factory { get; private set; }
         public static UgfGameManager Instance { get; private set; }
 
         public virtual void Awake()
@@ -24,8 +22,8 @@ namespace Secyud.Ugf
 
             Instance = this;
             DontDestroyOnLoad(gameObject);
-            _factory = new UgfApplicationFactory(StartUpModule, PlugInSourceList);
-            _factory.Configure();
+            Factory = new UgfApplicationFactory(StartUpModule, PlugInSourceList);
+            Factory.Configure();
         }
     }
 }
