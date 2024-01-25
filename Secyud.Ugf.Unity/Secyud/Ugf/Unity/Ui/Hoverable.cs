@@ -6,13 +6,12 @@ namespace Secyud.Ugf.Unity.Ui
 {
     public class Hoverable : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
-        [SerializeField] private UnityEvent _hoverEvent = new();
         [SerializeField] private float _delay = 0.8f;
+        [field:SerializeField] public UnityEvent OnHover { get; private set; }
         private float _hoverTime;
         private Vector2 _mouseRecord;
         private bool _isHovered;
 
-        public UnityEvent OnHover => _hoverEvent;
 
         protected virtual void Update()
         {
@@ -33,7 +32,7 @@ namespace Secyud.Ugf.Unity.Ui
 
                 if (_hoverTime > _delay)
                 {
-                    _hoverEvent.Invoke();
+                    OnHover.Invoke();
                     OnPointerExit(null);
                 }
             }

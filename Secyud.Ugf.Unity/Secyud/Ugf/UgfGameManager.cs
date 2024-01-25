@@ -6,15 +6,12 @@ namespace Secyud.Ugf
 {
     public abstract class UgfGameManager : MonoBehaviour
     {
-        [SerializeField] private Camera _camera;
-        [SerializeField] private Canvas _canvas;
-
         protected abstract Type StartUpModule { get; }
         protected abstract PlugInSourceList PlugInSourceList { get; }
         private UgfApplicationFactory _factory;
 
-        public Camera Camera => _camera;
-        public Canvas Canvas => _canvas;
+        [field:SerializeField]public Camera Camera { get; private set; }
+        [field:SerializeField]public Canvas Canvas { get; private set; }
 
         public static UgfGameManager Instance { get; private set; }
 

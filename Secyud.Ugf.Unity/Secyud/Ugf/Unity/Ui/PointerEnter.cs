@@ -6,8 +6,7 @@ namespace Secyud.Ugf.Unity.Ui
 {
     public class PointerEnter: MonoBehaviour, IPointerEnterHandler
     {
-        [SerializeField] private UnityEvent _pointEnterEvent;
-        public UnityEvent OnPointEnter => _pointEnterEvent;
+        [field:SerializeField] public UnityEvent OnPointEnter { get; private set; }
         
         public void OnPointerEnter(PointerEventData eventData)
         {

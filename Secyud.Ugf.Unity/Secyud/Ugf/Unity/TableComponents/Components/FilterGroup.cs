@@ -31,7 +31,7 @@ namespace Secyud.Ugf.Unity.TableComponents.Components
 
         public void Initialize<TFilter>(
             IEnumerable<TFilter> filters)
-            where TFilter:ITableFilterDescriptor
+            where TFilter : ITableFilterDescriptor
         {
             foreach (TFilter filter in filters)
             {

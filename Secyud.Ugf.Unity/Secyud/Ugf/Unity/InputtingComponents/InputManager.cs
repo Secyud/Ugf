@@ -20,16 +20,17 @@ namespace Secyud.Ugf.Unity.InputtingComponents
             if (!inputComponent)
             {
                 UgfLogger.LogError("Last input component is not available!");
+                return;
             }
-            else
+
+            int length = inputComponent.Events.Length;
+            for (int i = 0; i < length; i++)
             {
-                foreach (InputEvent input in inputComponent.Actions)
+                InputEvent input = inputComponent.Events[i];
+                if (Input.GetKeyUp(input.KeyCode))
                 {
-                    if (Input.GetKeyUp(input.KeyCode))
-                    {
-                        input.Action.Invoke();
-                        return;
-                    }
+                    input.Action.Invoke();
+                    return;
                 }
             }
         }

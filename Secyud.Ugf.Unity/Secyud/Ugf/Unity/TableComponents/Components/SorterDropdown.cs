@@ -10,7 +10,7 @@ namespace Secyud.Ugf.Unity.TableComponents.Components
         [SerializeField] private TableFilter _filterFunction;
         [SerializeField] private TMP_Dropdown _dropdown;
 
-        private List<ITableSorterDescriptor> Sorters;
+        private List<ITableSorterDescriptor> _sorters;
 
         public ITableSorterDescriptor SelectedSorter { get; private set; }
 
@@ -23,8 +23,8 @@ namespace Secyud.Ugf.Unity.TableComponents.Components
             IEnumerable<TSorter> sorters)
             where TSorter:ITableSorterDescriptor
         {
-            Sorters = sorters.Cast<ITableSorterDescriptor>().ToList();
-            _dropdown.options = Sorters
+            _sorters = sorters.Cast<ITableSorterDescriptor>().ToList();
+            _dropdown.options = _sorters
                 .Select(u => new TMP_Dropdown.OptionData(U.T[u.Name]))
                 .ToList();
             _dropdown.SetValueWithoutNotify(0);
@@ -32,7 +32,7 @@ namespace Secyud.Ugf.Unity.TableComponents.Components
 
         private void SubmitInput(int select)
         {
-            SelectedSorter = Sorters[select];
+            SelectedSorter = _sorters[select];
             _filterFunction.Table.Refresh(3);
         }
     }

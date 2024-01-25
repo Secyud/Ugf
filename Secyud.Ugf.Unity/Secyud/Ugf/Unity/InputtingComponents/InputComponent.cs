@@ -7,8 +7,7 @@ namespace Secyud.Ugf.Unity.InputtingComponents
     public class InputComponent : MonoBehaviour
     {
         [SerializeField] private string _name;
-        [SerializeField] private InputEvent[] _events;
-        public IEnumerable<InputEvent> Actions => _events;
+        [field: SerializeField] public InputEvent[] Events { get; private set; }
 
         private void Awake()
         {

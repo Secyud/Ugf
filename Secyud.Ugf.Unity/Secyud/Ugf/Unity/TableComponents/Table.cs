@@ -1,22 +1,18 @@
 ﻿using System;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Secyud.Ugf.Unity.TableComponents
 {
     public class Table : MonoBehaviour
     {
-        [SerializeField] private TableSource _source;
-        [SerializeField] private TableFilter _filter;
-        [SerializeField] private TableSorter _sorter;
-        [SerializeField] private TablePager _pager;
-        [SerializeField] private TableContent _content;
+        [field: SerializeField] public TableSource Source { get; private set; }
+        [field: SerializeField] public TableFilter Filter { get; private set; }
+        [field: SerializeField] public TableSorter Sorter { get; private set; }
+        [field: SerializeField] public TablePager Pager { get; private set; }
+        [field: SerializeField] public TableContent Content { get; private set; }
 
         protected int State;
-        public TableSource Source => _source;
-        public TableFilter Filter => _filter;
-        public TableSorter Sorter => _sorter;
-        public TablePager Pager => _pager;
-        public TableContent Content => _content;
 
         protected virtual void Awake()
         {

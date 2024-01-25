@@ -6,15 +6,13 @@ namespace Secyud.Ugf.Unity.Ui
 {
     public class LeftClick : MonoBehaviour, IPointerClickHandler
     {
-        [SerializeField] private UnityEvent _clickEvent;
-
-        public UnityEvent OnClick => _clickEvent;
+        [field:SerializeField]public UnityEvent OnClick { get; private set; }
 
         public void OnPointerClick(PointerEventData eventData)
         {
             if (eventData.button == PointerEventData.InputButton.Left)
             {
-                _clickEvent.Invoke();
+                OnClick.Invoke();
             }
         }
     }

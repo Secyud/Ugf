@@ -5,17 +5,14 @@ namespace Secyud.Ugf.Modularity
 {
     public class GameSlotComponent : MonoBehaviour
     {
-        [SerializeField] private int _slotIndex;
-        [SerializeField] private TextMeshProUGUI _slotNameText;
-
-        public TextMeshProUGUI SlotNameText => _slotNameText;
-        public int SlotIndex => _slotIndex;
+        [field: SerializeField] public TextMeshProUGUI SlotNameText { get; private set; }
+        [field: SerializeField] public int SlotIndex { get; private set; }
 
         protected virtual void Awake()
         {
-            if (_slotIndex < 0)
+            if (SlotIndex < 0)
             {
-                _slotIndex = transform.GetSiblingIndex();
+                SlotIndex = transform.GetSiblingIndex();
             }
 
             InitSlotUi();
@@ -23,17 +20,17 @@ namespace Secyud.Ugf.Modularity
 
         protected virtual void InitSlotUi()
         {
-            if (_slotNameText) _slotNameText.text = $"{U.T["Slot"]} {_slotIndex}";
+            if (SlotNameText) SlotNameText.text = $"{U.T["Slot"]} {SlotIndex}";
         }
 
         public virtual void EnsureSlot()
         {
-            U.Get<IGameArchivingService>().EnterGameWithSlot(_slotIndex);
+            U.Get<IGameArchivingService>().EnterGameWithSlot(SlotIndex);
         }
 
         public virtual void DeleteSlot()
         {
-            U.Get<IGameArchivingService>().TryDeleteSlot(_slotIndex);
+            U.Get<IGameArchivingService>().TryDeleteSlot(SlotIndex);
             InitSlotUi();
         }
     }
