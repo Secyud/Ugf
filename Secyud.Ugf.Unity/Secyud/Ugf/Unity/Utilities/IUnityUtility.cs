@@ -7,7 +7,7 @@ namespace Secyud.Ugf.Unity.Utilities
     public interface IUnityUtility
     {
         public TypeManager TypeManager { get; }
-        public IUgfStringLocalizer StringLocalizer { get; }
+        public IStringLocalizer StringLocalizer { get; }
         public UgfGameManager GameManager { get; }
         public IDependencyProvider DependencyProvider { get; }
         public IScopeManager ScopeManager { get; }

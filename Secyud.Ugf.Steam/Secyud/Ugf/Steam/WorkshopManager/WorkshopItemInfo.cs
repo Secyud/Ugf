@@ -8,7 +8,7 @@ namespace Secyud.Ugf.Steam.WorkshopManager
         public string LocalPath { get; private set; }
         public string Description { get; set; }
         public bool Available { get; private set; }
-        public WorkshopConfigInfo ConfigInfo { get; } = new();
+        public WorkshopConfigInfo ConfigInfo { get; private set; } 
         public WorkshopItemInfo(PublishedFileId_t id)
         {
             Id = id;
@@ -20,9 +20,14 @@ namespace Secyud.Ugf.Steam.WorkshopManager
                     out ulong _, out string localPath,
                     260, out uint _))
             {
+                
                 LocalPath = localPath;
-                Available = ConfigInfo.ReadFromLocal(localPath);
-                ConfigInfo.FieldId = Id.m_PublishedFileId;
+                ConfigInfo = WorkshopConfigInfo.ReadFromLocal(localPath);
+                Available = ConfigInfo is not null;
+                if (ConfigInfo is not null)
+                {
+                    ConfigInfo.FieldId = Id.m_PublishedFileId;
+                }
             }
         }
     }

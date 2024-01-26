@@ -27,8 +27,9 @@ namespace Secyud.Ugf.Steam.WorkshopManager
             string[] directories = Directory.GetDirectories(Path.Combine(U.Path, "Upload"));
             foreach (string directory in directories)
             {
-                WorkshopConfigInfo info = new();
-                if (info.ReadFromLocal(directory))
+                WorkshopConfigInfo info = WorkshopConfigInfo
+                    .ReadFromLocal(directory);
+                if (info is not null)
                 {
                     _uploadItems.Add(
                         new Tuple<string, WorkshopConfigInfo>(
@@ -89,7 +90,7 @@ namespace Secyud.Ugf.Steam.WorkshopManager
                 }
 
                 info.FieldId = result.m_nPublishedFileId.m_PublishedFileId;
-                info.WriteToLocal(path);
+                WorkshopConfigInfo.WriteToLocal(info,path);
                 StartUploadItem();
             }
 

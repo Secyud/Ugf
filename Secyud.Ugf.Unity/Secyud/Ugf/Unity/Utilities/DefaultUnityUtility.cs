@@ -13,14 +13,14 @@ namespace Secyud.Ugf.Unity.Utilities
         {
             GameManager = gameManager;
             DependencyProvider = dependencyProvider;
-            StringLocalizer = dependencyProvider.Get<IUgfStringLocalizer>();
+            StringLocalizer = dependencyProvider.Get<IStringLocalizer>();
             TypeManager = dependencyProvider.Get<TypeManager>();
             ScopeManager = dependencyProvider.Get<IScopeManager>();
             ApplicationPath = Application.dataPath + "/..";
         }
 
         public TypeManager TypeManager { get; }
-        public IUgfStringLocalizer StringLocalizer { get; }
+        public IStringLocalizer StringLocalizer { get; }
         public UgfGameManager GameManager { get; }
         public IDependencyProvider DependencyProvider { get; }
         public IScopeManager ScopeManager { get; }

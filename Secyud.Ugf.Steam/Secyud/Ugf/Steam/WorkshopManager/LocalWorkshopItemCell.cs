@@ -28,7 +28,7 @@ namespace Secyud.Ugf.Steam.WorkshopManager
         {
             if (CellObject is not WorkshopItemInfo info) return;
             info.ConfigInfo.Disabled = !info.ConfigInfo.Disabled;
-            info.ConfigInfo.WriteToLocal(info.LocalPath);
+            WorkshopConfigInfo.WriteToLocal(info.ConfigInfo,info.LocalPath);
             _enableImage.sprite = info.ConfigInfo.Disabled
                 ? _disableSprite
                 : _enableSprite;

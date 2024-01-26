@@ -14,7 +14,7 @@ public static class U
     }
 
     public static string Path => _unityUtility.ApplicationPath;
-    public static IUgfStringLocalizer T => _unityUtility.StringLocalizer;
+    public static IStringLocalizer T => _unityUtility.StringLocalizer;
     public static TypeManager Tm => _unityUtility.TypeManager;
     public static Camera Camera => _unityUtility.GameManager.Camera;
     public static Canvas Canvas => _unityUtility.GameManager.Canvas;

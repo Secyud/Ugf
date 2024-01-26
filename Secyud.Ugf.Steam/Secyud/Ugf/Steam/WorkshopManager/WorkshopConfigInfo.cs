@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using Unity.Plastic.Newtonsoft.Json;
 using UnityEngine;
 
 namespace Secyud.Ugf.Steam.WorkshopManager
@@ -17,23 +18,24 @@ namespace Secyud.Ugf.Steam.WorkshopManager
         public string ChangeNote { get; set; }
         public List<string> MapFolders { get; } = new();
         public string AuthorName { get; set; }
+        public static WorkshopConfigInfo Default { get; } = new();
 
-        public bool ReadFromLocal(string localPath)
+        public static WorkshopConfigInfo ReadFromLocal(string localPath)
         {
             string path = Path.Combine(localPath, "info.json");
             if (File.Exists(path))
             {
                 string jsonStr = File.ReadAllText(path);
-                JsonUtility.FromJsonOverwrite(jsonStr, this);
+                return JsonConvert.DeserializeObject<WorkshopConfigInfo>(jsonStr);
             }
 
-            return false;
+            return null;
         }
 
-        public void WriteToLocal(string localPath)
+        public static void WriteToLocal(WorkshopConfigInfo info,  string localPath)
         {
             string path = Path.Combine(localPath, "info.json");
-            string jsonStr = JsonUtility.ToJson(this);
+            string jsonStr = JsonConvert.SerializeObject(info);
             File.WriteAllText(path, jsonStr);
         }
     }

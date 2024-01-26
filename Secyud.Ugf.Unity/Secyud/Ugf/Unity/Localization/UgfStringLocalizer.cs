@@ -7,27 +7,55 @@ using System.Text;
 using Secyud.Ugf.DependencyInjection;
 using Secyud.Ugf.Localization;
 using Secyud.Ugf.VirtualPath;
+using Unity.Plastic.Newtonsoft.Json;
+using Unity.Plastic.Newtonsoft.Json.Linq;
 using UnityEngine;
+using UnityEngine.Pool;
 
 namespace Secyud.Ugf.Unity.Localization
 {
-    public class UgfStringLocalizer : LocalizerBase, IUgfStringLocalizer,IRegistry
+    public class UgfStringLocalizer : LocalizerBase, IStringLocalizer, IRegistry
     {
         private readonly IVirtualPathManager _virtualPathManager;
-        private string _currentCulture = CultureInfo.CurrentCulture.TwoLetterISOLanguageName;
+        private string _currentCulture = CultureInfo.CurrentCulture.IetfLanguageTag;
         private readonly Dictionary<string, string> _translates = new();
-        private readonly List<Tuple<string, string>> _resources = new();
+        private readonly SortedDictionary<string, Collection> _resources = new();
 
-        public UgfStringLocalizer(ILocalizerFactory factory,IVirtualPathManager virtualPathManager)
+        public UgfStringLocalizer(ILocalizerFactory factory, IVirtualPathManager virtualPathManager)
             : base(factory)
         {
             _virtualPathManager = virtualPathManager;
         }
 
-        public void RegisterPath(string virtualPath, string languageName)
+        public void RegisterPath(string virtualPath, string languageName, bool isDefault = false)
         {
-            _resources.Add(new Tuple<string, string>(
-                languageName[..2], virtualPath));
+            string[] culture = languageName.Split('-');
+            string c = culture[0];
+            if (!_resources.TryGetValue(c, out Collection collection))
+            {
+                collection = new Collection();
+                _resources[c] = collection;
+            }
+
+            if (culture.Length > 1)
+            {
+                string t = culture[1];
+                if (!collection.Specific.TryGetValue(t, out List<string> paths))
+                {
+                    paths = new List<string>();
+                    collection.Specific[t] = paths;
+                }
+
+                paths.AddIfNotContains(virtualPath);
+                if (isDefault)
+                {
+                    collection.Default.AddIfNotContains(virtualPath);
+                }
+            }
+            else
+            {
+                collection.Default.AddIfNotContains(virtualPath);
+            }
         }
 
         public string this[string str] =>
@@ -54,9 +82,9 @@ namespace Secyud.Ugf.Unity.Localization
 
         public override void ChangeCulture(CultureInfo cultureInfo)
         {
-            if (cultureInfo.TwoLetterISOLanguageName == _currentCulture)
+            if (cultureInfo.IetfLanguageTag == _currentCulture)
                 return;
-            _currentCulture = cultureInfo.TwoLetterISOLanguageName;
+            _currentCulture = cultureInfo.IetfLanguageTag;
             ReloadResources();
         }
 
@@ -64,26 +92,45 @@ namespace Secyud.Ugf.Unity.Localization
         {
             _translates.Clear();
 
-            List<Tuple<string, string>> strings = new();
 
-            foreach ((string culture, string virtualPath) in _resources)
+            string[] culture = _currentCulture.Split('-');
+
+            List<string> paths = ListPool<string>.Get();
+
+            if (!_resources.TryGetValue(culture[0], out Collection collection)) return;
+            paths.AddRange(collection.Default);
+            if (culture.Length > 1 && collection.Specific
+                    .TryGetValue(culture[1], out List<string> list))
             {
-                if (culture != _currentCulture) continue;
-                foreach (string filePath in _virtualPathManager.GetFilesSingly(virtualPath))
+                paths.AddRange(list);
+            }
+
+            
+            for (int i = 0; i < paths.Count; i++)
+            {
+                string[] filePaths = _virtualPathManager.GetFilesSingly(paths[i]);
+                for (int j = 0; j < filePaths.Length; j++)
                 {
+                    string filePath = filePaths[j];
                     using FileStream fs = new(filePath, FileMode.Open, FileAccess.Read);
                     using StreamReader sr = new(fs, Encoding.UTF8);
 
                     string jsonStr = sr.ReadToEnd();
-
-                    JsonUtility.FromJsonOverwrite(jsonStr,strings);
-
-                    foreach ((string key, string value) in strings)
+                    JObject jsonObject = JObject.Parse(jsonStr);
+                    foreach ((string key, JToken value) in jsonObject)
                     {
-                        _translates[key] = value;
+                        _translates[key] = value.Value<string>();
                     }
                 }
             }
+
+            ListPool<string>.Release(paths);
+        }
+
+        public class Collection
+        {
+            public List<string> Default { get; } = new();
+            public SortedDictionary<string, List<string>> Specific { get; } = new();
         }
     }
 }
