@@ -1,5 +1,5 @@
 ﻿using System;
-using Secyud.Ugf.Unity.LoadingComponents;
+using Secyud.Ugf.Unity.LoadingManagement;
 using UnityEngine;
 
 namespace Secyud.Ugf.Unity.UiForms

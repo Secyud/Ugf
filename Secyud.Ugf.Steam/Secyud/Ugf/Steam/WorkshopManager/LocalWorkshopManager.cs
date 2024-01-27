@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using Secyud.Ugf.Logging;
 using Secyud.Ugf.Unity.TableComponents;
-using Secyud.Ugf.Unity.TableComponents.Components;
-using Secyud.Ugf.Unity.TableComponents.LocalComponents;
+using Secyud.Ugf.Unity.TableComponents.LocalTable;
+using Secyud.Ugf.Unity.TableComponents.UiFunctions;
 using Steamworks;
 using UnityEngine;
 

@@ -1,4 +1,4 @@
-﻿using Secyud.Ugf.Unity.TableComponents.LocalComponents;
+﻿using Secyud.Ugf.Unity.TableComponents.LocalTable;
 
 namespace Secyud.Ugf.Steam.WorkshopManager
 {

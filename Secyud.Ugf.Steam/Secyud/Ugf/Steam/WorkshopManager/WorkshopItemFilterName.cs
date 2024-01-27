@@ -1,5 +1,5 @@
-﻿using Secyud.Ugf.Unity.TableComponents.Components;
-using Secyud.Ugf.Unity.TableComponents.LocalComponents;
+﻿using Secyud.Ugf.Unity.TableComponents.LocalTable;
+using Secyud.Ugf.Unity.TableComponents.UiFunctions;
 
 namespace Secyud.Ugf.Steam.WorkshopManager
 {

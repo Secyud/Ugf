@@ -1,5 +1,5 @@
 ﻿using System.Collections;
-using Secyud.Ugf.Unity.LoadingComponents;
+using Secyud.Ugf.Unity.LoadingManagement;
 
 namespace Secyud.Ugf.Modularity
 {
