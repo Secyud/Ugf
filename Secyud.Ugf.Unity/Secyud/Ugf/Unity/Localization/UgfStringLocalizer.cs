@@ -7,9 +7,7 @@ using System.Text;
 using Secyud.Ugf.DependencyInjection;
 using Secyud.Ugf.Localization;
 using Secyud.Ugf.VirtualPath;
-using Unity.Plastic.Newtonsoft.Json;
 using Unity.Plastic.Newtonsoft.Json.Linq;
-using UnityEngine;
 using UnityEngine.Pool;
 
 namespace Secyud.Ugf.Unity.Localization

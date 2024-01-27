@@ -21,7 +21,7 @@ namespace Secyud.Ugf.Unity.TableComponents.Components
     public class SorterGroup : MonoBehaviour
     {
         [SerializeField] private SorterToggle _toggleTemplate;
-        [SerializeField] private TableSorter _sorterFunction;
+        [SerializeField] private TableDataOperator _sorterFunction;
         [SerializeField] private RectTransform _sorterLine;
         private List<SorterToggle> _sorters;
         private LayoutTrigger _layoutTrigger;

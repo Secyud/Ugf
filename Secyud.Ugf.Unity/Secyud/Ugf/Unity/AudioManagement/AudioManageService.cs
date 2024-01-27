@@ -1,5 +1,4 @@
-﻿using System;
-using Secyud.Ugf.DependencyInjection;
+﻿using Secyud.Ugf.DependencyInjection;
 using Secyud.Ugf.Unity.AssetLoading;
 using UnityEngine;
 using UnityEngine.Audio;

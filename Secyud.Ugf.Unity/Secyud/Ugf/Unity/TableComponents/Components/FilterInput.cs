@@ -15,7 +15,7 @@ namespace Secyud.Ugf.Unity.TableComponents.Components
     /// </summary>
     public class FilterInput : MonoBehaviour
     {
-        [SerializeField] private TableFilter _filterFunction;
+        [SerializeField] private TableDataOperator _filterFunction;
         [SerializeField] private TMP_InputField _inputField;
 
         public ITableStringFilterDescriptor Filter { get; private set; }

@@ -2,6 +2,10 @@
 
 namespace Secyud.Ugf.Unity.TableComponents
 {
+    /// <summary>
+    /// 数据单元格，继承此类并实现<see cref="SetObject"/>
+    /// 以自定义单元格功能。
+    /// </summary>
     public class TableCell : MonoBehaviour
     {
         public object CellObject { get; protected set; }

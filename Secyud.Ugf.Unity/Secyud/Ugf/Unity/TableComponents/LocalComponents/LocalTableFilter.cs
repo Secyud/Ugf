@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace Secyud.Ugf.Unity.TableComponents.LocalComponents
 {
-    public class LocalTableFilter : TableFilter
+    public class LocalTableFilter : TableDataOperator
     {
         public event Func<IEnumerable<object>, IEnumerable<object>> FilterEvent;
 

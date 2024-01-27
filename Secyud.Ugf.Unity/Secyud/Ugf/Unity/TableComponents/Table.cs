@@ -1,14 +1,13 @@
 ﻿using System;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace Secyud.Ugf.Unity.TableComponents
 {
     public class Table : MonoBehaviour
     {
         [field: SerializeField] public TableSource Source { get; private set; }
-        [field: SerializeField] public TableFilter Filter { get; private set; }
-        [field: SerializeField] public TableSorter Sorter { get; private set; }
+        [field: SerializeField] public TableDataOperator Filter { get; private set; }
+        [field: SerializeField] public TableDataOperator Sorter { get; private set; }
         [field: SerializeField] public TablePager Pager { get; private set; }
         [field: SerializeField] public TableContent Content { get; private set; }
 

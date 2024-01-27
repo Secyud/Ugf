@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using Secyud.Ugf.Unity.Ui;
 using UnityEngine;
-using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 namespace Secyud.Ugf.Unity.TableComponents.Components

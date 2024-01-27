@@ -8,7 +8,7 @@ namespace Secyud.Ugf.Unity.TableComponents.Components
     /// <summary>
     /// <para>
     /// The ui component of filter，use sub class of
-    /// <see cref="TableFilter"/> to manage filter way.
+    /// <see cref="TableDataOperator"/> to manage filter way.
     /// </para>
     /// <para>
     /// Local usage see
@@ -19,7 +19,7 @@ namespace Secyud.Ugf.Unity.TableComponents.Components
     public class FilterGroup : MonoBehaviour
     {
         [SerializeField] private FilterToggle _toggleTemplate;
-        [SerializeField] private TableFilter _filterFunction;
+        [SerializeField] private TableDataOperator _filterFunction;
         private List<FilterToggle> _filterToggles;
         public LayoutTrigger LayoutTrigger { get; private set; }
 

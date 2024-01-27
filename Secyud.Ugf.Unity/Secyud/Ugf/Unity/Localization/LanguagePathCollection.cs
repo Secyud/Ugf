@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace Secyud.Ugf.Unity.Localization
+﻿namespace Secyud.Ugf.Unity.Localization
 {
     
 }

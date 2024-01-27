@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace Secyud.Ugf.Unity.TableComponents.LocalComponents
 {
-    public class LocalTableSorter:TableSorter
+    public class LocalTableSorter:TableDataOperator
     {
         public event Func<IEnumerable<object>, IEnumerable<object>> SorterEvent;
         public IList<object> SortedData { get; protected set; }

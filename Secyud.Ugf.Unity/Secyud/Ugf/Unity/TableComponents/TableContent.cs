@@ -3,6 +3,9 @@ using UnityEngine;
 
 namespace Secyud.Ugf.Unity.TableComponents
 {
+    /// <summary>
+    /// 视图内容，一般使用默认
+    /// </summary>
     public class TableContent : MonoBehaviour
     {
         [SerializeField] private TableCell _cellTemplate;
