@@ -38,8 +38,7 @@ namespace Secyud.Ugf.Unity.UiForms
             return element;
         }
 
-        public void GetFormPrefabAsync<TForm>(Action<TForm> callback)
-            where TForm : UiFormBase
+        public void GetFormPrefabAsync(Action<UiFormCollection> callback)
         {
             if (FormPrefabs is null)
             {
@@ -48,18 +47,7 @@ namespace Secyud.Ugf.Unity.UiForms
                     nameof(FormPrefabs));
             }
 
-            FormPrefabs.GetValueAsync(c =>
-            {
-                for (int i = 0; i < c.FormPrefabs.Length; i++)
-                {
-                    UiFormBase prefab = c.FormPrefabs[i];
-                    if (prefab is TForm form)
-                    {
-                        callback.Invoke(form);
-                        return;
-                    }
-                }
-            });
+            FormPrefabs.GetValueAsync(callback);
         }
     }
 }

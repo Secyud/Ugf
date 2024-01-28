@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using TMPro;
 using UnityEngine;
@@ -7,11 +8,16 @@ namespace Secyud.Ugf.Unity.TableComponents.LocalTable
 {
     public class LocalTablePager : TablePager
     {
-        [SerializeField] private int _maxCount;
         [SerializeField] private TextMeshProUGUI _pageText;
 
         private int _currentPage;
         private int _maxPage;
+        private int _maxCount;
+
+        protected virtual void Awake()
+        {
+            _maxCount = Table.Content.Cells.Length;
+        }
 
         public override void Apply()
         {

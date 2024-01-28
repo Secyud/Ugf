@@ -25,7 +25,7 @@ namespace Secyud.Ugf.Modularity
 
         public virtual void EnsureSlot()
         {
-            Service.EnterGameWithSlot(SlotIndex);
+            Service.SelectSlot(SlotIndex);
         }
 
         public virtual void DeleteSlot()

@@ -27,6 +27,8 @@ namespace Secyud.Ugf.Unity.UiForms
     public abstract class UiFormBase<TForm> : UiFormBase where TForm : UiFormBase
     {
         private static TForm _prefab;
+
+
         private static void ActionWithPrefab(
             Action<UiFormGroup.Element> action)
         {
@@ -37,14 +39,25 @@ namespace Secyud.Ugf.Unity.UiForms
             }
 
             UiFormService service = U.Get<UiFormService>();
-            service.GetFormPrefabAsync<TForm>(p =>
+            service.GetFormPrefabAsync(FormCollectionCallback);
+            return;
+
+            void FormCollectionCallback(
+                UiFormCollection c)
             {
-                _prefab = p;
-                p.GroupElement = service.AddForm(p);
+                TForm form = c.GetForm<TForm>();
+
+                if (!form)
+                    throw new UgfNotRegisteredException(
+                        nameof(UiFormCollection),
+                        typeof(TForm).Name);
+
+                _prefab = form;
+                form.GroupElement = service.AddForm(form);
                 action?.Invoke(_prefab.GroupElement);
-            });
+            }
         }
-        
+
         public static void CreateGroup()
         {
             ActionWithPrefab(e => e.Group.CreateAll());
@@ -53,8 +66,8 @@ namespace Secyud.Ugf.Unity.UiForms
         public static void DestroyGroup()
         {
             ActionWithPrefab(e => e.Group.DestroyAll());
-        } 
-        
+        }
+
         public static void ShowGroup()
         {
             ActionWithPrefab(e => e.Group.ShowAll());
@@ -63,26 +76,26 @@ namespace Secyud.Ugf.Unity.UiForms
         public static void HideGroup()
         {
             ActionWithPrefab(e => e.Group.HideAll());
-        } 
-        
+        }
+
         public static void CreateForm()
         {
-            ActionWithPrefab(e=>e.CreateForm());
+            ActionWithPrefab(e => e.CreateForm());
         }
 
         public static void DestroyFrom()
         {
-            ActionWithPrefab(e=>e.DestroyFrom());
+            ActionWithPrefab(e => e.DestroyFrom());
         }
-        
+
         public static void ShowForm()
         {
-            ActionWithPrefab(e=>e.ShowForm());
+            ActionWithPrefab(e => e.ShowForm());
         }
 
         public static void HideForm()
         {
-            ActionWithPrefab(e=>e.HideForm());
+            ActionWithPrefab(e => e.HideForm());
         }
 
         public static TForm GetForm()

@@ -17,12 +17,12 @@ namespace Secyud.Ugf.Modularity
         /// Enter game and set the slot index.
         /// </summary>
         /// <param name="slotIndex"></param>
-        void EnterGameWithSlot(int slotIndex);
+        void SelectSlot(int slotIndex);
         /// <summary>
         /// Delete the slot file.
         /// </summary>
         /// <param name="slotIndex"></param>
-        void TryDeleteSlot(int slotIndex);
+        bool TryDeleteSlot(int slotIndex);
         /// <summary>
         /// Save game slot data to current slot.
         /// </summary>

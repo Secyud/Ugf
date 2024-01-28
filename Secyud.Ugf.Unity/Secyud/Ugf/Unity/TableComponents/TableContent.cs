@@ -8,24 +8,13 @@ namespace Secyud.Ugf.Unity.TableComponents
     /// </summary>
     public class TableContent : MonoBehaviour
     {
-        [SerializeField] private TableCell _cellTemplate;
-        [SerializeField] private int _maxShowCount;
-        public TableCell[] Cells { get; private set; }
+        [field:SerializeField]public TableCell[] Cells { get; private set; }
         public Table Table { get; internal set; }
-
-        protected virtual void Awake()
-        {
-            Cells = new TableCell[_maxShowCount];
-            for (int i = 0; i < _maxShowCount; i++)
-            {
-                Cells[i] = _cellTemplate.Instantiate(transform);
-            }
-        }
 
         public virtual void Apply()
         {
             IList<object> list = Table.Pager.PagedData;
-            for (int i = 0; i < _maxShowCount; i++)
+            for (int i = 0; i < Cells.Length; i++)
             {
                 Cells[i].SetObject(i < list.Count ? list[i] : null);
             }
