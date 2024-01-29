@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Secyud.Ugf.Unity.TableComponents.LocalTable
 {
@@ -8,7 +7,7 @@ namespace Secyud.Ugf.Unity.TableComponents.LocalTable
     {
         public readonly List<Func<IEnumerable<object>, IEnumerable<object>>> FilterEvent = new();
 
-        public IEnumerable<object> FilteredData { get; protected set; }
+        public List<object> FilteredData { get; } = new();
 
         public override void Apply()
         {
@@ -23,7 +22,8 @@ namespace Secyud.Ugf.Unity.TableComponents.LocalTable
                     source = func.Invoke(source);
                 }
 
-                FilteredData = source.ToList();
+                FilteredData.Clear();
+                FilteredData.AddRange(source);
             }
         }
     }

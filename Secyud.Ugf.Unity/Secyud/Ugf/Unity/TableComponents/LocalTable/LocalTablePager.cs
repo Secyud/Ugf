@@ -39,10 +39,10 @@ namespace Secyud.Ugf.Unity.TableComponents.LocalTable
                     _currentPage = _maxPage;
                 _pageText.text = $"{_currentPage + 1}/{_maxPage + 1}";
 
-                PagedData = data
+                PagedData.Clear();
+                PagedData.AddRange(data
                     .Skip(_currentPage * _maxCount)
-                    .Take(_maxCount)
-                    .ToList();
+                    .Take(_maxCount));
             }
             else
             {

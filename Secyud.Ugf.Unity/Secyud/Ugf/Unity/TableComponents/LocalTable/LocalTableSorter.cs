@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Secyud.Ugf.Unity.TableComponents.LocalTable
 {
     public class LocalTableSorter : TableDataOperator
     {
         public readonly List<Func<IEnumerable<object>, IEnumerable<object>>> SorterEvent = new();
-        public IList<object> SortedData { get; protected set; }
+        public List<object> SortedData { get; } = new();
 
         public override void Apply()
         {
@@ -16,13 +15,14 @@ namespace Secyud.Ugf.Unity.TableComponents.LocalTable
                     FilteredData: not null
                 } localFilter)
             {
-                var source = localFilter.FilteredData;
+                IEnumerable<object> source = localFilter.FilteredData;
                 foreach (var func in SorterEvent)
                 {
                     source = func.Invoke(source);
                 }
 
-                SortedData = source.ToList();
+                SortedData.Clear();
+                SortedData.Add(source); 
             }
         }
     }

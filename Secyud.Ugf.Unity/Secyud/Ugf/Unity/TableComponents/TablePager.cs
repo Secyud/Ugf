@@ -11,7 +11,7 @@ namespace Secyud.Ugf.Unity.TableComponents
     public abstract class TablePager:MonoBehaviour
     {
         public Table Table { get; internal set; }
-        public IList<object> PagedData { get; protected set; }
+        public List<object> PagedData { get; } = new();
         public abstract void Apply();
     }
 }
