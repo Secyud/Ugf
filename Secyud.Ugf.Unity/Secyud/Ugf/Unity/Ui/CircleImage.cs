@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Pool;
 using UnityEngine.Sprites;
 using UnityEngine.UI;
 
@@ -7,155 +8,137 @@ namespace Secyud.Ugf.Unity.Ui
 {
     public class CircleImage : Image
     {
-        // 5 - 8
-        private const int TriangleNum = 5;
+        [SerializeField, Range(1, 512)] private float _radius;
+        [SerializeField, Range(5, 16)] private int _triangleNum = 5;
+
         protected override void OnPopulateMesh(VertexHelper vh)
         {
-            Vector4 v = GetDrawingDimensions(false);
-            Vector4 uv = overrideSprite != null ? DataUtility.GetOuterUV(overrideSprite) : Vector4.zero;
+            Rect rect = GetPixelAdjustedRect();
+            Vector4 ov = new(rect.x, rect.y,
+                rect.x + rect.width, rect.y + rect.height);
+            Vector4 ouv = overrideSprite != null ? DataUtility.GetOuterUV(overrideSprite) : Vector4.zero;
 
             Color color32 = color;
+
             vh.Clear();
 
-            float radius = (v.z - v.x) / 2;
-            if (radius > (v.z - v.x) / 2) radius = (v.z - v.x) / 2;
-            if (radius > (v.w - v.y) / 2) radius = (v.w - v.y) / 2;
-            if (radius < 0) radius = 0;
-            //计算出uv中对应的半径值坐标轴的半径
-            float uvRadiusX = radius / (v.z - v.x);
-            float uvRadiusY = radius / (v.w - v.y);
+            float radius = Mathf.Min((ov.z - ov.x) / 2,
+                (ov.w - ov.y) / 2, _radius);
 
-            //0，1
-            vh.AddVert(new Vector3(v.x, v.w - radius), color32, new Vector2(uv.x, uv.w - uvRadiusY));
-            vh.AddVert(new Vector3(v.x, v.y + radius), color32, new Vector2(uv.x, uv.y + uvRadiusY));
+            // the ui radius
+            float radiusUvX = radius / (ov.z - ov.x);
+            float radiusUvY = radius / (ov.w - ov.y);
 
-            //2，3，4，5
-            vh.AddVert(new Vector3(v.x + radius, v.w), color32, new Vector2(uv.x + uvRadiusX, uv.w));
-            vh.AddVert(new Vector3(v.x + radius, v.w - radius), color32,
-                new Vector2(uv.x + uvRadiusX, uv.w - uvRadiusY));
-            vh.AddVert(new Vector3(v.x + radius, v.y + radius), color32,
-                new Vector2(uv.x + uvRadiusX, uv.y + uvRadiusY));
-            vh.AddVert(new Vector3(v.x + radius, v.y), color32, new Vector2(uv.x + uvRadiusX, uv.y));
+            Vector4 iv = new(
+                ov.x + radius, ov.y + radius,
+                ov.z - radius, ov.w - radius);
+            Vector4 iuv = new(
+                ouv.x + radiusUvX, ouv.y + radiusUvY,
+                ouv.z - radiusUvX, ouv.w - radiusUvY);
 
-            //6，7，8，9
-            vh.AddVert(new Vector3(v.z - radius, v.w), color32, new Vector2(uv.z - uvRadiusX, uv.w));
-            vh.AddVert(new Vector3(v.z - radius, v.w - radius), color32,
-                new Vector2(uv.z - uvRadiusX, uv.w - uvRadiusY));
-            vh.AddVert(new Vector3(v.z - radius, v.y + radius), color32,
-                new Vector2(uv.z - uvRadiusX, uv.y + uvRadiusY));
-            vh.AddVert(new Vector3(v.z - radius, v.y), color32, new Vector2(uv.z - uvRadiusX, uv.y));
+            const float tolerance = 0.001f;
 
-            //10，11
-            vh.AddVert(new Vector3(v.z, v.w - radius), color32, new Vector2(uv.z, uv.w - uvRadiusY));
-            vh.AddVert(new Vector3(v.z, v.y + radius), color32, new Vector2(uv.z, uv.y + uvRadiusY));
+            bool hor = radiusUvX > tolerance;
+            bool ver = radiusUvY > tolerance;
 
-            //左边的矩形
-            vh.AddTriangle(1, 0, 3);
-            vh.AddTriangle(1, 3, 4);
-            //中间的矩形
-            vh.AddTriangle(5, 2, 6);
-            vh.AddTriangle(5, 6, 9);
-            //右边的矩形
-            vh.AddTriangle(8, 7, 10);
-            vh.AddTriangle(8, 10, 11);
+            List<Vector2> positions = ListPool<Vector2>.Get();
+            List<Vector2> uvs = ListPool<Vector2>.Get();
+            List<int> indices = ListPool<int>.Get();
 
-            //开始构造四个角
-            List<Vector2> vCenterList = new List<Vector2>();
-            List<Vector2> uvCenterList = new List<Vector2>();
-            List<int> vCenterVertList = new List<int>();
+            // clockwise, start with the left of top; 
+            AddVertex(iv.x, ov.w, iuv.x, ouv.w, 0, false);
+            AddVertex(iv.z, ov.w, iuv.z, ouv.w, 0, hor);
+            AddVertex(ov.z, iv.w, ouv.z, iuv.w, 1, false);
+            AddVertex(ov.z, iv.y, ouv.z, iuv.y, 2, ver);
+            AddVertex(iv.z, ov.y, iuv.z, ouv.y, 3, false);
+            AddVertex(iv.x, ov.y, iuv.x, ouv.y, 4, hor);
+            AddVertex(ov.x, iv.y, ouv.x, iuv.y, 5, false);
+            AddVertex(ov.x, iv.w, ouv.x, iuv.w, 6, ver);
 
-            //右上角的圆心
-            vCenterList.Add(new Vector2(v.z - radius, v.w - radius));
-            uvCenterList.Add(new Vector2(uv.z - uvRadiusX, uv.w - uvRadiusY));
-            vCenterVertList.Add(7);
+            // the center rect, start with the left top; 
+            AddVertex(iv.x, iv.w, iuv.x, iuv.w, 7, false);
+            positions.Add(new Vector2(iv.x, iv.w));
+            uvs.Add(new Vector2(iuv.x, iuv.w));
+            AddVertex(iv.z, iv.w, iuv.z, iuv.w, 8, hor);
+            positions.Add(new Vector2(iv.z, iv.w));
+            uvs.Add(new Vector2(iuv.z, iuv.w));
+            AddVertex(iv.z, iv.y, iuv.z, iuv.y, 9, ver);
+            positions.Add(new Vector2(iv.z, iv.y));
+            uvs.Add(new Vector2(iuv.z, iuv.y));
+            AddVertex(iv.x, iv.y, iuv.x, iuv.y, 10, hor);
+            positions.Add(new Vector2(iv.x, iv.y));
+            uvs.Add(new Vector2(iuv.x, iuv.y));
 
-            //左上角的圆心
-            vCenterList.Add(new Vector2(v.x + radius, v.w - radius));
-            uvCenterList.Add(new Vector2(uv.x + uvRadiusX, uv.w - uvRadiusY));
-            vCenterVertList.Add(3);
-
-            //左下角的圆心
-            vCenterList.Add(new Vector2(v.x + radius, v.y + radius));
-            uvCenterList.Add(new Vector2(uv.x + uvRadiusX, uv.y + uvRadiusY));
-            vCenterVertList.Add(4);
-
-            //右下角的圆心
-            vCenterList.Add(new Vector2(v.z - radius, v.y + radius));
-            uvCenterList.Add(new Vector2(uv.z - uvRadiusX, uv.y + uvRadiusY));
-            vCenterVertList.Add(8);
-
-            //每个三角形的顶角
-            const float degreeDelta = Mathf.PI / 2 / TriangleNum;
-            //当前的角度
-            float curDegree = 0;
-
-            for (int i = 0; i < vCenterVertList.Count; i++)
+            if (!ver)
             {
-                int preVertNum = vh.currentVertCount;
-                for (int j = 0; j <= TriangleNum; j++)
-                {
-                    float cosA = Mathf.Cos(curDegree);
-                    float sinA = Mathf.Sin(curDegree);
-                    Vector3 vPosition = new Vector3(vCenterList[i].x + cosA * radius,
-                        vCenterList[i].y + sinA * radius);
-                    Vector3 uvPosition = new Vector2(uvCenterList[i].x + cosA * uvRadiusX,
-                        uvCenterList[i].y + sinA * uvRadiusY);
-                    vh.AddVert(vPosition, color32, uvPosition);
-                    curDegree += degreeDelta;
-                }
-
-                curDegree -= degreeDelta;
-                for (int j = 0; j <= TriangleNum - 1; j++)
-                {
-                    vh.AddTriangle(vCenterVertList[i], preVertNum + j + 1, preVertNum + j);
-                }
+                vh.AddRectangle(indices[8], indices[7], indices[6], indices[11]);
+                vh.AddRectangle(indices[3], indices[2], indices[9], indices[10]);
             }
-        }
-        private Vector4 GetDrawingDimensions(bool shouldPreserveAspect)
-        {
-            Vector4 padding = overrideSprite == null ? Vector4.zero : DataUtility.GetPadding(overrideSprite);
-            Rect r = GetPixelAdjustedRect();
-            Vector2 size = overrideSprite == null
-                ? new Vector2(r.width, r.height)
-                : new Vector2(overrideSprite.rect.width, overrideSprite.rect.height);
-            //Debug.Log(string.Format("r:{2}, size:{0}, padding:{1}", size, padding, r));
 
-            int spriteW = Mathf.RoundToInt(size.x);
-            int spriteH = Mathf.RoundToInt(size.y);
-
-            if (shouldPreserveAspect && size.sqrMagnitude > 0.0f)
+            if (!hor)
             {
-                float spriteRatio = size.x / size.y;
-                float rectRatio = r.width / r.height;
+                vh.AddRectangle(indices[1], indices[0], indices[8], indices[9]);
+                vh.AddRectangle(indices[5], indices[4], indices[10], indices[11]);
+            }
 
-                if (spriteRatio > rectRatio)
+            if (!ver && !hor)
+            {
+                vh.AddRectangle(indices[11], indices[10], indices[9], indices[8]);
+            }
+
+            float degreeDelta = Mathf.PI / 2 / _triangleNum;
+
+            for (int i = 0; i < 4; i++)
+            {
+                float startDegree = (1 - i) * Mathf.PI / 2;
+                int indexStart = vh.currentVertCount - 1;
+                int indexPre = indices[2 * i];
+
+                for (int j = 1; j < _triangleNum; j++)
                 {
-                    float oldHeight = r.height;
-                    r.height = r.width * (1.0f / spriteRatio);
-                    r.y += (oldHeight - r.height) * rectTransform.pivot.y;
+                    float currentDegree = startDegree + j * degreeDelta;
+                    Vector2 rPosition = GetPosition(currentDegree, positions[i]);
+                    Vector2 rPositionUv = GetPositionUv(currentDegree, uvs[i]);
+                    vh.AddVert(rPosition, color32, rPositionUv);
+                    vh.AddTriangle(indices[i + 8], indexPre, indexStart + j);
+                    indexPre = indexStart + j;
+                }
+
+                vh.AddTriangle(indices[i + 8], indexPre, indices[(2 * i + 7) % 8]);
+            }
+
+            ListPool<Vector2>.Release(positions);
+            ListPool<Vector2>.Release(uvs);
+            ListPool<int>.Release(indices);
+            return;
+
+            void AddVertex(float vx, float vy, float uvx, float uvy, int index, bool indexOnly)
+            {
+                if (indexOnly)
+                {
+                    indices.Add(indices[index]);
                 }
                 else
                 {
-                    float oldWidth = r.width;
-                    r.width = r.height * spriteRatio;
-                    r.x += (oldWidth - r.width) * rectTransform.pivot.x;
+                    indices.Add(vh.currentVertCount);
+                    vh.AddVert(new Vector2(vx, vy),
+                        color32, new Vector2(uvx, uvy));
                 }
             }
 
-            Vector4 v = new Vector4(
-                padding.x / spriteW,
-                padding.y / spriteH,
-                (spriteW - padding.z) / spriteW,
-                (spriteH - padding.w) / spriteH);
+            Vector2 GetPosition(float degree, Vector2 center)
+            {
+                return new Vector2(
+                    Mathf.Cos(degree) * radius + center.x,
+                    Mathf.Sin(degree) * radius + center.y);
+            }
 
-            v = new Vector4(
-                r.x + r.width * v.x,
-                r.y + r.height * v.y,
-                r.x + r.width * v.z,
-                r.y + r.height * v.w
-            );
-
-            return v;
+            Vector2 GetPositionUv(float degree, Vector2 centerUv)
+            {
+                return new Vector2(
+                    Mathf.Cos(degree) * radiusUvX + centerUv.x,
+                    Mathf.Sin(degree) * radiusUvY + centerUv.y);
+            }
         }
     }
 }

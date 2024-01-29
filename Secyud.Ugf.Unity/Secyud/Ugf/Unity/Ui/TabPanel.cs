@@ -4,16 +4,11 @@ namespace Secyud.Ugf.Unity.Ui
 {
     public class TabPanel : MonoBehaviour
     {
-        [SerializeField] private TabGroup _group;
-
-        protected virtual void Awake()
-        {
-            _group.Panels.Add(this);
-        }
+        public TabGroup Group { get;internal set; }
 
         public void SelectThisTab()
         {
-            _group.SelectTab(this);
+            Group.SelectTab(this);
             Refresh();
         }
 

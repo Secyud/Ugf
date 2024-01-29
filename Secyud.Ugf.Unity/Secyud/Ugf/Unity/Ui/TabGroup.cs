@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Secyud.Ugf.Unity.Ui
 {
@@ -7,11 +9,14 @@ namespace Secyud.Ugf.Unity.Ui
     {
         private TabPanel _currentTab;
 
-        internal List<TabPanel> Panels;
+        [SerializeField]protected TabPanel[] Panels;
 
         private void Awake()
         {
-            Panels = new List<TabPanel>();
+            foreach (TabPanel panel in Panels)
+            {
+                panel.Group = this;
+            }
         }
 
         public void InitTabGroup()
@@ -19,7 +24,7 @@ namespace Secyud.Ugf.Unity.Ui
             SelectTab(Panels[0]);
         }
 
-        public void SelectTab(TabPanel tab)
+        public virtual void SelectTab(TabPanel tab)
         {
             if (_currentTab)
             {
