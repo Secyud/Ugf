@@ -83,7 +83,7 @@ namespace Secyud.Ugf.Steam.WorkshopManager
         /// </summary>
         public void UnsubscribeCurrentItem()
         {
-            if (_singleSelect.SelectedCell.CellObject is
+            if (_singleSelect.SelectedObject is
                 WorkshopItemInfo info)
             {
                 SteamUGC.UnsubscribeItem(info.Id);

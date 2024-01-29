@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Secyud.Ugf.Unity.TableComponents.LocalTable;
 using Secyud.Ugf.Unity.TableComponents.UiFunctions;
@@ -7,6 +8,18 @@ namespace Secyud.Ugf.Unity.TableComponents
 {
     public static class TableExtension
     {
+        public static bool TrySetLocalSource(this Table table, Func<IEnumerable<object>> getter)
+        {
+            if (table.Source is LocalTableSource localTableSource)
+            {
+                localTableSource.SetSource(getter);
+                return true;
+            }
+
+            return false;
+        }
+        
+        
         public static void InitLocalFilterGroup<TFilter>(
             this Table table,
             FilterGroup group,

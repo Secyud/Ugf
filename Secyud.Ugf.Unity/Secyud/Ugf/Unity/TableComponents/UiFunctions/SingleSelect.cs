@@ -9,23 +9,40 @@ namespace Secyud.Ugf.Unity.TableComponents.UiFunctions
         [SerializeField] private Table _table;
         [SerializeField] private bool _cancelSelectOnSecondClick;
 
-        private TableCell _selectedCell;
+        private object _selectedObject;
 
-        public event Action<TableCell, TableCell> SelectChangedEvent;
+        public event Action<object, object> SelectChangedEvent;
+        public event Action<TableCell, bool> SelectCellSetEvent;
 
-        public TableCell SelectedCell
+        public object SelectedObject => _selectedObject;
+
+        public bool SetSelectedObject(object value)
         {
-            get => _selectedCell;
-            protected set
+            if (_selectedObject == value)
             {
-                if (_selectedCell == value) return;
-                SelectChangedEvent?.Invoke(_selectedCell, value);
-                _selectedCell = value;
+                if (_cancelSelectOnSecondClick)
+                {
+                    if (_selectedObject is not null)
+                    {
+                        SelectChangedEvent?.Invoke(_selectedObject, null);
+                    }
+                    _selectedObject = null;
+                    return false;
+                }
+
+                return true;
             }
+            
+            SelectChangedEvent?.Invoke(_selectedObject, value);
+            
+            _selectedObject = value;
+
+            return true;
         }
 
         private void Start()
         {
+            _table.Content.SetCellEvent += ApplyCell;
             foreach (TableCell cell in _table.Content.Cells)
             {
                 cell.gameObject
@@ -35,19 +52,21 @@ namespace Secyud.Ugf.Unity.TableComponents.UiFunctions
             }
         }
 
+        protected virtual void ApplyCell(TableCell cell)
+        {
+            ApplyCellWithResult(cell, _selectedObject == cell.CellObject);
+        }
+        protected virtual void ApplyCellWithResult(TableCell cell,bool result)
+        {
+            if (cell is ShownCell shown && shown.Select)
+                shown.Select.enabled = result;
+            SelectCellSetEvent?.Invoke(cell, result);
+        }
+
         private void ClickCell(TableCell cell)
         {
-            if (SelectedCell == cell)
-            {
-                if (_cancelSelectOnSecondClick)
-                {
-                    SelectedCell = null;
-                }
-            }
-            else
-            {
-                SelectedCell = cell;
-            }
+            bool result = SetSelectedObject(cell.CellObject);
+            ApplyCellWithResult(cell,result);
         }
     }
 }
