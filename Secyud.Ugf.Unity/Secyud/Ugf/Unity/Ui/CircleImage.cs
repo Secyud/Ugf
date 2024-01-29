@@ -6,6 +6,7 @@ using UnityEngine.UI;
 
 namespace Secyud.Ugf.Unity.Ui
 {
+    [RequireComponent(typeof(CanvasRenderer))]
     public class CircleImage : Image
     {
         [SerializeField, Range(1, 512)] private float _radius;

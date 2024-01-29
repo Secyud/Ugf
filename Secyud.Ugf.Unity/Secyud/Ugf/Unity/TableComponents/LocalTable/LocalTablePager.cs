@@ -1,14 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Secyud.Ugf.Unity.TableComponents.LocalTable
 {
     public class LocalTablePager : TablePager
     {
         [SerializeField] private TextMeshProUGUI _pageText;
+        [SerializeField] private Button _nextPageButton;
+        [SerializeField] private Button _prePageButton;
+        [SerializeField] private Button _firstPageButton;
+        [SerializeField] private Button _lastPageButton;
 
         private int _currentPage;
         private int _maxPage;
@@ -33,7 +37,7 @@ namespace Secyud.Ugf.Unity.TableComponents.LocalTable
                     _currentPage = 0;
                 else if (_currentPage > _maxPage)
                     _currentPage = _maxPage;
-                _pageText.text = $"{_currentPage}/{_maxPage}";
+                _pageText.text = $"{_currentPage + 1}/{_maxPage + 1}";
 
                 PagedData = data
                     .Skip(_currentPage * _maxCount)
@@ -44,6 +48,19 @@ namespace Secyud.Ugf.Unity.TableComponents.LocalTable
             {
                 _pageText.text = "-";
             }
+
+            CheckButtonState();
+        }
+
+        private void CheckButtonState()
+        {
+            bool b = _currentPage != 0;
+            _firstPageButton.interactable = b;
+            _prePageButton.interactable = b;
+
+            b = _currentPage != _maxPage;
+            _nextPageButton.interactable = b;
+            _lastPageButton.interactable = b;
         }
 
         public void TurnToPage(int page)

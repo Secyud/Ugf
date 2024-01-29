@@ -64,7 +64,7 @@ namespace Secyud.Ugf.Steam.WorkshopManager
 
             if (_table.Source is LocalTableSource tableSource)
             {
-                tableSource.SourceGetter += () => LocalItems;
+                tableSource.SetSource(() => LocalItems);
             }
 
             _table.InitLocalFilterInput(_filterInput, new WorkshopItemFilterName());
@@ -74,6 +74,8 @@ namespace Secyud.Ugf.Steam.WorkshopManager
                 {
                     new WorkshopItemSorterName()
                 });
+            
+            _table.Refresh(4);
         }
 
         /// <summary>

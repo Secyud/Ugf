@@ -65,5 +65,31 @@ namespace UnityEngine.Editor
             serializedObject.ApplyModifiedProperties();
         }
     }
+    [CustomEditor(typeof(PropertyImage))]
+    public class PropertyImageEditor : ImageEditor
+    {
+        private SerializedProperty _values;
+        private SerializedProperty _reverseColor;
+        private SerializedProperty _startDegree;
+
+        protected override void OnEnable()
+        {
+            base.OnEnable();
+            _values = serializedObject.FindProperty("_values");
+            _reverseColor = serializedObject.FindProperty("_reverseColor");
+            _startDegree = serializedObject.FindProperty("_startDegree");
+        }
+        
+        public override void OnInspectorGUI()
+        {
+            base.OnInspectorGUI();
+            EditorGUILayout.Space();
+            serializedObject.Update();
+            EditorGUILayout.PropertyField(_values);
+            EditorGUILayout.PropertyField(_reverseColor);
+            EditorGUILayout.PropertyField(_startDegree);
+            serializedObject.ApplyModifiedProperties();
+        }
+    }
 }
 #endif

@@ -8,11 +8,16 @@ namespace Secyud.Ugf.Unity.EditorComponents
     /// </summary>
     public abstract class EditorBase<TProperty> : MonoBehaviour
     {
-        public TProperty Property { get; private set; }
+        protected TProperty Property { get; private set; }
 
         public virtual void Bind(TProperty property)
         {
             Property = property;
+        }
+
+        public void Refresh()
+        {
+            Bind(Property);
         }
     }
 }

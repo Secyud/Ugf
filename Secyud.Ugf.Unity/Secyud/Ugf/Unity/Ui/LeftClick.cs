@@ -6,7 +6,7 @@ namespace Secyud.Ugf.Unity.Ui
 {
     public class LeftClick : MonoBehaviour, IPointerClickHandler
     {
-        [field:SerializeField]public UnityEvent OnClick { get; private set; }
+        [field:SerializeField]public UnityEvent OnClick { get; private set; }= new();
 
         public void OnPointerClick(PointerEventData eventData)
         {

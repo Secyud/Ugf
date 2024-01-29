@@ -7,7 +7,7 @@ namespace Secyud.Ugf.Unity.Ui
     public class Hoverable : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
         [SerializeField] private float _delay = 0.8f;
-        [field:SerializeField] public UnityEvent OnHover { get; private set; }
+        [field: SerializeField] public UnityEvent OnHover { get; private set; } = new();
         private float _hoverTime;
         private Vector2 _mouseRecord;
         private bool _isHovered;

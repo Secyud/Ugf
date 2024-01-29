@@ -4,10 +4,11 @@ using System.Linq;
 
 namespace Secyud.Ugf.Unity.TableComponents.LocalTable
 {
-    public class LocalTableSorter:TableDataOperator
+    public class LocalTableSorter : TableDataOperator
     {
-        public event Func<IEnumerable<object>, IEnumerable<object>> SorterEvent;
+        public readonly List<Func<IEnumerable<object>, IEnumerable<object>>> SorterEvent = new();
         public IList<object> SortedData { get; protected set; }
+
         public override void Apply()
         {
             if (Table.Filter is LocalTableFilter
@@ -15,9 +16,13 @@ namespace Secyud.Ugf.Unity.TableComponents.LocalTable
                     FilteredData: not null
                 } localFilter)
             {
-                SortedData =
-                    (SorterEvent?.Invoke(localFilter.FilteredData)
-                     ?? localFilter.FilteredData).ToList();
+                var source = localFilter.FilteredData;
+                foreach (var func in SorterEvent)
+                {
+                    source = func.Invoke(source);
+                }
+
+                SortedData = source.ToList();
             }
         }
     }

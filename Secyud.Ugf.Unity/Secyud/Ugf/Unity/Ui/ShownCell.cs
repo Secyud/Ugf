@@ -20,6 +20,7 @@ namespace Secyud.Ugf.Unity.Ui
         [field:SerializeField]public TextMeshProUGUI Label { get; private set; }
         [field:SerializeField]public TextMeshProUGUI Content { get; private set; }
 
+        public bool Selected { get; set; }
         public override void SetObject(object cellObject)
         {
             base.SetObject(cellObject);
@@ -27,6 +28,7 @@ namespace Secyud.Ugf.Unity.Ui
             if (Label) Label.text = U.T[(cellObject as IHasName)?.Name];
             if (Content) Content.text = U.T[(cellObject as IHasDescription)?.Description];
             if (Icon)  (cellObject as IObjectContainer<Sprite>)?.GetValueAsync(SetIcon);
+            if (Select) Select.enabled = Selected;
         }
 
         public void SetIcon(Sprite icon)

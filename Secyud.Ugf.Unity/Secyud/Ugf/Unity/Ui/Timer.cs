@@ -6,7 +6,7 @@ namespace Secyud.Ugf.Unity.Ui
     public class Timer : MonoBehaviour
     {
         [SerializeField] private float _time;
-        [field: SerializeField] public UnityEvent OnTimeOut { get; private set; }
+        [field: SerializeField] public UnityEvent OnTimeOut { get; private set; } = new();
 
         private void Update()
         {

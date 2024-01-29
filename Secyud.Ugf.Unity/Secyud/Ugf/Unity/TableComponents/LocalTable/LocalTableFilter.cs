@@ -6,7 +6,7 @@ namespace Secyud.Ugf.Unity.TableComponents.LocalTable
 {
     public class LocalTableFilter : TableDataOperator
     {
-        public event Func<IEnumerable<object>, IEnumerable<object>> FilterEvent;
+        public readonly List<Func<IEnumerable<object>, IEnumerable<object>>> FilterEvent = new();
 
         public IEnumerable<object> FilteredData { get; protected set; }
 
@@ -17,9 +17,13 @@ namespace Secyud.Ugf.Unity.TableComponents.LocalTable
                     SourceData: not null
                 } localSource)
             {
-                FilteredData =
-                    (FilterEvent?.Invoke(localSource.SourceData)
-                     ?? localSource.SourceData).ToList();
+                IEnumerable<object> source = localSource.SourceData;
+                foreach (var func in FilterEvent)
+                {
+                    source = func.Invoke(source);
+                }
+
+                FilteredData = source.ToList();
             }
         }
     }

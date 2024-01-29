@@ -16,7 +16,7 @@ namespace Secyud.Ugf.Unity.TableComponents
             if (table.Filter is LocalTableFilter localFilter)
             {
                 group.Initialize(filters);
-                localFilter.FilterEvent += Filter;
+                localFilter.FilterEvent.Add(Filter);
             }
 
             return;
@@ -41,7 +41,7 @@ namespace Secyud.Ugf.Unity.TableComponents
             if (table.Filter is LocalTableFilter localFilter)
             {
                 input.Initialize(filter);
-                localFilter.FilterEvent += Filter;
+                localFilter.FilterEvent .Add(Filter); 
             }
 
             return;
@@ -62,7 +62,7 @@ namespace Secyud.Ugf.Unity.TableComponents
             if (table.Filter is LocalTableFilter localFilter)
             {
                 group.Initialize(sorters);
-                localFilter.FilterEvent += Sorter;
+                localFilter.FilterEvent.Add(Sorter); 
             }
 
             return;
@@ -78,9 +78,11 @@ namespace Secyud.Ugf.Unity.TableComponents
                 {
                     result.Sort(sorter.Compare);
                 }
+
                 return result;
             }
         }
+
         public static void InitLocalSorterDropdown<TSorter>(
             this Table table, SorterDropdown dropdown,
             IEnumerable<TSorter> sorters)
@@ -89,7 +91,7 @@ namespace Secyud.Ugf.Unity.TableComponents
             if (table.Filter is LocalTableFilter localFilter)
             {
                 dropdown.Initialize(sorters);
-                localFilter.FilterEvent += Sorter;
+                localFilter.FilterEvent.Add(Sorter); 
             }
 
             return;

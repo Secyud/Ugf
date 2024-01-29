@@ -5,13 +5,18 @@ namespace Secyud.Ugf.Unity.TableComponents.LocalTable
 {
     public class LocalTableSource : TableSource
     {
-        public event Func<IEnumerable<object>> SourceGetter;
+        private Func<IEnumerable<object>> _sourceGetter;
 
         public IEnumerable<object> SourceData { get; protected set; }
 
+        public void SetSource(Func<IEnumerable<object>> getter)
+        {
+            _sourceGetter = getter;
+        }
+        
         public override void Apply()
         {
-            SourceData = SourceGetter?.Invoke();
+            SourceData = _sourceGetter?.Invoke();
         }
     }
 }
