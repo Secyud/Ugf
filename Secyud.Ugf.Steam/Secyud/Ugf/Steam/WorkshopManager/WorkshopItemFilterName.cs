@@ -3,7 +3,7 @@ using Secyud.Ugf.Unity.TableComponents.UiFunctions;
 
 namespace Secyud.Ugf.Steam.WorkshopManager
 {
-    public class WorkshopItemFilterName:ILocalFilter,ITableStringFilterDescriptor
+    public class WorkshopItemFilterName:ILocalFilterDescriptor,IFilterStringDescriptor
     {
         public bool Filter(object target)
         {

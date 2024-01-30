@@ -62,11 +62,7 @@ namespace Secyud.Ugf.Steam.WorkshopManager
         {
             WorkshopGlobalService service = U.Get<WorkshopGlobalService>();
 
-            if (_table.Source is LocalTableSource tableSource)
-            {
-                tableSource.SetSource(() => LocalItems);
-            }
-
+            _table.SetLocalSource(() => LocalItems);
             _table.InitLocalFilterInput(_filterInput, new WorkshopItemFilterName());
             _table.InitLocalFilterGroup(_filterGroup, service.FilterTags);
             _table.InitLocalSorterGroup(_sorterGroup,

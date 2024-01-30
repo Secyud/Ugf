@@ -2,12 +2,13 @@
 using System.Linq;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Secyud.Ugf.Unity.TableComponents.UiFunctions
 {
     public class SorterDropdown : MonoBehaviour
     {
-        [SerializeField] private TableOperator _filterFunction;
+        [SerializeField] private Table _table;
         [SerializeField] private TMP_Dropdown _dropdown;
 
         private List<ITableSorterDescriptor> _sorters;
@@ -33,7 +34,7 @@ namespace Secyud.Ugf.Unity.TableComponents.UiFunctions
         private void SubmitInput(int select)
         {
             SelectedSorter = _sorters[select];
-            _filterFunction.Table.Refresh(3);
+            _table.Refresh(3);
         }
     }
 }

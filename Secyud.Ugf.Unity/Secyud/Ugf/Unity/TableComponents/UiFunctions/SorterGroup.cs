@@ -21,8 +21,8 @@ namespace Secyud.Ugf.Unity.TableComponents.UiFunctions
     public class SorterGroup : MonoBehaviour
     {
         [SerializeField] private SorterToggle _toggleTemplate;
-        [SerializeField] private TableOperator _sorterFunction;
         [SerializeField] private RectTransform _sorterLine;
+        [SerializeField] public Table _table;
         private List<SorterToggle> _sorters;
         private LayoutTrigger _layoutTrigger;
 
@@ -40,7 +40,7 @@ namespace Secyud.Ugf.Unity.TableComponents.UiFunctions
 
         public void Initialize<TSorter>(
             IEnumerable<TSorter> sorters)
-            where TSorter:ITableSorterDescriptor
+            where TSorter : ITableSorterDescriptor
         {
             foreach (TSorter sorter in sorters)
             {
@@ -61,7 +61,7 @@ namespace Secyud.Ugf.Unity.TableComponents.UiFunctions
 
         public void Refresh()
         {
-            _sorterFunction.Table.Refresh(2);
+            _table.Refresh(2);
         }
 
         public void BeginToggleDrag(SorterToggle toggle, PointerEventData eventData)

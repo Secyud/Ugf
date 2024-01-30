@@ -4,6 +4,7 @@ using System.Linq;
 using Secyud.Ugf.Unity.TableComponents.LocalTable;
 using Secyud.Ugf.Unity.TableComponents.UiFunctions;
 using UnityEngine;
+using UnityEngine.Pool;
 
 namespace Secyud.Ugf.Unity.TableComponents
 {
@@ -16,6 +17,7 @@ namespace Secyud.Ugf.Unity.TableComponents
             ret.SelectChangedEvent += action;
             return ret;
         }
+
         public static SingleSelect SetSingleSelectEvent(this Table table, Action<object, bool> action)
         {
             var ret = table.gameObject
@@ -23,89 +25,88 @@ namespace Secyud.Ugf.Unity.TableComponents
             ret.SelectChangedEvent += action;
             return ret;
         }
-        
-        public static bool TrySetLocalSource(this Table table, Func<IEnumerable<object>> getter)
-        {
-            if (table.Source is LocalTableSource localTableSource)
-            {
-                localTableSource.SetSource(getter);
-                return true;
-            }
 
-            return false;
+        public static void SetLocalSource(this Table table, Func<IEnumerable<object>> getter)
+        {
+            table.GetComponent<LocalTableSource>().SetSource(getter);
         }
-        
-        
+
+
         public static void InitLocalFilterGroup<TFilter>(
             this Table table,
             FilterGroup group,
             IEnumerable<TFilter> filters)
-            where TFilter : ILocalFilter, ITableFilterDescriptor
+            where TFilter : ILocalFilterDescriptor, ITableFilterDescriptor
         {
-            if (table.Filter is LocalTableFilter localFilter)
-            {
-                group.Initialize(filters);
-                localFilter.FilterEvent.Add(Filter);
-            }
+            group.Initialize(filters);
+            table.GetComponent<LocalTableFilter>()
+                .FilterEvent.Add(Filter);
 
             return;
 
             IEnumerable<object> Filter(IEnumerable<object> objects)
             {
-                List<ILocalFilter> workedFilters = group
-                    .GetWorkedFilters()
-                    .Cast<ILocalFilter>().ToList();
-                return objects
+                List<ILocalFilterDescriptor> workedFilters =
+                    ListPool<ILocalFilterDescriptor>.Get();
+
+                foreach (var tableFilter in group.GetWorkedFilters())
+                {
+                    if (tableFilter is ILocalFilterDescriptor filter)
+                    {
+                        workedFilters.Add(filter);
+                    }
+                }
+
+                var ret = objects
                     .Where(o => workedFilters
                         .Any(f => f.Filter(o)));
+
+                ListPool<ILocalFilterDescriptor>.Release(workedFilters);
+                return ret;
             }
         }
 
         public static void InitLocalFilterInput<TFilter>(
-            this Table table,
-            FilterInput input,
-            TFilter filter)
-            where TFilter : ILocalFilter, ITableStringFilterDescriptor
+            this Table table, FilterInput input, TFilter filter)
+            where TFilter : ILocalFilterDescriptor, IFilterStringDescriptor
         {
-            if (table.Filter is LocalTableFilter localFilter)
-            {
-                input.Initialize(filter);
-                localFilter.FilterEvent .Add(Filter); 
-            }
-
+            input.Initialize(filter);
+            table.GetComponent<LocalTableFilter>()
+                .FilterEvent.Add(Filter);
             return;
 
             IEnumerable<object> Filter(IEnumerable<object> objects)
             {
-                return string.IsNullOrEmpty(filter.FilterString)
-                    ? objects
-                    : objects.Where(o => filter.Filter(o));
+                if (input.Filter is not ILocalFilterDescriptor localFilter ||
+                    string.IsNullOrEmpty(input.Filter?.FilterString))
+                    return objects;
+                return objects.Where(o => localFilter.Filter(o));
             }
         }
+
 
         public static void InitLocalSorterGroup<TSorter>(
             this Table table, SorterGroup group,
             IEnumerable<TSorter> sorters)
-            where TSorter : ILocalSorter, ITableSorterDescriptor
+            where TSorter : ILocalSorterDescriptor, ITableSorterDescriptor
         {
-            if (table.Filter is LocalTableFilter localFilter)
-            {
-                group.Initialize(sorters);
-                localFilter.FilterEvent.Add(Sorter); 
-            }
+            group.Initialize(sorters);
+            table.GetComponent<LocalTableFilter>()
+                .FilterEvent.Add(Sorter);
 
             return;
 
             IEnumerable<object> Sorter(IEnumerable<object> objects)
             {
-                List<ILocalSorter> workedSorters = group
-                    .GetWorkedSorters()
-                    .Cast<ILocalSorter>().ToList();
+                IEnumerable<object> result = objects;
 
-                List<object> result = objects.ToList();
-                foreach (ILocalSorter sorter in workedSorters)
+                foreach (var tableSorter in group.GetWorkedSorters())
                 {
-                    result.Sort(sorter.Compare);
+                    if (tableSorter is ILocalSorterDescriptor sorter)
+                    {
+                        result = result.OrderBy(
+                            o => sorter.GetSortValue(o));
+                    }
                 }
 
                 return result;
@@ -115,26 +116,23 @@ namespace Secyud.Ugf.Unity.TableComponents
         public static void InitLocalSorterDropdown<TSorter>(
             this Table table, SorterDropdown dropdown,
             IEnumerable<TSorter> sorters)
-            where TSorter : ILocalSorter, ITableSorterDescriptor
+            where TSorter : ILocalSorterDescriptor, ITableSorterDescriptor
         {
-            if (table.Filter is LocalTableFilter localFilter)
-            {
-                dropdown.Initialize(sorters);
-                localFilter.FilterEvent.Add(Sorter); 
-            }
-
+            dropdown.Initialize(sorters);
+            table.GetComponent<LocalTableFilter>()
+                .FilterEvent.Add(Sorter);
             return;
 
             IEnumerable<object> Sorter(IEnumerable<object> objects)
             {
-                if (dropdown.SelectedSorter is ILocalSorter workedSorter)
+                if (dropdown.SelectedSorter is
+                    ILocalSorterDescriptor workedSorter)
                 {
-                    List<object> result = objects.ToList();
-                    result.Sort(workedSorter.Compare);
-                    return result;
+                    return objects.OrderBy(
+                        o => workedSorter.GetSortValue(o));
                 }
 
-                return objects.ToList();
+                return objects;
             }
         }
     }

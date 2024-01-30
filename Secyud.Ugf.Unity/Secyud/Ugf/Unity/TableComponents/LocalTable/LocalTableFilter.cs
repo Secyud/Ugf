@@ -11,7 +11,7 @@ namespace Secyud.Ugf.Unity.TableComponents.LocalTable
 
         public override void Apply()
         {
-            if (Table.Source is LocalTableSource
+            if (Source is LocalTableSource
                 {
                     SourceData: not null
                 } localSource)

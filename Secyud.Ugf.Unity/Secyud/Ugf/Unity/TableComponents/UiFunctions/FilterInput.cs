@@ -15,17 +15,17 @@ namespace Secyud.Ugf.Unity.TableComponents.UiFunctions
     /// </summary>
     public class FilterInput : MonoBehaviour
     {
-        [SerializeField] private TableOperator _filterFunction;
+        [SerializeField] private Table _table;
         [SerializeField] private TMP_InputField _inputField;
 
-        public ITableStringFilterDescriptor Filter { get; private set; }
+        public IFilterStringDescriptor Filter { get; private set; }
 
         private void Awake()
         {
             _inputField.onSubmit.AddListener(SubmitInput);
         }
 
-        public void Initialize(ITableStringFilterDescriptor filter)
+        public void Initialize(IFilterStringDescriptor filter)
         {
             Filter = filter;
             _inputField.SetTextWithoutNotify(filter.FilterString);
@@ -34,7 +34,7 @@ namespace Secyud.Ugf.Unity.TableComponents.UiFunctions
         private void SubmitInput(string str)
         {
             Filter.FilterString = str;
-            _filterFunction.Table.Refresh(3);
+            _table.Refresh(3);
         }
     }
 }

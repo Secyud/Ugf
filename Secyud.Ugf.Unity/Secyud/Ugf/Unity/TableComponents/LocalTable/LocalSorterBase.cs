@@ -2,14 +2,14 @@
 
 namespace Secyud.Ugf.Unity.TableComponents.LocalTable
 {
-    public abstract class LocalSorterBase:ILocalSorter,ITableSorterDescriptor
+    public abstract class LocalSorterBase:ILocalSorterDescriptor,ITableSorterDescriptor
     {
         protected LocalSorterBase(string name)
         {
             Name = name;
         }
         
-        public abstract int Compare(object left, object right);
+        public abstract object GetSortValue(object obj);
         public bool? State { get; set; }
         public string Name { get; }
     }

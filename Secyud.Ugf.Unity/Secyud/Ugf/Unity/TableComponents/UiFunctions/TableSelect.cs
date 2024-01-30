@@ -7,10 +7,10 @@ namespace Secyud.Ugf.Unity.TableComponents.UiFunctions
     [RequireComponent(typeof(Table))]
     public abstract class TableSelect : MonoBehaviour
     {
-        protected Table Table;
+        protected TableContent TableContent;
         protected virtual void Awake()
         {
-            Table = GetComponent<Table>();
+            TableContent = GetComponent<TableContent>();
         }
 
         /// <summary>

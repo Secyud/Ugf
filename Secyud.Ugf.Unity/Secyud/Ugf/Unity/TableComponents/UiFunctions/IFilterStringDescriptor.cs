@@ -5,7 +5,7 @@
     /// Use with <see cref="FilterInput"/>
     /// </para>
     /// </summary>
-    public interface ITableStringFilterDescriptor:ITableFilterDescriptor
+    public interface IFilterStringDescriptor
     {
         public string FilterString { get; set; }
     }

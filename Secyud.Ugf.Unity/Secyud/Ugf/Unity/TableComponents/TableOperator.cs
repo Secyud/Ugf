@@ -7,11 +7,6 @@ namespace Secyud.Ugf.Unity.TableComponents
     /// </summary>
     public abstract class TableOperator : MonoBehaviour
     {
-        public Table Table { get; private set; }
-        protected virtual void Awake()
-        {
-            Table = GetComponent<Table>();
-        }
         public abstract void Apply();
     }
 }

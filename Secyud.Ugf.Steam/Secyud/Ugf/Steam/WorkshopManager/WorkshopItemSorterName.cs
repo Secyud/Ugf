@@ -4,19 +4,14 @@ namespace Secyud.Ugf.Steam.WorkshopManager
 {
     public class WorkshopItemSorterName : LocalSorterBase
     {
-        public override int Compare(object left, object right)
+        public override object GetSortValue(object obj)
         {
-            if (left is WorkshopItemInfo infoL &&
-                right is WorkshopItemInfo infoR)
+            if (obj is WorkshopItemInfo info)
             {
-                return string.CompareOrdinal(
-                    infoL.ConfigInfo.Name,
-                    infoR.ConfigInfo.Name);
+                return info.ConfigInfo.Name;
             }
 
-            return string.CompareOrdinal(
-                left.ToString(),
-                right.ToString());
+            return string.Empty;
         }
 
         public WorkshopItemSorterName() : base("Name")

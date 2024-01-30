@@ -2,7 +2,7 @@
 
 namespace Secyud.Ugf.Unity.TableComponents.LocalTable
 {
-    public abstract class LocalFilterBase:ILocalFilter,ITableFilterDescriptor
+    public abstract class LocalFilterBase:ILocalFilterDescriptor,ITableFilterDescriptor
     {
         private bool _state;
 

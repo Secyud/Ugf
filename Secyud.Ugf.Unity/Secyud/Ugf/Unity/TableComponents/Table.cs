@@ -5,21 +5,21 @@ namespace Secyud.Ugf.Unity.TableComponents
 {
     public class Table : MonoBehaviour
     {
-        public TableSource Source { get; private set; }
-        public TableFilter Filter { get; private set; }
-        public TableSorter Sorter { get; private set; }
-        public TablePager Pager { get; private set; }
-        public TableContent Content { get; private set; }
+        private TableSource _source;
+        private TableFilter _filter;
+        private TableSorter _sorter;
+        private TablePager _pager;
+        private TableContent _content;
 
         protected int State { get; set; }
 
         protected virtual void Awake()
         {
-            Source = GetComponent<TableSource>();
-            Filter = GetComponent<TableFilter>();
-            Sorter = GetComponent<TableSorter>();
-            Pager = GetComponent<TablePager>();
-            Content = GetComponent<TableContent>();
+            _source = GetComponent<TableSource>();
+            _filter = GetComponent<TableFilter>();
+            _sorter = GetComponent<TableSorter>();
+            _pager = GetComponent<TablePager>();
+            _content = GetComponent<TableContent>();
         }
 
         public void Refresh(int state)
@@ -30,11 +30,11 @@ namespace Secyud.Ugf.Unity.TableComponents
 
         protected virtual void LateUpdate()
         {
-            if (State > 3) Source.Apply();
-            if (State > 2) Filter.Apply();
-            if (State > 1) Sorter.Apply();
-            if (State > 0) Pager.Apply();
-            if (State > -1) Content.Apply();
+            if (State > 3) _source.Apply();
+            if (State > 2) _filter.Apply();
+            if (State > 1) _sorter.Apply();
+            if (State > 0) _pager.Apply();
+            if (State > -1) _content.Apply();
             State = -1;
             enabled = false;
         }

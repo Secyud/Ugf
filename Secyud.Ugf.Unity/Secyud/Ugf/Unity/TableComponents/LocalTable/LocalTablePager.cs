@@ -17,16 +17,18 @@ namespace Secyud.Ugf.Unity.TableComponents.LocalTable
         private int _currentPage;
         private int _maxPage;
         private int _maxCount;
+        private Table _table;
 
         protected override void Awake()
         {
             base.Awake();
-            _maxCount = Table.Content.Cells.Length;
+            _maxCount = GetComponent<TableContent>().Cells.Length;
+            _table = GetComponent<Table>();
         }
 
         public override void Apply()
         {
-            if (Table.Sorter is LocalTableSorter
+            if (Sorter is LocalTableSorter
                 {
                     SortedData : not null
                 } localSorter)
@@ -67,7 +69,7 @@ namespace Secyud.Ugf.Unity.TableComponents.LocalTable
         public void TurnToPage(int page)
         {
             _currentPage = page;
-            Table.Refresh(1);
+            _table.Refresh(1);
         }
 
         public void TurnToFirstPage()

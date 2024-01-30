@@ -36,9 +36,9 @@ namespace Secyud.Ugf.Unity.TableComponents.UiFunctions
             if (_selectedObject is not null)
             {
                 InvokeSelectChanged(_selectedObject, false);
-                for (int i = 0; i < Table.Content.Cells.Length; i++)
+                for (int i = 0; i < TableContent.Cells.Length; i++)
                 {
-                    TableCell cell = Table.Content.Cells[i];
+                    TableCell cell = TableContent.Cells[i];
                     if (cell.CellObject == _selectedObject)
                     {
                         ApplyCellWithResult(cell, false);
@@ -54,8 +54,8 @@ namespace Secyud.Ugf.Unity.TableComponents.UiFunctions
 
         private void Start()
         {
-            Table.Content.SetCellEvent += ApplyCell;
-            foreach (TableCell cell in Table.Content.Cells)
+            TableContent.SetCellEvent += ApplyCell;
+            foreach (TableCell cell in TableContent.Cells)
             {
                 cell.gameObject
                     .GetOrAddComponent<LeftClick>()

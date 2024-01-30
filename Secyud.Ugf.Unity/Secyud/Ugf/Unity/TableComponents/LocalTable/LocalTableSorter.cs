@@ -10,7 +10,7 @@ namespace Secyud.Ugf.Unity.TableComponents.LocalTable
 
         public override void Apply()
         {
-            if (Table.Filter is LocalTableFilter
+            if (Filter is LocalTableFilter
                 {
                     FilteredData: not null
                 } localFilter)

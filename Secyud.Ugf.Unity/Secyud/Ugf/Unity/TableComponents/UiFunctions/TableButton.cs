@@ -10,7 +10,6 @@ namespace Secyud.Ugf.Unity.TableComponents.UiFunctions
     /// </summary>
     public class TableButton : MonoBehaviour
     {
-        [SerializeField] private Table _table;
         [SerializeField] private Button _buttonTemplate;
         [SerializeField] private LayoutTrigger _floating;
 
@@ -19,11 +18,8 @@ namespace Secyud.Ugf.Unity.TableComponents.UiFunctions
         private void Awake()
         {
             _buttons = new List<ITableButtonDescriptor>();
-        }
-
-        private void Start()
-        {
-            foreach (TableCell cell in _table.Content.Cells)
+            var tableContent = GetComponent<TableContent>();
+            foreach (TableCell cell in tableContent.Cells)
             {
                 cell.gameObject
                     .GetOrAddComponent<RightClick>()

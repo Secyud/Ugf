@@ -19,7 +19,7 @@ namespace Secyud.Ugf.Unity.TableComponents.UiFunctions
     public class FilterGroup : MonoBehaviour
     {
         [SerializeField] private FilterToggle _toggleTemplate;
-        [SerializeField] private TableOperator _filterFunction;
+        [SerializeField] private Table _table;
         private List<FilterToggle> _filterToggles;
         public LayoutTrigger LayoutTrigger { get; private set; }
 
@@ -43,12 +43,11 @@ namespace Secyud.Ugf.Unity.TableComponents.UiFunctions
             LayoutTrigger.Refresh();
         }
 
-        public IList<ITableFilterDescriptor> GetWorkedFilters()
+        public IEnumerable<ITableFilterDescriptor> GetWorkedFilters()
         {
             return _filterToggles
                 .Where(toggle => toggle.IsOn)
-                .Select(toggle => toggle.Filter)
-                .ToList();
+                .Select(toggle => toggle.Filter);
         }
 
         public void SetToggle(FilterToggle filterToggle)
@@ -64,7 +63,7 @@ namespace Secyud.Ugf.Unity.TableComponents.UiFunctions
 
         public void Apply()
         {
-            _filterFunction.Table.Refresh(3);
+            _table.Refresh(3);
         }
     }
 }

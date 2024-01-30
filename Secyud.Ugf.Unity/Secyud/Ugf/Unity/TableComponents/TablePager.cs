@@ -10,11 +10,12 @@ namespace Secyud.Ugf.Unity.TableComponents
     /// </summary>
     public abstract class TablePager:MonoBehaviour
     {
-        public Table Table { get; private set; }
         public List<object> PagedData { get; } = new();
+        protected TableSorter Sorter;
+
         protected virtual void Awake()
         {
-            Table = GetComponent<Table>();
+            Sorter = GetComponent<TableSorter>();
         }
         public abstract void Apply();
     }

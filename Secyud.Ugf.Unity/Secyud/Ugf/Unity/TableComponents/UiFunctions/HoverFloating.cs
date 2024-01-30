@@ -8,18 +8,18 @@ namespace Secyud.Ugf.Unity.TableComponents.UiFunctions
     public class HoverFloating : MonoBehaviour
     {
         [SerializeField] private LayoutTrigger _floating;
-        private Table _table;
+        private TableContent _tableContent;
 
         protected virtual void Awake()
         {
-            _table = GetComponent<Table>();
+            _tableContent = GetComponent<TableContent>();
             _floating.gameObject.GetOrAddComponent<PointerExit>()
                 .OnPointExit.AddListener(CloseFloatingWindow);
         }
 
         protected virtual void Start()
         {
-            foreach (TableCell cell in _table.Content.Cells)
+            foreach (TableCell cell in _tableContent.Cells)
             {
                 cell.gameObject
                     .GetOrAddComponent<Hoverable>()
