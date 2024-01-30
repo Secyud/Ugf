@@ -7,7 +7,7 @@ namespace Secyud.Ugf.Unity.TableComponents.UiFunctions
 {
     public class SorterDropdown : MonoBehaviour
     {
-        [SerializeField] private TableDataOperator _filterFunction;
+        [SerializeField] private TableOperator _filterFunction;
         [SerializeField] private TMP_Dropdown _dropdown;
 
         private List<ITableSorterDescriptor> _sorters;

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Secyud.Ugf.Unity.TableComponents.LocalTable
 {
-    public class LocalTableSorter : TableDataOperator
+    public class LocalTableSorter : TableSorter
     {
         public readonly List<Func<IEnumerable<object>, IEnumerable<object>>> SorterEvent = new();
         public List<object> SortedData { get; } = new();

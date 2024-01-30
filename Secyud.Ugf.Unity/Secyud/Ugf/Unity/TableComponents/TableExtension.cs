@@ -3,11 +3,27 @@ using System.Collections.Generic;
 using System.Linq;
 using Secyud.Ugf.Unity.TableComponents.LocalTable;
 using Secyud.Ugf.Unity.TableComponents.UiFunctions;
+using UnityEngine;
 
 namespace Secyud.Ugf.Unity.TableComponents
 {
     public static class TableExtension
     {
+        public static MultiSelect SetMultiSelectEvent(this Table table, Action<object, bool> action)
+        {
+            var ret = table.gameObject
+                .GetOrAddComponent<MultiSelect>();
+            ret.SelectChangedEvent += action;
+            return ret;
+        }
+        public static SingleSelect SetSingleSelectEvent(this Table table, Action<object, bool> action)
+        {
+            var ret = table.gameObject
+                .GetOrAddComponent<SingleSelect>();
+            ret.SelectChangedEvent += action;
+            return ret;
+        }
+        
         public static bool TrySetLocalSource(this Table table, Func<IEnumerable<object>> getter)
         {
             if (table.Source is LocalTableSource localTableSource)

@@ -18,8 +18,9 @@ namespace Secyud.Ugf.Unity.TableComponents.LocalTable
         private int _maxPage;
         private int _maxCount;
 
-        protected virtual void Awake()
+        protected override void Awake()
         {
+            base.Awake();
             _maxCount = Table.Content.Cells.Length;
         }
 

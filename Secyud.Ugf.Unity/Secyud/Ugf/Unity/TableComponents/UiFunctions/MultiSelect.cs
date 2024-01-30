@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Secyud.Ugf.Unity.Ui;
 using UnityEngine;
 
@@ -10,50 +9,23 @@ namespace Secyud.Ugf.Unity.TableComponents.UiFunctions
     /// Set multiselect action of table cell.
     /// </para>
     /// </summary>
-    public class MultiSelect : MonoBehaviour
+    public class MultiSelect : TableSelect
     {
-        [SerializeField] private Table _table;
-
-        /// <summary>
-        /// The event invoke when cell's select
-        /// state is changed.
-        /// </summary>
-        public event Action<object, bool> SelectChangedEvent;
-
-        public event Action<TableCell, bool> SelectCellSetEvent;
-
         /// <summary>
         /// Stored all selected cells.
         /// </summary>
         public List<object> SelectedObjects { get; protected set; }
 
-        public bool SetSelectedObject(object value)
+        protected override void Awake()
         {
-            if (value is null) return false;
-
-            if (SelectedObjects.Contains(value))
-            {
-                SelectedObjects.Remove(value);
-                SelectChangedEvent?.Invoke(value, false);
-                return false;
-            }
-            else
-            {
-                SelectedObjects.Add(value);
-                SelectChangedEvent?.Invoke(value, true);
-                return true;
-            }
-        }
-
-        private void Awake()
-        {
+            base.Awake();
             SelectedObjects = new List<object>();
         }
 
         private void Start()
         {
-            _table.Content.SetCellEvent += ApplyCell;
-            foreach (TableCell cell in _table.Content.Cells)
+            Table.Content.SetCellEvent += ApplyCell;
+            foreach (TableCell cell in Table.Content.Cells)
             {
                 cell.gameObject
                     .GetOrAddComponent<LeftClick>()
@@ -62,24 +34,26 @@ namespace Secyud.Ugf.Unity.TableComponents.UiFunctions
             }
         }
 
-        protected virtual void ApplyCell(TableCell cell)
+        public override bool CheckSelected(object value)
         {
-            bool result = SelectedObjects
-                .Contains(cell.CellObject);
-            ApplyCellWithResult(cell, result);
+            return value is not null && 
+                   SelectedObjects.Contains(value);
         }
 
-        protected virtual void ApplyCellWithResult(TableCell cell, bool result)
+        public override bool SetSelected(object value)
         {
-            if (cell is ShownCell shown && shown.Select)
-                shown.Select.enabled = result;
-            SelectCellSetEvent?.Invoke(cell, result);
-        }
+            if (value is null) return false;
 
-        protected virtual void SelectCell(TableCell cell)
-        {
-            bool result = SetSelectedObject(cell.CellObject);
-            ApplyCellWithResult(cell,result);
+            if (SelectedObjects.Contains(value))
+            {
+                SelectedObjects.Remove(value);
+                InvokeSelectChanged(value, false);
+                return false;
+            }
+
+            SelectedObjects.Add(value);
+            InvokeSelectChanged(value, true);
+            return true;
         }
     }
 }

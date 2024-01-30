@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Secyud.Ugf.Unity.TableComponents.LocalTable
 {
-    public class LocalTableFilter : TableDataOperator
+    public class LocalTableFilter : TableFilter
     {
         public readonly List<Func<IEnumerable<object>, IEnumerable<object>>> FilterEvent = new();
 

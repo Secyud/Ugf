@@ -5,23 +5,22 @@ namespace Secyud.Ugf.Unity.TableComponents
 {
     public class Table : MonoBehaviour
     {
-        [field: SerializeField] public TableSource Source { get; private set; }
-        [field: SerializeField] public TableDataOperator Filter { get; private set; }
-        [field: SerializeField] public TableDataOperator Sorter { get; private set; }
-        [field: SerializeField] public TablePager Pager { get; private set; }
-        [field: SerializeField] public TableContent Content { get; private set; }
+        public TableSource Source { get; private set; }
+        public TableFilter Filter { get; private set; }
+        public TableSorter Sorter { get; private set; }
+        public TablePager Pager { get; private set; }
+        public TableContent Content { get; private set; }
 
-        protected int State;
+        protected int State { get; set; }
 
         protected virtual void Awake()
         {
-            Source.Table = this;
-            Filter.Table = this;
-            Sorter.Table = this;
-            Pager.Table = this;
-            Content.Table = this;
+            Source = GetComponent<TableSource>();
+            Filter = GetComponent<TableFilter>();
+            Sorter = GetComponent<TableSorter>();
+            Pager = GetComponent<TablePager>();
+            Content = GetComponent<TableContent>();
         }
-
 
         public void Refresh(int state)
         {

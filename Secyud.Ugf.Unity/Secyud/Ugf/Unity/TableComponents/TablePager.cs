@@ -10,8 +10,12 @@ namespace Secyud.Ugf.Unity.TableComponents
     /// </summary>
     public abstract class TablePager:MonoBehaviour
     {
-        public Table Table { get; internal set; }
+        public Table Table { get; private set; }
         public List<object> PagedData { get; } = new();
+        protected virtual void Awake()
+        {
+            Table = GetComponent<Table>();
+        }
         public abstract void Apply();
     }
 }
