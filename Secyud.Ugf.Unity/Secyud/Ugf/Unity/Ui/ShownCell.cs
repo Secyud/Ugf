@@ -24,6 +24,7 @@ namespace Secyud.Ugf.Unity.Ui
         {
             base.SetObject(cellObject);
 
+            if (cellObject is null) return;
             if (Label) Label.text = U.T[(cellObject as IHasName)?.Name];
             if (Content) Content.text = U.T[(cellObject as IHasDescription)?.Description];
             if (Icon) (cellObject as IObjectContainer<Sprite>)?.GetValueAsync(SetIcon);

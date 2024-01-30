@@ -22,7 +22,7 @@ namespace Secyud.Ugf.Unity.TableComponents.LocalTable
                 }
 
                 SortedData.Clear();
-                SortedData.Add(source); 
+                SortedData.AddRange(source); 
             }
         }
     }

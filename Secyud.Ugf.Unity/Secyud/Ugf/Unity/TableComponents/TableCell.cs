@@ -13,10 +13,7 @@ namespace Secyud.Ugf.Unity.TableComponents
         public virtual void SetObject(object cellObject)
         {
             CellObject = cellObject;
-            if (cellObject is null)
-            {
-                gameObject.SetActive(false);
-            }
+            gameObject.SetActive(cellObject is not null);
         }
     }
 }
