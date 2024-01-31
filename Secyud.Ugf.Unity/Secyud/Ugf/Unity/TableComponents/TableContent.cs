@@ -18,19 +18,24 @@ namespace Secyud.Ugf.Unity.TableComponents
         protected virtual void Awake()
         {
             TablePager = GetComponent<TablePager>();
+
+            TableCell prefab = Cells[0];
+            Transform content = prefab.transform.parent;
+
             for (int i = 0; i < Cells.Length; i++)
             {
-                Cells[i].SetObject(null);
+                if (!Cells[i])
+                    Cells[i] = prefab.Instantiate(content);
             }
         }
 
-        public virtual void Apply()
+        public virtual void Apply(bool soft)
         {
             IList<object> list = TablePager.PagedData;
             for (int i = 0; i < Cells.Length; i++)
             {
                 var cellObject = i < list.Count ? list[i] : null;
-                if (cellObject == Cells[i].CellObject) continue;
+                if (cellObject == Cells[i].CellObject && soft) continue;
                 Cells[i].SetObject(cellObject);
                 SetCellEvent?.Invoke(Cells[i]);
             }

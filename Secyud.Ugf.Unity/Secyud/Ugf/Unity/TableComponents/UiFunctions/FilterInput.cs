@@ -20,20 +20,15 @@ namespace Secyud.Ugf.Unity.TableComponents.UiFunctions
 
         public IFilterStringDescriptor Filter { get; private set; }
 
-        private void Awake()
-        {
-            _inputField.onSubmit.AddListener(SubmitInput);
-        }
-
         public void Initialize(IFilterStringDescriptor filter)
         {
             Filter = filter;
             _inputField.SetTextWithoutNotify(filter.FilterString);
         }
 
-        private void SubmitInput(string str)
+        public void SubmitInput()
         {
-            Filter.FilterString = str;
+            Filter.FilterString = _inputField.text;
             _table.Refresh(3);
         }
     }

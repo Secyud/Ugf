@@ -58,7 +58,7 @@ namespace Secyud.Ugf.HexMap
         {
             Cells = Array.Empty<HexCell>();
             ShaderManager = U.Get<CellShaderDataManager>();
-            _shaderData = gameObject.GetOrAddComponent<ShaderData>();
+            _shaderData = this.GetOrAddComponent<ShaderData>();
             _shaderData.Initialize(this);
         }
 
@@ -145,7 +145,7 @@ namespace Secyud.Ugf.HexMap
         /// <summary>
         ///     Get a cell given a <see cref="Ray" />.
         /// </summary>
-        /// <param name="ray"><see cref="Ray" /> used to perform a raycast.</param>
+        /// <param name="ray"><see cref="Ray" /> used to perform a ray-cast.</param>
         /// <returns>The hit cell, if any.</returns>
         public HexCell GetCell(Ray ray)
         {

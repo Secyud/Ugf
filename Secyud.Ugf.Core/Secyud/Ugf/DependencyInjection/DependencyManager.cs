@@ -15,11 +15,14 @@ namespace Secyud.Ugf.DependencyInjection
         DependencyProviderBase,
         IDependencyManager
     {
+        internal static DependencyManager Instance { get; private set; }
+        
         private readonly IDependencyCollection _dependencyDescriptors;
         private readonly ConcurrentDictionary<Type, DependencyScopeProvider> _scopes = new();
 
         internal DependencyManager(IDependencyCollection dependencyCollection = null)
         {
+            Instance = this;
             _dependencyDescriptors = dependencyCollection ?? new DependencyCollection();
             RegisterInstance<IScopeManager>(this);
             RegisterInstance<IDependencyProvider>(this);
@@ -80,10 +83,11 @@ namespace Secyud.Ugf.DependencyInjection
                         exposedServiceType,
                         registryAttr
                     );
+                TypeManager.Instance.AddType(type,true);
             }
             else
             {
-                TypeManager.Instance.AddType(type);
+                TypeManager.Instance.AddType(type,false);
             }
         }
 

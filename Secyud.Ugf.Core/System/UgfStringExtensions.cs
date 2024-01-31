@@ -11,5 +11,12 @@ namespace System
         {
             return string.IsNullOrWhiteSpace(s);
         }
+
+        public static string EnsureEndsWith(this string s,string end)
+        {
+            if (s.EndsWith(end))
+                return s;
+            return s + end;
+        }
     }
 }

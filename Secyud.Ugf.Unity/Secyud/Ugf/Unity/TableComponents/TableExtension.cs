@@ -12,16 +12,14 @@ namespace Secyud.Ugf.Unity.TableComponents
     {
         public static MultiSelect SetMultiSelectEvent(this Table table, Action<object, bool> action)
         {
-            var ret = table.gameObject
-                .GetOrAddComponent<MultiSelect>();
+            var ret = table.GetOrAddComponent<MultiSelect>();
             ret.SelectChangedEvent += action;
             return ret;
         }
 
         public static SingleSelect SetSingleSelectEvent(this Table table, Action<object, bool> action)
         {
-            var ret = table.gameObject
-                .GetOrAddComponent<SingleSelect>();
+            var ret = table.GetOrAddComponent<SingleSelect>();
             ret.SelectChangedEvent += action;
             return ret;
         }
@@ -31,6 +29,12 @@ namespace Secyud.Ugf.Unity.TableComponents
             table.GetComponent<LocalTableSource>().SetSource(getter);
         }
 
+
+        public static void InitTableButton(this Table table, 
+            IEnumerable<ITableButtonDescriptor> buttons)
+        {
+            table.GetComponent<TableButton>().Initialize(buttons);
+        }
 
         public static void InitLocalFilterGroup<TFilter>(
             this Table table,

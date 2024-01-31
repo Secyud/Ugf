@@ -2,26 +2,31 @@
 using System.Collections.Generic;
 using System.IO;
 using JetBrains.Annotations;
+using Secyud.Ugf.DependencyInjection;
 using Secyud.Ugf.Logging;
 
 namespace Secyud.Ugf.DataManager
 {
     public class TypeDescriptor
     {
+        private readonly bool _dependency;
         private PropertyDescriptor _data;
         private ResourcesDictionary _resources;
         public Type Type { get; }
         public PropertyDescriptor Properties => _data ??= new PropertyDescriptor(Type);
         private ResourcesDictionary Resources => _resources ??= new ResourcesDictionary();
 
-        public TypeDescriptor(Type type)
+        public TypeDescriptor(Type type, bool dependency)
         {
+            _dependency = dependency;
             Type = type;
         }
 
         public object CreateInstance()
         {
-            return Activator.CreateInstance(Type);
+            return _dependency
+                ? DependencyManager.Instance.Get(Type)
+                : Activator.CreateInstance(Type, true);
         }
 
         /// <summary>
@@ -46,7 +51,7 @@ namespace Secyud.Ugf.DataManager
             }
             else
             {
-                object obj = Activator.CreateInstance(Type);
+                object obj = CreateInstance();
                 using MemoryStream stream = new(data);
                 using BinaryReader reader = new(stream);
                 reader.DeserializeResource(obj);
@@ -78,7 +83,7 @@ namespace Secyud.Ugf.DataManager
             }
         }
 
-        public void AddResource(int id,[NotNull] byte[] data)
+        public void AddResource(int id, [NotNull] byte[] data)
         {
             Resources.Add(id, data);
         }

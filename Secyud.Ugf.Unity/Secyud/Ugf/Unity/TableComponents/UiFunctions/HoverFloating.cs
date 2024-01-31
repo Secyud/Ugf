@@ -13,7 +13,7 @@ namespace Secyud.Ugf.Unity.TableComponents.UiFunctions
         protected virtual void Awake()
         {
             _tableContent = GetComponent<TableContent>();
-            _floating.gameObject.GetOrAddComponent<PointerExit>()
+            _floating.GetOrAddComponent<PointerExit>()
                 .OnPointExit.AddListener(CloseFloatingWindow);
         }
 
@@ -21,8 +21,7 @@ namespace Secyud.Ugf.Unity.TableComponents.UiFunctions
         {
             foreach (TableCell cell in _tableContent.Cells)
             {
-                cell.gameObject
-                    .GetOrAddComponent<Hoverable>()
+                cell.GetOrAddComponent<Hoverable>()
                     .OnHover
                     .AddListener(() => OpenFloatingWindow(cell));
             }

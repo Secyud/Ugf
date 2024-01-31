@@ -10,7 +10,8 @@ namespace Secyud.Ugf.Unity.InputManagement
 
         public InputService()
         {
-            UgfGameManager.Instance.gameObject.GetOrAddComponent<InputManager>();
+            UgfGameManager.Instance
+                .GetOrAddComponent<InputManager>();
         }
 
         public void AddInput(InputComponent component)

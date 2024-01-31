@@ -8,6 +8,7 @@ namespace Secyud.Ugf.Unity.TableComponents
     /// 可结合<see cref="TableContent"/>
     /// 使用。
     /// </summary>
+    [RequireComponent(typeof(Table))]
     public abstract class TablePager:MonoBehaviour
     {
         public List<object> PagedData { get; } = new();

@@ -21,8 +21,7 @@ namespace Secyud.Ugf.Unity.TableComponents.UiFunctions
             var tableContent = GetComponent<TableContent>();
             foreach (TableCell cell in tableContent.Cells)
             {
-                cell.gameObject
-                    .GetOrAddComponent<RightClick>()
+                cell.GetOrAddComponent<RightClick>()
                     .OnClick
                     .AddListener(() => OpenButtonWindow(cell));
             }

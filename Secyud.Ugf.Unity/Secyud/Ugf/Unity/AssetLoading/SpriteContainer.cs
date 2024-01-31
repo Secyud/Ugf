@@ -10,8 +10,8 @@ namespace Secyud.Ugf.Unity.AssetLoading
 	{
 		png
 	}
-
-	[Guid("e98b3736-5cc4-31bb-0fd7-14bc3dc329cf")]
+	
+	[Guid("0D68AF8E-2D14-40BA-ADF6-75514A599FCE")]
 	public class SpriteContainer : AssetContainer<Sprite>
 	{
 		protected SpriteContainer()

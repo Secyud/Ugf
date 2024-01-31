@@ -43,6 +43,22 @@ namespace Secyud.Ugf.DataManager
                 .ToArray();
         }
 
+        public void FillAttributes(
+            [NotNull] IList<SAttribute> list)
+        {
+            list.Clear();
+            PropertyDescriptor property = this;
+            while (property is not null)
+            {
+                foreach (SAttribute attribute in property.Attributes)
+                {
+                    list.Add(attribute);
+                }
+
+                property = property.BaseProperty;
+            }
+        }
+
         /// <summary>
         /// Fill the dictionary with field need to be
         /// serialized or deserialized.
@@ -60,7 +76,7 @@ namespace Secyud.Ugf.DataManager
                     dictionary[attribute.Info.Name] = attribute;
                 }
 
-                property = BaseProperty;
+                property = property.BaseProperty;
             }
         }
     }

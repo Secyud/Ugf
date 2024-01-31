@@ -27,8 +27,7 @@ namespace Secyud.Ugf.Unity.TableComponents.UiFunctions
             TableContent.SetCellEvent += ApplyCell;
             foreach (TableCell cell in TableContent.Cells)
             {
-                cell.gameObject
-                    .GetOrAddComponent<LeftClick>()
+                cell.GetOrAddComponent<LeftClick>()
                     .OnClick
                     .AddListener(() => SelectCell(cell));
             }

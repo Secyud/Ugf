@@ -35,6 +35,7 @@ namespace Secyud.Ugf.DataManager
         }
 
         public short Id { get; }
+        public string Name => Info.Name;
         public FieldType Type { get; private set; }
         public SShowType ShowType { get; private set; }
         public FieldInfo Info { get; private set; }
@@ -69,11 +70,7 @@ namespace Secyud.Ugf.DataManager
             {
                 fieldType = FieldType.InValid;
             }
-            else if (type.IsValueType)
-            {
-                Map.TryGetValue(type, out fieldType);
-            }
-            else
+            else if (!Map.TryGetValue(type, out fieldType))
             {
                 fieldType = FieldType.Object;
             }

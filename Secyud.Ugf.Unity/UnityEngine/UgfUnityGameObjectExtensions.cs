@@ -14,17 +14,11 @@ namespace UnityEngine
             Object.Destroy(component);
         }
 
-        public static T GetOrAddComponent<T>(this Transform origin) where T : Component
+        public static T GetOrAddComponent<T>(this Component origin)
+            where T : Component
         {
             if (!origin.TryGetComponent(out T component))
                 component = origin.gameObject.AddComponent<T>();
-            return component;
-        }
-
-        public static T GetOrAddComponent<T>(this GameObject origin) where T : Component
-        {
-            if (!origin.TryGetComponent(out T component))
-                component = origin.AddComponent<T>();
             return component;
         }
     }
