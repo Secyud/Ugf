@@ -27,13 +27,14 @@ namespace Secyud.Ugf.DataManager.Components
         {
             base.Bind(parent, sAttribute);
             SubComponents.Clear();
-            _prefab = FieldContainer.GetListItem(sAttribute.Type & ~FieldType.List);
+            _prefab = UnityDataManagerService.Instance.Form.FieldContainer
+                .GetListItem(sAttribute.Type & ~FieldType.List);
             List = (IList)sAttribute.GetValue(parent);
             int startIndex = transform.GetSiblingIndex();
             for (int i = 0; i < List.Count; i++)
             {
                 ListItem item = _prefab.Instantiate(
-                    UnityDataEditor.Instance.Content.RectTransform);
+                    UnityDataManagerService.Instance.EditContent);
                 item.transform.SetSiblingIndex(++startIndex);
                 item.Bind(this, i);
                 SubComponents.Add(item);
@@ -52,7 +53,9 @@ namespace Secyud.Ugf.DataManager.Components
                 elementType = elementType.HasElementType
                     ? elementType.GetElementType()
                     : elementType.GetGenericArguments()[0];
-                ClassSelectPanel.OpenClassSelectPanel(elementType, CreateFromType);
+
+                UnityDataManagerService.OpenClassSelectPanel(
+                    elementType, CreateFromType);
 
                 void CreateFromType(Type t)
                 {
@@ -82,11 +85,11 @@ namespace Secyud.Ugf.DataManager.Components
         {
             List.Add(obj);
             ListItem item = _prefab.Instantiate(
-                UnityDataEditor.Instance.Content.RectTransform);
+                UnityDataManagerService.Instance.EditContent);
             item.transform.SetSiblingIndex(Last.GetSiblingIndex() + 1);
             item.Bind(this, List.Count - 1);
             SubComponents.Add(item);
-            UnityDataEditor.Instance.Content.Refresh();
+            UnityDataManagerService.RefreshEditContent();
         }
 
         public void RemoveAt(int index)
@@ -100,7 +103,7 @@ namespace Secyud.Ugf.DataManager.Components
                 SubComponents[i].Index = i;
             }
 
-            UnityDataEditor.Instance.Content.Refresh();
+            UnityDataManagerService.RefreshEditContent();
         }
 
         public override void SetVisibility(bool visibility, bool root = false)
@@ -116,7 +119,7 @@ namespace Secyud.Ugf.DataManager.Components
                 item.SetVisibility(visibility, false);
             }
 
-            UnityDataEditor.Instance.Content.Refresh();
+            UnityDataManagerService.RefreshEditContent();
         }
 
         public void SetThisVisibility(bool visibility)

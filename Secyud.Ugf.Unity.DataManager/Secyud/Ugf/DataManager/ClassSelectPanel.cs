@@ -20,19 +20,9 @@ namespace Secyud.Ugf.DataManager
         private List<TypeDescriptor> _list;
 
 
-        public static ClassSelectPanel Instance { get; private set; }
-
-
-        public static void OpenClassSelectPanel(Type baseType, Action<Type> callBack)
-        {
-            Instance.gameObject.SetActive(true);
-            Instance.Bind(baseType, callBack);
-        }
 
         private void Awake()
         {
-            if (Instance) Destroy(Instance);
-            Instance = this;
             _list = new List<TypeDescriptor>();
             _table.SetLocalSource(() => _list);
             _table.InitLocalFilterInput(_filterInput, new TypeNameFilter());
@@ -41,7 +31,12 @@ namespace Secyud.Ugf.DataManager
             gameObject.SetActive(false);
         }
 
-
+        public void OpenClassSelectPanel(Type baseType, Action<Type> callBack)
+        {
+            gameObject.SetActive(true);
+            Bind(baseType, callBack);
+        }
+        
         public void Bind(Type baseType, Action<Type> callBack)
         {
             _callback = callBack;

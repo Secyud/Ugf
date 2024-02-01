@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using JetBrains.Annotations;
 using Secyud.Ugf.DependencyInjection;
 using Secyud.Ugf.Logging;
@@ -43,21 +42,7 @@ namespace Secyud.Ugf.DataManager
                 return null;
             }
 
-            byte[] data = Resources.Get(resourceId);
-            if (data is null)
-            {
-                LogNotFindIdForType(resourceId);
-                return null;
-            }
-            else
-            {
-                object obj = CreateInstance();
-                using MemoryStream stream = new(data);
-                using BinaryReader reader = new(stream);
-                reader.DeserializeResource(obj);
-                TrySetResourceId(obj, resourceId);
-                return obj;
-            }
+            return Resources.Get(resourceId).GetObject();
         }
 
         /// <summary>
@@ -69,53 +54,27 @@ namespace Secyud.Ugf.DataManager
         public void LoadObjectFromResource([NotNull] object obj, int resourceId)
         {
             Throw.IfNull(obj);
-            byte[] data = Resources.Get(resourceId);
-            if (data is null)
-            {
-                LogNotFindIdForType(resourceId);
-            }
-            else
-            {
-                using MemoryStream stream = new(data);
-                using BinaryReader reader = new(stream);
-                reader.DeserializeResource(obj);
-                TrySetResourceId(obj, resourceId);
-            }
+            DataResource data = Resources.Get(resourceId);
+            data.FillObject(obj);
         }
 
-        public void AddResource(int id, [NotNull] byte[] data)
+        public void AddResource( DataResource data)
         {
-            Resources.Add(id, data);
+            Resources.Add( data);
         }
-
-        private static void TrySetResourceId(object obj, int resourceId)
-        {
-            if (obj is IDataResource { ResourceId: 0 } r)
-            {
-                r.ResourceId = resourceId;
-            }
-        }
-
-        private void LogNotFindIdForType(int resourceId)
-        {
-            UgfLogger.LogError(
-                $"Data with id {resourceId} not found for type {Type}.");
-        }
-
 
         private class ResourcesDictionary
         {
-            private readonly SortedDictionary<int, byte[]> _innerDictionary = new();
+            private readonly SortedDictionary<int, DataResource> _innerDictionary = new();
 
-            public byte[] Get(int id)
+            public DataResource Get(int id)
             {
                 return _innerDictionary.GetValueOrDefault(id);
             }
 
-            public void Add(int id, [NotNull] byte[] data)
+            public void Add( DataResource data)
             {
-                Throw.IfNull(data);
-                _innerDictionary[id] = data;
+                _innerDictionary[data.Id] = data;
             }
         }
     }

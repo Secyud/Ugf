@@ -8,7 +8,7 @@ namespace Secyud.Ugf.Unity.UiForms
 {
     public sealed class UiFormService : IRegistry
     {
-        public PrefabContainer<UiFormCollection> FormPrefabs { get; set; }
+        public IObjectContainer<UiFormCollection> FormPrefabs { get; set; }
 
         private readonly Dictionary<int, UiFormGroup> _uiFormGroups = new();
 

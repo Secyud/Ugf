@@ -8,12 +8,12 @@ namespace System.IO
 {
     public static class UgfBinaryExtension
     {
-        public static void SaveResource(this BinaryWriter writer, IDataResource resource)
+        public static void SaveResource(this BinaryWriter writer, IHasResourceId resourceId)
         {
-            writer.Write(resource.ResourceId);
+            writer.Write(resourceId.ResourceId);
         }
 
-        public static void LoadResource(this BinaryReader reader, IDataResource shown)
+        public static void LoadResource(this BinaryReader reader, IHasResourceId shown)
         {
             int resourceId = reader.ReadInt32();
             TypeManager.Instance
@@ -27,7 +27,7 @@ namespace System.IO
             writer.Write(data.Length);
             writer.Write(data);
         } 
-        public static void ReadeResource(this BinaryReader reader, out int resourceId,out byte[] data)
+        public static void ReadResource(this BinaryReader reader, out int resourceId,out byte[] data)
         {
             resourceId = reader.ReadInt32();
             int count = reader.ReadInt32();

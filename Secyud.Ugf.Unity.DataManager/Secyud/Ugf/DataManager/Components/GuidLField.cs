@@ -38,7 +38,8 @@ namespace Secyud.Ugf.DataManager.Components
         {
             TypeLimitAttribute attr = Parent.SAttribute.Info
                 .GetCustomAttribute<TypeLimitAttribute>();
-            ClassSelectPanel.OpenClassSelectPanel(attr?.LimitType, SetClass);
+            
+            UnityDataManagerService.OpenClassSelectPanel(attr?.LimitType, SetClass);
             return;
 
             void SetClass(Type classType)

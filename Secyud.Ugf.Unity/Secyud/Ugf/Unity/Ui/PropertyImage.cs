@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System;
+using System.Linq;
+using UnityEngine;
 using UnityEngine.UI;
 
 namespace Secyud.Ugf.Unity.Ui
@@ -30,8 +32,10 @@ namespace Secyud.Ugf.Unity.Ui
             vh.AddVert(center,
                 new Color(1, 1, 1, (colorF.a + colorR.a) / 2),
                 centerUv);
-
-            float normalizedFactor = 1 / Mathf.Max(_values) / 2;
+            float maxValue = _values.Max(Mathf.Abs);
+            if (Mathf.Approximately(maxValue, 0)) maxValue = 1;
+            
+            float normalizedFactor = 1 / maxValue / 2;
             float radius = Mathf.Min(r.width, r.height);
             float degreeDelta = Mathf.PI * 2 / length;
             float start = _startDegree / 180 * Mathf.PI;

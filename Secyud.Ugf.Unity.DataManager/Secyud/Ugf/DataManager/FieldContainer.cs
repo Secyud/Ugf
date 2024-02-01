@@ -18,18 +18,7 @@ namespace Secyud.Ugf.DataManager
         [SerializeField] private TextLField _textLPrefab;
         [SerializeField] private ObjectLField _objectLPrefab;
 
-        public static FieldContainer Instance { get; private set; }
-
-        private void Awake()
-        {
-            if (Instance)
-                Destroy(Instance);
-            Instance = this;
-            gameObject.SetActive(false);
-        }
-
-
-        public static DataField GetDataField(FieldType type)
+        public DataField GetDataField(FieldType type)
         {
             switch (type)
             {
@@ -44,26 +33,26 @@ namespace Secyud.Ugf.DataManager
                 case FieldType.Decimal:
                 case FieldType.Single:
                 case FieldType.Double:
-                    return Instance._numberPrefab;
+                    return _numberPrefab;
                 case FieldType.Bool:
-                    return Instance._boolPrefab;
+                    return _boolPrefab;
                 case FieldType.String:
-                    return Instance._textPrefab;
+                    return _textPrefab;
                 case FieldType.Guid:
-                    return Instance._guidPrefab;
+                    return _guidPrefab;
                 case FieldType.Object:
-                    return Instance._objectPrefab;
+                    return _objectPrefab;
                 case FieldType.List:
                 case FieldType.InValid:
                     throw new InvalidOperationException();
                 default:
                     if (type.HasFlag(FieldType.List))
-                        return Instance._listPrefab;
+                        return _listPrefab;
                     throw new ArgumentOutOfRangeException();
             }
         }
 
-        public static ListItem GetListItem(FieldType type)
+        public ListItem GetListItem(FieldType type)
         {
             switch (type)
             {
@@ -78,15 +67,15 @@ namespace Secyud.Ugf.DataManager
                 case FieldType.Decimal:
                 case FieldType.Single:
                 case FieldType.Double:
-                    return Instance._numberLPrefab;
+                    return _numberLPrefab;
                 case FieldType.Bool:
-                    return Instance._boolLPrefab;
+                    return _boolLPrefab;
                 case FieldType.String:
-                    return Instance._textLPrefab;
+                    return _textLPrefab;
                 case FieldType.Guid:
-                    return Instance._guidLPrefab;
+                    return _guidLPrefab;
                 case FieldType.Object:
-                    return Instance._objectLPrefab;
+                    return _objectLPrefab;
                 case FieldType.List:
                 case FieldType.InValid:
                     throw new InvalidOperationException();

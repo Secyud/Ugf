@@ -1,23 +1,15 @@
 ﻿using System;
 using System.IO;
-using Secyud.Ugf.Abstraction;
+using Secyud.Ugf.Logging;
 
 namespace Secyud.Ugf.DataManager
 {
-    public class BinaryDataInfo : IHasName, IHasDescription, IHasId<int>, IArchivable
+    public struct DataResource
     {
         public int Id { get; set; }
         public Guid Type { get; set; }
-        public string Name { get; set; }
-        public string Description { get; set; }
         public byte[] Data { get; set; }
 
-        private void GetNameAndDescription()
-        {
-            using MemoryStream stream = new(Data);
-            using BinaryReader reader = new(stream);
-        }
-        
         public void Save(BinaryWriter writer)
         {
             writer.Write(Id);
@@ -38,14 +30,27 @@ namespace Secyud.Ugf.DataManager
         {
             object ret = TypeManager.Instance[Type].CreateInstance();
 
-            if (Data is not null)
-            {
-                using MemoryStream stream = new(Data);
-                using BinaryReader reader = new(stream);
-                reader.DeserializeResource(ret);
-            }
+            FillObject(ret);
 
             return ret;
+        }
+
+        public void FillObject(object obj)
+        {
+            if (Data is null)
+            {
+                UgfLogger.LogError($"Data with id {Id} not found for type {Type}.");
+                return;
+            }
+
+            using MemoryStream stream = new(Data);
+            using BinaryReader reader = new(stream);
+            reader.DeserializeResource(obj);
+            
+            if (obj is IHasResourceId { ResourceId: 0 } r)
+            {
+                r.ResourceId = Id;
+            }
         }
 
         public void SetObject(object obj)

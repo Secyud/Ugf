@@ -28,27 +28,12 @@ namespace Secyud.Ugf.DataManager
             }
         }
 
-        public void AddResourcesFromStream(Stream stream)
+        public void AddResources(DataResource[] resources)
         {
-            using BinaryReader reader = new(stream);
-
-            int count = reader.ReadInt32();
-
-            for (int i = 0; i < count; i++)
+            foreach (DataResource resource in resources)
             {
-                Guid id = reader.ReadGuid();
-                TypeDescriptor descriptor = this[id];
-                if (descriptor is null)
-                {
-                    reader.BaseStream.Seek(sizeof(int), SeekOrigin.Current);
-                    int length = reader.ReadInt32();
-                    reader.BaseStream.Seek(length, SeekOrigin.Current);
-                }
-                else
-                {
-                    reader.ReadeResource(out int resourceId, out byte[] data);
-                    descriptor.AddResource(resourceId, data);
-                }
+                TypeDescriptor descriptor = this[resource.Type];
+                descriptor?.AddResource(resource);
             }
         }
 

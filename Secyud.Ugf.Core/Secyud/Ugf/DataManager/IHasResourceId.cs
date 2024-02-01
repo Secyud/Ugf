@@ -5,7 +5,7 @@ namespace Secyud.Ugf.DataManager
     /// Unless using it as a sub member of a
     /// resource.
     /// </summary>
-    public interface IDataResource
+    public interface IHasResourceId
     {
         public int ResourceId { get; set; }
     }

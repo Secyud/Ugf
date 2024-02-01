@@ -1,4 +1,7 @@
-﻿using Secyud.Ugf.DataManager.Components;
+﻿using System;
+using System.IO;
+using System.Windows.Forms;
+using Secyud.Ugf.DataManager.Components;
 using Secyud.Ugf.Unity.Ui;
 using TMPro;
 using UnityEngine;
@@ -7,9 +10,7 @@ namespace Secyud.Ugf.DataManager
 {
     public class UnityDataEditor : MonoBehaviour
     {
-        public static UnityDataEditor Instance { get; private set; }
         [field: SerializeField] public LayoutTrigger Content { get; private set; }
-        [SerializeField] private UnityDataManagerPanel _dataManagerPanel;
         [SerializeField] private TMP_InputField _name;
         [SerializeField] private TMP_InputField _id;
         [SerializeField] private TMP_InputField _description;
@@ -18,13 +19,6 @@ namespace Secyud.Ugf.DataManager
         private BinaryDataInfo _data;
         private object _currentObject;
 
-        private void Awake()
-        {
-            if (Instance)
-                Destroy(Instance);
-            Instance = this;
-            gameObject.SetActive(false);
-        }
 
         public void OpenDataEdit(BinaryDataInfo value)
         {
@@ -38,9 +32,8 @@ namespace Secyud.Ugf.DataManager
             Content.ClearContent();
 
             _currentObject = value.GetObject();
-            ObjectField field = (ObjectField)FieldContainer
-                .GetDataField(FieldType.Object)
-                .Instantiate(Content.RectTransform);
+            ObjectField field = (ObjectField)UnityDataManagerService
+                .CreateDataField(FieldType.Object);
             field.BindObject(_currentObject);
             field.gameObject.SetActive(false);
         }
@@ -66,7 +59,8 @@ namespace Secyud.Ugf.DataManager
         public void SaveCurrentObjectToData()
         {
             _data.SetObject(_currentObject);
-            _dataManagerPanel.RefreshData();
+            UnityDataManagerService
+                .Instance.Form.Refresh();
         }
     }
 }

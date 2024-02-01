@@ -53,8 +53,7 @@ namespace Secyud.Ugf.DataManager.Components
             d.Properties.FillAttributes(attributes);
             foreach (SAttribute attribute in attributes)
             {
-                DataField field = FieldContainer.GetDataField(attribute.Type)
-                    .Instantiate(UnityDataEditor.Instance.Content.RectTransform);
+                DataField field = UnityDataManagerService.CreateDataField(attribute.Type);
                 field.transform.SetSiblingIndex(Last.GetSiblingIndex() + 1);
                 field.Bind(value, attribute);
                 _subComponents.Add(field);
@@ -76,7 +75,7 @@ namespace Secyud.Ugf.DataManager.Components
                 field.SetVisibility(visibility, false);
             }
 
-            UnityDataEditor.Instance.Content.Refresh();
+            UnityDataManagerService.RefreshEditContent();
         }
 
         public override void Die()
@@ -97,14 +96,15 @@ namespace Secyud.Ugf.DataManager.Components
                 : elementType.GetGenericArguments()[0];
 
 
-            ClassSelectPanel.OpenClassSelectPanel(elementType, CreateFromType);
+            UnityDataManagerService.OpenClassSelectPanel(
+                elementType, CreateFromType);
 
             void CreateFromType(Type t)
             {
                 object instance = TypeManager.Instance[t].CreateInstance();
                 Parent.List[Index] = instance;
                 BindObject(instance);
-                UnityDataEditor.Instance.Content.Refresh();
+                UnityDataManagerService.RefreshEditContent();
             }
         }
 
@@ -112,7 +112,7 @@ namespace Secyud.Ugf.DataManager.Components
         {
             Parent.List[Index] = null;
             BindObject(null);
-            UnityDataEditor.Instance.Content.Refresh();
+            UnityDataManagerService.RefreshEditContent();
         }
 
         public void SetThisVisibility(bool visibility)
