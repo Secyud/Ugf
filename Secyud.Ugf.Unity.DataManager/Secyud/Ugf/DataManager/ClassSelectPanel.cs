@@ -28,22 +28,21 @@ namespace Secyud.Ugf.DataManager
             _table.InitLocalFilterInput(_filterInput, new TypeNameFilter());
             _singleSelect = _table.GetOrAddComponent<SingleSelect>();
             _table.Refresh(4);
-            gameObject.SetActive(false);
         }
 
-        public void OpenClassSelectPanel(Type baseType, Action<Type> callBack)
+        public void OpenClassSelectPanel(Type baseType, Action<Type> callBack,bool dependency)
         {
             gameObject.SetActive(true);
-            Bind(baseType, callBack);
+            Bind(baseType, callBack,dependency);
         }
         
-        public void Bind(Type baseType, Action<Type> callBack)
+        public void Bind(Type baseType, Action<Type> callBack,bool dependency)
         {
             _callback = callBack;
             _list.Clear();
 
             _list.AddRange(TypeManager.Instance
-                .GetRegisteredType(baseType)
+                .GetRegisteredType(baseType,dependency)
                 .Select(t => new TypeDescriptor(t.Type)));
 
             _table.Refresh(3);

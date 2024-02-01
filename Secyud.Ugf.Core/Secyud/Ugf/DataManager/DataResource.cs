@@ -4,11 +4,12 @@ using Secyud.Ugf.Logging;
 
 namespace Secyud.Ugf.DataManager
 {
-    public struct DataResource
+    public struct DataResource : IHasId<int>, IArchivable
     {
         public int Id { get; set; }
         public Guid Type { get; set; }
         public byte[] Data { get; set; }
+
 
         public void Save(BinaryWriter writer)
         {
@@ -46,7 +47,7 @@ namespace Secyud.Ugf.DataManager
             using MemoryStream stream = new(Data);
             using BinaryReader reader = new(stream);
             reader.DeserializeResource(obj);
-            
+
             if (obj is IHasResourceId { ResourceId: 0 } r)
             {
                 r.ResourceId = Id;

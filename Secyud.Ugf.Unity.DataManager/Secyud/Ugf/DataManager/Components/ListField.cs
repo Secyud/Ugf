@@ -13,7 +13,8 @@ namespace Secyud.Ugf.DataManager.Components
         [SerializeField] private Button _addItem;
         public List<ListItem> SubComponents { get; private set; }
         public IList List { get; private set; }
-        public override Transform Last => SubComponents.Last().Last;
+        public override Transform Last => SubComponents.Count>0?
+            SubComponents.Last().Last : transform;
 
         private ListItem _prefab;
 

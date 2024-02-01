@@ -1,59 +1,58 @@
-﻿using System;
-using System.IO;
+﻿using System.Text;
 using Secyud.Ugf.Abstraction;
 
 namespace Secyud.Ugf.DataManager
 {
-    public class BinaryDataInfo : IHasName, IHasDescription, IHasId<int>, IArchivable
+    public class BinaryDataInfo : IHasName, IHasDescription
     {
-        public int Id { get; set; }
-        public Guid Type { get; set; }
-        public string Name { get; set; }
-        public string Description { get; set; }
-        public byte[] Data { get; set; }
+        private object _dataObject;
+        public DataResource Resource { get; set; }
 
-        private void GetNameAndDescription()
+        public string Name
         {
-            using MemoryStream stream = new(Data);
-            using BinaryReader reader = new(stream);
-        }
-        
-        public void Save(BinaryWriter writer)
-        {
-            writer.Write(Id);
-            writer.Write(Type);
-            writer.Write(Data.Length);
-            writer.Write(Data);
-        }
-
-        public void Load(BinaryReader reader)
-        {
-            Id = reader.ReadInt32();
-            Type = reader.ReadGuid();
-            int length = reader.ReadInt32();
-            Data = reader.ReadBytes(length);
-        }
-
-        public object GetObject()
-        {
-            object ret = TypeManager.Instance[Type].CreateInstance();
-
-            if (Data is not null)
+            get
             {
-                using MemoryStream stream = new(Data);
-                using BinaryReader reader = new(stream);
-                reader.DeserializeResource(ret);
-            }
+                if (DataObject is IHasName d)
+                {
+                    return d.Name;
+                }
 
-            return ret;
+                return string.Empty;
+            }
         }
 
-        public void SetObject(object obj)
+        public string Description
         {
-            using MemoryStream stream = new();
-            using BinaryWriter reader = new(stream);
-            reader.SerializeResource(obj);
-            Data = stream.ToArray();
+            get
+            {
+                StringBuilder stringBuilder = new();
+
+                stringBuilder.Append('[');
+                stringBuilder.Append(Resource.Type);
+                stringBuilder.Append(']');
+                stringBuilder.Append('(');
+                stringBuilder.Append(Resource.Id);
+                stringBuilder.Append(')');
+
+                if (DataObject is IHasDescription d)
+                {
+                    stringBuilder.Append(d.Description);
+                }
+
+                return stringBuilder.ToString();
+            }
+        }
+
+        public object DataObject
+        {
+            get => _dataObject ??= Resource.GetObject();
+            set
+            {
+                _dataObject = value;
+                DataResource resource = Resource;
+                resource.SetObject(_dataObject);
+                Resource = resource;
+            }
         }
     }
 }

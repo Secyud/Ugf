@@ -33,7 +33,7 @@ namespace Secyud.Ugf.DataManager
 
         public static void OpenClassSelectPanel(Type baseType, Action<Type> callback)
         {
-            Instance.Form.ClassSelectPanel.OpenClassSelectPanel(baseType, callback);
+            Instance.Form.ClassSelectPanel.OpenClassSelectPanel(baseType, callback,true);
         }
     }
 }

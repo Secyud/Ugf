@@ -31,15 +31,19 @@ namespace Secyud.Ugf.DataManager
             ClassSelectPanel.OpenClassSelectPanel(null,
                 t =>
                 {
-                    BinaryDataInfo data = new()
+                    DataResource resource = new()
                     {
                         Type = t.GUID
+                    };
+                    BinaryDataInfo data = new()
+                    {
+                        Resource = resource
                     };
                     _dataList.Add(data);
                     UnityDataEditor.OpenDataEdit(data);
                     _dataTable.Refresh(3);
                 }
-            );
+                , false);
         }
 
         public void EditSelectData()
@@ -78,7 +82,9 @@ namespace Secyud.Ugf.DataManager
                 for (int i = 0; i < count; i++)
                 {
                     BinaryDataInfo info = new();
-                    info.Load(reader);
+                    DataResource resource = new();
+                    resource.Load(reader);
+                    info.Resource = resource;
                     _dataList.Add(info);
                 }
 
@@ -92,6 +98,7 @@ namespace Secyud.Ugf.DataManager
             dialog.Title = U.T["SelectFile"];
             dialog.InitialDirectory = U.Path;
             dialog.Filter = "(*.binary)|*.binary";
+            dialog.CheckFileExists = false;
             if (dialog.ShowDialog() == DialogResult.OK)
             {
                 using FileStream stream = File.OpenWrite(dialog.FileName);
@@ -99,7 +106,7 @@ namespace Secyud.Ugf.DataManager
                 writer.Write(_dataList.Count);
                 foreach (BinaryDataInfo info in _dataList)
                 {
-                    info.Save(writer);
+                    info.Resource.Save(writer);
                 }
             }
         }

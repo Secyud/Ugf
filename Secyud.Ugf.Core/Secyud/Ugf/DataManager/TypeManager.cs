@@ -18,13 +18,13 @@ namespace Secyud.Ugf.DataManager
         {
         }
 
-        public void AddType(Type type,bool dependency)
+        public void AddType(Type type, bool dependency)
         {
             if (type.GUID == default)
                 return;
             if (!_typeDict.ContainsKey(type.GUID))
             {
-                _typeDict[type.GUID] = new TypeDescriptor(type,dependency);
+                _typeDict[type.GUID] = new TypeDescriptor(type, dependency);
             }
         }
 
@@ -70,7 +70,7 @@ namespace Secyud.Ugf.DataManager
                 {
                     if (!_genericTypeDict.TryGetValue(type, out TypeDescriptor descriptor))
                     {
-                        descriptor = new TypeDescriptor(type,false);
+                        descriptor = new TypeDescriptor(type, false);
                         _genericTypeDict[type] = descriptor;
                     }
 
@@ -86,9 +86,14 @@ namespace Secyud.Ugf.DataManager
             return type is not null && _typeDict.ContainsKey(type.GUID);
         }
 
-        public IEnumerable<TypeDescriptor> GetRegisteredType(Type baseType = null)
+        public IEnumerable<TypeDescriptor> GetRegisteredType(Type baseType = null, bool dependency = true)
         {
             IEnumerable<TypeDescriptor> ret = _typeDict.Values;
+
+            if (!dependency)
+            {
+                ret = ret.Where(u => !u.Dependency);
+            }
 
             if (baseType is not null)
             {

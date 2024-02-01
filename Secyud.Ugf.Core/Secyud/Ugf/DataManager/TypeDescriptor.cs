@@ -8,22 +8,23 @@ namespace Secyud.Ugf.DataManager
 {
     public class TypeDescriptor
     {
-        private readonly bool _dependency;
         private PropertyDescriptor _data;
         private ResourcesDictionary _resources;
         public Type Type { get; }
         public PropertyDescriptor Properties => _data ??= new PropertyDescriptor(Type);
         private ResourcesDictionary Resources => _resources ??= new ResourcesDictionary();
 
+        public bool Dependency { get; }
+
         public TypeDescriptor(Type type, bool dependency)
         {
-            _dependency = dependency;
+            Dependency = dependency;
             Type = type;
         }
 
         public object CreateInstance()
         {
-            return _dependency
+            return Dependency
                 ? DependencyManager.Instance.Get(Type)
                 : Activator.CreateInstance(Type, true);
         }
@@ -58,9 +59,9 @@ namespace Secyud.Ugf.DataManager
             data.FillObject(obj);
         }
 
-        public void AddResource( DataResource data)
+        public void AddResource(DataResource data)
         {
-            Resources.Add( data);
+            Resources.Add(data);
         }
 
         private class ResourcesDictionary
@@ -72,7 +73,7 @@ namespace Secyud.Ugf.DataManager
                 return _innerDictionary.GetValueOrDefault(id);
             }
 
-            public void Add( DataResource data)
+            public void Add(DataResource data)
             {
                 _innerDictionary[data.Id] = data;
             }
