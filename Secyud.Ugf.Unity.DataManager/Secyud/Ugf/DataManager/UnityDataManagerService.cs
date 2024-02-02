@@ -1,7 +1,6 @@
 ﻿using System;
 using Secyud.Ugf.DataManager.Components;
 using Secyud.Ugf.DependencyInjection;
-using UnityEngine;
 
 namespace Secyud.Ugf.DataManager
 {
@@ -16,19 +15,14 @@ namespace Secyud.Ugf.DataManager
             Instance = this;
         }
 
-        public RectTransform EditContent => Form.UnityDataEditor.Content.RectTransform;
-
-        public static DataField CreateDataField(FieldType fieldType)
+        public static FieldInObject GetFieldInObject(FieldType fieldType)
         {
-            return Instance.Form
-                .FieldContainer
-                .GetDataField(fieldType)
-                .Instantiate(Instance.EditContent);
+            return Instance.Form.FieldContainer.GetFieldInObject(fieldType);
         }
 
-        public static void RefreshEditContent()
+        public static FieldInSeries GetFieldInSeries(FieldType fieldType)
         {
-            Instance.Form.UnityDataEditor.Content.Refresh();
+            return Instance.Form.FieldContainer.GetFieldInSeries(fieldType);
         }
 
         public static void OpenClassSelectPanel(Type baseType, Action<Type> callback)

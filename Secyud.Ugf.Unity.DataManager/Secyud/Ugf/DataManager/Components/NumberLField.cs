@@ -5,32 +5,29 @@ using UnityEngine.UI;
 
 namespace Secyud.Ugf.DataManager.Components
 {
-    public class NumberLField : ListItem
+    public class NumberLField : FieldInSeries
     {
-        [SerializeField] private TMP_InputField _inputField;
-        [SerializeField] private Image _wrong;
+        [SerializeField] protected TMP_InputField NumberInput;
+        [SerializeField] protected Image InvalidIcon;
 
-        public override void Bind(ListField parent, int index)
+        protected override void BindValue(object value)
         {
-            base.Bind(parent, index);
-            _inputField.SetTextWithoutNotify(
-                parent.List[index].ToString());
+            NumberInput.SetTextWithoutNotify(value.ToString());
         }
 
-        public void SetValue(string str)
+        public void SetNumber(string str)
         {
             bool failed = false;
             try
             {
-                Parent.List[Index] = Convert.ChangeType(
-                    str, Parent.SAttribute.Info.FieldType);
+                SetValue(Convert.ChangeType(str, SeriesField.ElementType));
             }
             catch (Exception)
             {
                 failed = true;
             }
 
-            _wrong.enabled = failed;
+            InvalidIcon.enabled = failed;
         }
     }
 }

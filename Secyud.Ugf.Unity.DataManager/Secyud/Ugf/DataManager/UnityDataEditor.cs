@@ -5,9 +5,9 @@ using UnityEngine;
 
 namespace Secyud.Ugf.DataManager
 {
-    public class UnityDataEditor : MonoBehaviour
+    public class UnityDataEditor : DataFieldBase
     {
-        [field: SerializeField] public LayoutTrigger Content { get; private set; }
+        [SerializeField] private LayoutTrigger _content;
         [SerializeField] private TMP_InputField _id;
         [SerializeField] private TextMeshProUGUI _type;
 
@@ -15,21 +15,24 @@ namespace Secyud.Ugf.DataManager
         private object _currentObject;
 
 
-        public void OpenDataEdit(BinaryDataInfo value)
+        public void OpenDataEdit(BinaryDataInfo data)
         {
             gameObject.SetActive(true);
-            _data = value;
-            _id.SetTextWithoutNotify(value.Resource.Id.ToString());
-            _type.text = TypeManager.Instance[value.Resource.Type]?.Type.Name;
+            _data = data;
+            _id.SetTextWithoutNotify(data.Resource.Id.ToString());
+            _type.text = TypeManager.Instance[data.Resource.Type]?.Type.Name;
 
-            Content.ClearContent();
+            _content.ClearContent();
 
-            _currentObject = value.Resource.GetObject();
-            ObjectField field = (ObjectField)UnityDataManagerService
-                .CreateDataField(FieldType.Object);
-            field.BindObject(_currentObject);
-            field.gameObject.SetActive(false);
-            Content.Refresh();
+            SetValue(data.Resource.GetObject());
+
+            ObjectFieldInObject field =
+                (ObjectFieldInObject)UnityDataManagerService
+                    .GetFieldInObject(FieldType.Object)
+                    .Instantiate(_content.transform);
+            field.BindRoot(_currentObject);
+
+            _content.Refresh();
         }
 
         public void SetId(string s)
@@ -47,6 +50,27 @@ namespace Secyud.Ugf.DataManager
             _data.DataObject = _currentObject;
             UnityDataManagerService
                 .Instance.Form.Refresh();
+        }
+
+        protected override DataFieldBase ParentField => null;
+
+        public override void RefreshContent(int level)
+        {
+            _content.Refresh(level);
+        }
+
+        protected override void BindValue(object value)
+        {
+        }
+
+        protected override void SetValue(object value)
+        {
+            _currentObject = value;
+        }
+
+        protected override object GetValue()
+        {
+            return _currentObject;
         }
     }
 }

@@ -5,32 +5,29 @@ using UnityEngine.UI;
 
 namespace Secyud.Ugf.DataManager.Components
 {
-    public class NumberField : DataField
+    public class NumberField : FieldInObject
     {
-        [SerializeField] private TMP_InputField _inputField;
-        [SerializeField] private Image _wrong;
+        [SerializeField] protected TMP_InputField NumberInput;
+        [SerializeField] protected Image InvalidIcon;
 
-        public override void Bind(object parent, SAttribute sAttribute)
+        protected override void BindValue(object value)
         {
-            base.Bind(parent, sAttribute);
-            _inputField.SetTextWithoutNotify(
-                sAttribute.GetValue(parent).ToString());
+            NumberInput.SetTextWithoutNotify(value.ToString());
         }
 
-        public void SetValue(string str)
+        public void SetNumber(string str)
         {
             bool failed = false;
             try
             {
-                SAttribute.SetValue(Parent, 
-                    Convert.ChangeType(str, SAttribute.Info.FieldType));
+                SetValue(Convert.ChangeType(str, Field.Info.FieldType));
             }
             catch (Exception)
             {
                 failed = true;
             }
 
-            _wrong.enabled = failed;
+            InvalidIcon.enabled = failed;
         }
     }
 }

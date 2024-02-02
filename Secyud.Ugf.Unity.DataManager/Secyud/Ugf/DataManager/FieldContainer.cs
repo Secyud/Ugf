@@ -1,24 +1,25 @@
 ﻿using System;
 using Secyud.Ugf.DataManager.Components;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Secyud.Ugf.DataManager
 {
     public class FieldContainer : MonoBehaviour
     {
-        [SerializeField] private BoolField _boolPrefab;
-        [SerializeField] private GuidField _guidPrefab;
-        [SerializeField] private ListField _listPrefab;
+        [SerializeField] private BoolFieldInObject _boolPrefab;
+        [SerializeField] private GuidFieldInObject _guidPrefab;
+        [SerializeField] private SeriesFieldInObject _seriesPrefab;
         [SerializeField] private NumberField _numberPrefab;
-        [SerializeField] private TextField _textPrefab;
-        [SerializeField] private ObjectField _objectPrefab;
-        [SerializeField] private BoolLField _boolLPrefab;
-        [SerializeField] private GuidLField _guidLPrefab;
+        [SerializeField] private TextFieldInObject _textPrefab;
+        [SerializeField] private ObjectFieldInObject _objectPrefab;
+        [SerializeField] private BoolFieldInSeries _boolFieldLPrefab;
+        [SerializeField] private GuidFieldInSeries _guidLPrefab;
         [SerializeField] private NumberLField _numberLPrefab;
-        [SerializeField] private TextLField _textLPrefab;
-        [SerializeField] private ObjectLField _objectLPrefab;
+        [SerializeField] private TextFieldInSeries _textLPrefab;
+        [SerializeField] private ObjectFieldInSeries _objectLPrefab;
 
-        public DataField GetDataField(FieldType type)
+        public FieldInObject GetFieldInObject(FieldType type)
         {
             switch (type)
             {
@@ -47,13 +48,15 @@ namespace Secyud.Ugf.DataManager
                     throw new InvalidOperationException();
                 default:
                     if (type.HasFlag(FieldType.List))
-                        return _listPrefab;
+                        return _seriesPrefab;
                     throw new ArgumentOutOfRangeException();
             }
         }
 
-        public ListItem GetListItem(FieldType type)
+        public FieldInSeries GetFieldInSeries(FieldType type)
         {
+            type &= ~FieldType.List;
+
             switch (type)
             {
                 case FieldType.UInt8:
@@ -69,7 +72,7 @@ namespace Secyud.Ugf.DataManager
                 case FieldType.Double:
                     return _numberLPrefab;
                 case FieldType.Bool:
-                    return _boolLPrefab;
+                    return _boolFieldLPrefab;
                 case FieldType.String:
                     return _textLPrefab;
                 case FieldType.Guid:
