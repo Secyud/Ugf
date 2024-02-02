@@ -5,15 +5,16 @@ using Secyud.Ugf.Unity.Ui;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Pool;
+using UnityEngine.UI;
 
 namespace Secyud.Ugf.DataManager.Components
 {
     [RequireComponent(typeof(LayoutTrigger))]
-    public class ObjectFieldInObject : FieldInObject
+    public class ObjectFieldInObject : FieldInObject,IObjectField
     {
         [SerializeField] protected TextMeshProUGUI ClassNameTip;
-        [SerializeField] protected TextMeshProUGUI CreateButton;
-        [SerializeField] protected TextMeshProUGUI DeleteButton;
+        [SerializeField] protected Button CreateButton;
+        [SerializeField] protected Button DeleteButton;
         private LayoutTrigger _content;
         private List<FieldInObject> _fields;
 
@@ -23,14 +24,16 @@ namespace Secyud.Ugf.DataManager.Components
             _fields = new List<FieldInObject>();
         }
 
-        public virtual void BindRoot(object value)
+        public virtual void BindRoot(object value,DataFieldBase dataField)
         {
+            DataField = dataField;
             BindValue(value);
-            DeleteButton.gameObject.SetActive(false);
+            transform.GetChild(0).gameObject.SetActive(false);
         }
 
         protected override void BindValue(object value)
         {
+            Reference = value;
             foreach (FieldInObject field in _fields)
             {
                 Destroy(field.gameObject);
@@ -84,7 +87,7 @@ namespace Secyud.Ugf.DataManager.Components
 
         public void DestroyObject()
         {
-            if (ObjectField.Reference is null)
+            if (ObjectField?.Reference is null)
             {
                 UgfLogger.LogError("Cannot delete root object!");
                 return;
@@ -110,5 +113,7 @@ namespace Secyud.Ugf.DataManager.Components
             _content.Refresh(level);
             base.RefreshContent(level);
         }
+
+        public object Reference { get; set; }
     }
 }

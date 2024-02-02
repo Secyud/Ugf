@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 namespace Secyud.Ugf.DataManager.Components
 {
-    public class NumberLField : FieldInSeries
+    public class NumberFieldInSeries : FieldInSeries
     {
         [SerializeField] protected TMP_InputField NumberInput;
         [SerializeField] protected Image InvalidIcon;

@@ -44,7 +44,7 @@ namespace Secyud.Ugf.DataManager.Components
                 _fields.Add(field);
             }
 
-            AddItemButton.interactable = List.IsFixedSize;
+            AddItemButton.interactable = !List.IsFixedSize;
 
             ElementType = Field.Info.FieldType;
             ElementType = ElementType.HasElementType

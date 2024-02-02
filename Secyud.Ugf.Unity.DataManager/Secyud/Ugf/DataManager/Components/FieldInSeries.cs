@@ -7,10 +7,10 @@ namespace Secyud.Ugf.DataManager.Components
         protected override DataFieldBase ParentField => SeriesField;
         protected SeriesFieldInObject SeriesField { get; private set; }
 
-        public virtual void Bind(SeriesFieldInObject seriesFieldInObject, int index)
+        public virtual void Bind(SeriesFieldInObject seriesField, int index)
         {
             Index = index;
-            SeriesField = seriesFieldInObject;
+            SeriesField = seriesField;
             BindValue(GetValue());
         }
 

@@ -10,8 +10,8 @@ namespace Secyud.Ugf.DataManager.Components
     {
         [SerializeField] protected TextMeshProUGUI DescText;
         protected override DataFieldBase ParentField => DataField;
-        protected DataFieldBase DataField { get; private set; }
-        public IObjectField ObjectField { get; private set; }
+        protected DataFieldBase DataField { get; set; }
+        protected IObjectField ObjectField { get; private set; }
         public SAttribute Field { get; private set; }
 
         public void BindObject(DataFieldBase dataField, SAttribute fieldDesc)
@@ -23,7 +23,7 @@ namespace Secyud.Ugf.DataManager.Components
 
             string str = fieldDesc.Info.Name;
             if (str.StartsWith('<'))
-                str = str[1..^8];
+                str = str[1..^16];
             else if (str.StartsWith('_'))
                 str = char.ToUpper(str[1]) + str[2..];
             LabelText.text = U.T[str];

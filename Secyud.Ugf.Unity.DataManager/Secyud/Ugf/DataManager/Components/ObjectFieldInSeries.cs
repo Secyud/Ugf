@@ -4,14 +4,15 @@ using Secyud.Ugf.Unity.Ui;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Pool;
+using UnityEngine.UI;
 
 namespace Secyud.Ugf.DataManager.Components
 {
-    public class ObjectFieldInSeries : FieldInSeries
+    public class ObjectFieldInSeries : FieldInSeries,IObjectField
     {
         [SerializeField] protected TextMeshProUGUI ClassNameTip;
-        [SerializeField] protected TextMeshProUGUI CreateButton;
-        [SerializeField] protected TextMeshProUGUI DeleteButton;
+        [SerializeField] protected Button CreateButton;
+        [SerializeField] protected Button DeleteButton;
         private LayoutTrigger _content;
         private List<FieldInObject> _fields;
 
@@ -23,6 +24,8 @@ namespace Secyud.Ugf.DataManager.Components
 
         protected override void BindValue(object value)
         {
+            Reference = value;
+            
             foreach (FieldInObject field in _fields)
             {
                 Destroy(field.gameObject);
@@ -103,5 +106,7 @@ namespace Secyud.Ugf.DataManager.Components
             _content.Refresh(level);
             base.RefreshContent(level);
         }
+
+        public object Reference { get; set; }
     }
 }

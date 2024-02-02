@@ -9,7 +9,6 @@ namespace Secyud.Ugf.DataManager
     {
         [SerializeField] private LayoutTrigger _content;
         [SerializeField] private TMP_InputField _id;
-        [SerializeField] private TextMeshProUGUI _type;
 
         private BinaryDataInfo _data;
         private object _currentObject;
@@ -20,7 +19,7 @@ namespace Secyud.Ugf.DataManager
             gameObject.SetActive(true);
             _data = data;
             _id.SetTextWithoutNotify(data.Resource.Id.ToString());
-            _type.text = TypeManager.Instance[data.Resource.Type]?.Type.Name;
+            LabelText.text = TypeManager.Instance[data.Resource.Type]?.Type.Name;
 
             _content.ClearContent();
 
@@ -30,7 +29,7 @@ namespace Secyud.Ugf.DataManager
                 (ObjectFieldInObject)UnityDataManagerService
                     .GetFieldInObject(FieldType.Object)
                     .Instantiate(_content.transform);
-            field.BindRoot(_currentObject);
+            field.BindRoot(_currentObject,this);
 
             _content.Refresh();
         }

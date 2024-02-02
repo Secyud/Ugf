@@ -1,23 +1,22 @@
 ﻿using System;
 using Secyud.Ugf.DataManager.Components;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace Secyud.Ugf.DataManager
 {
     public class FieldContainer : MonoBehaviour
     {
-        [SerializeField] private BoolFieldInObject _boolPrefab;
-        [SerializeField] private GuidFieldInObject _guidPrefab;
-        [SerializeField] private SeriesFieldInObject _seriesPrefab;
-        [SerializeField] private NumberField _numberPrefab;
-        [SerializeField] private TextFieldInObject _textPrefab;
-        [SerializeField] private ObjectFieldInObject _objectPrefab;
-        [SerializeField] private BoolFieldInSeries _boolFieldLPrefab;
-        [SerializeField] private GuidFieldInSeries _guidLPrefab;
-        [SerializeField] private NumberLField _numberLPrefab;
-        [SerializeField] private TextFieldInSeries _textLPrefab;
-        [SerializeField] private ObjectFieldInSeries _objectLPrefab;
+        [SerializeField] private BoolFieldInObject _boolFieldInObject;
+        [SerializeField] private GuidFieldInObject _guidFieldInObject;
+        [SerializeField] private SeriesFieldInObject _seriesFieldInObject;
+        [SerializeField] private NumberFieldInObject _numberFieldInObject;
+        [SerializeField] private TextFieldInObject _textFieldInObject;
+        [SerializeField] private ObjectFieldInObject _objectFieldInObject;
+        [SerializeField] private BoolFieldInSeries _boolFieldInSeries;
+        [SerializeField] private GuidFieldInSeries _guidFieldInSeries;
+        [SerializeField] private NumberFieldInSeries _numberFieldInSeries;
+        [SerializeField] private TextFieldInSeries _textFieldInSeries;
+        [SerializeField] private ObjectFieldInSeries _objectFieldInSeries;
 
         public FieldInObject GetFieldInObject(FieldType type)
         {
@@ -34,21 +33,21 @@ namespace Secyud.Ugf.DataManager
                 case FieldType.Decimal:
                 case FieldType.Single:
                 case FieldType.Double:
-                    return _numberPrefab;
+                    return _numberFieldInObject;
                 case FieldType.Bool:
-                    return _boolPrefab;
+                    return _boolFieldInObject;
                 case FieldType.String:
-                    return _textPrefab;
+                    return _textFieldInObject;
                 case FieldType.Guid:
-                    return _guidPrefab;
+                    return _guidFieldInObject;
                 case FieldType.Object:
-                    return _objectPrefab;
+                    return _objectFieldInObject;
                 case FieldType.List:
                 case FieldType.InValid:
                     throw new InvalidOperationException();
                 default:
                     if (type.HasFlag(FieldType.List))
-                        return _seriesPrefab;
+                        return _seriesFieldInObject;
                     throw new ArgumentOutOfRangeException();
             }
         }
@@ -70,15 +69,15 @@ namespace Secyud.Ugf.DataManager
                 case FieldType.Decimal:
                 case FieldType.Single:
                 case FieldType.Double:
-                    return _numberLPrefab;
+                    return _numberFieldInSeries;
                 case FieldType.Bool:
-                    return _boolFieldLPrefab;
+                    return _boolFieldInSeries;
                 case FieldType.String:
-                    return _textLPrefab;
+                    return _textFieldInSeries;
                 case FieldType.Guid:
-                    return _guidLPrefab;
+                    return _guidFieldInSeries;
                 case FieldType.Object:
-                    return _objectLPrefab;
+                    return _objectFieldInSeries;
                 case FieldType.List:
                 case FieldType.InValid:
                     throw new InvalidOperationException();
