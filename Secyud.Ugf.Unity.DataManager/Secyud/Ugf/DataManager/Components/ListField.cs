@@ -41,7 +41,7 @@ namespace Secyud.Ugf.DataManager.Components
                 SubComponents.Add(item);
             }
 
-            _addItem.interactable = List.IsFixedSize;
+            _addItem.interactable = !List.IsFixedSize;
         }
 
         public void CreateObject()

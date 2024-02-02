@@ -1,7 +1,6 @@
 using Secyud.Ugf.DependencyInjection;
 using System.Collections.Generic;
 #if UNITY_EDITOR
-    using UnityEditor;
 #endif
 
 namespace Secyud.Ugf.Modularity
@@ -66,11 +65,6 @@ namespace Secyud.Ugf.Modularity
                 if (Modules[i].Instance is IOnShutDown module)
                     module.OnShutDown(context);
             }
-#if UNITY_EDITOR
-            EditorApplication.isPlaying = false;
-#else
-            UnityEngine.Application.Quit();
-#endif
         }
     }
 }

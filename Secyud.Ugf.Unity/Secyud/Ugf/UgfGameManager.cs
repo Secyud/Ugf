@@ -1,5 +1,6 @@
 using System;
 using Secyud.Ugf.Modularity;
+using UnityEditor;
 using UnityEngine;
 
 namespace Secyud.Ugf
@@ -10,8 +11,9 @@ namespace Secyud.Ugf
         protected abstract PlugInSourceList PlugInSourceList { get; }
         [field:SerializeField]public Camera Camera { get; private set; }
         [field:SerializeField]public Canvas Canvas { get; private set; }
-        public UgfApplicationFactory Factory { get; private set; }
+        private UgfApplicationFactory Factory { get;  set; }
         public static UgfGameManager Instance { get; private set; }
+        public IUgfApplication Application => Factory.Application;
 
         public virtual void Awake()
         {
@@ -24,6 +26,16 @@ namespace Secyud.Ugf
             DontDestroyOnLoad(gameObject);
             Factory = new UgfApplicationFactory(StartUpModule, PlugInSourceList);
             Factory.Configure();
+        }
+
+        public void Shutdown()
+        {
+            Factory.Shutdown();
+#if UNITY_EDITOR
+            EditorApplication.isPlaying = false;
+#else
+            UnityEngine.Application.Quit();
+#endif
         }
     }
 }

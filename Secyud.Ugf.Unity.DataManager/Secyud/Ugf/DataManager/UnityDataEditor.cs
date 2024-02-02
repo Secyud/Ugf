@@ -29,6 +29,7 @@ namespace Secyud.Ugf.DataManager
                 .CreateDataField(FieldType.Object);
             field.BindObject(_currentObject);
             field.gameObject.SetActive(false);
+            Content.Refresh();
         }
 
         public void SetId(string s)

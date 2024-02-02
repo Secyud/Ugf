@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using Secyud.Ugf.Logging;
 
@@ -64,7 +63,7 @@ namespace Secyud.Ugf.DataManager
         {
             get
             {
-                if (type is null) return null;
+                if (type is null || type.GUID == default) return null;
 
                 if (type.IsGenericType)
                 {
@@ -77,7 +76,15 @@ namespace Secyud.Ugf.DataManager
                     return descriptor;
                 }
 
-                return _typeDict.GetValueOrDefault(type.GUID);
+                var typeDescriptor = _typeDict.GetValueOrDefault(type.GUID);
+
+                if (typeDescriptor is null && type.IsAbstract)
+                {
+                    typeDescriptor = new TypeDescriptor(type, false);
+                    _typeDict[type.GUID] = typeDescriptor;
+                }
+
+                return typeDescriptor;
             }
         }
 
@@ -88,19 +95,19 @@ namespace Secyud.Ugf.DataManager
 
         public IEnumerable<TypeDescriptor> GetRegisteredType(Type baseType = null, bool dependency = true)
         {
-            IEnumerable<TypeDescriptor> ret = _typeDict.Values;
+            IEnumerable<TypeDescriptor> ret = _typeDict.Values.Where(
+                u => !u.Type.IsAbstract);
 
             if (!dependency)
             {
-                ret = ret.Where(u => !u.Dependency);
+                ret = ret.Where(
+                    u => !u.Dependency);
             }
 
             if (baseType is not null)
             {
-                ret = ret
-                    .Where(u =>
-                        baseType.IsAssignableFrom(u.Type) &&
-                        !u.Type.IsAbstract && u.Type.IsClass);
+                ret = ret.Where(
+                    u => baseType.IsAssignableFrom(u.Type));
             }
 
             return ret;
