@@ -12,12 +12,12 @@ namespace Secyud.Ugf.DataManager.Components
         [SerializeField] private Toggle _toggle;
         [SerializeField] private Button _addItem;
         public List<ListItem> SubComponents { get; private set; }
+        
         public IList List { get; private set; }
         public override Transform Last => SubComponents.Count>0?
             SubComponents.Last().Last : transform;
 
         private ListItem _prefab;
-
 
         private void Awake()
         {
@@ -41,7 +41,7 @@ namespace Secyud.Ugf.DataManager.Components
                 SubComponents.Add(item);
             }
 
-            _addItem.interactable = !List.IsFixedSize;
+            _addItem.interactable = List.IsFixedSize;
         }
 
         public void CreateObject()

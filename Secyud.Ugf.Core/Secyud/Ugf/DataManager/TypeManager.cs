@@ -47,7 +47,13 @@ namespace Secyud.Ugf.DataManager
             {
                 if (!_typeDict.TryGetValue(id, out TypeDescriptor value))
                 {
-                    UgfLogger.LogError($"Cannot find type for id: {id}.");
+                    UgfLogger.
+#if UNITY_EDITOR
+                        LogWarning
+#else
+                        LogError
+#endif
+                            ($"Cannot find type for id: {id}.");
                 }
 
                 return value;
@@ -63,7 +69,7 @@ namespace Secyud.Ugf.DataManager
         {
             get
             {
-                if (type is null || type.GUID == default) return null;
+                if (type is null ) return null;
 
                 if (type.IsGenericType)
                 {
@@ -75,6 +81,8 @@ namespace Secyud.Ugf.DataManager
 
                     return descriptor;
                 }
+
+                if (type.GUID == default) return null;
 
                 var typeDescriptor = _typeDict.GetValueOrDefault(type.GUID);
 

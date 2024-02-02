@@ -40,11 +40,13 @@ namespace Secyud.Ugf.DataManager
         {
             if (Data is null)
             {
+                UgfLogger.
 #if UNITY_EDITOR
-                UgfLogger.LogWarning($"Data with id {Id} not found for type {Type}.");
+                    LogWarning
 #else
-                UgfLogger.LogError($"Data with id {Id} not found for type {Type}.");
+                    LogError
 #endif
+                        ($"Data with id {Id} not found for type {Type}.");
                 return;
             }
 
