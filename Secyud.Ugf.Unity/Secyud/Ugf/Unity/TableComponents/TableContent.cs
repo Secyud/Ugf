@@ -25,7 +25,9 @@ namespace Secyud.Ugf.Unity.TableComponents
             for (int i = 0; i < Cells.Length; i++)
             {
                 if (!Cells[i])
+                {
                     Cells[i] = prefab.Instantiate(content);
+                }
             }
         }
 

@@ -34,7 +34,7 @@ namespace Secyud.Ugf.Unity.TableComponents
             if (State > 2) _filter.Apply();
             if (State > 1) _sorter.Apply();
             if (State > 0) _pager.Apply();
-            if (State > -1) _content.Apply(State < 0);
+            if (State > -1) _content.Apply(State <= 1);
             State = -1;
             enabled = false;
         }

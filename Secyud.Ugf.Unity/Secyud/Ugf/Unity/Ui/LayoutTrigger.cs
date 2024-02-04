@@ -37,12 +37,10 @@ namespace Secyud.Ugf.Unity.Ui
             }
         }
 
-        public void ActivateFloating(Transform target)
+        public void ActivateFloating(RectTransform target)
         {
-            RectTransform.localPosition =
-                target.localPosition +
-                target.parent.position -
-                RectTransform.parent.position;
+            RectTransform.position =
+                target.position + new Vector3(0, target.rect.height, 0);
 
             gameObject.SetActive(true);
 

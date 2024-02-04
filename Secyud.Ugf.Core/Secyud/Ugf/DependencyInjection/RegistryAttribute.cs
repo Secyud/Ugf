@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Secyud.Ugf.Logging;
 
 namespace Secyud.Ugf.DependencyInjection
 {
-    [AttributeUsage(AttributeTargets.Class|AttributeTargets.Interface)]
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Interface)]
     public class RegistryAttribute : Attribute
     {
         internal static readonly RegistryAttribute Singleton =
@@ -51,6 +52,17 @@ namespace Secyud.Ugf.DependencyInjection
         public IEnumerable<Type> GetExposedServiceTypes(Type targetType)
         {
             List<Type> serviceList = ServiceTypes.ToList();
+
+#if DEBUG
+            foreach (Type type in serviceList)
+            {
+                if (!type.IsAssignableFrom(targetType))
+                {
+                    UgfLogger.LogError($"Please check exposed type for {targetType}" +
+                                       $"{type} is not a valid exposed type!");
+                }
+            }
+#endif
 
             if (IncludeDefaults)
                 foreach (Type type in GetDefaultServices(targetType))

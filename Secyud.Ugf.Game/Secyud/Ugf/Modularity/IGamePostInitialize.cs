@@ -4,6 +4,6 @@ namespace Secyud.Ugf.Modularity
 {
     public interface IGamePostInitialize
     {
-        IEnumerable OnGamePostInitialize();
+        IEnumerator OnGamePostInitialize();
     }
 }

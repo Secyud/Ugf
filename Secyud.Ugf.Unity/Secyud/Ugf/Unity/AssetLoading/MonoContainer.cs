@@ -56,7 +56,7 @@ namespace Secyud.Ugf.Unity.AssetLoading
 
         public void Destroy()
         {
-            _instance.Destroy();
+            _instance.DestroyGameObject();
         }
     }
 }

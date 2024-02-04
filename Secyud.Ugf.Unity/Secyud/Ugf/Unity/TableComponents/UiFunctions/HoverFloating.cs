@@ -21,10 +21,15 @@ namespace Secyud.Ugf.Unity.TableComponents.UiFunctions
         {
             foreach (TableCell cell in _tableContent.Cells)
             {
-                cell.GetOrAddComponent<Hoverable>()
-                    .OnHover
-                    .AddListener(() => OpenFloatingWindow(cell));
+                SetHoverableCell(cell);
             }
+        }
+
+        public void SetHoverableCell(TableCell cell)
+        {
+            cell.GetOrAddComponent<Hoverable>()
+                .OnHover
+                .AddListener(() => OpenFloatingWindow(cell));
         }
 
         private void OpenFloatingWindow(TableCell cell)
@@ -34,7 +39,7 @@ namespace Secyud.Ugf.Unity.TableComponents.UiFunctions
 
             _floating.ClearContent();
             hasContent.SetContent(_floating.RectTransform);
-            _floating.ActivateFloating(cell.transform);
+            _floating.ActivateFloating(cell.transform as RectTransform);
         }
 
         private void CloseFloatingWindow()

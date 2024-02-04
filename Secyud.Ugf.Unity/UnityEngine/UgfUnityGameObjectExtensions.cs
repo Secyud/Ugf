@@ -14,6 +14,12 @@ namespace UnityEngine
             Object.Destroy(component);
         }
 
+        public static void DestroyGameObject<TComponent>(this TComponent component)
+            where TComponent : Component
+        {
+            Object.Destroy(component.gameObject);
+        }
+
         public static T GetOrAddComponent<T>(this Component origin)
             where T : Component
         {

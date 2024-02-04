@@ -88,11 +88,7 @@ namespace Secyud.Ugf.Game.BuffManager
                 buffs.Add(buff);
             }
 
-            writer.Write(buffs.Count);
-            foreach (TBuff buff in buffs)
-            {
-                writer.WriteObject(buff);
-            }
+            writer.WriteList(buffs);
 
             ListPool<TBuff>.Release(buffs);
         }
@@ -100,12 +96,12 @@ namespace Secyud.Ugf.Game.BuffManager
         public virtual void Load(BinaryReader reader)
         {
             Clear();
-            int count = reader.ReadInt32();
-            for (int i = 0; i < count; i++)
-            {
-                TBuff buff = reader.ReadObject<TBuff>();
+
+            List<TBuff> buffs = ListPool<TBuff>.Get();
+            reader.ReadList(buffs);
+            foreach (TBuff buff in buffs)
                 Install(buff);
-            }
+            ListPool<TBuff>.Release(buffs);
         }
 
         public IEnumerable<TBuff> All()
@@ -115,20 +111,13 @@ namespace Secyud.Ugf.Game.BuffManager
 
         public void Clear()
         {
-            foreach (TBuff buff in InnerDictionary.Values)
-            {
-                buff.UninstallFrom(Target);
-            }
-
+            InnerDictionary.Values.UninstallList(Target);
             InnerDictionary.Clear();
         }
 
         public void SetContent(Transform transform)
         {
-            foreach (TBuff buff in InnerDictionary.Values)
-            {
-                transform.TryFillWithContent(buff);
-            }
+            transform.TryFillWithContents(InnerDictionary.Values);
         }
     }
 }

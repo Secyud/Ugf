@@ -47,7 +47,7 @@ namespace Secyud.Ugf.Unity.TableComponents.UiFunctions
                     button.onClick.AddListener(CloseButtonWindow);
                 }
             }
-            _floating.ActivateFloating(cell.transform);
+            _floating.ActivateFloating(cell.transform as RectTransform);
         }
 
         private void CloseButtonWindow()

@@ -4,6 +4,6 @@ namespace Secyud.Ugf.Modularity
 {
     public interface IGamePreInitialize
     {
-        IEnumerable OnGamePreInitialize();
+        IEnumerator OnGamePreInitialize();
     }
 }

@@ -16,7 +16,7 @@ namespace Secyud.Ugf.DependencyInjection
         IDependencyManager
     {
         internal static DependencyManager Instance { get; private set; }
-        
+
         private readonly IDependencyCollection _dependencyDescriptors;
         private readonly ConcurrentDictionary<Type, DependencyScopeProvider> _scopes = new();
 
@@ -75,45 +75,26 @@ namespace Secyud.Ugf.DependencyInjection
                 RegistryAttribute registryAttr = type.GetCustomAttribute<RegistryAttribute>(true)
                                                  ?? RegistryAttribute.Singleton;
 
+                var descriptor = CreateDirectDescriptor(type, registryAttr);
+                
                 List<Type> exposedServiceTypes = ExposedServiceExplorer.GetExposedServices(type);
 
                 foreach (Type exposedServiceType in exposedServiceTypes)
-                    CreateDependencyDescriptor(
-                        type,
-                        exposedServiceType,
-                        registryAttr
-                    );
-                TypeManager.Instance.AddType(type,true);
+                    _dependencyDescriptors[exposedServiceType] = descriptor;
+                TypeManager.Instance.AddType(type, true);
             }
             else
             {
-                TypeManager.Instance.AddType(type,false);
+                TypeManager.Instance.AddType(type, false);
             }
         }
 
-        private DependencyDescriptor CreateDependencyDescriptor(
+        private DependencyDescriptor CreateDirectDescriptor(
             Type implementationType,
-            Type exposedType,
             RegistryAttribute registryAttribute)
         {
-            if (!_dependencyDescriptors.TryGetValue(implementationType,
-                    out DependencyDescriptor descriptor))
-            {
-                if (exposedType == implementationType)
-                {
-                    descriptor = DependencyDescriptor.Describe(
-                        implementationType, this,
-                        new DependencyConstructor(implementationType), registryAttribute);
-                }
-                else
-                {
-                    descriptor = CreateDependencyDescriptor(
-                        implementationType, implementationType, registryAttribute);
-                }
-            }
-
-            _dependencyDescriptors[exposedType] = descriptor;
-            return descriptor;
+            return DependencyDescriptor.Describe(implementationType, this,
+                new DependencyConstructor(implementationType), registryAttribute);
         }
 
         protected override void HandleScope(DependencyDescriptor dd, InstanceDescriptor id)
@@ -128,20 +109,18 @@ namespace Secyud.Ugf.DependencyInjection
 
         public void RegisterInstance(Type type, object instance)
         {
-            DependencyDescriptor descriptor = CreateDependencyDescriptor(
-                instance.GetType(),
-                type,
-                RegistryAttribute.Singleton
-            );
+            var descriptor = CreateDirectDescriptor(
+                instance.GetType(), RegistryAttribute.Singleton);
             descriptor.Instance = instance;
+            _dependencyDescriptors[type] = descriptor;
         }
 
         public void Register<T, TExposed>(DependencyLifeTime lifeTime = DependencyLifeTime.Singleton)
             where T : TExposed
         {
-            CreateDependencyDescriptor(
-                typeof(T), typeof(TExposed),
-                new RegistryAttribute { LifeTime = lifeTime });
+            var descriptor = CreateDirectDescriptor(
+                typeof(T), RegistryAttribute.Singleton);
+            _dependencyDescriptors[typeof(TExposed)] = descriptor;
         }
 
         public void RegisterCustom<T, TExposed>(IDependencyConstructor constructor,

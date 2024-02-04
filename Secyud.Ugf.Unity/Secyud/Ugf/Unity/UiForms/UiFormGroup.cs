@@ -91,7 +91,6 @@ namespace Secyud.Ugf.Unity.UiForms
             {
                 CreateInstance();
                 SetFormVisible();
-                SetInFrontOfUi();
             }
 
             public void DestroyFrom()
@@ -126,7 +125,7 @@ namespace Secyud.Ugf.Unity.UiForms
             {
                 if (!Instance) return;
                 Instance.OnHiding();
-                Instance.Destroy();
+                Instance.DestroyGameObject();
             }
 
             internal void SetFormVisible()

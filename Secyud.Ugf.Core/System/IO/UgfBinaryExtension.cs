@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using Secyud.Ugf;
 using Secyud.Ugf.DataManager;
+using Secyud.Ugf.Logging;
 
 namespace System.IO
 {
@@ -20,20 +21,21 @@ namespace System.IO
                 .LoadObjectFromResource(shown, resourceId);
         }
 
-        public static void WriteResource(this BinaryWriter writer, int resourceId,[NotNull]byte[] data)
+        public static void WriteResource(this BinaryWriter writer, int resourceId, [NotNull] byte[] data)
         {
             Throw.IfNull(data);
             writer.Write(resourceId);
             writer.Write(data.Length);
             writer.Write(data);
-        } 
-        public static void ReadResource(this BinaryReader reader, out int resourceId,out byte[] data)
+        }
+
+        public static void ReadResource(this BinaryReader reader, out int resourceId, out byte[] data)
         {
             resourceId = reader.ReadInt32();
             int count = reader.ReadInt32();
             data = reader.ReadBytes(count);
         }
-        
+
         public static Guid ReadGuid(this BinaryReader reader)
         {
             return new Guid(reader.ReadBytes(16));
@@ -41,11 +43,18 @@ namespace System.IO
 
         public static void ReadList<T>(this BinaryReader reader, IList<T> value) where T : class
         {
+            value.Clear();
             int count = reader.ReadInt32();
 
             for (int i = 0; i < count; i++)
             {
-                value.Add(reader.ReadObject<T>());
+                T obj = reader.ReadObject<T>();
+                if (obj is null)
+                {
+                    UgfLogger.LogError($"Loading {typeof(T).Name} failed, Index {i}!");
+                }
+
+                value.Add(obj);
             }
         }
 
@@ -260,7 +269,7 @@ namespace System.IO
                 {
                     attributes.Clear();
                 }
-               
+
                 int attributeCount = reader.ReadInt32();
 
                 for (int j = 0; j < attributeCount; j++)
@@ -287,7 +296,6 @@ namespace System.IO
                                         if (k < list.Count)
                                             list[k] = ReadValue(elementType);
                                         else break;
-                                        
                                     }
 
                                     if (k < count)
