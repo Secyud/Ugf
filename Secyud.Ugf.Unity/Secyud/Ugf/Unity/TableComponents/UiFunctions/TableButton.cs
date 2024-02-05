@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Secyud.Ugf.Unity.Ui;
 using UnityEngine;
 using UnityEngine.UI;
@@ -18,7 +19,11 @@ namespace Secyud.Ugf.Unity.TableComponents.UiFunctions
         private void Awake()
         {
             _buttons = new List<ITableButtonDescriptor>();
-            var tableContent = GetComponent<TableContent>();
+        }
+
+        private void Start()
+        {
+            TableContent tableContent = GetComponent<TableContent>();
             foreach (TableCell cell in tableContent.Cells)
             {
                 cell.GetOrAddComponent<RightClick>()

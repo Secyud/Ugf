@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using TMPro;
 using UnityEngine;
@@ -19,9 +20,8 @@ namespace Secyud.Ugf.Unity.TableComponents.LocalTable
         private int _maxCount;
         private Table _table;
 
-        protected override void Awake()
+        private void Start()
         {
-            base.Awake();
             _maxCount = GetComponent<TableContent>().Cells.Length;
             _table = GetComponent<Table>();
         }

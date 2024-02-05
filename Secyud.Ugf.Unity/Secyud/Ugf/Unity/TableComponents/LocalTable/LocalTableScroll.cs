@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Secyud.Ugf.Logging;
 using UnityEngine;
 using UnityEngine.UI;
@@ -25,22 +26,22 @@ namespace Secyud.Ugf.Unity.TableComponents.LocalTable
         {
             base.Awake();
             _table = GetComponent<Table>();
+        }
+
+        private void Start()
+        {
             ScrollRect scrollRect = GetComponent<ScrollRect>();
             scrollRect.onValueChanged.AddListener(OnPositionChanged);
             _content = scrollRect.content;
-
             GridLayoutGroup grid = _content
                 .GetComponent<GridLayoutGroup>();
             _height = grid.spacing.y + grid.cellSize.y;
             _width = grid.spacing.x + grid.cellSize.x;
-
+            _viewHeight = scrollRect.viewport.rect.height;
             _tableContent = GetComponent<TableContent>();
             int totalCount = _tableContent.Cells.Length;
             _cols = grid.constraintCount;
             _rows = totalCount / _cols;
-
-            _viewHeight = scrollRect.viewport.rect.height;
-
             _start = _tableContent.Cells[0].transform.localPosition;
         }
 
@@ -61,7 +62,6 @@ namespace Secyud.Ugf.Unity.TableComponents.LocalTable
                 int rowPrevious = (int)(_currentHeight / _height) - 1;
 
                 PagedData.Clear();
-
 
                 for (int i = 0; i < _rows; i++)
                 {

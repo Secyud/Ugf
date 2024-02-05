@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Pool;
 
 namespace Secyud.Ugf.Unity.TableComponents
 {
@@ -10,7 +11,8 @@ namespace Secyud.Ugf.Unity.TableComponents
     [RequireComponent(typeof(Table))]
     public class TableContent : MonoBehaviour
     {
-        [field: SerializeField] public TableCell[] Cells { get; private set; }
+        [field: SerializeField] public RectTransform Content { get; set; }
+        public TableCell[] Cells { get; private set; }
 
         protected TablePager TablePager;
         public event Action<TableCell> SetCellEvent;
@@ -19,16 +21,19 @@ namespace Secyud.Ugf.Unity.TableComponents
         {
             TablePager = GetComponent<TablePager>();
 
-            TableCell prefab = Cells[0];
-            Transform content = prefab.transform.parent;
-
-            for (int i = 0; i < Cells.Length; i++)
+            List<TableCell> cells = ListPool<TableCell>.Get();
+            
+            for (int i = 0; i < Content.childCount; i++)
             {
-                if (!Cells[i])
+                if (Content.GetChild(i).TryGetComponent(out TableCell cell))
                 {
-                    Cells[i] = prefab.Instantiate(content);
+                    cells.Add(cell);
                 }
             }
+            
+            Cells = cells.ToArray();
+            
+            ListPool<TableCell>.Release(cells);
         }
 
         public virtual void Apply(bool soft)
