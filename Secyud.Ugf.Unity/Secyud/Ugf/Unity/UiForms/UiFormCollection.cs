@@ -7,7 +7,7 @@ namespace Secyud.Ugf.Unity.UiForms
 {
     public class UiFormCollection : MonoBehaviour
     {
-        [field: SerializeField] private UiFormBase[] _formPrefabs;
+        [SerializeField] private UiFormBase[] _formPrefabs;
         private Dictionary<Type, UiFormBase> _formPrefabDict;
         
         public TForm GetForm<TForm>() where TForm : class

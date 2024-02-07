@@ -10,6 +10,7 @@ namespace Secyud.Ugf.Unity.UiForms
     {
         public IObjectContainer<UiFormCollection> FormPrefabs { get; set; }
 
+
         private readonly Dictionary<int, UiFormGroup> _uiFormGroups = new();
 
         public UiFormGroup GetGroup(int groupId)

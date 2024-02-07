@@ -40,7 +40,7 @@ namespace Secyud.Ugf.Unity.AssetLoading
             return Create(U.Get<TAssetLoader>(), prefabName);
         }
 
-        protected override TComponent HandleResult(GameObject result)
+        protected override TComponent GetValueFromOrigin(GameObject result)
         {
             if (!result)
             {
@@ -58,6 +58,11 @@ namespace Secyud.Ugf.Unity.AssetLoading
             return component;
         }
 
+        protected override bool CheckInstance()
+        {
+            return Instance;
+        }
+
         protected override GameObject GetOrigin()
         {
             return Loader.LoadAsset<GameObject>(AssetName);
@@ -66,31 +71,6 @@ namespace Secyud.Ugf.Unity.AssetLoading
         protected override void GetOriginAsync(Action<GameObject> callback)
         {
             Loader.LoadAssetAsync(AssetName, callback);
-        }
-
-        public override TComponent GetValue()
-        {
-            if (!Instance)
-            {
-                Instance = HandleResult(GetOrigin());
-            }
-            return Instance;
-        }
-
-        public override void GetValueAsync(Action<TComponent> callback)
-        {
-            if (Instance)
-            {
-                callback?.Invoke(Instance);
-            }
-            else
-            {
-                GetOriginAsync(o =>
-                {
-                    Instance = HandleResult(o);
-                    callback?.Invoke(Instance);
-                });
-            }
         }
 
         public override void Save(BinaryWriter writer)

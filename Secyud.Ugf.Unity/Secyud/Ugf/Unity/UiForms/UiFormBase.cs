@@ -9,7 +9,7 @@ namespace Secyud.Ugf.Unity.UiForms
 
         public virtual int GroupId => 0;
 
-        public UiFormGroup.Element GroupElement { get; protected internal set; }
+        public UiFormGroup.Element GroupElement { get;  internal set; }
 
         protected internal virtual void OnShowing()
         {
@@ -29,7 +29,7 @@ namespace Secyud.Ugf.Unity.UiForms
         private static TForm _prefab;
 
 
-        private static void ActionWithPrefab(
+        protected static void ActionWithPrefab(
             Action<UiFormGroup.Element> action)
         {
             if (_prefab)

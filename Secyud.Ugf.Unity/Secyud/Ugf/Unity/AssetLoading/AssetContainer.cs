@@ -40,7 +40,7 @@ namespace Secyud.Ugf.Unity.AssetLoading
             return Create(U.Get<TAssetLoader>(), assetName);
         }
 
-        protected override TAsset HandleResult(TAsset result)
+        protected override TAsset GetValueFromOrigin(TAsset result)
         {
             if (!result)
             {
@@ -60,27 +60,9 @@ namespace Secyud.Ugf.Unity.AssetLoading
             Loader.LoadAssetAsync(AssetName, callback);
         }
 
-        public override TAsset GetValue()
+        protected override bool CheckInstance()
         {
-            if (!Instance)
-                Instance = HandleResult(GetOrigin());
             return Instance;
-        }
-
-        public override void GetValueAsync(Action<TAsset> callback)
-        {
-            if (Instance)
-            {
-                callback?.Invoke(Instance);
-            }
-            else
-            {
-                GetOriginAsync(o =>
-                {
-                    Instance = HandleResult(o);
-                    callback?.Invoke(Instance);
-                });
-            }
         }
 
         public override void Save(BinaryWriter writer)

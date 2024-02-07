@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using Secyud.Ugf.Logging;
 using Secyud.Ugf.Unity.Ui;
+using Secyud.Ugf.Unity.UiForms;
 using Steamworks;
 using UnityEngine;
 using TMPro;
@@ -14,7 +15,6 @@ namespace Secyud.Ugf.Steam.WorkshopManager
     public class WorkshopItemUploadManager : MonoBehaviour
     {
         [SerializeField] private TMP_Dropdown _itemSelect;
-        [SerializeField] private MessageBox _messageBox;
         [SerializeField] private TMP_InputField _description;
         [SerializeField] private TMP_InputField _language;
         [SerializeField] private TMP_Dropdown _visibility;
@@ -84,7 +84,7 @@ namespace Secyud.Ugf.Steam.WorkshopManager
             {
                 if (failed)
                 {
-                    _messageBox.Show(
+                    MessageBoxForm.ShowMessage(
                         $"Item create failed! path:{path}");
                     return;
                 }
@@ -158,8 +158,8 @@ namespace Secyud.Ugf.Steam.WorkshopManager
 
             void HandleSubmitItemUpdateResult(SubmitItemUpdateResult_t result, bool failed)
             {
-                _messageBox.Show(result.ToString());
-                _messageBox.Show(failed ? "上传失败" : "上传成功");
+
+                MessageBoxForm.ShowMessage(result+(failed ? "上传失败" : "上传成功"));
             }
         }
 
@@ -167,7 +167,7 @@ namespace Secyud.Ugf.Steam.WorkshopManager
         {
             if (failed)
             {
-                _messageBox.Show(message);
+                MessageBoxForm.ShowMessage(message);
             }
 
             return failed;
