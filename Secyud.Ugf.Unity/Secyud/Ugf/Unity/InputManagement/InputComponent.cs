@@ -1,26 +1,30 @@
-﻿using System;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 namespace Secyud.Ugf.Unity.InputManagement
 {
     public class InputComponent : MonoBehaviour
     {
-        [SerializeField] private string _name;
-        [field: SerializeField] public InputEvent[] Events { get; private set; }
+        public InputService Service;
 
         private void Awake()
         {
-            if (_name.IsNullOrEmpty())
-            {
-                _name = name;
-            }
-
-            U.Get<InputService>().AddInput(this);
+            Service = U.Get<InputService>();
         }
 
-        private void OnDestroy()
+        private void Update()
         {
-            U.Get<InputService>().RemoveInput(this);
+            List<IInputEvent> inputEvents = Service.ValidEvents;
+
+            FunctionKey function = InputService.GetFunctionKey();
+            foreach (IInputEvent inputEvent in inputEvents)
+            {
+                if (Input.GetKeyUp(inputEvent.KeyCode) && 
+                    function.HasFlag(inputEvent.FunctionKey))
+                {
+                    inputEvent.Invoke();
+                }
+            }
         }
     }
 }
