@@ -47,16 +47,16 @@ namespace Secyud.Ugf.Unity.AssetLoading
         {
             if (CheckInstance())
             {
+                callback?.Invoke(Instance);
+            }
+            else
+            {
                 ValueOperation += callback;
                 if (!AsyncOperated)
                 {
                     GetOriginAsync(SetInstanceWithOrigin);
                     AsyncOperated = true;
                 }
-            }
-            else
-            {
-                callback?.Invoke(Instance);
             }
         }
 
