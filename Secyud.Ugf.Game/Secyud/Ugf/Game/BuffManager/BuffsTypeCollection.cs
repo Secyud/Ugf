@@ -4,7 +4,7 @@ using Secyud.Ugf.Abstraction;
 
 namespace Secyud.Ugf.Game.BuffManager
 {
-    public class BuffsTypeCollection<TTarget,TBuff>: BuffCollectionBase<TTarget,TBuff,Type,Guid> 
+    public class BuffsTypeCollection<TTarget, TBuff> : BuffCollectionBase<TTarget, TBuff, Type, Guid>
         where TBuff : class, IInstallable<TTarget>, IOverlayable<TTarget>, IHasId<Type>
     {
         public BuffsTypeCollection(TTarget target) : base(target)
@@ -13,7 +13,7 @@ namespace Secyud.Ugf.Game.BuffManager
 
         protected override IDictionary<Guid, TBuff> InnerDictionary { get; }
             = new SortedDictionary<Guid, TBuff>();
-        
+
         protected override Type GetIndex(Guid key)
         {
             return U.Tm[key].Type;
@@ -23,7 +23,12 @@ namespace Secyud.Ugf.Game.BuffManager
         {
             return index.GUID;
         }
-        
+
+        public void Destroy<TProperty>()
+        {
+            this[typeof(TProperty)] = null;
+        }
+
         public TProperty GetOrCreate<TProperty>()
             where TProperty : class, TBuff
         {
@@ -34,7 +39,7 @@ namespace Secyud.Ugf.Game.BuffManager
                 ret = U.Get<TProperty>();
                 this[typeof(TProperty)] = ret;
             }
-            
+
             return ret;
         }
 
