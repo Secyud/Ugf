@@ -58,6 +58,20 @@ namespace System.IO
             }
         }
 
+
+        public static void ReadEnsuredList<T>(this BinaryReader reader, IList<T> value)
+            where T : IArchivable, new()
+        {
+            value.Clear();
+            int count = reader.ReadInt32();
+            for (int i = 0; i < count; i++)
+            {
+                T t = new();
+                t.Load(reader);
+                value.Add(t);
+            }
+        }
+
         public static TObject ReadObject<TObject>(this BinaryReader reader)
             where TObject : class
         {
@@ -116,6 +130,16 @@ namespace System.IO
             foreach (T t in value)
             {
                 writer.WriteObject(t);
+            }
+        }
+
+        public static void WriteEnsuredList<T>(this BinaryWriter writer, IList<T> value)
+            where T : IArchivable, new()
+        {
+            writer.Write(value.Count);
+            for (int i = 0; i < value.Count; i++)
+            {
+                value[i].Save(writer);
             }
         }
 
