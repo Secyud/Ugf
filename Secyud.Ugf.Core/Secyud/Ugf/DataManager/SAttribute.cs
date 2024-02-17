@@ -27,14 +27,14 @@ namespace Secyud.Ugf.DataManager
             [typeof(Guid)] = FieldType.Guid,
         };
 
-        public SAttribute(short id = 16384,
+        public SAttribute(short priority = 16384,
             SShowType showType = SShowType.Normal)
         {
-            Id = id;
+            Priority = priority;
             ShowType = showType;
         }
 
-        public short Id { get; }
+        public short Priority { get; }
         public string Name => Info.Name;
         public FieldType Type { get; private set; }
         public SShowType ShowType { get; private set; }
