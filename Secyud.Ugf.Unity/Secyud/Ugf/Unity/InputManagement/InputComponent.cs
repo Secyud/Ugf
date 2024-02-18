@@ -5,12 +5,8 @@ namespace Secyud.Ugf.Unity.InputManagement
 {
     public class InputComponent : MonoBehaviour
     {
-        public InputService Service;
+        public InputService Service { get; set; }
 
-        private void Awake()
-        {
-            Service = U.Get<InputService>();
-        }
 
         private void Update()
         {
@@ -19,7 +15,7 @@ namespace Secyud.Ugf.Unity.InputManagement
             FunctionKey function = InputService.GetFunctionKey();
             foreach (IInputEvent inputEvent in inputEvents)
             {
-                if (Input.GetKeyUp(inputEvent.KeyCode) && 
+                if (Input.GetKeyUp(inputEvent.KeyCode) &&
                     function.HasFlag(inputEvent.FunctionKey))
                 {
                     inputEvent.Invoke();

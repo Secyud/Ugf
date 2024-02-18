@@ -10,9 +10,21 @@ namespace Secyud.Ugf.Unity.InputManagement
 
         public List<IInputEvent> ValidEvents { get; } = new();
 
+        public void AddEvent(int id)
+        {
+            ValidEvents.AddIfNotContains(AllEvents[id]);
+        }
+
+        public void RemoveEvent(int id)
+        {
+            ValidEvents.Remove(AllEvents[id]);
+        }
+
         public InputService()
         {
-            UgfGameManager.Instance.GetOrAddComponent<InputComponent>();
+            UgfGameManager.Instance
+                .GetOrAddComponent<InputComponent>()
+                .Service = this;
         }
 
         public static FunctionKey GetFunctionKey()
