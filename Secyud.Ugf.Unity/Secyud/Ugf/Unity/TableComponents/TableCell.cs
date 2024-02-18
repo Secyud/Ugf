@@ -8,12 +8,16 @@ namespace Secyud.Ugf.Unity.TableComponents
     /// </summary>
     public class TableCell : MonoBehaviour
     {
+        [SerializeField] private bool _setInactiveIfNull = true;
         public object CellObject { get; protected set; }
 
         public virtual void SetObject(object cellObject)
         {
             CellObject = cellObject;
-            gameObject.SetActive(cellObject is not null);
+            if (_setInactiveIfNull)
+            {
+                gameObject.SetActive(cellObject is not null);
+            }
         }
     }
 }
