@@ -4,11 +4,10 @@ namespace Secyud.Ugf.Unity.Ui
 {
     public class TabGroup : MonoBehaviour
     {
-        private TabPanel _currentTab;
+        [SerializeField] protected TabPanel[] Panels;
+        protected TabPanel CurrentTab;
 
-        [SerializeField]protected TabPanel[] Panels;
-
-        private void Awake()
+        protected virtual void Awake()
         {
             foreach (TabPanel panel in Panels)
             {
@@ -23,17 +22,27 @@ namespace Secyud.Ugf.Unity.Ui
 
         public virtual void SelectTab(TabPanel tab)
         {
-            if (_currentTab)
+            if (CurrentTab)
             {
-                _currentTab.transform.localPosition +=
+                CurrentTab.transform.localPosition +=
                     new Vector3(0, 65536, 0);
+                CurrentTab.OnHiding();
             }
 
-            _currentTab = tab;
+            CurrentTab = tab;
 
-            if (_currentTab)
+            if (CurrentTab)
             {
-                _currentTab.transform.localPosition = Vector3.zero;
+                CurrentTab.transform.localPosition = Vector3.zero;
+                CurrentTab.OnShowing();
+            }
+        }
+
+        protected virtual void OnDestroy()
+        {
+            if (CurrentTab)
+            {
+                CurrentTab.OnHiding();
             }
         }
     }
