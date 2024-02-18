@@ -145,12 +145,13 @@ namespace System.IO
 
         public static void SerializeResource(this BinaryWriter writer, object resource)
         {
-            List<object> resources = new() { resource };
+            Queue<object> resources = new();
+            resources.Enqueue(resource);
             SortedDictionary<string, SAttribute> attributes = new();
 
-            for (int i = 0; i < resources.Count; i++)
+            while (resources.Count > 0)
             {
-                object obj = resources[i];
+                object obj = resources.Dequeue();
                 TypeDescriptor descriptor = TypeManager.Instance[obj.GetType()];
                 descriptor.Properties.FillAttributes(attributes);
                 writer.Write(attributes.Count);
@@ -248,7 +249,7 @@ namespace System.IO
                         {
                             writer.Write(true);
                             writer.Write(fieldValue.GetType().GUID);
-                            resources.Add(fieldValue);
+                            resources.Enqueue(fieldValue);
                         }
                     }
                         break;
@@ -278,12 +279,13 @@ namespace System.IO
 
         public static void DeserializeResource(this BinaryReader reader, object resource)
         {
-            List<object> resources = new() { resource };
+            Queue<object> resources = new();
+            resources.Enqueue(resource);
             SortedDictionary<string, SAttribute> attributes = new();
 
-            for (int i = 0; i < resources.Count; i++)
+            while (resources.Count > 0)
             {
-                object obj = resources[i];
+                object obj = resources.Dequeue();
                 if (obj is not null)
                 {
                     TypeManager.Instance[obj.GetType()]
@@ -456,7 +458,7 @@ namespace System.IO
                         case FieldType.Object:
                         {
                             reader.BaseStream.Seek(seek * 16, SeekOrigin.Current);
-                            resources.Add(null);
+                            resources.Enqueue(null);
                             break;
                         }
                         case FieldType.List:
@@ -531,7 +533,7 @@ namespace System.IO
                         if (!notNull) return null;
                         object instance = TypeManager.Instance
                             .CreateInstance(reader.ReadGuid());
-                        resources.Add(instance);
+                        resources.Enqueue(instance);
                         return instance;
                     }
                     case FieldType.List:
