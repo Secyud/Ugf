@@ -6,6 +6,7 @@ using Secyud.Ugf.Unity.TableComponents;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using IHasIcon = Secyud.Ugf.Abstraction.IHasIcon;
 
 #endregion
 
@@ -26,7 +27,18 @@ namespace Secyud.Ugf.Unity.Ui
 
             if (Label) Label.text = U.T[(cellObject as IHasName)?.Name];
             if (Content) Content.text = U.T[(cellObject as IHasDescription)?.Description];
-            if (Icon) (cellObject as IObjectContainer<Sprite>)?.GetValueAsync(SetIcon);
+            if (Icon)
+            {
+                IObjectContainer<Sprite> icon = (cellObject as IHasIcon)?.Icon;
+                if (icon is null)
+                {
+                    Icon.sprite = null;
+                }
+                else
+                {
+                    icon.GetValueAsync(SetIcon);
+                }
+            }
         }
 
         public void SetIcon(Sprite icon)

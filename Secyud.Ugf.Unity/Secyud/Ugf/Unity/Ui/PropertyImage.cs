@@ -12,7 +12,11 @@ namespace Secyud.Ugf.Unity.Ui
         [SerializeField] private Color _reverseColor;
         [SerializeField] private float _startDegree;
 
-        public float[] Values => _values;
+        public void SetValue(int index, float value)
+        {
+            _values[index] = value;
+            OnValidate();
+        }
 
         protected override void OnPopulateMesh(VertexHelper vh)
         {
@@ -32,9 +36,7 @@ namespace Secyud.Ugf.Unity.Ui
             vh.AddVert(center,
                 new Color(1, 1, 1, (colorF.a + colorR.a) / 2),
                 centerUv);
-            float maxValue = _values.Max(Mathf.Abs);
-            if (Mathf.Approximately(maxValue, 0)) maxValue = 1;
-            
+            float maxValue = Math.Max(1, _values.Max(Mathf.Abs));
             float normalizedFactor = 1 / maxValue / 2;
             float radius = Mathf.Min(r.width, r.height);
             float degreeDelta = Mathf.PI * 2 / length;

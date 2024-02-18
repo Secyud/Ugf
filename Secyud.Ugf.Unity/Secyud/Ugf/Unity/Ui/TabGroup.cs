@@ -24,8 +24,7 @@ namespace Secyud.Ugf.Unity.Ui
         {
             if (CurrentTab)
             {
-                CurrentTab.transform.localPosition +=
-                    new Vector3(0, 65536, 0);
+                CurrentTab.transform.localPosition = new Vector3(0, 65536, 0);
                 CurrentTab.OnHiding();
             }
 
