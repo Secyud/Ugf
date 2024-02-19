@@ -9,6 +9,7 @@ namespace Secyud.Ugf.Modularity
             this IUgfApplication application,
             IProgressRate progressRate)
         {
+            progressRate.LoadFinished = false;
             yield return application.PreInitializeGame();
             int moduleCount = application.Modules.Count;
             progressRate.Rate = 0;
@@ -26,12 +27,14 @@ namespace Secyud.Ugf.Modularity
 
             yield return application.PostInitializeGame();
             progressRate.Rate = 100;
+            progressRate.LoadFinished = true;
         }
 
         public static IEnumerator LoadingGame(
             this IUgfApplication application,
             IProgressRate progressRate)
         {
+            progressRate.LoadFinished = false;
             yield return application.PreInitializeGame();
             int moduleCount = application.Modules.Count;
             progressRate.Rate = 0;
@@ -50,12 +53,14 @@ namespace Secyud.Ugf.Modularity
             yield return application.PostInitializeGame();
 
             progressRate.Rate = 100;
+            progressRate.LoadFinished = true;
         }
 
         public static IEnumerator SavingGame(
             this IUgfApplication application,
             IProgressRate progressRate)
         {
+            progressRate.LoadFinished = false;
             int moduleCount = application.Modules.Count;
             float addStep = 99f / moduleCount;
             for (int i = 0; i < moduleCount; i++)
@@ -70,6 +75,7 @@ namespace Secyud.Ugf.Modularity
             }
 
             progressRate.Rate = 100;
+            progressRate.LoadFinished = true;
         }
 
         private static IEnumerator PreInitializeGame(
