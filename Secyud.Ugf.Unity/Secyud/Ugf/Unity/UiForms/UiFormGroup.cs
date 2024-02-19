@@ -28,7 +28,6 @@ namespace Secyud.Ugf.Unity.UiForms
             {
                 Element form = Elements[i];
                 form.CreateInstance();
-                form.SetFormVisible();
             }
 
             SetInFrontOfUi();
@@ -66,7 +65,7 @@ namespace Secyud.Ugf.Unity.UiForms
             }
         }
 
-        private void SetInFrontOfUi()
+        public void SetInFrontOfUi()
         {
             _transform.SetAsLastSibling();
         }
@@ -102,6 +101,7 @@ namespace Secyud.Ugf.Unity.UiForms
             {
                 SetFormVisible();
                 SetInFrontOfUi();
+                Group.SetInFrontOfUi();
             }
 
             public void HideForm()

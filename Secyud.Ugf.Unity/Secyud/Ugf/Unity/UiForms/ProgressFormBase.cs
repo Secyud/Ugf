@@ -13,10 +13,11 @@ namespace Secyud.Ugf.Unity.UiForms
 
         protected virtual float ShowRate { get; set; }
 
+        public override int GroupId => 1024;
 
         protected virtual void Update()
         {
-            if (ShowRate >= 90 && ProgressRate.LoadFinished)
+            if (ShowRate >= 99 && ProgressRate.LoadFinished)
             {
                 DestroyFrom();
             }
