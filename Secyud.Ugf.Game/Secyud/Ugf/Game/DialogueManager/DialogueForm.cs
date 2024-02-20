@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using Secyud.Ugf.Unity.Ui;
+using Secyud.Ugf.Unity.UiForms;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -12,9 +13,9 @@ using UnityEngine.UI;
 namespace Secyud.Ugf.Game.DialogueManager
 {
     /// <summary>
-    /// A dialogue panel
+    /// A dialogue form
     /// </summary>
-    public class DialoguePanel : MonoBehaviour
+    public class DialogueForm : UiFormBase<DialogueForm>
     {
         [SerializeField] private DialogueSelection _selectionTemplate;
         [SerializeField] private Image _backGround;
@@ -35,7 +36,10 @@ namespace Secyud.Ugf.Game.DialogueManager
         {
             _dialogueService = U.Get<DialogueService>();
             _continueButton.onClick.AddListener(ContinueDialogue);
+        }
 
+        private void Start()
+        {
             if (_maxSelectOptionCount <= 0)
             {
                 _maxSelectOptionCount = _selections.Length;
@@ -162,7 +166,7 @@ namespace Secyud.Ugf.Game.DialogueManager
             {
                 _selections[itemIndex++].gameObject.SetActive(false);
             }
-            
+
             _selectContent.Refresh();
         }
     }

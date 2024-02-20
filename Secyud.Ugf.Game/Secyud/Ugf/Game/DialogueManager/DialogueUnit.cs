@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Secyud.Ugf.Unity.AssetLoading;
 using UnityEngine;
 
@@ -15,5 +16,6 @@ namespace Secyud.Ugf.Game.DialogueManager
         public bool ShowBackgroundImage { get; set; }
         public bool ShowRoleNameAndAvatar { get; set; }
         public bool ShowContinueButton { get; set; }
+        public Action DefaultAction { get; set; }
     }
 }

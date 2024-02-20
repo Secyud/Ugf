@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Secyud.Ugf.Abstraction;
+using Secyud.Ugf.DataManager;
 
 namespace Secyud.Ugf.Game.BuffManager
 {
@@ -36,7 +37,8 @@ namespace Secyud.Ugf.Game.BuffManager
 
             if (ret is null)
             {
-                ret = U.Get<TProperty>();
+                ret = TypeManager.Instance
+                    .CreateInstance(typeof(TProperty).GUID) as TProperty;
                 this[typeof(TProperty)] = ret;
             }
 

@@ -39,8 +39,7 @@ namespace Secyud.Ugf.Unity.Ui
 
         public void ActivateFloating(RectTransform target)
         {
-            RectTransform.position =
-                target.position + new Vector3(0, target.rect.height, 0);
+            RectTransform.position = target.position;
 
             gameObject.SetActive(true);
 

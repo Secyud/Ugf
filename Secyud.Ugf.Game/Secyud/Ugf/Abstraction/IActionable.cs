@@ -6,9 +6,9 @@
     /// can be reused.
     /// </summary>
     /// <typeparam name="TTarget">param the action need</typeparam>
-    public interface IActionable<in TTarget> 
+    public interface IActionable<in TTarget>
     {
-        void Invoke(TTarget target);
+        void Invoke(TTarget context);
     }
 
     /// <summary>

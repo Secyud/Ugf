@@ -12,6 +12,7 @@ namespace Secyud.Ugf.Unity.Ui.Notifications
         [SerializeField] private float _interval;
         [SerializeField] private float _moveTime = 0.3f;
         [SerializeField] private int _maxNotificationCount = 9;
+        [SerializeField] private bool _notRecycledOverTime;
         private List<RectTransform> _showNotifications;
         private List<RectTransform> _idleNotifications;
 
@@ -39,6 +40,8 @@ namespace Secyud.Ugf.Unity.Ui.Notifications
                 {
                     notification = _showNotifications[0];
                     _showNotifications.RemoveAt(0);
+                    DOTween.Kill(notification);
+                    notification.localPosition = Vector3.zero;
                 }
             }
 
@@ -57,10 +60,15 @@ namespace Secyud.Ugf.Unity.Ui.Notifications
             CanvasGroup canvasGroup = notification
                 .GetOrAddComponent<CanvasGroup>();
             Sequence sequence = DOTween.Sequence();
+
             sequence.Append(canvasGroup.DOFade(1, 0.2f));
-            sequence.AppendInterval(_existTime);
-            sequence.Append(canvasGroup.DOFade(0, 0.8f));
-            sequence.OnComplete(() => RecycleNotification(notification));
+            if (!_notRecycledOverTime)
+            {
+                sequence.AppendInterval(_existTime);
+                sequence.Append(canvasGroup.DOFade(0, 0.8f));
+                sequence.OnComplete(() => RecycleNotification(notification));
+            }
+
             sequence.Play();
 
             return notification;

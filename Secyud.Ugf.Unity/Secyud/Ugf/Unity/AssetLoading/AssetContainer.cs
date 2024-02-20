@@ -9,7 +9,8 @@ namespace Secyud.Ugf.Unity.AssetLoading
     public class AssetContainer<TAsset> : ObjectContainer<TAsset, TAsset>, IArchivable, IDisposable
         where TAsset : Object
     {
-        [S] protected IAssetLoader Loader;
+        [S] protected IAssetLoader AssetLoader;
+        protected virtual IAssetLoader Loader => AssetLoader;
         [S] protected string AssetName;
 
         protected AssetContainer()
@@ -23,7 +24,7 @@ namespace Secyud.Ugf.Unity.AssetLoading
                 ? null
                 : new AssetContainer<TAsset>
                 {
-                    Loader = loader,
+                    AssetLoader = loader,
                     AssetName = assetName
                 };
         }
@@ -73,7 +74,7 @@ namespace Secyud.Ugf.Unity.AssetLoading
 
         public override void Load(BinaryReader reader)
         {
-            Loader = reader.ReadNullable<IAssetLoader>();
+            AssetLoader = reader.ReadNullable<IAssetLoader>();
             AssetName = reader.ReadString();
         }
 
