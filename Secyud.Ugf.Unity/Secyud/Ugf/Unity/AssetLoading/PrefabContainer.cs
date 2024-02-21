@@ -9,8 +9,9 @@ namespace Secyud.Ugf.Unity.AssetLoading
     public class PrefabContainer<TComponent> : ObjectContainer<TComponent, GameObject>
         where TComponent : Component
     {
-        [S] protected IAssetLoader Loader;
+        [S] protected IAssetLoader AssetLoader;
         [S] protected string AssetName;
+        protected virtual IAssetLoader Loader => AssetLoader;
 
         protected PrefabContainer()
         {
@@ -22,7 +23,7 @@ namespace Secyud.Ugf.Unity.AssetLoading
         {
             return new PrefabContainer<TComponent>
             {
-                Loader = loader,
+                AssetLoader = loader,
                 AssetName = prefabName ?? U.TypeToPath<TComponent>() + ".prefab"
             };
         }
@@ -81,7 +82,7 @@ namespace Secyud.Ugf.Unity.AssetLoading
 
         public override void Load(BinaryReader reader)
         {
-            Loader = reader.ReadNullable<IAssetLoader>();
+            AssetLoader = reader.ReadNullable<IAssetLoader>();
             AssetName = reader.ReadString();
         }
     }

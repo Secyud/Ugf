@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
-using Unity.Plastic.Newtonsoft.Json;
-using UnityEngine;
+using Newtonsoft.Json;
 
 namespace Secyud.Ugf.Steam.WorkshopManager
 {
@@ -32,7 +31,7 @@ namespace Secyud.Ugf.Steam.WorkshopManager
             return null;
         }
 
-        public static void WriteToLocal(WorkshopConfigInfo info,  string localPath)
+        public static void WriteToLocal(WorkshopConfigInfo info, string localPath)
         {
             string path = Path.Combine(localPath, "info.json");
             string jsonStr = JsonConvert.SerializeObject(info);

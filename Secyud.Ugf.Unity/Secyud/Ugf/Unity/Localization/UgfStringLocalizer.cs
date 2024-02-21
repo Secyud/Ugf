@@ -4,10 +4,10 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
+using Newtonsoft.Json.Linq;
 using Secyud.Ugf.DependencyInjection;
 using Secyud.Ugf.Localization;
 using Secyud.Ugf.VirtualPath;
-using Unity.Plastic.Newtonsoft.Json.Linq;
 using UnityEngine.Pool;
 
 namespace Secyud.Ugf.Unity.Localization
@@ -103,7 +103,7 @@ namespace Secyud.Ugf.Unity.Localization
                 paths.AddRange(list);
             }
 
-            
+
             for (int i = 0; i < paths.Count; i++)
             {
                 string[] filePaths = _virtualPathManager.GetFilesSingly(paths[i]);

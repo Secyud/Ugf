@@ -20,6 +20,15 @@ namespace Secyud.Ugf.Unity.TableComponents.LocalTable
         private int _maxCount;
         private Table _table;
 
+        protected override void Awake()
+        {
+            base.Awake();
+            _firstPageButton.onClick.AddListener(TurnToFirstPage);
+            _prePageButton.onClick.AddListener(TurnToPreviewPage);
+            _nextPageButton.onClick.AddListener(TurnToNextPage);
+            _lastPageButton.onClick.AddListener(TurnToLastPage);
+        }
+
         private void Start()
         {
             _maxCount = GetComponent<TableContent>().Cells.Length;

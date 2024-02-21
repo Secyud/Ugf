@@ -15,7 +15,10 @@ namespace Secyud.Ugf.Unity.Ui
         public void SetValue(int index, float value)
         {
             _values[index] = value;
+            SetAllDirty();
+#if UNITY_EDITOR
             OnValidate();
+#endif
         }
 
         protected override void OnPopulateMesh(VertexHelper vh)
