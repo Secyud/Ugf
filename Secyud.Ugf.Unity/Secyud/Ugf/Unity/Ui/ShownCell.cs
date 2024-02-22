@@ -32,7 +32,7 @@ namespace Secyud.Ugf.Unity.Ui
                 IObjectContainer<Sprite> icon = (cellObject as IHasIcon)?.Icon;
                 if (icon is null)
                 {
-                    Icon.sprite = null;
+                    SetIcon(null);
                 }
                 else
                 {
@@ -43,7 +43,11 @@ namespace Secyud.Ugf.Unity.Ui
 
         public void SetIcon(Sprite icon)
         {
-            if (Icon) Icon.sprite = icon;
+            if (Icon)
+            {
+                Icon.sprite = icon;
+                Icon.enabled = icon;
+            }
         }
     }
 }
