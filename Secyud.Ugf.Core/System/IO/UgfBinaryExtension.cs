@@ -296,6 +296,11 @@ namespace System.IO
                     attributes.Clear();
                 }
 
+                if (reader.BaseStream.Position == reader.BaseStream.Length)
+                {
+                    break;
+                }
+
                 int attributeCount = reader.ReadInt32();
 
                 for (int j = 0; j < attributeCount; j++)
@@ -457,7 +462,13 @@ namespace System.IO
                         }
                         case FieldType.Object:
                         {
-                            reader.BaseStream.Seek(seek * 16, SeekOrigin.Current);
+                            bool notNull = reader.ReadBoolean();
+
+                            if (notNull)
+                            {
+                                reader.BaseStream.Seek(seek * 16, SeekOrigin.Current);
+                            }
+
                             resources.Enqueue(null);
                             break;
                         }
@@ -530,9 +541,10 @@ namespace System.IO
                     case FieldType.Object:
                     {
                         bool notNull = reader.ReadBoolean();
-                        if (!notNull) return null;
-                        object instance = TypeManager.Instance
-                            .CreateInstance(reader.ReadGuid());
+                        object instance = notNull
+                            ? TypeManager.Instance
+                                .CreateInstance(reader.ReadGuid())
+                            : null;
                         resources.Enqueue(instance);
                         return instance;
                     }

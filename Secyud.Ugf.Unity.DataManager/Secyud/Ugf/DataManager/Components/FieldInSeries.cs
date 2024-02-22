@@ -11,6 +11,7 @@ namespace Secyud.Ugf.DataManager.Components
         {
             Index = index;
             SeriesField = seriesField;
+            LabelText.text = index.ToString();
             BindValue(GetValue());
         }
 
