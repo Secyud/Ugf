@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 
@@ -9,6 +10,8 @@ namespace Secyud.Ugf.DataManager
     [AttributeUsage(AttributeTargets.Field)]
     public class SAttribute : Attribute
     {
+        private static readonly DescriptionAttribute DefaultDescription = new(null);
+
         public static readonly Dictionary<Type, FieldType> Map = new()
         {
             [typeof(bool)] = FieldType.Bool,
@@ -39,6 +42,9 @@ namespace Secyud.Ugf.DataManager
         public FieldType Type { get; private set; }
         public SShowType ShowType { get; private set; }
         public FieldInfo Info { get; private set; }
+        public Type ElementType { get; private set; }
+
+        private DescriptionAttribute _descriptionAttribute;
 
         public void SetPropertyType(FieldInfo info)
         {
@@ -46,11 +52,11 @@ namespace Secyud.Ugf.DataManager
             Info = info;
             if (typeof(IList).IsAssignableFrom(info.FieldType))
             {
-                Type elementType = info.FieldType.IsArray
+                ElementType = info.FieldType.IsArray
                     ? info.FieldType.GetElementType()
                     : info.FieldType.GetGenericArguments().FirstOrDefault();
 
-                FieldType elementFieldType = GetFieldType(elementType);
+                FieldType elementFieldType = GetFieldType(ElementType);
                 if (elementFieldType > 0)
                 {
                     Type = elementFieldType | FieldType.List;
@@ -58,8 +64,24 @@ namespace Secyud.Ugf.DataManager
             }
             else
             {
+                ElementType = info.FieldType;
                 Type = GetFieldType(info.FieldType);
             }
+        }
+
+
+        public string GetDescription()
+        {
+            if (_descriptionAttribute is null)
+            {
+                if (Info is not null)
+                {
+                    _descriptionAttribute = Info
+                        .GetCustomAttribute<DescriptionAttribute>() ?? DefaultDescription;
+                }
+            }
+
+            return _descriptionAttribute?.Description;
         }
 
         private static FieldType GetFieldType(Type type)

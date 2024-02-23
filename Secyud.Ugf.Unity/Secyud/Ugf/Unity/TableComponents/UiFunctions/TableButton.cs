@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Ugf.Collections.Generic;
 using Secyud.Ugf.Unity.Ui;
 using UnityEngine;
 using UnityEngine.UI;
@@ -48,10 +49,11 @@ namespace Secyud.Ugf.Unity.TableComponents.UiFunctions
                 if (descriptor.Visible(cell.CellObject))
                 {
                     Button button = _buttonTemplate.Instantiate(_floating.RectTransform);
-                    descriptor.SetButton(button,cell.CellObject);
+                    descriptor.SetButton(button, cell.CellObject);
                     button.onClick.AddListener(CloseButtonWindow);
                 }
             }
+
             _floating.ActivateFloating(cell.transform as RectTransform);
         }
 

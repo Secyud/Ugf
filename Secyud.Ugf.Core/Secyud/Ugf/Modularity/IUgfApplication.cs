@@ -4,5 +4,6 @@ namespace Secyud.Ugf.Modularity
     {
         void Configure();
         void Shutdown();
+        void ConfigureDataManager();
     }
 }

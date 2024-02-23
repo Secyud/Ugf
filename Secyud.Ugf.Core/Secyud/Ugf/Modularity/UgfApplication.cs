@@ -1,7 +1,7 @@
 using Secyud.Ugf.DependencyInjection;
 using System.Collections.Generic;
-#if UNITY_EDITOR
-#endif
+using System.Linq;
+using System.Reflection;
 
 namespace Secyud.Ugf.Modularity
 {
@@ -64,6 +64,16 @@ namespace Secyud.Ugf.Modularity
             {
                 if (Modules[i].Instance is IOnShutDown module)
                     module.OnShutDown(context);
+            }
+        }
+
+        public void ConfigureDataManager()
+        {
+            List<Assembly> assemblies = Modules
+                .Select(u => u.Assembly).ToHashSet().ToList();
+            foreach (Assembly assembly in assemblies)
+            {
+                _dependencyManager.AddAssembly(assembly);
             }
         }
     }

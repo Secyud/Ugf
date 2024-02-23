@@ -1,4 +1,4 @@
-namespace System
+namespace System.Ugf
 {
     public static class UgfStringExtensions
     {
@@ -12,7 +12,7 @@ namespace System
             return string.IsNullOrWhiteSpace(s);
         }
 
-        public static string EnsureEndsWith(this string s,string end)
+        public static string EnsureEndsWith(this string s, string end)
         {
             if (s.EndsWith(end))
                 return s;

@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
+using System.Ugf;
+using System.Ugf.Collections.Generic;
 using Secyud.Ugf.Logging;
 
 namespace Secyud.Ugf.VirtualPath
@@ -16,7 +18,7 @@ namespace Secyud.Ugf.VirtualPath
 
         public PathNode(
             [NotNull] string nodeName,
-             PathNode parentNode)
+            PathNode parentNode)
         {
             NodeName = nodeName;
             ParentNode = parentNode;

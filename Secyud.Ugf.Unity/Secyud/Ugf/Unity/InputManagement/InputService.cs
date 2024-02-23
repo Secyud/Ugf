@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Ugf.Collections.Generic;
 using Secyud.Ugf.DependencyInjection;
 using UnityEngine;
 

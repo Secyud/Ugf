@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 using Secyud.Ugf.DependencyInjection;
 
 namespace Secyud.Ugf.Modularity
@@ -24,6 +26,15 @@ namespace Secyud.Ugf.Modularity
         {
             if (_configured) return;
             Application.Configure();
+            _configured = true;
+        }
+
+        public void ConfigureDataManager()
+        {
+            if (_configured) return;
+
+            Application.ConfigureDataManager();
+
             _configured = true;
         }
     }

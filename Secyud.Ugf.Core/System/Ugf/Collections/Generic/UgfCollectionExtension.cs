@@ -1,4 +1,6 @@
-﻿namespace System.Collections.Generic
+﻿using System.Collections.Generic;
+
+namespace System.Ugf.Collections.Generic
 {
     public static class UgfCollectionExtension
     {

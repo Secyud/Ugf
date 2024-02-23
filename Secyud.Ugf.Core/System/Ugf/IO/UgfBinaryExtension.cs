@@ -1,11 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using Secyud.Ugf;
+using System.IO;
 using Secyud.Ugf.DataManager;
 using Secyud.Ugf.Logging;
 
-namespace System.IO
+namespace System.Ugf.IO
 {
     public static class UgfBinaryExtension
     {
@@ -19,21 +18,6 @@ namespace System.IO
             int resourceId = reader.ReadInt32();
             TypeManager.Instance
                 .LoadObjectFromResource(shown, resourceId);
-        }
-
-        public static void WriteResource(this BinaryWriter writer, int resourceId, [NotNull] byte[] data)
-        {
-            Throw.IfNull(data);
-            writer.Write(resourceId);
-            writer.Write(data.Length);
-            writer.Write(data);
-        }
-
-        public static void ReadResource(this BinaryReader reader, out int resourceId, out byte[] data)
-        {
-            resourceId = reader.ReadInt32();
-            int count = reader.ReadInt32();
-            data = reader.ReadBytes(count);
         }
 
         public static Guid ReadGuid(this BinaryReader reader)

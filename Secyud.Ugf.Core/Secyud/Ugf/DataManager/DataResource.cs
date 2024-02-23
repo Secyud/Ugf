@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Ugf.IO;
 using Secyud.Ugf.Logging;
 
 namespace Secyud.Ugf.DataManager

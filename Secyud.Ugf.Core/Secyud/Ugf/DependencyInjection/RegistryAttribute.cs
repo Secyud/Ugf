@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Ugf.Collections.Generic;
 using Secyud.Ugf.Logging;
 
 namespace Secyud.Ugf.DependencyInjection

@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Ugf.Collections.Generic;
 using Secyud.Ugf.Unity.Ui;
 using Secyud.Ugf.Unity.UiForms;
 using TMPro;
