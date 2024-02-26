@@ -277,7 +277,7 @@ namespace System.Ugf.IO
                 }
                 else
                 {
-                    attributes.Clear();
+                    continue;
                 }
 
                 if (reader.BaseStream.Position == reader.BaseStream.Length)
@@ -292,8 +292,7 @@ namespace System.Ugf.IO
                     string attributeName = reader.ReadString();
                     FieldType attributeType = (FieldType)reader.ReadByte();
 
-                    if (attributes.TryGetValue(attributeName, out SAttribute attribute)
-                        && obj is not null)
+                    if (attributes.TryGetValue(attributeName, out SAttribute attribute))
                     {
                         if (attributeType.HasFlag(FieldType.List))
                         {
