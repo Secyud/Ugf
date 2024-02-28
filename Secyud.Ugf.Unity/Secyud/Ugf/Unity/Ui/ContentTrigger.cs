@@ -3,10 +3,10 @@ using UnityEngine.UI;
 
 namespace Secyud.Ugf.Unity.Ui
 {
+    [RequireComponent(typeof(RectTransform))]
     public class ContentTrigger : MonoBehaviour
     {
         private ContentSizeFitter _contentSizeFitter;
-        private RectTransform _rectTransform;
         private int _record;
         private bool _checkBoundary;
         public RectTransform RectTransform { get; private set; }
@@ -46,7 +46,8 @@ namespace Secyud.Ugf.Unity.Ui
 
             if (_checkBoundary)
             {
-                RectTransform.CheckBoundary();
+                // TODO fix position change
+                //RectTransform.CheckBoundary();
             }
         }
 

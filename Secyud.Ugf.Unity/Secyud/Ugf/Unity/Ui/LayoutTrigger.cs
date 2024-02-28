@@ -28,6 +28,8 @@ namespace Secyud.Ugf.Unity.Ui
 
         public void ClearContent()
         {
+            gameObject.SetActive(true);
+
             for (int i = 0; i < RectTransform.childCount; i++)
             {
                 Transform child = RectTransform.GetChild(i);
@@ -39,9 +41,8 @@ namespace Secyud.Ugf.Unity.Ui
 
         public void ActivateFloating(RectTransform target)
         {
-            RectTransform.position = target.position;
-
             gameObject.SetActive(true);
+            RectTransform.position = target.position;
 
             Refresh(checkBoundary: true);
         }

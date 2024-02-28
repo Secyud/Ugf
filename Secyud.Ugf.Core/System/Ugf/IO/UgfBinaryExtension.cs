@@ -335,7 +335,18 @@ namespace System.Ugf.IO
                         }
                         else
                         {
-                            attribute.SetValue(obj, ReadValue(attributeType));
+                            if (attributeType != attribute.Type)
+                            {
+                                ReadValue(attributeType, 1);
+                            }
+                            else
+                            {
+                                object value = ReadValue(attributeType);
+                                if (attribute.Info.FieldType.IsInstanceOfType(value))
+                                {
+                                    attribute.SetValue(obj, value);
+                                }
+                            }
                         }
                     }
                     else

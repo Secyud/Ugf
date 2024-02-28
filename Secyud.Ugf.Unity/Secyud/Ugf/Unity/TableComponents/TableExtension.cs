@@ -30,7 +30,7 @@ namespace Secyud.Ugf.Unity.TableComponents
         }
 
 
-        public static void InitTableButton(this Table table, 
+        public static void InitTableButton(this Table table,
             IEnumerable<ITableButtonDescriptor> buttons)
         {
             table.GetComponent<TableButton>().Initialize(buttons);
@@ -61,10 +61,9 @@ namespace Secyud.Ugf.Unity.TableComponents
                     }
                 }
 
-                var ret = objects
+                List<object> ret = objects
                     .Where(o => workedFilters
-                        .Any(f => f.Filter(o)));
-
+                        .Any(filter => filter.Filter(o))).ToList();
                 ListPool<ILocalFilterDescriptor>.Release(workedFilters);
                 return ret;
             }
