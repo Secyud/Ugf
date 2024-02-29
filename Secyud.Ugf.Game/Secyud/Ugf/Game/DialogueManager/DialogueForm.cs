@@ -30,17 +30,13 @@ namespace Secyud.Ugf.Game.DialogueManager
         [SerializeField] private DialogueSelection[] _selections;
 
         private DialogueService _dialogueService;
-        private List<ActionWithText> _selectionUnits;
+        private IList<ActionWithText> _selectionUnits;
         private int _currentPage;
 
         protected virtual void Awake()
         {
             _dialogueService = U.Get<DialogueService>();
             _continueButton.onClick.AddListener(ContinueDialogue);
-        }
-
-        private void Start()
-        {
             if (_maxSelectOptionCount <= 0)
             {
                 _maxSelectOptionCount = _selections.Length;
