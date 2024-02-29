@@ -9,13 +9,13 @@ namespace Secyud.Ugf.Unity.Ui
         private ContentSizeFitter _contentSizeFitter;
         private int _record;
         private bool _checkBoundary;
-        public RectTransform RectTransform { get; private set; }
+        private RectTransform _rectTransform;
+        public RectTransform RectTransform => _rectTransform ? _rectTransform : GetComponent<RectTransform>();
 
 
         protected virtual void Awake()
         {
             TryGetComponent(out _contentSizeFitter);
-            RectTransform = GetComponent<RectTransform>();
         }
 
         public virtual void LateUpdate()
